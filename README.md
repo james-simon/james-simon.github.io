@@ -1,13 +1,11 @@
 ## Research
-[neural network geometry](https://arxiv.org/pdf/2003.10397.pdf), stat mech, and [quantum control] (https://journals.aps.org/prb/accepted/6d07aO37Cd21ef3f659a4da7a9b9f6fccca4d0e17)
+[neural network geometry](https://arxiv.org/pdf/2003.10397.pdf), stat mech, and [quantum control](https://journals.aps.org/prb/accepted/6d07aO37Cd21ef3f659a4da7a9b9f6fccca4d0e17)
 
 ## Blog posts
 post i
 
-<br>
-
 post j
-<br>
+
 post k
 
 ## Experience
