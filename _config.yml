@@ -2,3 +2,5 @@ theme: jekyll-theme-midnight
 title: Puzzle repo
 description: -.. . ... -.-. .-. .. .--. - .. --- -.
 
+markdown: kramdown
+highlighter: rouge
