@@ -4,7 +4,7 @@
 ## Blog posts
 [Coronavirus](/blog/covid)
 
-post j
+[Wombat](wombat.md)
 
 post k
 
