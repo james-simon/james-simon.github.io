@@ -6,21 +6,21 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-author: Charles Frye
-email: charlesfrye@berkeley.edu
+author: Jamie Simon
+email: jsi@berkeley.edu
 description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 
-title: Tangent Space
-url: "http://charlesfrye.github.io"
-qualurl: "FoundationalNeuroscience"
-imgurl: "https://charlesfrye.github.io/img"
+title: J S
+url: "http://james-simon.github.io"
+imgurl: "https://james-simon.github.io/img"
 
-github_username:  charlesfrye
-insta_username: charles_irl
+github_username:  james-simon
+insta_username: sam.simon17
 
 DBL: "https://dl.dropboxusercontent.com/u/16348658"
 excerpt_separator: <!--exc-->
 
 # Build settings
 markdown: kramdown
+highlighter: rouge
