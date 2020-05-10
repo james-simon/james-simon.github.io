@@ -4,7 +4,7 @@ title:	"The expected cost of breaking quarantine"
 date:	2020-05-10
 category: stats
 ---
-![grid25]
+<!-- ![grid25] -->
 {: style="text-align: center"}
 <!--exc-->
 
