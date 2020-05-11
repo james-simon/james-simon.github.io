@@ -7,4 +7,4 @@ origin: VT Hunt 2020
 answer: lemons
 ---
 
-<img style="float: left; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/mining.png" width="80%" />
+<img style="float: center; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/mining.png" width="80%" />
