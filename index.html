@@ -24,6 +24,7 @@ layout: default
   <p>Topology • Adders Multiplying • Transit • Mining • Flares • Frames • Flags</p>
 
 {% for collection in site.collections %}
+    {{ collection.name }}
     {% for doc in collection.docs %}
         {% if doc.title %}
             {{ doc.title }}
