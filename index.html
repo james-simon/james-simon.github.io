@@ -23,13 +23,13 @@ layout: default
   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="https://en.wikipedia.org/wiki/VT_Hunt">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2nd and 3rd VT Hunts each drawing ~2000 participants and raising thousands of dollars for charities.  I've also designed and run six other puzzle events starting in high school, with one other one still continuing.  A few of my best puzzles are below.</p>
   <p>Topology • Adders Multiplying • Transit • Mining • Flares • Frames • Flags</p>
 
-  <ul>
-  {% for pzl in site.puzzles %}
-    <li>
-      <a href="{{ pzl.url }}">{{ pzl.title }}</a>
-    </li>
-  {% endfor %}
-  </ul>
+{% for collection in site.collections %}
+    {% for doc in collection.docs %}
+        {% if doc.title %}
+            {{ doc.title }}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
 	
   <hr class="featurette-divider">
 	
