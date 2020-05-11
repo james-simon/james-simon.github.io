@@ -3,6 +3,7 @@ layout: puzzlepage
 type: puzzle
 title: Mining
 flavortext: 
+origin: VT Hunt 2020
 answer: lemons
 ---
 
