@@ -26,9 +26,15 @@ layout: default
 	  Frames • Flags</p>
 
 
+    {% assign npzls = 0 %}
     {% for pzl in site.puzzles %}
         {% if pzl.type == "puzzle" %}
-            {{ pzl.answer }} • 
+	     {% if npzls == 0 %}
+	          <a href="{{ site.baseurl }}{{ pzl.url }}">{{ pzl.title }}
+	     {% else %}
+                  • <a href="{{ site.baseurl }}{{ pzl.url }}">{{ pzl.title }}
+	     {% endif %}
+             {% assign npzls = npzls + 1 %}
         {% endif %}
     {% endfor %}
 	
