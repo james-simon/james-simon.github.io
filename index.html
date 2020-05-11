@@ -30,7 +30,7 @@ layout: default
 	
     {% for doc in site.puzzles %}
 	.{{ npzls }}.
-        {% assign npzls = npzls + 1 %}
+        {% assign npzls = npzls | plus:1 %}
 	*{{ npzls }}*
 	
         {% if doc.type == "puzzle" %}
