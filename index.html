@@ -25,14 +25,12 @@ layout: default
 	  Mining • Flares • 
 	  Frames • Flags</p>
 
-{% for collection in site.collections %}
-    {{ collection.name }}
-    {% for doc in collection.docs %}
-        {% if doc.title %}
-            {{ doc.title }}
+
+    {% for pzl in site.puzzles %}
+        {% if doc.type != "qqqqq" %}
+            {{ doc.title }} • 
         {% endif %}
     {% endfor %}
-{% endfor %}
 	
   <hr class="featurette-divider">
 	
