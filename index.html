@@ -27,14 +27,15 @@ layout: default
 
 
     {% assign npzls = 0 %}
-    {% for pzl in site.puzzles %}
-        {% if pzl.type == "puzzle" %}
+    {% for doc in site.puzzles %}
+	{{ npzls }}
+        {% if doc.type == "puzzle" %}
 	     {% if npzls == 0 %}
-	          <a href="{{ site.baseurl }}{{ pzl.url }}">{{ pzl.title }}
+	          <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
 	     {% else %}
-                  • <a href="{{ site.baseurl }}{{ pzl.url }}">{{ pzl.title }}
+                  • <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
 	     {% endif %}
-             {% assign npzls = npzls + 1 %}
+             {% increment npzls %}
         {% endif %}
     {% endfor %}
 	
