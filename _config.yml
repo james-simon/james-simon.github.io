@@ -14,6 +14,11 @@ insta_username: sam.simon17
 DBL: "https://dl.dropboxusercontent.com/u/16348658"
 excerpt_separator: <!--exc-->
 
+collections:
+ puzzles:
+    name: Puzzles
+    output: true
+
 # Build settings
 markdown: kramdown
 highlighter: rouge
