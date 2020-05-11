@@ -32,6 +32,7 @@ layout: default
 	{{ doc.url }}
         {% if doc.type == "puzzle" %}
 	     {% if npzls == 0 %}
+                  {% increment npzls %}
 	          <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
 	     {% else %}
                   • <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
