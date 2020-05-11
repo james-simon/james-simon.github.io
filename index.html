@@ -29,8 +29,9 @@ layout: default
     {% assign npzls = 0 %}
 	
     {% for doc in site.puzzles %}
-	*{{ npzls }}*
+	.{{ npzls }}.
         {% increment npzls %}
+	*{{ npzls }}*
 	
         {% if doc.type == "puzzle" %}
 	     {% if npzls == 0 %}
