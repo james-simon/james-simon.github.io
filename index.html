@@ -27,7 +27,7 @@ layout: default
 
 
     {% for pzl in site.puzzles %}
-        {% if pzl.type != "qqqqq" %}
+        {% if pzl.type == "puzzle" %}
             {{ pzl.title }} • 
         {% endif %}
     {% endfor %}
