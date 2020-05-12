@@ -1,10 +1,15 @@
-<header class="post-header">
-    <h1 class="post-title" style="text-align:center">{{ page.title }}</h1>
-</header>
+---
+layout: default
+---
+<article class="post">
 
+  <header class="post-header">
+    <h1 class="post-title" style="text-align:center">{{ page.title }} - Solution</h1>
+  </header>
     <p style="text-align:center">{{ page.flavortext }}</p>
 
   <div class="post-content">
     {{ content }}
   </div>
+    
 </article>
