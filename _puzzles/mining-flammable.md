@@ -11,13 +11,13 @@ The flavor text hints at different font names, with the final instruction refere
 
 <p align="center">
   <img style="float: center; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/miningsol1.png" width="100%" />
-<\p>
+</p>
 
 Hunters needed to find all of the instances of the letter X and look to the letter above it. These letters were all E, F or G, which in wingdings are hands pointing left, right or up respectively. The next letter in the direction indicated was another direction in wingdings. These paths could all be followed hitting only E, F, G, and H, hands pointing in the four directions, until reaching an I, translating in wingdings to a hand making a stop gesture. The paths and a detailed example are shown below. 
 
 <p align="center">
   <img src="{{site.imgurl}}/miningsol2.png" width="100%" />
-<\p>
+</p>
 
 <p align="center">
   <img src="{{site.imgurl}}/miningsol3.png" width="50%" alt=""/>
