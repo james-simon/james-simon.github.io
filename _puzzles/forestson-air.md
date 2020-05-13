@@ -13,4 +13,4 @@ The bunches of three words around the outside of the puzzle all have a third wor
 </p>
 
 
-The answer in the heart of the puzzle is AIR, the final answer.  In retrospect, ERE, ERR or E'ER could also work, so the puzzle's a little ambiguous, though the AIR spelling is used in AIR DUCT, AIRBALL and AIRPLANE.
+The answer in the heart of the puzzle is AIR.  In retrospect, ERE, ERR or E'ER could also work, so the puzzle's a little ambiguous, though the AIR spelling is used in AIR DUCT, AIRBALL and AIRPLANE.
