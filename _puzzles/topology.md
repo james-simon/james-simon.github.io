@@ -8,5 +8,5 @@ answer: light
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/topology.png" width="100%" />
+<img src="{{site.imgurl}}/topology.jpg" width="100%" />
 </p>
