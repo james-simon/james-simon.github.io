@@ -4,9 +4,9 @@
 
     <a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a>
     
-    <a class="page-link" href="{{ #research | prepend: site.baseurl }}">{{ Research }}</a>
+<!--     <a class="page-link" href="{{ #research | prepend: site.baseurl }}">{{ Research }}</a>
     <a class="page-link" href="{{ #puzzles | prepend: site.baseurl }}">{{ Puzzles }}</a>
-    <a class="page-link" href="{{ #posts | prepend: site.baseurl }}">{{ Posts }}</a>
+    <a class="page-link" href="{{ #posts | prepend: site.baseurl }}">{{ Posts }}</a> -->
 
     <nav class="site-nav">
 <!--       <a href="#" class="menu-icon">
@@ -17,8 +17,8 @@
         </svg>
       </a> -->
 
-      <a class="page-link" href="{{ #research | prepend: site.baseurl }}">Research</a>
-      <a class="page-link" href="{{ #puzzles | prepend: site.baseurl }}">Puzzles</a>
+      <a class="page-link" href="{{ #research}}">Research</a>
+      <a class="page-link" href="{{ #puzzles | prepend: page.url }}">Puzzles</a>
       <a class="page-link" href="{{ #posts | prepend: site.baseurl }}">Posts</a>
     </nav>
 
