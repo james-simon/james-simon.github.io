@@ -3,7 +3,7 @@ layout: puzzlepage
 type: puzzle
 title: Flags
 flavortext: 
-origin: VT Hunt 2019
+origin: VT Hunt 2018
 answer: world
 ---
 
