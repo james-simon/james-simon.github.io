@@ -8,4 +8,4 @@ answer: lemons
 
 <p align="center">
 <img src="{{site.imgurl}}/addersmultiplying.png" width="80%" />
-<\p>
+</p>
