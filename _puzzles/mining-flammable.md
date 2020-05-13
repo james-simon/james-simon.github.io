@@ -21,8 +21,8 @@ Hunters needed to find all of the instances of the letter X and look to the lett
   <a href="#">Link 2</a> |
   <a href="#">Link 3</a>
   <br><br>
-  <img src="http://s.4cdn.org/image/title/105.gif">
+  <img src="{{site.imgurl}}/miningsol3.png" width="50%" alt=""/>
 </p>
-<img src="{{site.imgurl}}/miningsol3.png" width="50%" class="align-center" alt=""/>
+<!-- <img src="{{site.imgurl}}/miningsol3.png" width="50%" class="align-center" alt=""/> -->
 
 As in the instructions, taking the letter above the I at each path's end gave the answer "FLAMMABLE".
