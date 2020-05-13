@@ -8,5 +8,5 @@ answer: flammable
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/mining.png" width="80%" />
-<\p>
+<img src="{{site.imgurl}}/mining.png" width="100%" />
+</p>
