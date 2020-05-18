@@ -43,7 +43,7 @@ layout: default
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
         <h4>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl  | replace: ".html", "" | replace: "z", "q" }}">{{ post.title }}</a>
+          <a class="post-link" href="{{site.baseurl}}{{ post.url | replace: ".html", ""}}">{{ post.title }}</a>
         </h4>
       </li>
     {% endfor %}
