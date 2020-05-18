@@ -24,9 +24,9 @@ layout: default
     {% for doc in site.puzzles %}
         {% if doc.type == "puzzle" %}
 	     {% if npzls == 0 %}
-	          <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
+	          <a href="{{ site.baseurl }}{{ doc.url | replace: ".html", "" }}">{{ doc.title }}</a>
 	     {% else %}
-                  • <a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a>
+                  • <a href="{{ site.baseurl }}{{ doc.url | replace: ".html", "" }}">{{ doc.title }}</a>
 	     {% endif %}
              {% assign npzls = npzls | plus:1 %}
         {% endif %}
@@ -48,6 +48,5 @@ layout: default
       </li>
     {% endfor %}
   </ul>
-  <p>qqqqq</p>
 
 </div>
