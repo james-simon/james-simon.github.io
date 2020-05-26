@@ -8,17 +8,20 @@ layout: default
   <hr class="featurette-divider">
 	  
   <a name = "research"></a>
-  <h1>Research</h1>
-  <h2>Neural network loss surface geometry</h2>
-  <h2>Quantum control</h2>
-  <h2>Superconducting qubit nanofab</h2>
-  <h2>Ultrafine frequency combs</h2>
-	
+<!--   {% capture my_include %}{% include research.md %}{% endcapture %}
+{{ my_include | markdownify }} -->
+
+<div style="margin:10px 0px 10px 0px">
+    <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/trajectories.png" height="200px"></p>
+    <h2>Finding critical points of neural network loss surfaces</h2>
+    <p>Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.</p>
+</div>
+  
   <hr class="featurette-divider">
 
   <a name = "puzzles"></a>
   <h1>Puzzles</h1>
-  <p>While a senior in undergrad, I started a puzzlehunt called the <a href="https://en.wikipedia.org/wiki/VT_Hunt">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2nd and 3rd VT Hunts each drawing ~2000 participants and raising thousands of dollars for charities.  Starting in high school, I've also designed and run six other puzzle events, with one other one (the VT Hacks hunt) still continuing.  A few of my favorite puzzles I've made are below.</p>
+  <p>While a senior in undergrad, I started a puzzlehunt called the <a href="https://en.wikipedia.org/wiki/VT_Hunt">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2nd and 3rd VT Hunts each drawing ~2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting with the TJ Hunt in high school.  A few of my favorite puzzles I've made are below.</p>
 
     {% assign npzls = 0 %}
     {% for doc in site.puzzles %}
@@ -50,3 +53,4 @@ layout: default
   </ul>
 
 </div>
+
