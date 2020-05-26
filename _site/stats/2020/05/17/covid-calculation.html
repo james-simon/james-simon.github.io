@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>The expected cost of breaking quarantine</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/stats/2020/05/17/covid-calculation.html">
+  <link rel="alternate" type="application/rss+xml" title="J S" href="http://localhost:4000/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">J S</a>
+    
+<!--     <a class="page-link" href=""></a>
+    <a class="page-link" href=""></a>
+    <a class="page-link" href=""></a> -->
+
+    <nav class="site-nav">
+<!--       <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a> -->
+
+      <a class="page-link" href="/#research">Research</a>
+      <a class="page-link" href="/#puzzles">Puzzles</a>
+      <a class="page-link" href="/#research">Posts</a>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">The expected cost of breaking quarantine</h1>
+    <p class="post-meta"><time datetime="2020-05-17T00:00:00-04:00" itemprop="datePublished">May 17, 2020</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <!-- ![grid26] -->
+<!--exc-->
+
+<p>In countries around the world, a common message has issued from government to populace: isolate yourselves, or covid-19 will take more lives.  Most of the US is now under some degree of quarantine.  For the average American, though, the risks of coronavirus are minimal; isolation serves more as a means to shield society at large than as individual protection.  That raises a natural question, though: since quarantine in the US isn’t enforced, how bad would it be to see people anyways?</p>
+
+<p>There’s a worldwide effort to predict the effects of coronavirus given different courses of societal action, but there’s been less focus on the risks of individual actions.  With the climate crisis, we have both global predictions and ways to gauge individuals’ impacts; a person’s carbon footprint is quantifiable.  With this pandemic, however, we agree that social distancing is crucial, but personal impact isn’t quantified.  As every person strikes a balance between isolation and normalcy - few people simply never go outside - it would help to have some way to gauge just how bad social interaction is.</p>
+
+<p>One way to get a rough sense of the effects of different actions is with simple models of disease spread through a population.  As a first stab at a calculation, consider a population of <script type="math/tex">N</script> people of which <script type="math/tex">c</script> currently have a disease.  This disease shows no symptoms, so infected people don’t know to isolate, and it never goes away - these <script type="math/tex">c</script> people are contagious forever.  As a model for spreading, imagine people interact in randomly-drawn pairs, and if one person has the disease and the other doesn’t, the first will give it to the second.</p>
+
+<p>It’s clear from the start that the whole population’s eventually going to be infected, but one thing we can quantify is <em>how many people get the disease earlier than they would’ve otherwise if one person doesn’t isolate.</em>  Every infected person’s going to have a number of people downstream from them including people they’ve infected, people those people have infected, and so on.  In this model, people downstream of you would’ve stayed healthy longer if you’d isolated.  Because all the <script type="math/tex">N - c</script> uninfected people will eventually be downstream from one of the <script type="math/tex">c</script> infected people, each of the <script type="math/tex">c</script> infected people expects to have <script type="math/tex">\frac{N - c}{c}</script> people downstream on average.</p>
+
+<p>Now imagine person <script type="math/tex">i</script> and person <script type="math/tex">j</script> have contact.  If one is infected and the other is uninfected, which happens with new-case probability <script type="math/tex">p_{\text{nc}} = \frac{2c(N - c)}{N^2}</script>, a new infected person is created; there are now <script type="math/tex">c + 1</script> sick people, and the extra infected person has on average <script type="math/tex">\frac{N - c - 1}{c + 1}</script> people downstream who will get sick sooner than they would’ve if person <script type="math/tex">i</script> and person <script type="math/tex">j</script> hadn’t interacted.  Including the one of those two who got sick, that’s <script type="math/tex">x = \frac{N - c - 1}{c + 1} + 1 = \frac{N}{c + 1}</script> infections sped up per new case.  Multiplying by the probability and assuming that <script type="math/tex">N, c \gg 1</script> gives <script type="math/tex">p_{\text{nc}} x = \frac{2c(N - c)}{N^2}\frac{N}{c + 1} \approx \frac{2(N - c)}{N}</script>.  When <script type="math/tex">c \ll N</script>, like it is for the coronavirus, this is roughly <script type="math/tex">2</script>; in this model, interacting with a random person you could’ve avoided leads to two cases of the disease happening earlier than they would’ve otherwise.  This is approximately true whether the current rate is one in fifty or one in a million; if the probability of a stranger having the disease is lower, then the expected number of downstream infections is proportionally higher.  This number of two infections is just an average - it has a high statistical uncertainty - but reasoning based on averages makes sense in this case.</p>
+
+<p>This isn’t really how coronavirus works, though; covid doesn’t last forever, and people with symptoms can isolate.  To make the model more realistic, let’s say there are <script type="math/tex">c</script> <script type="math/tex">c</script>urrently <script type="math/tex">c</script>orona-<script type="math/tex">c</script>ontagious people who have the disease but either haven’t shown symptoms yet or won’t ever and <script type="math/tex">r</script> people who are either currently showing symptoms and isolating or have already gotten better, so they can’t infect anyone else and are <script type="math/tex">r</script>emoved from the calculation.  For now, we’ll still assume every person eventually gets the disease.  The new probability of a new case when two people interact is <script type="math/tex">p'_{\text{nc}} = \frac{2c(N - c - r)}{N^2}</script>, and the expected number of downstream people from a new infected person (plus that person) is <script type="math/tex">x' = \frac{N - r}{c + 1}</script>.  The expected number of accelerated infections per interaction is <script type="math/tex">p'_{\text{nc}}x' = \frac{2(N - r)(N - c - r)}{N^2}</script>.  For the coronavirus, <script type="math/tex">r,c \ll N</script> - only a small fraction of the population has been infected - so this simplifies to 2 again.  Even allowing for isolation and resistance, interacting with a random person leads to, on average, two cases of coronavirus happening earlier than they would’ve.</p>
+
+<p>So far, we’ve assumed that everybody’s going to get the coronavirus.  That’s not likely, though; in a worst-case scenario, once ~70% of the population has been infected, herd immunity should extinguish the virus, and before then either a vaccine or extensive contact tracing could stop the virus’ spread.  If the endgame of the pandemic is herd immunity, individual actions will affect when people get the disease, but the total number of cases will mostly be set by the herd immunity threshold.  However, if a vaccine stops the spread, for example, timing matters more.  Suppose that 1000 people in a large state currently have the virus, and by the time a vaccine stops the pandemic 100000 new people have gotten it.  If the population’s much bigger than 100000, the cases don’t interact, and we can estimate that if there were 1001 contagious people to begin with, there would’ve been 100100 new cases instead; every current case causes 100 future cases.  As before, let’s say <script type="math/tex">N</script> is the population, <script type="math/tex">r</script> people are recovered or symptomatic, <script type="math/tex">c</script> people are contagious and asymptomatic, and <script type="math/tex">s</script> people are currently uninfected but will eventually get the disease (<script type="math/tex">s</script>urely <script type="math/tex">s</script>ometime <script type="math/tex">s</script>icken).  Assuming <script type="math/tex">s</script> is small compared to the total number of uninfected people as discussed (<script type="math/tex">s \ll N - r - c</script>), the average current infection causes <script type="math/tex">y = s/c</script> preventable cases.  The probability of an interaction generating a new case is still <script type="math/tex">p'_{\text{nc}} = \frac{2c(N - c - r)}{N^2}</script>, which means that, in this model of a terminating pandemic, each extra interaction between strangers causes <script type="math/tex">p'_{\text{nc}} y = \frac{2s(N - c - r)}{N^2} \approx \frac{2s}{N}</script> preventable cases.  This means that, optimistically, if ~25% of the population eventually gets coronavirus and a much smaller percentage has it now, every unnecessary interaction with a stranger will cause ~0.5 extra cases of the disease.</p>
+
+<p>This model has a few key shortcomings:</p>
+
+<ol>
+  <li>
+    <p>Interactions aren’t all or nothing; most interactions fall between six feet of separation and sharing bodily fluids, so the final numbers should be reduced proportional to how likely the interaction in question is to spread coronavirus.</p>
+  </li>
+  <li>
+    <p>Actual estimates of the number of people who’ll get coronavirus are often over 50%, in which case cases interfere with each other and the final result will be less than <script type="math/tex">\frac{2s}{N}</script>.</p>
+  </li>
+  <li>
+    <p>Interactions aren’t random, and interacting with someone you’ve interacted with before isn’t as bad as talking to a stranger.</p>
+  </li>
+  <li>
+    <p>If society works harder to stop the pandemic the worse the pandemic is, then there’s an unconsidered second order effect in which more cases of the coronavirus now can lead to fewer later.  Also, as mentioned, if the endgame of the pandemic is herd immunity, then in terms of total number of cases, it’s almost irrelevant what an individual does.</p>
+  </li>
+</ol>
+
+<p>These are all reasons why our calculation of <script type="math/tex">\frac{2s}{N}</script> extra cases per interaction is an overestimate.  A slightly more complicated calculation might be able to account for (2), and we can deal with (3) by saying that this calculation only applies to interactions with people you don’t already see very frequently and counts back-to-back interactions with the same person as one interaction.  (4) deals with different ways the pandemic could play out; nobody can predict that, but for now let’s suppose we’re in a regime where the calculation applies (where more cases now basically lead to more total cases); perhaps there’s only a 50% chance of that, in which case you could reduce the final expected cost by a factor of two.</p>
+
+<p>(1), the most glaring flaw, is one we can account for, though.  This analysis assumed every contaminated interaction had 100% probability of spreading the disease; what is that probability in reality?  It would take an expert and a lot of information on the exact details of the interaction to give a precise answer, but we can make a decent approximation.  Epidemiologists use <script type="math/tex">R_0</script> to represent the average number of people each person with coronavirus infects.  If <script type="math/tex">R_0 > 1</script>, the pandemic is getting exponentially worse, and if <script type="math/tex">% <![CDATA[
+R_0 < 1 %]]></script>, it’s getting better.  <script type="math/tex">R_0</script> is estimated at 2 to 3 before social distancing, but it now varies greatly; however, since the number of new cases per day in the US <a href="https://news.google.com/covid19/map?hl=en-US&amp;gl=US&amp;ceid=US%3Aen&amp;mid=%2Fm%2F09c7w0">has been pretty constant for a few weeks</a> (though it varies by state), we can estimate <script type="math/tex">R_0 \approx 1</script>.  If the average US citizen with coronavirus interacts with <script type="math/tex">q</script> people while infectious, then each interaction has  a <script type="math/tex">1/q</script> probability of transmission.  Asymptomatic patients are contagious for about two weeks, while symptomatic patients are contagious for a few days before their symptoms start and they hopefully isolate, and with a <a href="https://www.hopkinsguides.com/hopkins/view/Johns_Hopkins_ABX_Guide/540747/all/Coronavirus_COVID_19__SARS_CoV_2_">25-50% probability of a case being asymptomatic</a> let’s estimate that the average contagious period is five days.  How many interactions do you think the average American has in five days during this quarantine?  I couldn’t find polling data estimating this, but in Berkeley it seems like most people only get close to a handful of other people without a mask.  Let’s give a highball estimate of 20 relatively close interactions over five days and suppose that only these close interactions will spread the virus.  That puts each close, maskless interaction at a 5% chance of spreading the virus.</p>
+
+<p>With this estimate, we can adjust our final number: assuming 25% of the population gets coronavirus before it’s stopped and each contaminated interaction has a 5% chance of spreading the disease, we calculate that each time you have a close interaction with a new person it causes 0.5*0.05 = 0.025 new, preventable cases of coronavirus.  With a death rate of 1%, this gives 0.00025 deaths/interaction.  That’s quite high - odds of 1 in 4000 - and with the assumptions we’ve made, it might even be an underestimate.  If a fraction of a life seems intangible, Prof. Oskar Hallatschek pointed out that governments quantify the <a href="https://en.wikipedia.org/wiki/Value_of_life">value of a human life</a>; it usually falls around a few million dollars.  If the government fined people for interactions in proportion to their risk to human life, with this estimate the fine would be around $1000.</p>
+
+<p>These calculations are rough; though I think their logic is sound, they are carved with a heavy chisel designed only to give the right basic shape.  That is far better than nothing, though, and the hazy figure of a 0.025% chance of causing the end of a human life when interacting with a stranger is a far more tangible motivation than a government mandate to stay inside for the vague public good.  It gives a tool for reasoning; some things, like doctor’s visits, are clearly worth the risk, while others clearly aren’t, and though in most cases the right thing might’ve been intuitive, in borderline cases it helps to have a risk in mind.  At one step above the individual level, with restaurants and their ilk considering reopening, that risk of 1 in 4000 quickly compounds; if just 10 people all interact, that’s <script type="math/tex">10 + 9 + ... + 1 = 55</script> interactions, with over a 1% chance of causing a death, and that’s not accounting for the fact that interactions with people who’ve just interacted are riskier than normal.  If 100 people share germs at a concert, that gives 5050 interactions, over one statistical death, but that’s a wild underestimate for the same reason.  At a time when the US population is getting anxious and rash, it helps to have even a rough estimate of the risks involved as an aid to rationality.</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Jamie Simon</li>
+          <li>e:<a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/james-simon"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">james-simon</span></a>
+
+          </li>
+          
+
+          
+
+          
+          <li>
+            <a href="https://instagram.com/sam.simon17"><span class="icon icon--twitter"><?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.0//EN'  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'><svg height="32" style="overflow:visible;enable-background:new 0 0 32 32" viewBox="0 0 32 32" width="32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g id="Instagram_1_"><g id="Instagram"><path d="M28,0H4C1.8,0,0,1.8,0,4v8h32V4C32,1.8,30.2,0,28,0z" id="Head" style="fill:#895A4D;"/><path d="M2,0.6V12h2V0C3.3,0,2.6,0.2,2,0.6z" id="Red_x5F_Stripes" style="fill:#FF3939;"/><rect height="12" id="Yellow_x5F_Stripes" style="fill:#FED049;" width="2" x="4"/><rect height="12" id="Green_x5F_Stripes" style="fill:#10DD76;" width="2" x="6"/><rect height="12" id="Blue_x5F_Stripes" style="fill:#5FCCFF;" width="2" x="8"/><circle cx="26" cy="6" id="Lens_1_" r="3" style="fill:#162838;"/><circle cx="26" cy="6" id="Lens_x5F_Outer" r="1.5" style="fill:#2C4356;"/><circle cx="26" cy="6" id="Lens_x5F_Inside" r="0.5" style="fill:#47637A;"/><path d="M0,12v16c0,2.2,1.8,4,4,4h24c2.2,0,4-1.8,4-4V12H0z" id="Body" style="fill:#E5E0DC;"/><g id="Shadow"><polygon points="24.7,12 22.4,9.6 22.4,12 " style="fill:#75483D;"/><path d="M20,12L9.6,22.4l9.6,9.6H28c2.2,0,4-1.8,4-4v-8.7L24.7,12H20z" style="fill:#D0CBC5;"/></g><circle cx="16" cy="16" id="Lens" r="9" style="fill:#DCD7D3;"/><circle cx="16" cy="16" id="Inside_x5F_Lens" r="7" style="fill:#162838;"/><circle cx="16" cy="16" id="_x32_nd_Inner_Circle" r="4" style="fill:#2C4356;"/><circle cx="16" cy="16" id="Middle_Circle" r="2" style="fill:#162838;"/><circle cx="18.5" cy="13.5" id="Reflection" r="1.5" style="fill:#47637A;"/></g></g></g></svg></span><span class="username"> sam.simon17</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-167739177-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</html>
