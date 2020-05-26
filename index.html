@@ -24,9 +24,9 @@ layout: default
     {% for doc in site.puzzles %}
         {% if doc.type == "puzzle" %}
 	     {% if npzls == 0 %}
-	          <a href="{{ site.baseurl }}{{ doc.url | replace: ".html", "" }}">{{ doc.title }}</a>
+	          <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', '' }}">{{ doc.title }}</a>
 	     {% else %}
-                  • <a href="{{ site.baseurl }}{{ doc.url | replace: ".html", "" }}">{{ doc.title }}</a>
+                  • <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', ''}}">{{ doc.title }}</a>
 	     {% endif %}
              {% assign npzls = npzls | plus:1 %}
         {% endif %}
@@ -43,7 +43,7 @@ layout: default
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
         <h4>
-          <a class="post-link" href="{{site.baseurl}}{{ post.url | replace: ".html", ""}}">{{ post.title }}</a>
+          <a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a>
         </h4>
       </li>
     {% endfor %}
