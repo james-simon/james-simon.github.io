@@ -8,5 +8,5 @@ answer: air
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/forestson.png" width="70%" />
+<img src="{{site.imgurl}}/statediagram.png" width="70%" />
 </p>
