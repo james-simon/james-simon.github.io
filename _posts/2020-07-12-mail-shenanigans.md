@@ -19,19 +19,19 @@ There are an infinite number of ways to mess with the postal service, though, an
 Halloween decoration - delivered after several weeks
 
 <p align="center">
-   <img src="../img/usps/ween.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/ween.jpg"  width="300px" />
 </p>
 
 Mint box - not accepted via mailbox delivery and rejected at a post office by a persnickety employee
 
 <p align="center">
-   <img src="../img/usps/mints.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/mints.jpg"  width="300px" />
 </p>
 
 Hand sanitizer - delivered
 
 <p align="center">
-   <img src="../img/usps/sanitizer.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/sanitizer.jpg"  width="300px" />
 </p>
 
 Bonne Maman jam lid - not delivered
@@ -39,51 +39,51 @@ Bonne Maman jam lid - not delivered
 Anticannibalism bracelet - delivered
 
 <p align="center">
-   <img src="../img/usps/strap.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/strap.jpg"  width="300px" />
 </p>
 
 Glove - not delivered
 
 <p align="center">
-   <img src="../img/usps/glove.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/glove.jpg"  width="300px" />
 </p>
 
 Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley - delivered in a few days
 
 <p align="center">
-   <img src="../img/usps/lemon.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/lemon.jpg"  width="300px" />
 </p>
 
 Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley - delivered
 
 <p align="center">
-   <img src="../img/usps/lemon2.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/lemon2.jpg"  width="300px" />
 </p>
 
 Origami box containing three origami cranes - delivered
 
 <p align="center">
-   <img src="../img/usps/origami_box.jpg"  width="300px" />
-   <img src="../img/usps/origami_crane.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/origami_box.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/origami_crane.jpg"  width="300px" />
 </p>
 
 Lone stamp with address and odd message on back - not delivered
 
 <p align="center">
-   <img src="../img/usps/stamp_front.jpg"  height="350px" />
-   <img src="../img/usps/stamp_back.jpg"  height="350px" />
+   <img src="{{site.imgurl}}/usps/stamp_front.jpg"  height="350px" />
+   <img src="{{site.imgurl}}/usps/stamp_back.jpg"  height="350px" />
 </p>
 
 Chicago flag socks with an address and stamps sewn into one - delivered (credit to Madeline Bernstein for the quality item)
 
 <p align="center">
-   <img src="../img/usps/sock.png"  width="300px" />
+   <img src="{{site.imgurl}}/usps/sock.png"  width="300px" />
 </p>
 
 3D ball maze - delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I've ever spent, he made it clear with his manner that he'd never seen something like this and wasn't going to miss the chance to make fun of it
 
 <p align="center">
-   <img src="../img/usps/maze.png"  width="300px" />
+   <img src="{{site.imgurl}}/usps/maze.png"  width="300px" />
 </p>
 
 Dehydrated celery stalk partially wrapped in duct tape - not delivered
