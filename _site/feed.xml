@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 12 Jul 2020 03:23:02 -0400</pubDate>
-    <lastBuildDate>Sun, 12 Jul 2020 03:23:02 -0400</lastBuildDate>
+    <pubDate>Sun, 12 Jul 2020 03:51:56 -0400</pubDate>
+    <lastBuildDate>Sun, 12 Jul 2020 03:51:56 -0400</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
     
       <item>
@@ -22,81 +22,94 @@
 
 &lt;p&gt;There are an infinite number of ways to mess with the postal service, though, and alone I’ve tried only a handful.  The theme’s worth some more variations.  During the pandemic, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively in order of the mailed object’s ridiculousness.&lt;/p&gt;
 
-&lt;p&gt;Halloween decoration - delivered after several weeks&lt;/p&gt;
+&lt;h4 id=&quot;halloween-decoration&quot;&gt;Halloween decoration&lt;/h4&gt;
+&lt;p&gt;Delivered after several weeks&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/ween.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Mint box - not accepted via mailbox delivery and rejected at a post office by a persnickety employee&lt;/p&gt;
+&lt;h4 id=&quot;mint-box&quot;&gt;Mint box&lt;/h4&gt;
+&lt;p&gt;Not accepted via mailbox delivery and rejected at a post office by a persnickety employee&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/mints.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Hand sanitizer - delivered&lt;/p&gt;
+&lt;h4 id=&quot;hand-sanitizer&quot;&gt;Hand sanitizer&lt;/h4&gt;
+&lt;p&gt;Delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/sanitizer.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Bonne Maman jam lid - not delivered&lt;/p&gt;
+&lt;h4 id=&quot;bonne-maman-jam-lid&quot;&gt;Bonne Maman jam lid&lt;/h4&gt;
+&lt;p&gt;Not delivered&lt;/p&gt;
 
-&lt;p&gt;Anticannibalism bracelet - delivered&lt;/p&gt;
+&lt;h4 id=&quot;anticannibalism-bracelet&quot;&gt;Anticannibalism bracelet&lt;/h4&gt;
+&lt;p&gt;Delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/strap.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Glove - not delivered&lt;/p&gt;
+&lt;h4 id=&quot;glove&quot;&gt;Glove&lt;/h4&gt;
+&lt;p&gt;Not delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/glove.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley - delivered in a few days&lt;/p&gt;
+&lt;h4 id=&quot;lemon-from-my-backyard-with-address-and-urgent-written-on-it-in-sharpie-mailed-within-berkeley&quot;&gt;Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley&lt;/h4&gt;
+&lt;p&gt;Delivered in a few days&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/lemon.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley - delivered&lt;/p&gt;
+&lt;h4 id=&quot;lemon-coincidentally-picked-from-another-bay-area-backyard-and-mailed-to-berkeley&quot;&gt;Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley&lt;/h4&gt;
+&lt;p&gt;Delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/lemon2.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Origami box containing three origami cranes - delivered&lt;/p&gt;
+&lt;h4 id=&quot;origami-box-containing-three-origami-cranes&quot;&gt;Origami box containing three origami cranes&lt;/h4&gt;
+&lt;p&gt;Delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/origami_box.jpg&quot; width=&quot;300px&quot; /&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/origami_crane.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Lone stamp with address and odd message on back - not delivered&lt;/p&gt;
+&lt;h4 id=&quot;lone-stamp-with-address-and-odd-message-on-back&quot;&gt;Lone stamp with address and odd message on back&lt;/h4&gt;
+&lt;p&gt;Not delivered&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/stamp_front.jpg&quot; height=&quot;350px&quot; /&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/stamp_back.jpg&quot; height=&quot;350px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Chicago flag socks with an address and stamps sewn into one - delivered (credit to Madeline Bernstein for the quality item)&lt;/p&gt;
+&lt;h4 id=&quot;chicago-flag-socks-with-an-address-and-stamps-sewn-into-one&quot;&gt;Chicago flag socks with an address and stamps sewn into one&lt;/h4&gt;
+&lt;p&gt;Delivered (credit to Madeline Bernstein for the quality item)&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/sock.png&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;3D ball maze - delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I’ve ever spent, he made it clear with his manner that he’d never seen something like this and wasn’t going to miss the chance to make fun of it&lt;/p&gt;
+&lt;h4 id=&quot;3d-ball-maze&quot;&gt;3D ball maze&lt;/h4&gt;
+&lt;p&gt;Delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I’ve ever spent, he made it clear with his manner that he’d never seen something like this and wasn’t going to miss the chance to make fun of it&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/maze.png&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Dehydrated celery stalk partially wrapped in duct tape - not delivered&lt;/p&gt;
+&lt;h4 id=&quot;dehydrated-celery-stalk-partially-wrapped-in-duct-tape&quot;&gt;Dehydrated celery stalk partially wrapped in duct tape&lt;/h4&gt;
+&lt;p&gt;Not Delivered&lt;/p&gt;
 
-&lt;p&gt;There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they’re more likely to deliver something when it has no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, while to my knowledge nothing else in the USPS experiments had a return address.  The natural combination of these two conclusions is that the postal service will probably deliver anything weird they can’t return as long as it seems important enough that they deliver it as opposed to throwing it out.  I’d bet you could mail basically anything - a leaf, a seat cushion, a balloon - if you permanently attached it to something that looks like a bill.&lt;/p&gt;
+&lt;p&gt;There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they’re more likely to deliver something when there’s no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, and both failed, while almost nothing else risky had a return address.  Third, though object ridiculousness wasn’t very correlated with success, the apparent value of objects was - the ball maze, socks, and hand sanitizer all have some obvious use, while the celery, jam lid, and single glove don’t.  A natural combination of these conclusions is that the postal service will probably deliver anything weird they can’t return as long as it seems important enough.  I’d bet you could mail basically anything - a seat cushion, a balloon, a small speaker constantly emitting obscenities - if you permanently attached it to something that looks like a bill with no return address.&lt;/p&gt;
 
-&lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.&lt;/p&gt;
+&lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.&lt;/p&gt;
 </description>
         <pubDate>Sun, 12 Jul 2020 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/mail/2020/07/12/mail-shenanigans.html</link>

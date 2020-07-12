@@ -16,80 +16,92 @@ Why'd some of these objects arrive while others didn't?  The USPS' regulations a
 
 There are an infinite number of ways to mess with the postal service, though, and alone I've tried only a handful.  The theme's worth some more variations.  During the pandemic, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively in order of the mailed object's ridiculousness.
 
-Halloween decoration - delivered after several weeks
+#### Halloween decoration
+Delivered after several weeks
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/ween.jpg"  width="300px" />
 </p>
 
-Mint box - not accepted via mailbox delivery and rejected at a post office by a persnickety employee
+#### Mint box
+Not accepted via mailbox delivery and rejected at a post office by a persnickety employee
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/mints.jpg"  width="300px" />
 </p>
 
-Hand sanitizer - delivered
+#### Hand sanitizer
+Delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/sanitizer.jpg"  width="300px" />
 </p>
 
-Bonne Maman jam lid - not delivered
+#### Bonne Maman jam lid
+Not delivered
 
-Anticannibalism bracelet - delivered
+#### Anticannibalism bracelet
+Delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/strap.jpg"  width="300px" />
 </p>
 
-Glove - not delivered
+#### Glove
+Not delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/glove.jpg"  width="300px" />
 </p>
 
-Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley - delivered in a few days
+#### Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley
+Delivered in a few days
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/lemon.jpg"  width="300px" />
 </p>
 
-Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley - delivered
+#### Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley
+Delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/lemon2.jpg"  width="300px" />
 </p>
 
-Origami box containing three origami cranes - delivered
+#### Origami box containing three origami cranes
+Delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/origami_box.jpg"  width="300px" />
    <img src="{{site.imgurl}}/usps/origami_crane.jpg"  width="300px" />
 </p>
 
-Lone stamp with address and odd message on back - not delivered
+#### Lone stamp with address and odd message on back
+Not delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/stamp_front.jpg"  height="350px" />
    <img src="{{site.imgurl}}/usps/stamp_back.jpg"  height="350px" />
 </p>
 
-Chicago flag socks with an address and stamps sewn into one - delivered (credit to Madeline Bernstein for the quality item)
+#### Chicago flag socks with an address and stamps sewn into one
+Delivered (credit to Madeline Bernstein for the quality item)
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/sock.png"  width="300px" />
 </p>
 
-3D ball maze - delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I've ever spent, he made it clear with his manner that he'd never seen something like this and wasn't going to miss the chance to make fun of it
+#### 3D ball maze
+Delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I've ever spent, he made it clear with his manner that he'd never seen something like this and wasn't going to miss the chance to make fun of it
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/maze.png"  width="300px" />
 </p>
 
-Dehydrated celery stalk partially wrapped in duct tape - not delivered
+#### Dehydrated celery stalk partially wrapped in duct tape
+Not Delivered
 
 
+There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they're more likely to deliver something when there's no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, and both failed, while almost nothing else risky had a return address.  Third, though object ridiculousness wasn't very correlated with success, the apparent value of objects was - the ball maze, socks, and hand sanitizer all have some obvious use, while the celery, jam lid, and single glove don't.  A natural combination of these conclusions is that the postal service will probably deliver anything weird they can't return as long as it seems important enough.  I'd bet you could mail basically anything - a seat cushion, a balloon, a small speaker constantly emitting obscenities - if you permanently attached it to something that looks like a bill with no return address.
 
-There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they're more likely to deliver something when it has no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, while to my knowledge nothing else in the USPS experiments had a return address.  The natural combination of these two conclusions is that the postal service will probably deliver anything weird they can't return as long as it seems important enough that they deliver it as opposed to throwing it out.  I'd bet you could mail basically anything - a leaf, a seat cushion, a balloon - if you permanently attached it to something that looks like a bill.
-
-The USPS' experiments will continue, but I'd love to hear from anyone else who's tried pushing the envelope of the postal system.
+The USPS' experiments will continue, but I'd love to hear from anyone else who's tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.
