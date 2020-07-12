@@ -12,9 +12,9 @@ The United States' postal system is an institution of renown, a conduit for obje
 
 Out of related curiosity, over years I've mailed a slew of things I'd guess were new to postmen.  These included a letter with a hole in the middle (arrived), a pentagonal letter (arrived), an origami crane (arrived), a pack of sticky notes with an instruction on the back for any postal worker reading it to take one note (arrived missing many), a dollar bill addressed like a postcard (returned, in an envelope, due to not having an envelope), a note in an envelope made of dollar bills (arrived), and a literal stick with an address written on it (arrived in a bag with an apology for any damages).  A piece of crumbling bark, two letters tied together, and a spherical rock the size of a golf ball weren't successfully delivered.
 
-Why'd some of these objects arrive while others didn't?  The USPS' regulations and pricing seem to assume that anything sent is either a letter or in a large envelope or box, but I haven't found anything explicitly forbidding sending things without boxes.  The lack of regulation probably means postal workers have a lot of leeway in deciding what to do with weird items, which makes sense and fits the data - I don't see a sharp line that separates the successes from the failures above, but they do seem more annoying than the others.
+Why'd some of these objects arrive while others didn't?  The USPS' regulations and pricing seem to assume that anything sent is either a letter or in a large envelope or box, but I haven't found anything explicitly forbidding sending things without boxes.  The lack of explicit rules probably means postal workers have a lot of leeway in deciding what to do with weird items, which makes sense and fits the data - I don't see a sharp line that separates the successes from the failures above, but the failures do seem more annoying.
 
-There are an infinite number of ways to mess with the postal service, though, and alone I've tried only a handful.  The theme's worth some more variations.  During the pandemic, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively in order of the mailed object's ridiculousness.
+There are an infinite number of ways to mess with the postal service, though, and alone I've tried only a handful.  The theme's worth some more variations.  During the pandemic, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively by the mailed object's ridiculousness.
 
 #### Halloween decoration
 Delivered after several weeks
@@ -52,6 +52,7 @@ Not delivered
 
 <p align="center">
    <img src="{{site.imgurl}}/usps/glove.jpg"  width="300px" />
+   <img src="{{site.imgurl}}/usps/gloveback.jpg"  width="300px" />
 </p>
 
 #### Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley
