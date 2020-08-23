@@ -5,9 +5,48 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 12 Jul 2020 03:51:56 -0400</pubDate>
-    <lastBuildDate>Sun, 12 Jul 2020 03:51:56 -0400</lastBuildDate>
+    <pubDate>Sat, 22 Aug 2020 23:05:00 -0400</pubDate>
+    <lastBuildDate>Sat, 22 Aug 2020 23:05:00 -0400</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
+    
+      <item>
+        <title>How would an upside-down candle burn?</title>
+        <description>&lt;!-- ![grid26] --&gt;
+&lt;!--exc--&gt;
+
+&lt;p&gt;As every child knows, sometimes it’s fun to do something exactly wrong.  In that spirit, what would happen if you burned a candle upside-down?&lt;/p&gt;
+
+&lt;p&gt;To take a guess, we need to understand how candles work.  Their simplicity is deceptive; burning candles are actually complex systems with many interacting parts and processes.  They illustrate a vast array of different chemical and physical processes so elegantly that the great physicist Michael Faraday gave a &lt;a href=&quot;https://www.youtube.com/watch?v=RrHnLXMTOWM&quot;&gt;series of lectures&lt;/a&gt; on candles, not only explaining the mechanisms by which candles work but using them to demonstrate effects from from turbulence to buoyancy to blackbody radiation and explain the chemistry of flame.  Candle flames are such common sights that we often overlook their complicated anatomy; look at one closely and you’re likely to see a number of features, from the blue glow at the bottom to the tapering of the tip, that everybody recognizes but few people could actually explain if asked.&lt;/p&gt;
+
+&lt;p&gt;Explaining all of candle physics would take a textbook, but for this question, we only need to think about things that change when the candle is turned upside down, which simplifies the problem a lot.  The most obvious is that the heat of the flame, normally drawn up and away because hot air’s less dense than cold air, will flow directly into the tip of the candle.  Under normal operation, the tip of the candle wax is just hot enough to melt a small pool of wax but not hot enough to boil it, putting it at between 50 °C and 370 °C.  By contrast, the spot one wick-length above the tip of the wick is in the core of the flame, with a temperature in the vicinity of 1000 °C.  If you somehow just flipped the flame upside down, the flame would melt the wax a lot.&lt;/p&gt;
+
+&lt;p&gt;Candles are systems with a lot of feedback, however; the flame melts the wax which feeds the flame and so on.  We’ve decided how changing the flame would affect the wax, but how would the change in the wax then feed back and affect the flame?&lt;/p&gt;
+
+&lt;p&gt;The flame’s shape would obviously change, deflected by the block of wax in its way.  How would the burning itself change, though?  An important fact is that in candles, the wax only combusts as a vapor.  It starts as a solid, is melted and drawn up into the wick and into the heart of the flame by capillary action, and is vaporized by the high heat.  It’s only then that combusion happens - the hot, vaporized wax molecules react with oxygen and give off heat, perpetuating the process.  In the upside-down candle, more wax would be in the region of high heat, so there would be more hot surface area for vapor to escape from.  This means that wax would vaporize and burn at a higher rate, which, all else being equal, should give a bigger flame.&lt;/p&gt;
+
+&lt;p&gt;However, there’s a problem with this situation.  This augmented flame would melt a lot of wax; what if it melts wax faster than it can vaporize it?  All the excess wax might run and fall off the candle unburnt, so the candle would both run out faster and drip a lot.  There’s a stranger possibility, though.  What if the flame melts wax that floods down over the wick too thickly for the flame to vaporize it in time and snuffs it out?  Like Icarus, it’d die from melting wax and its own zeal.  This was my guess for what would happen to the upside-down candle.&lt;/p&gt;
+
+&lt;p&gt;I also asked friends to guess how an upside-down candle would burn and got around 10 responses.  Most people either gave the self-snuffing scenario - let’s call it scenario (1) - or the second, self-sustaining scenario - say, (2).&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/candle_scenarios.png&quot; width=&quot;80%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;To answer this question, I dangled a candle, set up another for comparison, and lit them.  &lt;a href=&quot;https://www.youtube.com/watch?v=tJv4IOTvCWY&quot;&gt;A video of the result is here.&lt;/a&gt;  Forgive the subpar quality.&lt;/p&gt;
+
+&lt;p&gt;This matched scenario (1) - the candle initially burns, but once it starts to melt wax it’s quickly put out.  Out of curiosity, though, I ran another trial with the same candle.  The result was wholly different, matching scenario (2).  It turns out that the same candle can follow either path, probably depending on the initial shape of the tip and wick.  The phase-space of this upside-down candle has two basins of attraction.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XKAtwxw7SWk&quot;&gt;Here’s a video of the second trial.&lt;/a&gt;  Most people were right at least once.  Nobody, however, predicted the stalactite.&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 20 Aug 2020 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/physics/2020/08/20/upside-down-candle.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics/2020/08/20/upside-down-candle.html</guid>
+        
+        
+        <category>physics</category>
+        
+      </item>
     
       <item>
         <title>Messing with the postal service</title>
@@ -18,9 +57,9 @@
 
 &lt;p&gt;Out of related curiosity, over years I’ve mailed a slew of things I’d guess were new to postmen.  These included a letter with a hole in the middle (arrived), a pentagonal letter (arrived), an origami crane (arrived), a pack of sticky notes with an instruction on the back for any postal worker reading it to take one note (arrived missing many), a dollar bill addressed like a postcard (returned, in an envelope, due to not having an envelope), a note in an envelope made of dollar bills (arrived), and a literal stick with an address written on it (arrived in a bag with an apology for any damages).  A piece of crumbling bark, two letters tied together, and a spherical rock the size of a golf ball weren’t successfully delivered.&lt;/p&gt;
 
-&lt;p&gt;Why’d some of these objects arrive while others didn’t?  The USPS’ regulations and pricing seem to assume that anything sent is either a letter or in a large envelope or box, but I haven’t found anything explicitly forbidding sending things without boxes.  The lack of regulation probably means postal workers have a lot of leeway in deciding what to do with weird items, which makes sense and fits the data - I don’t see a sharp line that separates the successes from the failures above, but they do seem more annoying than the others.&lt;/p&gt;
+&lt;p&gt;Why’d some of these objects arrive while others didn’t?  The USPS’ regulations and pricing seem to assume that anything sent is either a letter or in a large envelope or box, but I haven’t found anything explicitly forbidding sending things without boxes.  The lack of explicit rules probably means postal workers have a lot of leeway in deciding what to do with weird items, which makes sense and fits the data - I don’t see a sharp line that separates the successes from the failures above, but the failed items do seem a little more obnoxious.&lt;/p&gt;
 
-&lt;p&gt;There are an infinite number of ways to mess with the postal service, though, and alone I’ve tried only a handful.  The theme’s worth some more variations.  During the pandemic, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively in order of the mailed object’s ridiculousness.&lt;/p&gt;
+&lt;p&gt;There are an infinite number of ways to mess with the postal service, though, and alone I’ve tried only a handful.  The theme’s worth some more variations.  I once led a group of children at a summer camp in mailing random objects, but only so much is accessible in the middle of the woods.  At the end of the spring 2020 semester, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively by the mailed object’s ridiculousness.&lt;/p&gt;
 
 &lt;h4 id=&quot;halloween-decoration&quot;&gt;Halloween decoration&lt;/h4&gt;
 &lt;p&gt;Delivered after several weeks&lt;/p&gt;
@@ -58,6 +97,7 @@
 
 &lt;p align=&quot;center&quot;&gt;
    &lt;img src=&quot;https://james-simon.github.io/img/usps/glove.jpg&quot; width=&quot;300px&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/usps/gloveback.jpg&quot; width=&quot;300px&quot; /&gt;
 &lt;/p&gt;
 
 &lt;h4 id=&quot;lemon-from-my-backyard-with-address-and-urgent-written-on-it-in-sharpie-mailed-within-berkeley&quot;&gt;Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley&lt;/h4&gt;
