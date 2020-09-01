@@ -8,10 +8,6 @@ category: deep learning
 {: style="text-align: center"}
 <!--exc-->
 
-<p align="center">
-   <img src="{{site.imgurl}}/qqqqq.png" width="30%" />
-</p>
-
 ## Introduction
 
 In the past decade, neural networks have proven to be stunningly effective tools for a slew of machine learning tasks as diverse as classifying images, generating 3D graphics, and playing Go.  These incredible successes all stem from neural networks' remarkable ability to perform a central task in machine intelligence: given complex data, find underlying patterns.
