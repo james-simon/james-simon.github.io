@@ -8,6 +8,9 @@ category: deep learning
 {: style="text-align: center"}
 <!--exc-->
 
+<p align="center">
+   <img src="{{site.imgurl}}/qqqqq.png" width="30%" />
+</p>
 
 ## Introduction
 
