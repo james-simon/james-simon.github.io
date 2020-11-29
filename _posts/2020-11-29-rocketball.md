@@ -11,6 +11,7 @@ category: physics
 In the fall of 2020, Ryan Roberts and I gave a remote talk for high schoolers through Berkeley Splash, our third exploring real physics through absurd scenarios instead of technical math. His talk discussed methods and consequences of making the Moon as big as the Earth, while mine aimed to find the best way to propel a spacecraft using only sports equipment. This is a writeup of the answer.
 
 ***
+<br/>
 
 Since the dawn of civilization, humans have gathered for sports competitions, with rounds of faceoffs ultimately whittling the athletes down to a sole champion. This time-honored tradition has flowered throughout history; the modern Olympic Games involve dozens of sports split into hundreds of events. This explosion of athletic diversity has made determining an ultimate champion a lot more complicated, though; wouldn't it be nice if there were some way we could determine who, of all the gold medalists, is actually the best? What if there were some grand final competition among the event champions to determine an ultimate victor?
 
