@@ -35,7 +35,7 @@ Rockets are complicated, but for a rocket accelerating in a straight line, it tu
    <img src="{{site.imgurl}}/rocketball/rocket_math_diagram.png" width="70%">
 </p>
 
-If you do the rocket science, you find that to reach a final speed $$v$$, the rocket needs a starting mass of $$M = m e^{v/u}$$, and it runs out of fuel and reaches speed $$v$$ at a time $$t = \frac{(M-m)u}{v}$$. For a given target speed $$v$$, this choice of $$M$$ is optimal - with less fuel, it won't reach the target speed, but with any more, it'll reach it slower.
+If you do the rocket science, you find that to reach a final speed $$v$$, the rocket needs a starting mass of $$M = m e^{v/u}$$, and it runs out of fuel and reaches speed $$v$$ at a time $$t = \frac{(M-m)u}{F}$$. For a given target speed $$v$$, this choice of $$M$$ is optimal - with less fuel, it won't reach the target speed, but with any more, it'll reach it slower.
 
 We can use these formulae to figure out roughly what'll happen in our intersport showdown. For a given sport, $$u$$ is just the projectile speed (around 76 m/s for a golf ball and 4 m/s for a pool ball) and the thrust is equal to (projectile speed)$$\times$$(projectile mass)$$\times$$(fire rate). If we assume a constant fire rate of 1 shot/s across all sports for simplicity, we can get the speed and thrust for every sport. Here's a plot showing the results.
 
