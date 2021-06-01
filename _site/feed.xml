@@ -5,9 +5,108 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 05 Nov 2020 12:21:43 -0800</pubDate>
-    <lastBuildDate>Thu, 05 Nov 2020 12:21:43 -0800</lastBuildDate>
+    <pubDate>Tue, 01 Jun 2021 13:26:31 -0700</pubDate>
+    <lastBuildDate>Tue, 01 Jun 2021 13:26:31 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Could you propel a spacecraft using sports projectiles?</title>
+        <description>&lt;!-- ![grid26] --&gt;
+&lt;!--exc--&gt;
+
+&lt;p&gt;In the fall of 2020, Ryan Roberts and I gave a remote talk for high schoolers through Berkeley Splash, our third exploring real physics through absurd scenarios instead of technical math. His talk discussed methods and consequences of making the Moon as big as the Earth, while mine aimed to find the best way to propel a spacecraft using only sports equipment. This is a writeup of the answer.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since the dawn of civilization, humans have gathered for sports competitions, with rounds of faceoffs ultimately whittling the athletes down to a sole champion. This time-honored tradition has flowered throughout history; the modern Olympic Games involve dozens of sports split into hundreds of events. This explosion of athletic diversity has made determining an ultimate champion a lot more complicated, though; wouldn’t it be nice if there were some way we could determine who, of all the gold medalists, is actually the best? What if there were some grand final competition among the event champions to determine an ultimate victor?&lt;/p&gt;
+
+&lt;p&gt;For the consideration of the International Olympic Committee, I hereby propose the event of Rocketball as the Games’ final event. The rules are simple. To start, every gold medalist will be launched into Earth orbit with nothing but their wits, a spacesuit, and an absurd amount of equipment from their sport. They have no traditional rockets; to change course, the athletes have to hit, throw, fire, bowl, or otherwise propel sports equipment the other way, powered solely by their bodies. Instead of a goal line, there’s a target speed: whoever can accelerate themselves to reach that final speed first wins the Olympics&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;This proposal has one&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; minor logistical problem: some sports are better than others. For example, it’d be way easier to accelerate by hitting tennis balls than by hitting ping-pong balls; a hit tennis ball is both heavier and faster, so (as we’ll see) as a rocket propellant it’s strictly better. Actually, in some cases, which sport is best can even depend on how fast the target speed is! To understand this, figure out how matches would play out, and see if we can come up with a fix, first we need to understand a little about how rockets work.&lt;/p&gt;
+
+&lt;p&gt;At their core, all rockets operate on the same principle: they fling matter in one direction, and the recoil force pushes the rocket in the opposite direction. This recoil force is the same sort of pushback you’d feel when firing a gun, holding a fire hose, or doing a fast chest pass in basketball, but in a typical rocket the matter being launched is exhaust from burning fuel moving several kilometers per second. True to this principle, rockets have two main parts: the &lt;em&gt;fuel,&lt;/em&gt; which is gradually fired to propel the rocket, and the &lt;em&gt;payload,&lt;/em&gt; which is the important other bits that the fuel’s there to accelerate. The fuel section also usually includes engines that help burn the fuel but fall off when they’re no longer needed. Here’s a diagram of the Saturn V rocket split into the launch vehicle (fuel + engines) and spacecraft (payload).&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/saturn_v.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Our sportsball rockets will work basically the same way, but instead of liquid fuel they carry sports equipment, and instead of the most powerful engines ever built, they’ll be powered by lone humans flinging objects into the vacuum of space.&lt;/p&gt;
+
+&lt;p&gt;If you’re not familiar with rocketry or are very used to cars, you might wonder why the Saturn V has so much fuel for such a small payload. At some level, the reason’s that we want the payload to reach a very high speed (over 10 km/s), so we need a lot of fuel, but there’s another reason specific to rockets: &lt;em&gt;the earlier fuel has to accelerate all the later fuel, so you need more of it.&lt;/em&gt; If a competitor gradually hit away a million golf balls, the first ball would give a very small bump in speed because it has to push the other 999999 balls, while the last one would give a relatively big bump in speed because it’s only accelerating the athlete. A rocket’s acceleration is inversely proportional to its current mass. Because of this, it turns out that the amount of fuel you need is an exponential function of the final speed, and ending up slightly faster can potentially take many times more fuel.&lt;/p&gt;
+
+&lt;p&gt;Rockets are complicated, but for a rocket accelerating in a straight line, it turns out we can find its speed over time if we know just a few numbers. These are the payload mass (which we’ll call \(m\)), the starting mass of the fuel and payload together (\(M\)), the relative speed the propellant’s fired at (\(u\)), and the thrust of the rocket (this is the average kickback force the rocket feels; we’ll call it \(F\)). Here’s a diagram illustrating what some of these are.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/rocket_math_diagram.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you do the rocket science, you find that to reach a final speed \(v\), the rocket needs a starting mass of \(M = m e^{v/u}\), and it runs out of fuel and reaches speed \(v\) at a time \(t = \frac{(M-m)u}{F}\). For a given target speed \(v\), this choice of \(M\) is optimal - with less fuel, it won’t reach the target speed, but with any more, it’ll reach it slower.&lt;/p&gt;
+
+&lt;p&gt;We can use these formulae to figure out roughly what’ll happen in our intersport showdown. For a given sport, \(u\) is just the projectile speed (around 76 m/s for a golf ball and 4 m/s for a pool ball) and the thrust is equal to (projectile speed)\(\times\)(projectile mass)\(\times\)(fire rate). If we assume a constant fire rate of 1 shot/s across all sports for simplicity, we can get the speed and thrust for every sport. Here’s a plot showing the results.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/rocketball_scatterplot.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;A quick look at this might reveal some oddities. Jai alai (also called Basque pelota) was once an Olympic sport; it’s like wallball but with a giant curved launcher on your throwing arm. Bowling and pool I’ve included even though they’re not Olympic sports. Crossbow shooting I included because our question is ultimately about projectiles launched solely with energy from human muscles, and it’s one of the best examples of that. For the same reason, I didn’t include gun sports. Lastly, running and swimming events don’t have projectiles, so I assumed their respective gold medalists will be throwing shoes and spitting mouthfuls of pool water&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;This plot makes it clear that some sports are better than others, but it’s not apparent which is best. To decide, we’ll have to pick a target speed. Let’s say the athlete and their suit are 100 kg, and they’re trying to reach a final speed of 10 m/s. We’ll also assume that the athlete can repeatedly launch projectiles in the same direction without uncontrollably spinning or getting knocked off, but that seems fair; after all, they are professionals. About how long will each sport’s champion take to finish?&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/rocketball_ts_10.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This plot shows that the best sport to reach 10 m/s is shot put. It’d actually only take 24 solid throws to finish, which is 24 seconds with our assumption of one shot per second. Most other sports take a few minutes; the swimmers will be spitting into the void for several days.&lt;/p&gt;
+
+&lt;p&gt;What if we instead want to reach 100 m/s?&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/rocketball_ts_100.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Now the best option is to accelerate with 2053 jai alai throws, which takes a little over half an hour. Due to the exponential in our time formula, however, accelerating with pool balls will now take over a hundred million years. Surprisingly, most high-energy projectile sports are all relatively close, with a time less than a few hours. Actually, at a target speed of 130 m/s, the entire swath from crossbow to javelin is about even! This, I propose, is the ideal choice for Rocketball; the sports without high-energy projectiles can get a handicap.&lt;/p&gt;
+
+&lt;p&gt;What if we make the target 1000 m/s?&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/rocketball_ts_1000.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;With this high target speed, the \(e^{v/u}\) term is so dominant that the thrust is basically irrelevant compared to the exhaust speed. The best option now is to use 35 million crossbow bolts, which will take around a year. This is one of the few situations where your best choice is to use a bow in space. All the sports slower than javelin will take longer than the current age of the universe.&lt;/p&gt;
+
+&lt;p&gt;This is a decent analysis for the purposes of Rocketball, but these speeds are miniscule on the scale of the Solar system. What if we want to reach 10000 m/s, roughly Earth escape velocity? As you might guess, exhaust speed is even more dominant here, and crossbow bolts are still the best choice. However, you’d need \(10^{43}\) of them. The good news is that they’d hold together under their own gravity, so you wouldn’t need a quiver. The bad news is that the arrow ball would have a bigger diameter than the orbit of Saturn and would immediately collapse into a black hole.&lt;/p&gt;
+
+&lt;p&gt;There is, however, a sport we’ve overlooked. The tires of a bike contain air under high pressure, and if there’s a hole or open valve, that pressure will accelerate the escaping air to high velocities. Normal bike valves are narrow and slow down the escaping air a lot, but if you designed a much bigger one (or just punched a hole in the tire) it’d come out much faster - a 50 psi tire would, in the ideal case, accelerate air to 760 m/s! It turns out that you could reach 10000 m/s by ideally releasing enough 50-psi air to fill a sphere with a diameter of 270 m.&lt;/p&gt;
+
+&lt;p&gt;How long would that take? By our constraint of only man-powered projectiles, you’d have to pump up the air. This is about 47 billion bike tires’ worth of air, so it’d take around a millenium even if you’re the &lt;a href=&quot;https://www.guinnessworldrecords.com/world-records/419351-fastest-time-to-pump-a-bicycle-tyre&quot;&gt;world’s fastest tire pumper&lt;/a&gt;. The release, however, would be quick.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/rocketball/air_jetpack.png&quot; width=&quot;100%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;and gets to come back to Earth. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;(this is a lower bound) &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Spacesuit helmets would admittedly block the spit-out pool water, but since humans can survive zero pressure for short periods and swimmers are already good at not breathing, let’s say they take their helmets off to spit. Another option’s to throw chunks of ice, which would fall between “shoe throw” and “shotput.” &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 29 Nov 2020 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/physics/2020/11/29/rocketball.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics/2020/11/29/rocketball.html</guid>
+        
+        
+        <category>physics</category>
+        
+      </item>
     
       <item>
         <title>The principle of least power dissipation</title>
@@ -66,7 +165,7 @@
 
 &lt;p&gt;Within that hierarchical nonlinear structure, however, there are many variations.  There are a vast array of different ways layers can be connected and parameterized, giving different architectures like convolutional nets, recurrent nets, and resnets specialized to certain types of task.  However, there are also lower-level things that can be changed.  One example is the nonlinear function, usually denoted \(\sigma\).  The field’s explored many options for \(\sigma\) over the years, and the most popular choice has changed over time.  The \(\tanh\) function (and similar sigmoid) were once the leading choice, but the \(\text{ReLU}\) (defined by \(\sigma(x) = \max(x, 0)\)) is now more popular.  Choosing a different nonlinearity can improve performance slightly, but to me it is more striking that the choice of nonlinearity matters so &lt;em&gt;little&lt;/em&gt;.  On the face of it, the \(\text{ReLU}\) and \(\tanh\) functions are basically as different as they could be within reason.  \(\tanh\) is smooth, saturating, nonlinear on every finite set, and is symmetric about the origin.  \(\text{ReLU}\) has a kink, is unbounded, piecewise-linear, and never takes negative values, not to mention that it outputs zero on half of its domain.  The fact that both of these functions could work reasonably well speaks to the fact that even though the hierarchical nonlinear structure is core to the effectiveness of neural nets, the exact choice of nonlinearity is, surprisingly, not crucial.&lt;/p&gt;
 
-&lt;p&gt;In fact, even the typical layer structure of matrix multiplication + elementwise nonlinearity isn’t crucial to performance.  It has been shown that tensor networks, a completely different type of hierarchical nonlinear model commonly used in physics, can also learn machine learning tasks.  &lt;a href=&quot;https://arxiv.org/abs/1605.05775&quot;&gt;This paper&lt;/a&gt; develops the idea and gets 1% test accuracy on MNIST, which is pretty good for a totally new approach.  Interestingly, neural networks have recently been used instead of tensor networks in computational physics problems and achieved good performance there.  This raises a natural question: how do we know that the matrix multiplication + elementwise nonlinearity structure is really the best one?  To my knowledge, there’s no known fundamental, theoretical reason why it would be better than other options.&lt;/p&gt;
+&lt;p&gt;In fact, even the typical layer structure of matrix multiplication + elementwise nonlinearity isn’t crucial to performance.  It has been shown that tensor networks, a completely different type of hierarchical nonlinear model commonly used in physics, can also learn machine learning tasks.  &lt;a href=&quot;https://arxiv.org/abs/1605.05775&quot;&gt;This paper&lt;/a&gt; develops the idea and gets 1% test error on MNIST, which is pretty good for a totally new approach.  Interestingly, neural networks have recently been used instead of tensor networks in computational physics problems and achieved good performance there.  This raises a natural question: how do we know that the matrix multiplication + elementwise nonlinearity structure is really the best one?  To my knowledge, there’s no known fundamental, theoretical reason why it would be better than other options.&lt;/p&gt;
 
 &lt;h2 id=&quot;multiplicative-nets&quot;&gt;Multiplicative nets&lt;/h2&gt;
 
@@ -288,7 +387,7 @@
 &lt;h4 id=&quot;dehydrated-celery-stalk-partially-wrapped-in-duct-tape&quot;&gt;Dehydrated celery stalk partially wrapped in duct tape&lt;/h4&gt;
 &lt;p&gt;Not Delivered&lt;/p&gt;
 
-&lt;p&gt;There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they’re more likely to deliver something when there’s no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, and both failed, while almost nothing else risky had a return address.  Third, though object ridiculousness wasn’t very correlated with success, the apparent value of objects was - the ball maze, socks, and hand sanitizer all have some obvious use, while the celery, jam lid, and single glove don’t.  A natural combination of these conclusions is that the postal service will probably deliver anything weird they can’t return as long as it seems important enough.  I’d bet you could mail basically anything - a seat cushion, a balloon, a small speaker constantly emitting obscenities - if you permanently attached it to something that looks like a bill with no return address.&lt;/p&gt;
+&lt;p&gt;There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they’re more likely to deliver something when there’s no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, and both failed, while almost nothing else risky had a return address.  Third, though object ridiculousness wasn’t very correlated with success, the apparent value of objects was - the ball maze, socks, and hand sanitizer all have some obvious use, while the celery, jam lid, and single glove don’t.  A natural combination of these conclusions is that the postal service will probably deliver anything weird they can’t return as long as it seems important enough.  I’d bet you could mail basically anything - a seat cushion, a balloon, a constantly-beeping speaker - if you permanently attached it to something that looks like a bill with no return address.&lt;/p&gt;
 
 &lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.&lt;/p&gt;
 </description>

@@ -8,5 +8,5 @@ answer: ether
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/maelstrom.png" width="100%" />
+<img src="{{site.imgurl}}/maelstrom.png" width="50%" />
 </p>
