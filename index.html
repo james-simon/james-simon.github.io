@@ -5,12 +5,23 @@ layout: default
    <a name = "about"></a>
    <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/headshot.png" height="200px"></p>
    <h1>Jamie Simon</h1>
-   <p>I am a 2nd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by Mike DeWeese. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
+   <p>I am a 2nd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by <a href="deweeselab.com">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
    <br>
    <br>
    <br>
    <hr color="#e3ebec">
    <h1>Research</h1>
+   <hr class="featurette-divider">
+   <a name = "research"></a>
+   <div style="margin:10px 0px 10px 0px">
+      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/shallow_learning_sketch.png" height="200px"></p>
+      <h2>Insights into the neural network-kernel method equivalences</h2>
+      <p>Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they are equivalent to a class of simple, analytically-tractable models called <i>kernel methods.<i/> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In <a href="https://arxiv.org/abs/2106.03186v1">recent work</a> with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, which proves that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion that our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a long-time dream of the field of machine learning.</p>
+   </div>
+   <br>
+   <br>
+   <br>
+   <hr>
    <hr class="featurette-divider">
    <a name = "research"></a>
    <div style="margin:10px 0px 10px 0px">
@@ -39,7 +50,7 @@ layout: default
    <div style="margin:10px 0px 10px 0px">
       <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/jj.png" height="200px"></p>
       <h2>Josephson junction fabrication</h2>
-      <p>In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a way to speed up junction fabrication by one lithography step, or potentially several days.  Our paper, currently under review at Applied Physics Letters, is available <a href="https://arxiv.org/pdf/2011.05230.pdf">here.</a></p>
+      <p>In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work.  Our paper is available <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">here.</a></p>
    </div>
    <br>
    <br>
@@ -53,7 +64,7 @@ layout: default
    <div style="margin:10px 0px 10px 0px">
       <a name = "puzzles"></a>
       <h1>Puzzles</h1>
-      <p>While a senior in undergrad, I started a puzzlehunt called the <a href="https://en.wikipedia.org/wiki/VT_Hunt">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2nd and 3rd VT Hunts each drawing ~2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below.</p>
+      <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a <a href="https://en.wikipedia.org/wiki/VT_Hunt">university tradition</a>, with the 2019, '20, and '21 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. The easiest is Flags, and the most satisfying to solve, in my view, is Maelstrom.</p>
       {% assign npzls = 0 %}
       {% for doc in site.puzzles %}
       {% if doc.type == "puzzle" %}
