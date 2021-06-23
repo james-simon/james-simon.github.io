@@ -106,8 +106,8 @@
   -webkit-transform: scale(10000);
   -ms-transform: scale(10000);
   transform: scale(10000);
-  -webkit-transition: all 8s ease-in-out;
-  transition: all 8s ease-in-out;
+  -webkit-transition: all 3s ease-in-out;
+  transition: all 3s ease-in-out;
   height: 15%;
   width: 94%;
   top: 15%;
@@ -122,8 +122,8 @@
   -webkit-transform: scale(30000);
   -ms-transform: scale(30000);
   transform: scale(30000);
-  -webkit-transition: all 17s ease-in-out;
-  transition: all 17s ease-in-out;
+  -webkit-transition: all 10s ease-in-out;
+  transition: all 10s ease-in-out;
   height: 15%;
   width: 94%;
   top: 32%;
@@ -138,8 +138,8 @@
   -webkit-transform: scale(50000);
   -ms-transform: scale(50000);
   transform: scale(50000);
-  -webkit-transition: all 22s ease-in-out;
-  transition: all 22 ease-in-out;
+  -webkit-transition: all 15s ease-in-out;
+  transition: all 15 ease-in-out;
   height: 15%;
   width: 94%;
   top: 49%;
@@ -154,8 +154,8 @@
   -webkit-transform: scale(80000);
   -ms-transform: scale(80000);
   transform: scale(80000);
-  -webkit-transition: all 29s ease-in-out;
-  transition: all 29s ease-in-out;
+  -webkit-transition: all 21s ease-in-out;
+  transition: all 21s ease-in-out;
   height: 15%;
   width: 94%;
   top: 66%;
@@ -170,8 +170,8 @@
   -webkit-transform: scale(200000);
   -ms-transform: scale(200000);
   transform: scale(200000);
-  -webkit-transition: all 35s ease-in-out;
-  transition: all 35s ease-in-out;
+  -webkit-transition: all 30s ease-in-out;
+  transition: all 30s ease-in-out;
   height: 15%;
   width: 94%;
   top: 83%;

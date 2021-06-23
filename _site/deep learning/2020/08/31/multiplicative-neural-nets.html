@@ -32,7 +32,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
       <div class = "container">
-        <a class="navbar-brand" href="">J S</a></span> </a>
+        <a class="navbar-brand" href="/">J S</a></span> </a>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav ml-auto">
             <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
@@ -47,13 +47,16 @@
       <div class="wrapper">
         <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">Multiplicative neural networks</h1>
-    <p class="post-meta"><time datetime="2020-08-31T00:00:00-07:00" itemprop="datePublished">Aug 31, 2020</time></p>
-  </header>
+  <div class="container">
+    <br>
 
-  <div class="post-content" itemprop="articleBody">
-    <!-- ![grid26] -->
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">Multiplicative neural networks</h1>
+      <p class="post-meta"><time datetime="2020-08-31T00:00:00-07:00" itemprop="datePublished">Aug 31, 2020</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <!-- ![grid26] -->
 <!--exc-->
 
 <h2 id="introduction">Introduction</h2>
@@ -138,6 +141,8 @@
   <li>Are there other choices for the mixing operation besides the matrices of additive nets and the multiplication operation shown here?  One way to generalize the concept to include both is to make the mixing transform \(f \big( \sum_j w_{ij} f^{-1}(x_j) \big)\), with \(f\) an invertible function mapping reals to reals.  In the case of \(f = \text{identity}\), this gives additive nets.  In the case of \(f = \exp\), this gives multiplicative nets.  In a case like \(f(x) = x^3\), though, it would give something new, but still equivalent to an additive net by the same sort of proof.</li>
   <li><a href="https://sci2s.ugr.es/keel/pdf/specific/articulo/Schmidtt%20on-the-complexity-of.pdf">The most recent paper I’ve found on these nets</a>, which was mentioned above, argues that multiplicative neurons perform operations that need large numbers of summing units, stating that “networks of summing units do not seem to be an adequate substitute for genuine multiplicative units.”  This post basically disproves that!</li>
 </ul>
+
+    </div>
 
   </div>
 

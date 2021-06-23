@@ -32,7 +32,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
       <div class = "container">
-        <a class="navbar-brand" href="">J S</a></span> </a>
+        <a class="navbar-brand" href="/">J S</a></span> </a>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav ml-auto">
             <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
@@ -47,13 +47,16 @@
       <div class="wrapper">
         <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">The principle of least power dissipation</h1>
-    <p class="post-meta"><time datetime="2020-09-06T00:00:00-07:00" itemprop="datePublished">Sep 6, 2020</time></p>
-  </header>
+  <div class="container">
+    <br>
 
-  <div class="post-content" itemprop="articleBody">
-    <!-- ![grid26] -->
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">The principle of least power dissipation</h1>
+      <p class="post-meta"><time datetime="2020-09-06T00:00:00-07:00" itemprop="datePublished">Sep 6, 2020</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <!-- ![grid26] -->
 <!--exc-->
 
 <p>I’m currently in a class called Physics of Computation on new types of computing paradigms that don’t solve problems in discrete, sequential, logical steps like modern computers.  Instead, the whole computing system goes through a complex analog evolution, with every variable free to change simultaneously, and eventually settles into a stable final state representing the answer.  Naturally, one of the core challenges is in designing a system that predictably settles into a steady state with some desired properties.</p>
@@ -85,6 +88,8 @@
 <p>Now we have a circuit.  How does minimal power dissipation explain its current and voltage distribution?  From the point of view of choosing voltages at each node of the circuit, any voltage distribution besides the true one will lead to charges accumulating somewhere, which requires some extra current and dissipates extra power.  From the point of view of choosing how currents branch at every node, any split besides the true one will correspond to extra current running around in a loop, which wastes power, and also an electric field with a nonzero curl, which doesn’t correspond to a potential.</p>
 
 <p>We’ve shown that the principle of least power dissipation gives the right answers for steady-state circuit problems.  If this is really a general law of nature, though, it’d probably show up outside of just this one narrow context.  It turns out that it can also be applied to <em>fluid circuits</em>, which are sometimes studied as somewhat-similar sister systems to electric circuits.  In the sort of fluid circuit I’m imagining, there are networks of pipes of different thicknesses instead of resistors with different resistances.  Water flow rate \(Q\) replaces current, pressure \(P\) replaces voltage, the rate of power dissipation is \(PQ\) instead of \(VI\), and pipes have an effective resistance.  An ideal pipe with laminar flow has \(\Delta P\) proportional to \(Q\) in <a href="https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation">an equation analogous to Ohm’s Law</a>, and the quantity analogous to resistance depends on the pipe’s dimensions and the viscosity of the fluid.  The fact that these equations map onto each other so perfectly means that fluid through a network of pipes minimizes power dissipation just as electrical circuits do.  I’d be willing to bet that, just as we derived part of the differential equation for current flow, you could derive part of the Navier-Stokes equations just from minimizing power dissipation.</p>
+
+    </div>
 
   </div>
 
