@@ -8,5 +8,5 @@ answer: world
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/flags.png" width="60%" />
+<img src="{{site.imgurl}}/flags.png" width="40%" />
 </p>

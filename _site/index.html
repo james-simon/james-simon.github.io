@@ -3,14 +3,19 @@
 
   <head>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<meta charset="utf-8">
+  <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>J S</title>
   <meta name="description" content="">
 
-  <link rel="stylesheet" href="/css/main.css">
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
   <link rel="canonical" href="http://localhost:4000/">
   <link rel="alternate" type="application/rss+xml" title="J S" href="http://localhost:4000/feed.xml">
 
@@ -21,275 +26,495 @@
 
   <body>
 
-    <header class="site-header">
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">J S</a> -->
+<!-- </header> -->
 
-  <div class="wrapper">
-
-    <a class="site-title" href="/">J S</a>
-    
-<!--     <a class="page-link" href=""></a>
-    <a class="page-link" href=""></a>
-    <a class="page-link" href=""></a> -->
-
-    <nav class="site-nav">
-<!--       <a href="#" class="menu-icon">
-        <svg viewBox="0 0 18 15">
-          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-        </svg>
-      </a> -->
-
-      <a class="page-link" href="/#research">Research</a>
-      <a class="page-link" href="/#puzzles">Puzzles</a>
-      <a class="page-link" href="/#posts">Posts</a>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="">J S</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Posts</a></li>
+          </ul> 
+        </div>
+      </div>
     </nav>
-
-  </div>
-
-</header>
-
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <link rel="stylesheet" href="css/hover_effects.css">
+
+<style>
+a:link {
+  color: #225599;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: #552299;
+  background-color: transparent;
+  text-decoration: none;
+}
+.hr-thin {
+    border: none;
+    height: 1px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+}
+.hr-thick {
+    border: none;
+    height: 2px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+}
+.blurb {
+    font-size: 80%;
+}
+.paper-info {
+    font-size: 80%;
+    margin-top: -1em;
+}
+</style>
+
+<!-- <hr class="hr-thick"> -->
+
+<!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+    <div class="hovereffect">
+        <img class="img-responsive" src="https://james-simon.github.io/img/headshot.png" alt="">
+        <div class="overlay">
+           <a class="info" href="#">link here</a>
+        </div>
+    </div>
+</div>
+ -->
+
+<!-- <div class="container">
+  <img src="https://mdbootstrap.com/img/Photos/Others/forest-sm.jpg" alt="Avatar" class="overlay-image">
+  <div class="overlay">
+    <div class="overlay-text">Hello World</div>
+  </div>
+</div>
+ -->
+<br>
+
+<div class="container">
    <a name = "about"></a>
-   <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/headshot.png" height="200px"></p>
-   <h1>Jamie Simon</h1>
-   <p>I am a 2nd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by Mike DeWeese. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
-   <br>
-   <br>
-   <br>
-   <hr color="#e3ebec">
-   <h1>Research</h1>
-   <hr class="featurette-divider">
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <div class="mr-4">
+            <div class="hovereffect">
+               <img class="img-responsive" src="https://james-simon.github.io/img/headshot.png" height="210px">
+               <div class="tint"></div>
+               <a class="hoverinfo hover1" style="font-size:xx-small;" href="">This is me about to do a 100' rope swing off El Capitan in Yosemite</a>
+               <a class="hoverinfo hover2" style="font-size:xx-small;" href="">Actually, I guess this was taken just after swinging, but the rest is right</a>
+               <a class="hoverinfo hover3" style="font-size:xx-small;" href="">Well, actually, the swing was only 30', but all the rest is definitely real</a>
+               <a class="hoverinfo hover4" style="font-size:xx-small;" href="">Okay, fine, it wasn't El Capitan, it was just a rock in Delaware, but I swear the rest is real</a>
+               <a class="hoverinfo hover5" style="font-size:xx-small;" href="">Fine, I didn't actually swing, I just held a rope, but the idea is the same</a>
+               <a class="hoverinfo hover6" style="font-size:xx-small;" href="">Alright, alright, I'll come clean: the original story was true</a>
+            </div>
+         </div>
+      </div>
+      <div class="media-body">
+         <h1>Jamie Simon</h1>
+
+         <p>I am a 2nd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
+      </div>
+   </div>
+
+   <hr class="hr-thin">
+
+
    <a name = "research"></a>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/GRFtest.gif" height="200px"></p>
-      <h2>A phenomenological theory of high-dimensional optimization</h2>
-      <p>I'm currently working on a phenomenlogical field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>.</p>
+   <h2>Research</h2>
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <br>
+         <img class="mr-4" src="https://james-simon.github.io/img/shallow_learning_sketch.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>On the Power of Shallow Learning</h3>
+         <strong>Reverse-engineering the neural network-kernel method equivalence</strong>
+         <p class="blurb">
+            Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In recent work with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, and we used that fact to prove that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <strong><em>In Submission</em></strong>
+            <a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a>
+            <a href="https://github.com/james-simon/shallow-learning">[code]</a>
+         </p>
+      </div>
    </div>
-   <br>
-   <br>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/net_diagrams/net_diagram_rules.png" height="200px"></p>
-      <h2>Alternative neural network formulations</h2>
-      <p>Another current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="/deep learning/2020/08/31/multiplicative-neural-nets">here.</a></p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="https://james-simon.github.io/img/GRFtest.gif" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>A phenomenological theory of high-dimensional optimization</h3>
+         <p class="blurb">
+            I'm currently working on a phenomenlogical field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>. This research direction was the subject of my proposal for the NSF-GRFP.
+         </p>
+      </div>
    </div>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/trajectories.png" height="200px"></p>
-      <h2>Finding critical points of neural network loss surfaces</h2>
-      <p>Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.</p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="https://james-simon.github.io/img/net_diagrams/net_diagram_rules.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Alternative neural network formulations</h3>
+         <p class="blurb">
+            One current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="/deep learning/2020/08/31/multiplicative-neural-nets">here.</a>
+         </p>
+      </div>
    </div>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/jj.png" height="200px"></p>
-      <h2>Josephson junction fabrication</h2>
-      <p>In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a way to speed up junction fabrication by one lithography step, or potentially several days.  Our paper, currently under review at Applied Physics Letters, is available <a href="https://arxiv.org/pdf/2011.05230.pdf">here.</a></p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="https://james-simon.github.io/img/trajectories.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Critical Point-Finding Methods Reveal Gradient-Flat Regions of Deep Network Losses</h3>
+         <strong>Exposing flaws in widely-used critical-point-finding methods</strong>
+         <p class="blurb">
+            Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <a href="https://direct.mit.edu/neco/article/33/6/1469/100574/Critical-Point-Finding-Methods-Reveal-Gradient">[Neural Computation]</a>
+            <a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a><a href="https://github.com/charlesfrye/autocrit">[code]</a>
+         </p>
+      </div>
    </div>
-   <br>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="https://james-simon.github.io/img/statediagram.png" height="200px"></p>
-      <h2>Quantum control of nuclear spin qubits</h2>
-      <p>Qubits decohere and lose their quantum information when uncontrollably coupled to their environment.  Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult.  Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates.  The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates.  We also show two-qubit gates.  Our results are published <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">here</a>.</p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="https://james-simon.github.io/img/jj.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits</h3>
+         <strong>A faster method to make Josephson junctions</strong>
+         <p class="blurb">
+            In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">[Applied Physics Letters]</a></p>
+      </div>
    </div>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <a name = "puzzles"></a>
-      <h1>Puzzles</h1>
-      <p>While a senior in undergrad, I started a puzzlehunt called the <a href="https://en.wikipedia.org/wiki/VT_Hunt">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2nd and 3rd VT Hunts each drawing ~2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below.</p>
-      
-      
-      
-      
-      
-      
-      <a href="/puzzles/addersmultiplying">Adders Multiplying</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/flags">Flags</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/forestson">Forest Son</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/maelstrom">Maelstrom</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/mining">Mining</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/topology">Topology</a>
-      
-      
-      
-      
-      
-      
-      
-      
-      • <a href="/puzzles/transit">Transit</a>
-      
-      
-      
-      
-      <hr>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="https://james-simon.github.io/img/statediagram.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Fast noise-resistant control of donor nuclear spin qubits in silicon</h3>
+         <strong>Better control schemes for for spin qubits</strong>
+         <p class="blurb">
+            Qubits decohere and lose their quantum information when uncontrollably coupled to their environment.  Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult.  Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates.  The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates.  We also show two-qubit gates.
+         </p>
+         <p class="paper-info">
+            <strong>(2020)</strong>
+            <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">[PRB]</a>
+            <a href="https://arxiv.org/pdf/2001.10029.pdf">[arXiv]</a></p>
+      </div>
    </div>
-   <div style="margin:10px 0px 10px 0px">
-      <a name = "posts"></a>
-      <h1>Posts</h1>
-      <ul class="post-list">
-         
-         <li>
-            <span class="post-meta">Nov 29, 2020</span>
-            <h4>
-               <a class="post-link" href="/physics/2020/11/29/rocketball">Could you propel a spacecraft using sports projectiles?</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Sep 6, 2020</span>
-            <h4>
-               <a class="post-link" href="/physics/2020/09/06/least_power_dissipation">The principle of least power dissipation</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Aug 31, 2020</span>
-            <h4>
-               <a class="post-link" href="/deep%20learning/2020/08/31/multiplicative-neural-nets">Multiplicative neural networks</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Aug 20, 2020</span>
-            <h4>
-               <a class="post-link" href="/physics/2020/08/20/upside-down-candle">How would an upside-down candle burn?</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Jul 12, 2020</span>
-            <h4>
-               <a class="post-link" href="/mail/2020/07/12/mail-shenanigans">Messing with the postal service</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Jul 4, 2020</span>
-            <h4>
-               <a class="post-link" href="/society/2020/07/04/common-ground">Common ground</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Jun 17, 2020</span>
-            <h4>
-               <a class="post-link" href="/physics/2020/06/17/fish-planet">What would happen if you made a planet out of fish?</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">Jun 17, 2020</span>
-            <h4>
-               <a class="post-link" href="/physics/2020/06/17/chicken-cooking">How hard do you have to hit a chicken to cook it?</a>
-            </h4>
-         </li>
-         
-         <li>
-            <span class="post-meta">May 17, 2020</span>
-            <h4>
-               <a class="post-link" href="/stats/2020/05/17/covid-calculation">The expected cost of breaking quarantine</a>
-            </h4>
-         </li>
-         
-      </ul>
-   </div>
+
+   <hr class="hr-thick">
+
+   <a name="puzzles"></a>
+   <h2>Puzzles</h2>
+   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a <a href="https://en.wikipedia.org/wiki/VT_Hunt">university tradition</a>, with the 2019, '20, and '21 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. The easiest is Flags, and the most satisfying to solve, in my view, is Maelstrom.</p>
+
+<!--    
+   
+   
+   
+   
+   
+   <a href="/puzzles/addersmultiplying">Adders Multiplying</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/flags">Flags</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/forestson">Forest Son</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/maelstrom">Maelstrom</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/mining">Mining</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/topology">Topology</a>
+   
+   
+   
+   
+   
+   
+   
+   
+   • <a href="/puzzles/transit">Transit</a>
+   
+   
+   
+    -->
+
+<style>
+   .center-cropped {
+     object-fit: cover; /* Do not scale the image */
+     object-position: center; /* Center the image within the element */
+     height: 200px;
+     width: 200px;
+   }
+</style>
+<div class="row justify-content-md-center">
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/addersmultiplying.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/addersmultiplying"><h4>ADDERS MULTIPLYING</h4></a>
+      </div>
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/flags.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/flags"><h4>FLAGS</h4></a>
+      </div>
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/forestson.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/forestson"><h4>FOREST SON</h4></a>
+      </div>
+   
+   
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/maelstrom.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/maelstrom"><h4>MAELSTROM</h4></a>
+      </div>
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/mining.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/mining"><h4>MINING</h4></a>
+      </div>
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/topology.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/topology"><h4>TOPOLOGY</h4></a>
+      </div>
+   
+   
+   
+   
+   
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="https://james-simon.github.io/img/transit.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="/puzzles/transit"><h4>TRANSIT</h4></a>
+      </div>
+   
+   
+</div>
+
+
+   <hr class="hr-thick">
+
+   <a name="posts"></a>
+   <h2>Posts</h2>
+   <ul class="post-list">
+      
+      <li>
+         <span class="post-meta">Nov 29, 2020</span>
+         <h4>
+            <a class="post-link" href="/physics/2020/11/29/rocketball">Could you propel a spacecraft using sports projectiles?</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Sep 6, 2020</span>
+         <h4>
+            <a class="post-link" href="/physics/2020/09/06/least_power_dissipation">The principle of least power dissipation</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Aug 31, 2020</span>
+         <h4>
+            <a class="post-link" href="/deep%20learning/2020/08/31/multiplicative-neural-nets">Multiplicative neural networks</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Aug 20, 2020</span>
+         <h4>
+            <a class="post-link" href="/physics/2020/08/20/upside-down-candle">How would an upside-down candle burn?</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Jul 12, 2020</span>
+         <h4>
+            <a class="post-link" href="/mail/2020/07/12/mail-shenanigans">Messing with the postal service</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Jul 4, 2020</span>
+         <h4>
+            <a class="post-link" href="/society/2020/07/04/common-ground">Common ground</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Jun 17, 2020</span>
+         <h4>
+            <a class="post-link" href="/physics/2020/06/17/fish-planet">What would happen if you made a planet out of fish?</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">Jun 17, 2020</span>
+         <h4>
+            <a class="post-link" href="/physics/2020/06/17/chicken-cooking">How hard do you have to hit a chicken to cook it?</a>
+         </h4>
+      </li>
+      
+      <li>
+         <span class="post-meta">May 17, 2020</span>
+         <h4>
+            <a class="post-link" href="/stats/2020/05/17/covid-calculation">The expected cost of breaking quarantine</a>
+         </h4>
+      </li>
+      
+   </ul>
+
+</div>
+
+
 </div>
       </div>
     </div>
 
-    <footer class="site-footer">
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
 
-  <div class="wrapper">
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li>Jamie Simon</li>
-          <li>e:<a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a></li>
-        </ul>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
       </div>
 
-      <div class="footer-col footer-col-2">
-        <ul class="social-media-list">
-          
-          <li>
-            <a href="https://github.com/james-simon"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
-</span><span class="username">james-simon</span></a>
-
-          </li>
-          
-
-          
-
-          
-          <li>
-            <a href="https://instagram.com/sam.simon17"><span class="icon icon--twitter"><?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.0//EN'  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'><svg height="32" style="overflow:visible;enable-background:new 0 0 32 32" viewBox="0 0 32 32" width="32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><g id="Instagram_1_"><g id="Instagram"><path d="M28,0H4C1.8,0,0,1.8,0,4v8h32V4C32,1.8,30.2,0,28,0z" id="Head" style="fill:#895A4D;"/><path d="M2,0.6V12h2V0C3.3,0,2.6,0.2,2,0.6z" id="Red_x5F_Stripes" style="fill:#FF3939;"/><rect height="12" id="Yellow_x5F_Stripes" style="fill:#FED049;" width="2" x="4"/><rect height="12" id="Green_x5F_Stripes" style="fill:#10DD76;" width="2" x="6"/><rect height="12" id="Blue_x5F_Stripes" style="fill:#5FCCFF;" width="2" x="8"/><circle cx="26" cy="6" id="Lens_1_" r="3" style="fill:#162838;"/><circle cx="26" cy="6" id="Lens_x5F_Outer" r="1.5" style="fill:#2C4356;"/><circle cx="26" cy="6" id="Lens_x5F_Inside" r="0.5" style="fill:#47637A;"/><path d="M0,12v16c0,2.2,1.8,4,4,4h24c2.2,0,4-1.8,4-4V12H0z" id="Body" style="fill:#E5E0DC;"/><g id="Shadow"><polygon points="24.7,12 22.4,9.6 22.4,12 " style="fill:#75483D;"/><path d="M20,12L9.6,22.4l9.6,9.6H28c2.2,0,4-1.8,4-4v-8.7L24.7,12H20z" style="fill:#D0CBC5;"/></g><circle cx="16" cy="16" id="Lens" r="9" style="fill:#DCD7D3;"/><circle cx="16" cy="16" id="Inside_x5F_Lens" r="7" style="fill:#162838;"/><circle cx="16" cy="16" id="_x32_nd_Inner_Circle" r="4" style="fill:#2C4356;"/><circle cx="16" cy="16" id="Middle_Circle" r="2" style="fill:#162838;"/><circle cx="18.5" cy="13.5" id="Reflection" r="1.5" style="fill:#47637A;"/></g></g></g></svg></span><span class="username"> sam.simon17</span></a>
-
-          </li>
-          
-        </ul>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
       </div>
 
-      <div class="footer-col footer-col-3">
-        <p></p>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=>gScholar</a>
+        </p>
       </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 574-05-7179
+        </p>
+      </div>
+
     </div>
-
   </div>
-
+</div>
 </footer>
-
 
   </body>
 

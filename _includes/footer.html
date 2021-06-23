@@ -1,42 +1,42 @@
-<footer class="site-footer">
+<div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
 
-  <div class="wrapper">
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li>{{ site.author }}</li>
-          <li>e:<a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-        </ul>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        </p>
       </div>
 
-      <div class="footer-col footer-col-2">
-        <ul class="social-media-list">
-          {% if site.github_username %}
-          <li>
-            {% include icon-github.html username=site.github_username %}
-          </li>
-          {% endif %}
-
-          {% if site.twitter_username %}
-          <li>
-            {% include icon-twitter.html username=site.twitter_username %}
-          </li>
-          {% endif %}
-
-          {% if site.insta_username %}
-          <li>
-            {% include icon-insta.html username=site.insta_username %}
-          </li>
-          {% endif %}
-        </ul>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/{{site.github_username}}">{{site.github_username}}</a>
+        </p>
       </div>
 
-      <div class="footer-col footer-col-3">
-        <p>{{ site.description }}</p>
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href={{site.gscholar_url}}>gScholar</a>
+        </p>
       </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/{{site.insta_username}}">{{site.insta_username}}</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 574-05-7179
+        </p>
+      </div>
+
     </div>
-
   </div>
-
+</div>
 </footer>

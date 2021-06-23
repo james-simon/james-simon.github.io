@@ -1,91 +1,253 @@
 ---
 layout: default
 ---
-<div class="home">
+
+<link rel="stylesheet" href="css/hover_effects.css">
+
+<style>
+a:link {
+  color: #225599;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: #552299;
+  background-color: transparent;
+  text-decoration: none;
+}
+.hr-thin {
+    border: none;
+    height: 1px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+}
+.hr-thick {
+    border: none;
+    height: 2px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+}
+.blurb {
+    font-size: 80%;
+}
+.paper-info {
+    font-size: 80%;
+    margin-top: -1em;
+}
+</style>
+
+<!-- <hr class="hr-thick"> -->
+
+<!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+    <div class="hovereffect">
+        <img class="img-responsive" src="{{site.imgurl}}/headshot.png" alt="">
+        <div class="overlay">
+           <a class="info" href="#">link here</a>
+        </div>
+    </div>
+</div>
+ -->
+
+<!-- <div class="container">
+  <img src="https://mdbootstrap.com/img/Photos/Others/forest-sm.jpg" alt="Avatar" class="overlay-image">
+  <div class="overlay">
+    <div class="overlay-text">Hello World</div>
+  </div>
+</div>
+ -->
+<br>
+
+<div class="container">
    <a name = "about"></a>
-   <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/headshot.png" height="200px"></p>
-   <h1>Jamie Simon</h1>
-   <p>I am a 3rd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by <a href="deweeselab.com">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
-   <br>
-   <br>
-   <br>
-   <hr color="#e3ebec">
-   <h1>Research</h1>
-   <hr class="featurette-divider">
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <div class="mr-4">
+            <div class="hovereffect">
+               <img class="img-responsive" src="{{site.imgurl}}/headshot.png" height="210px">
+               <div class="tint"></div>
+               <a class="hoverinfo hover1" style="font-size:xx-small;" href="">This is me about to do a 100' rope swing off El Capitan in Yosemite</a>
+               <a class="hoverinfo hover2" style="font-size:xx-small;" href="">Actually, I guess this was taken just after swinging, but the rest is right</a>
+               <a class="hoverinfo hover3" style="font-size:xx-small;" href="">Well, actually, the swing was only 30', but all the rest is definitely real</a>
+               <a class="hoverinfo hover4" style="font-size:xx-small;" href="">Okay, fine, it wasn't El Capitan, it was just a rock in Delaware, but I swear the rest is real</a>
+               <a class="hoverinfo hover5" style="font-size:xx-small;" href="">Fine, I didn't actually swing, I just held a rope, but the idea is the same</a>
+               <a class="hoverinfo hover6" style="font-size:xx-small;" href="">Alright, alright, I'll come clean: the original story was true</a>
+            </div>
+         </div>
+      </div>
+      <div class="media-body">
+         <h1>Jamie Simon</h1>
+
+         <p>I am a 2nd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
+      </div>
+   </div>
+
+   <hr class="hr-thin">
+
+
    <a name = "research"></a>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/shallow_learning_sketch.png" height="250px"></p>
-      <h2>Insights into the neural network-kernel method equivalences</h2>
-      <p>Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they are equivalent to a class of simple, analytically-tractable models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In <a href="https://arxiv.org/abs/2106.03186v1">recent work</a> with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, which proves that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion that our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a long-time dream of the field of machine learning.</p>
+   <h2>Research</h2>
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <br>
+         <img class="mr-4" src="{{site.imgurl}}/shallow_learning_sketch.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>On the Power of Shallow Learning</h3>
+         <strong>Reverse-engineering the neural network-kernel method equivalence</strong>
+         <p class="blurb">
+            Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In recent work with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, and we used that fact to prove that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <strong><em>In Submission</em></strong>
+            <a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a>
+            <a href="https://github.com/james-simon/shallow-learning">[code]</a>
+         </p>
+      </div>
    </div>
-   <hr>
-   <a name = "research"></a>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/GRFtest.gif" height="200px"></p>
-      <h2>A phenomenological theory of high-dimensional optimization</h2>
-      <p>I'm currently working on a phenomenlogical field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>.</p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="{{site.imgurl}}/GRFtest.gif" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>A phenomenological theory of high-dimensional optimization</h3>
+         <p class="blurb">
+            I'm currently working on a phenomenlogical field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>. This research direction was the subject of my proposal for the NSF-GRFP.
+         </p>
+      </div>
    </div>
-   <br>
-   <br>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/net_diagrams/net_diagram_rules.png" height="200px"></p>
-      <h2>Alternative neural network formulations</h2>
-      <p>Another current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="{{site.baseurl}}/deep learning/2020/08/31/multiplicative-neural-nets">here.</a></p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="{{site.imgurl}}/net_diagrams/net_diagram_rules.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Alternative neural network formulations</h3>
+         <p class="blurb">
+            One current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="{{site.baseurl}}/deep learning/2020/08/31/multiplicative-neural-nets">here.</a>
+         </p>
+      </div>
    </div>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/trajectories.png" height="200px"></p>
-      <h2>Finding critical points of neural network loss surfaces</h2>
-      <p>Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.</p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="{{site.imgurl}}/trajectories.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Critical Point-Finding Methods Reveal Gradient-Flat Regions of Deep Network Losses</h3>
+         <strong>Exposing flaws in widely-used critical-point-finding methods</strong>
+         <p class="blurb">
+            Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <a href="https://direct.mit.edu/neco/article/33/6/1469/100574/Critical-Point-Finding-Methods-Reveal-Gradient">[Neural Computation]</a>
+            <a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a><a href="https://github.com/charlesfrye/autocrit">[code]</a>
+         </p>
+      </div>
    </div>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/jj.png" height="200px"></p>
-      <h2>Josephson junction fabrication</h2>
-      <p>In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work.  Our paper is available <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">here.</a></p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="{{site.imgurl}}/jj.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits</h3>
+         <strong>A faster method to make Josephson junctions</strong>
+         <p class="blurb">
+            In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry.  My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work.
+         </p>
+         <p class="paper-info">
+            <strong>(2021)</strong>
+            <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">[Applied Physics Letters]</a></p>
+      </div>
    </div>
-   <br>
-   <br>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <p style="float:left;margin:0px 20px 0px 0px"><img src="{{site.imgurl}}/statediagram.png" height="200px"></p>
-      <h2>Quantum control of nuclear spin qubits</h2>
-      <p>Qubits decohere and lose their quantum information when uncontrollably coupled to their environment.  Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult.  Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates.  The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates.  We also show two-qubit gates.  Our results are published <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">here</a>.</p>
+
+   <hr class="hr-thick">
+
+   <div  class="media">
+      <div  class="pull-left media-top">
+         <img class="mr-4" src="{{site.imgurl}}/statediagram.png" width="250px">
+      </div>
+      <div class="media-body">
+         <h3>Fast noise-resistant control of donor nuclear spin qubits in silicon</h3>
+         <strong>Better control schemes for for spin qubits</strong>
+         <p class="blurb">
+            Qubits decohere and lose their quantum information when uncontrollably coupled to their environment.  Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult.  Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates.  The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates.  We also show two-qubit gates.
+         </p>
+         <p class="paper-info">
+            <strong>(2020)</strong>
+            <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">[PRB]</a>
+            <a href="https://arxiv.org/pdf/2001.10029.pdf">[arXiv]</a></p>
+      </div>
    </div>
-   <hr>
-   <div style="margin:10px 0px 10px 0px">
-      <a name = "puzzles"></a>
-      <h1>Puzzles</h1>
-      <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a <a href="https://en.wikipedia.org/wiki/VT_Hunt">university tradition</a>, with the 2019, '20, and '21 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. The easiest is Flags, and the most satisfying to solve, in my view, is Maelstrom.</p>
-      {% assign npzls = 0 %}
-      {% for doc in site.puzzles %}
-      {% if doc.type == "puzzle" %}
-      {% if npzls == 0 %}
-      <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', '' }}">{{ doc.title }}</a>
-      {% else %}
-      • <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', ''}}">{{ doc.title }}</a>
-      {% endif %}
-      {% assign npzls = npzls | plus:1 %}
-      {% endif %}
+
+   <hr class="hr-thick">
+
+   <a name="puzzles"></a>
+   <h2>Puzzles</h2>
+   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a <a href="https://en.wikipedia.org/wiki/VT_Hunt">university tradition</a>, with the 2019, '20, and '21 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. The easiest is Flags, and the most satisfying to solve, in my view, is Maelstrom.</p>
+
+<!--    {% assign npzls = 0 %}
+   {% for doc in site.puzzles %}
+   {% if doc.type == "puzzle" %}
+   {% if npzls == 0 %}
+   <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', '' }}">{{ doc.title }}</a>
+   {% else %}
+   • <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', ''}}">{{ doc.title }}</a>
+   {% endif %}
+   {% assign npzls = npzls | plus:1 %}
+   {% endif %}
+   {% endfor %} -->
+
+<style>
+   .center-cropped {
+     object-fit: cover; /* Do not scale the image */
+     object-position: center; /* Center the image within the element */
+     height: 200px;
+     width: 200px;
+   }
+</style>
+<div class="row justify-content-md-center">
+   {% for doc in site.puzzles %}
+   {% if doc.type == "puzzle" %}
+      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+         <img class="center-cropped" src="{{ site.imgurl }}/{{ doc.title | replace: ' ', '' | downcase }}.png">
+         <div class="tint"></div>
+         <a class="hoverinfo" href="{{ doc.url | replace: '.html', '' }}"><h4>{{ doc.title | upcase }}</h4></a>
+      </div>
+   {% endif %}
+   {% endfor %}
+</div>
+
+
+   <hr class="hr-thick">
+
+   <a name="posts"></a>
+   <h2>Posts</h2>
+   <ul class="post-list">
+      {% for post in site.posts %}
+      <li>
+         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+         <h4>
+            <a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a>
+         </h4>
+      </li>
       {% endfor %}
-      <hr>
-   </div>
-   <div style="margin:10px 0px 10px 0px">
-      <a name = "posts"></a>
-      <h1>Posts</h1>
-      <ul class="post-list">
-         {% for post in site.posts %}
-         <li>
-            <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-            <h4>
-               <a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a>
-            </h4>
-         </li>
-         {% endfor %}
-      </ul>
-   </div>
+   </ul>
+
+</div>
+
+
 </div>

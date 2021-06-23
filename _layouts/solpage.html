@@ -8,14 +8,18 @@ layout: default
   </header>
 <!--     <p style="text-align:center;font-size:200%;">{{ page.flavortext }}</p> -->
   
-<hr class="featurette-divider">
+<div class="container">
+
+  <hr class="featurette-divider">
   
   <div class="post-content">
     {{ content }}
   </div>
   
-<hr class="featurette-divider">
+  <hr class="featurette-divider">
   
   <p style="text-align:center"> <a href="{{site.baseurl}}{{page.url | replace: "-", "" | replace: page.answer, "" | replace: ".html", ""}}" style="font-size:16px">back to puzzle</a></p>
+
+</div>
 
 </article>

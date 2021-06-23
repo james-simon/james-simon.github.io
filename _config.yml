@@ -4,12 +4,13 @@ email: jsi@berkeley.edu
 description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 
-title: J S
+title: JS
 url: "http://james-simon.github.io"
 imgurl: "https://james-simon.github.io/img"
 
 github_username:  james-simon
 insta_username: sam.simon17
+gscholar_url:  "https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en"
 
 DBL: "https://dl.dropboxusercontent.com/u/16348658"
 excerpt_separator: <!--exc-->
