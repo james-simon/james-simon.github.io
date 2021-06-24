@@ -115,7 +115,7 @@
   padding: 0px;
 }
 .hovereffect:hover a.hover2 {
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(0,0,0,0);
 }
 
 .hovereffect a.hover3 {
