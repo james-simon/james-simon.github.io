@@ -110,13 +110,12 @@ a:visited {
    <h2>Research</h2>
    <hr class="hr-thick">
 
-
    <div class="row">
       <div class="col-md-3">
          <img class="mr-4" src="{{site.imgurl}}/shallow_learning_sketch.png" width=100%>
       </div>
       <div class="col-md-9">
-         <h3>On the Power of Shallow Learning</h3>
+         <h3>On the power of shallow learning</h3>
          <strong>Reverse-engineering the neural network-kernel method equivalence</strong>
          <p class="blurb">
             Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In recent work with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, and we used that fact to prove that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
@@ -165,7 +164,7 @@ a:visited {
          <img class="mr-4" src="{{site.imgurl}}/trajectories.png" width="100%">
       </div>
       <div class="col-md-9">
-         <h3>Critical Point-Finding Methods Reveal Gradient-Flat Regions of Deep Network Losses</h3>
+         <h3>Critical point-finding methods reveal gradient-flat regions of deep network losses</h3>
          <strong>Exposing flaws in widely-used critical-point-finding methods</strong>
          <p class="blurb">
             Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces.  In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces.  We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described.  Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results.  Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>.
