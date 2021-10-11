@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 Oct 2021 11:51:57 -0700</pubDate>
-    <lastBuildDate>Mon, 11 Oct 2021 11:51:57 -0700</lastBuildDate>
+    <pubDate>Mon, 11 Oct 2021 12:04:46 -0700</pubDate>
+    <lastBuildDate>Mon, 11 Oct 2021 12:04:46 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -23,7 +23,7 @@
    &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_main.gif&quot; width=&quot;22%&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;The stack is easy to assemble and absurdly stable; when people first hold it, they’re almost always surprised by how it takes no effort to keep upright and it stays balanced even during drastic motions. I currently have several of them up as room decorations and desk ornaments, and I’m pretty sure they’ll stand through a sizable earthquake. What’s the trick?&lt;/p&gt;
+&lt;p&gt;The stack is easy to assemble and absurdly stable; when people first hold it, they’re almost always surprised by how it takes no effort to keep upright and it stays balanced &lt;a href=&quot;https://youtu.be/3jd2jpJoXgA&quot;&gt;even during drastic motions&lt;/a&gt;. I currently have several of them up as room decorations and desk ornaments, and I’m pretty sure they’ll stand through a sizable earthquake. What’s the trick?&lt;/p&gt;
 
 &lt;p&gt;It turns out the gravitree is best understood from the top down: we’ll first take a close look at the top piece, then at the top two together, then the top three, all the way down. As we’ll see, it’s just using the same trick again and again.&lt;/p&gt;
 
