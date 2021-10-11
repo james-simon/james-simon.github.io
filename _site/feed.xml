@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 Oct 2021 03:23:17 -0700</pubDate>
-    <lastBuildDate>Mon, 11 Oct 2021 03:23:17 -0700</lastBuildDate>
+    <pubDate>Mon, 11 Oct 2021 03:52:10 -0700</pubDate>
+    <lastBuildDate>Mon, 11 Oct 2021 03:52:10 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -23,6 +23,12 @@
    &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_long_video.gif&quot; width=&quot;30%&quot; /&gt;
 &lt;/p&gt;
 
+&lt;p&gt;&lt;img src=&quot;https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
+
 &lt;p&gt;The stack is easy to assemble and absurdly stable; when people first hold it, they’re almost always surprised by how it takes no effort to keep upright and it stays balanced even during drastic motions. I currently have several of them up as room decorations and desk ornaments, and I’m pretty sure they’ll stand through a sizable earthquake. What’s the trick?&lt;/p&gt;
 
 &lt;p&gt;It turns out the Gravitree is best understood from the top down: we’ll first take a close look at the top piece, then at the top two together, then the top three, all the way down. As we’ll see, it’s just using the same trick again and again.&lt;/p&gt;
@@ -34,15 +40,15 @@
 &lt;p&gt;Let’s look at the center of mass of the top piece of the Gravitree. First, I’ll attach two weights to the bottom, which will bring the center of mass to well below the balance point. This makes the object a lot like a pendulum, which just consists of a point of rotation and a big mass some distance below it. Like a pendulum, it’s very stable - gravity tends to try to pull it back to vertical - and when we poke it, we see it follow quick oscillations.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.jpg&quot; width=&quot;30%&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.gif&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.jpg&quot; width=&quot;20%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.gif&quot; width=&quot;17%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;By contrast, if I put the weight at the top, the center of mass is now above the balance point, and it’s &lt;em&gt;unstable&lt;/em&gt;: gravity now tends to pull it away from vertical. If the previous weighting’s like a pendulum, this one’s like a pencil balanced on your finger. It won’t stand on its own.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/unstable.jpg&quot; width=&quot;30%&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/unstable.gif&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/unstable.jpg&quot; width=&quot;20%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/unstable.gif&quot; width=&quot;16%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;For a balanced object, these are the choices. It can either be stable or unstable, switching from one to the other as the center of mass crosses the pivot point. This raises an natural question, though: what happens if you start with a stable object and push the center of mass closer and closer to the pivot but never crossing it? How would such a barely stable object move?&lt;/p&gt;
@@ -50,15 +56,15 @@
 &lt;p&gt;That’s the secret of the Gravitree. This piece is just barely stable, and because of that, it swings like a pendulum, but &lt;em&gt;very slowly&lt;/em&gt;. The technical reason’s that, since the center of mass is so close to the pivot, the torque from gravity is so small it gives the object only a tiny angular acceleration relative to its moment of inertia.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/stable.jpg&quot; width=&quot;30%&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/stable.gif&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/stable.jpg&quot; width=&quot;20%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/stable.gif&quot; width=&quot;16%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;This explains both why the top piece is stable and why it moves so eerily, seeming to move through space without swinging around like you’d expect it to. What about all the other pieces, though? It turns out they all use the same trick, but when balancing a lower piece, you have to imagine the weight of all the higher layers acting on its top. To illustrate that point, let’s look at the second-highest piece. Without that extra weight, it’s very stable, but with that weight, it’s barely stable like the topmost piece.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/layer2_superstable.jpg&quot; width=&quot;30%&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/layer2_stable.gif&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/layer2_superstable.jpg&quot; width=&quot;20%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/layer2_stable.jpg&quot; width=&quot;20%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;We can use this trick again and again all the way down. When I designed this sculpture, I used Autodesk Inventor’s center-of-mass-finding feature to balance the pieces from the top down, adjusting the sphere sizes to make each new piece barely stable under the weight of those above it. The end result is an entire tower that’s paradoxically both barely stable and yet very hard to accidentally knock over. This basic idea can take many different forms - here are several other Gravitrees I’ve made over the years.&lt;/p&gt;
