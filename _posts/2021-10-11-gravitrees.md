@@ -8,7 +8,7 @@ category: physics
 {: style="text-align: center"}
 <!--exc-->
 
-I am now in the 3rd year of my physics PhD, a path motivated, more or less, by a strong desire to figure out the basic rules of the universe. There are many reasons we should try to understand nature: in addition to basic curiosity, it's my sincere hope that the small light I shine into the unknown might help discover things that one day make the world a better place. That, surely, will be the noblest use of the scientific knowledge to which I find myself a fortunate heir. In the meantime, though, I really like to use it to make weird stuff.
+I am now in the 3rd year of my physics PhD, a path motivated, more or less, by a strong desire to figure out the basic rules of the universe. There are many reasons we should try to understand nature: in addition to simple curiosity, it's my sincere hope that the small light I shine into the unknown might help discover things that one day make the world a better place. That, surely, will be the noblest use of the scientific knowledge to which I find myself a fortunate heir. In the meantime, though, I really like to use it to make weird stuff.
 
 I'm writing this to introduce and explain the **gravitree**, a type of balancing kinetic sculpture that I've been 3D-printing for years. It requires only high school physics to understand (and that was all I knew when I came up with it), but its hypnotic and counterintuitive motion is unlike anything else I've seen. It consists of a number of freely-moving pieces, arranged one atop another in a stack, with just the bottommost piece supported. Here's what it looks like.
 

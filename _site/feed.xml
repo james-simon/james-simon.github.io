@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 Oct 2021 11:47:23 -0700</pubDate>
-    <lastBuildDate>Mon, 11 Oct 2021 11:47:23 -0700</lastBuildDate>
+    <pubDate>Mon, 11 Oct 2021 11:50:13 -0700</pubDate>
+    <lastBuildDate>Mon, 11 Oct 2021 11:50:13 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -14,7 +14,7 @@
         <description>&lt;!-- ![grid26] --&gt;
 &lt;!--exc--&gt;
 
-&lt;p&gt;I am now in the 3rd year of my physics PhD, a path motivated, more or less, by a strong desire to figure out the basic rules of the universe. There are many reasons we should try to understand nature: in addition to basic curiosity, it’s my sincere hope that the small light I shine into the unknown might help discover things that one day make the world a better place. That, surely, will be the noblest use of the scientific knowledge to which I find myself a fortunate heir. In the meantime, though, I really like to use it to make weird stuff.&lt;/p&gt;
+&lt;p&gt;I am now in the 3rd year of my physics PhD, a path motivated, more or less, by a strong desire to figure out the basic rules of the universe. There are many reasons we should try to understand nature: in addition to simple curiosity, it’s my sincere hope that the small light I shine into the unknown might help discover things that one day make the world a better place. That, surely, will be the noblest use of the scientific knowledge to which I find myself a fortunate heir. In the meantime, though, I really like to use it to make weird stuff.&lt;/p&gt;
 
 &lt;p&gt;I’m writing this to introduce and explain the &lt;strong&gt;gravitree&lt;/strong&gt;, a type of balancing kinetic sculpture that I’ve been 3D-printing for years. It requires only high school physics to understand (and that was all I knew when I came up with it), but its hypnotic and counterintuitive motion is unlike anything else I’ve seen. It consists of a number of freely-moving pieces, arranged one atop another in a stack, with just the bottommost piece supported. Here’s what it looks like.&lt;/p&gt;
 
