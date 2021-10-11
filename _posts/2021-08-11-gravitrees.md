@@ -13,16 +13,9 @@ I am now in the 3rd year of my physics PhD, a path motivated, more or less, by a
 I'm writing this to introduce and explain the **Gravitree**, a type of balancing kinetic sculpture that I've been 3D-printing for years. It requires only high school physics to understand (and that was all I knew when I came up with it), but its hypnotic and counterintuitive motion is unlike anything else I've seen. It consists of a number of freely-moving pieces, arranged one atop another in a stack, with just the bottommost piece supported. Here's what it looks like.
 
 <p align="center">
-   <img src="{{site.imgurl}}/gravitree/gravitree_tall.JPG" width="30%">
-   <img src="{{site.imgurl}}/gravitree/gravitree_long_video.gif" width="30%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_main.jpg" width="30%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_main.gif" width="22%">
 </p>
-
-
-<img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif" width="40" height="40" />
-
-<img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif" width="40" height="40" />
-
-<img src="{{site.imgurl}}/gravitree/superstable.gif" width="40" height="40" />
 
 The stack is easy to assemble and absurdly stable; when people first hold it, they're almost always surprised by how it takes no effort to keep upright and it stays balanced even during drastic motions. I currently have several of them up as room decorations and desk ornaments, and I'm pretty sure they'll stand through a sizable earthquake. What's the trick?
 
@@ -64,6 +57,15 @@ This explains both why the top piece is stable and why it moves so eerily, seemi
 
 We can use this trick again and again all the way down. When I designed this sculpture, I used Autodesk Inventor's center-of-mass-finding feature to balance the pieces from the top down, adjusting the sphere sizes to make each new piece barely stable under the weight of those above it. The end result is an entire tower that's paradoxically both barely stable and yet very hard to accidentally knock over. This basic idea can take many different forms - here are several other Gravitrees I've made over the years.
 
-[PHOTOS]
+<p align="center">
+   <img src="{{site.imgurl}}/gravitree/gravitree_christmas.jpg" width="15%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_arrows.webp" width="27%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_cages.webp" width="21%">
+</p>
+<p align="center">
+   <img src="{{site.imgurl}}/gravitree/gravitree_centipede.webp" width="12%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_spider.webp" width="23%">
+   <img src="{{site.imgurl}}/gravitree/gravitree_spinner.gif" width="28%">
+</p>
 
 There's a deeper trick we're playing here, one that I see in inventions from reaction wheels to faster-than-wind sailboats: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they're not *technically* breaking their mother's rules. For all of science's immense capacity for social good, that that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it's a potent way to inspire the curious to think a little closer about how the universe really works.

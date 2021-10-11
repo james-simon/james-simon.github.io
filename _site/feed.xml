@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 Oct 2021 03:52:10 -0700</pubDate>
-    <lastBuildDate>Mon, 11 Oct 2021 03:52:10 -0700</lastBuildDate>
+    <pubDate>Mon, 11 Oct 2021 04:10:49 -0700</pubDate>
+    <lastBuildDate>Mon, 11 Oct 2021 04:10:49 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -19,15 +19,9 @@
 &lt;p&gt;I’m writing this to introduce and explain the &lt;strong&gt;Gravitree&lt;/strong&gt;, a type of balancing kinetic sculpture that I’ve been 3D-printing for years. It requires only high school physics to understand (and that was all I knew when I came up with it), but its hypnotic and counterintuitive motion is unlike anything else I’ve seen. It consists of a number of freely-moving pieces, arranged one atop another in a stack, with just the bottommost piece supported. Here’s what it looks like.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_tall.JPG&quot; width=&quot;30%&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_long_video.gif&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_main.jpg&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_main.gif&quot; width=&quot;22%&quot; /&gt;
 &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://james-simon.github.io/img/gravitree/superstable.gif&quot; width=&quot;40&quot; height=&quot;40&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The stack is easy to assemble and absurdly stable; when people first hold it, they’re almost always surprised by how it takes no effort to keep upright and it stays balanced even during drastic motions. I currently have several of them up as room decorations and desk ornaments, and I’m pretty sure they’ll stand through a sizable earthquake. What’s the trick?&lt;/p&gt;
 
@@ -69,7 +63,16 @@
 
 &lt;p&gt;We can use this trick again and again all the way down. When I designed this sculpture, I used Autodesk Inventor’s center-of-mass-finding feature to balance the pieces from the top down, adjusting the sphere sizes to make each new piece barely stable under the weight of those above it. The end result is an entire tower that’s paradoxically both barely stable and yet very hard to accidentally knock over. This basic idea can take many different forms - here are several other Gravitrees I’ve made over the years.&lt;/p&gt;
 
-&lt;p&gt;[PHOTOS]&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_christmas.jpg&quot; width=&quot;15%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_arrows.webp&quot; width=&quot;27%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_cages.webp&quot; width=&quot;21%&quot; /&gt;
+&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_centipede.webp&quot; width=&quot;12%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_spider.webp&quot; width=&quot;23%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/gravitree/gravitree_spinner.gif&quot; width=&quot;28%&quot; /&gt;
+&lt;/p&gt;
 
 &lt;p&gt;There’s a deeper trick we’re playing here, one that I see in inventions from reaction wheels to faster-than-wind sailboats: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they’re not &lt;em&gt;technically&lt;/em&gt; breaking their mother’s rules. For all of science’s immense capacity for social good, that that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it’s a potent way to inspire the curious to think a little closer about how the universe really works.&lt;/p&gt;
 </description>
