@@ -17,7 +17,7 @@ I'm writing this to introduce and explain the **gravitree**, a type of balancing
    <img src="{{site.imgurl}}/gravitree/gravitree_main.gif" width="22%">
 </p>
 
-The stack is easy to assemble and absurdly stable; when people first hold it, they're almost always surprised by how it takes no effort to keep upright and it stays balanced [even during drastic motions](https://youtu.be/3jd2jpJoXgA). I currently have several of them up as room decorations and desk ornaments, and I'm pretty sure they'll stand through a sizable earthquake. What's the trick?
+The stack is easy to assemble and absurdly stable; when people first hold it, they're usually surprised by how easily it stays upright and the way it stays balanced [even during drastic motions](https://youtu.be/3jd2jpJoXgA). I currently have several of them up as room decorations and desk ornaments, and I'm pretty sure they'll stand through a sizable earthquake. What's the trick?
 
 It turns out the gravitree is best understood from the top down: we'll first take a close look at the top piece, then at the top two together, then the top three, all the way down. As we'll see, it's just using the same trick again and again.
 
