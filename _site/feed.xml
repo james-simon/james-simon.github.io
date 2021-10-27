@@ -5,9 +5,96 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 12 Oct 2021 00:33:01 -0700</pubDate>
-    <lastBuildDate>Tue, 12 Oct 2021 00:33:01 -0700</lastBuildDate>
+    <pubDate>Tue, 26 Oct 2021 20:33:54 -0700</pubDate>
+    <lastBuildDate>Tue, 26 Oct 2021 20:33:54 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>A first-principles theory of neural net generalization</title>
+        <description>&lt;p&gt;&lt;em&gt;This post also appeared on the &lt;a href=&quot;https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/&quot;&gt;BAIR blog&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/eigenlearning_exp_matches_th.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
+&lt;/p&gt;
+&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
+&lt;small&gt;
+&lt;i&gt;&lt;b&gt;Fig 1.&lt;/b&gt; Measures of generalization performance for neural networks trained on four different boolean functions (colors) with varying training set size. For both MSE (left) and learnability (right), theoretical predictions (curves) closely match true performance (dots). &lt;/i&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Deep learning has proven a stunning success for countless problems of interest, but this success belies the fact that, at a fundamental level, we do not understand why it works so well. Many empirical phenomena, well-known to deep learning practitioners, remain mysteries to theoreticians. Perhaps the greatest of these mysteries has been the question of generalization: &lt;em&gt;why do the functions learned by neural networks generalize so well to unseen data?&lt;/em&gt; From the perspective of classical ML, neural nets’ high performance is a surprise given that they are so overparameterized that they could easily represent countless poorly-generalizing functions.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;Questions beginning in “why” are difficult to get a grip on, so we instead take up the following quantitative problem: &lt;em&gt;given a network architecture, a target function \(f\), and a training set of \(n\) random examples, can we efficiently predict the generalization performance of the network’s learned function \(\hat{f}\)?&lt;/em&gt; A theory doing this would not only explain why neural networks generalize well on certain functions but would also tell us which function classes a given architecture is well-suited for and potentially even let us choose the best architecture for a given problem from first principles, as well as serving as a general framework for addressing a slew of other deep learning mysteries.&lt;/p&gt;
+
+&lt;p&gt;It turns out this is possible: in our recent &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;paper&lt;/a&gt;, &lt;em&gt;we derive a first-principles theory that allows one to make accurate predictions of neural network generalization&lt;/em&gt; (at least in certain settings). To do so, we make a chain of approximations, first approximating a real network as an idealized infinite-width network, which is known to be equivalent to kernel regression, then deriving new approximate results for the generalization of kernel regression to yield a few simple equations that, despite these approximations, closely predict the generalization performance of the original network.&lt;/p&gt;
+
+&lt;h2 id=&quot;finite-network-approx-infinite-width-network--kernel-regression&quot;&gt;&lt;strong&gt;Finite network \(\approx\) infinite-width network \(=\) kernel regression&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;A major vein of deep learning theory in the last few years has studied neural networks of infinite width. One might guess that adding more parameters to a network would only make it harder to understand, but, by results akin to central limit theorems for neural nets, infinite-width nets actually take very simple analytical forms. In particular, a wide network trained by gradient descent to zero MSE loss will always learn the function&lt;/p&gt;
+
+\[\hat{f}(x) = K(x, \mathcal{D}) K(\mathcal{D}, \mathcal{D})^{-1} f(\mathcal{D}),\]
+
+&lt;p&gt;where \(\mathcal{D}\) is the dataset, \(f\) and \(\hat{f}\) are the target and learned functions respectively, and \(K\) is the network’s &lt;a href=&quot;https://arxiv.org/abs/1806.07572&quot;&gt;“neural tangent kernel” (NTK)&lt;/a&gt;. This is a matrix equation: \(K(x, \mathcal{D})\) is a row vector, \(K(\mathcal{D}, \mathcal{D})\) is the “kernel matrix,” and \(f(\mathcal{D})\) is a column vector. The NTK is different for every architecture class but (at least for wide nets) the same every time you initialize. Because of this equation’s similarity to the normal equation of linear regression, it goes by the name of “kernel regression.”&lt;/p&gt;
+
+&lt;p&gt;The sheer simplicity of this equation might make one suspect that an infinite-width net is an absurd idealization with little resemblance to useful networks, but experiments show that, as with the regular central limit theorem, infinite-width results usually kick in sooner than you’d expect, at widths in only the hundreds. Trusting that this first approximation will bear weight, our challenge now is to understand kernel regression.&lt;/p&gt;
+
+&lt;h2 id=&quot;approximating-the-generalization-of-kernel-regression&quot;&gt;&lt;strong&gt;Approximating the generalization of kernel regression&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;In deriving the generalization of kernel regression, we get a lot of mileage from a simple trick: we look at the learning problem in the eigenbasis of the kernel. Viewed as a linear operator, the kernel has eigenvalue/vector pairs $(\lambda_i, \phi_i)$ defined by the condition that&lt;/p&gt;
+
+\[\int\limits_{\text{input space}} \! \! \! \! K(x, x’) \phi_i(x’) d x’ = \lambda_i \phi_i(x).\]
+
+&lt;p&gt;Intuitively speaking, a kernel is a similarity function, and we can interpet its high-eigenvalue eigenfunctions as mapping “similar” points to similar values.&lt;/p&gt;
+
+&lt;p&gt;The centerpiece of our analysis is a measure of generalization we call “learnability” which quantifies the alignment of \(f\) and \(\hat{f}\). With a few minor approximations, we derive the extremely simple result that the learnability of each eigenfunction is given by&lt;/p&gt;
+
+\[\mathcal{L}(\phi_i) = \frac{\lambda_i}{\lambda_i + C},\]
+
+&lt;p&gt;where \(C\) is a constant. Higher learnability is better, and thus this formula tells us that &lt;em&gt;higher-eigenvalue eigenfunctions are easier to learn!&lt;/em&gt; Moreover, we show that, as examples are added to the training set, \(C\) gradually decreases from \(\infty\) to \(0\), which means that each mode’s \(\mathcal{L}(\phi_i)\) gradually increases from \(0\) to \(1\), with higher eigenmodes learned first. Models of this form have a strong inductive bias towards learning higher eigenmodes.&lt;/p&gt;
+
+&lt;p&gt;We ultimately derive expressions for not just learnability but for &lt;em&gt;all first- and second-order statistics of the learned function,&lt;/em&gt; including recovering previous expressions for MSE. We find that these expressions are quite accurate for not just kernel regression but finite networks, too, as illustrated in Fig 1.&lt;/p&gt;
+
+&lt;h2 id=&quot;no-free-lunch-for-neural-networks&quot;&gt;&lt;strong&gt;No free lunch for neural networks&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;In addition to approximations for generalization performance, we also prove a simple exact result we call the “no-free-lunch theorem for kernel regression.” The classical &lt;a href=&quot;https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.390.9412&amp;amp;rep=rep1&amp;amp;type=pdf&quot;&gt;no-free-lunch theorem for learning algorithms&lt;/a&gt; roughly states that, averaged over all possible target functions \(f\), any supervised learning algorithm has the same expected generalization performance. This makes intuitive sense - after all, most functions look like white noise, with no discernable patterns - but it is also not very useful since the set of “all functions” is usually enormous. Our extension, specific to kernel regression, essentially states that&lt;/p&gt;
+
+\[\begin{align}
+	\sum_i \mathcal{L}(\phi_i) = \text{[training set size]}.
+\end{align}\]
+
+&lt;p&gt;That is, the sum of learnabilities across all kernel eigenfunctions equals the training set size. This exact result paints a vivid picture of a kernel’s inductive bias: the kernel has exactly $\text{[training set size]}$ units of learnability to parcel out to its eigenmodes - no more, no less - and thus eigenmodes are locked in a zero-sum competition to be learned. As shown in Fig 2, we find that this basic conservation law holds exactly for NTK regression and even approximately for finite networks. To our knowledge, this is the first result quantifying such a tradeoff in kernel regression or deep learning. It also applies to linear regression, a special case of kernel regression.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/eigenlearning_conservation_of_lrn.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
+&lt;small&gt;
+&lt;i&gt; &lt;b&gt;Fig 2.&lt;/b&gt; For four different network architectures (fully-connected &lt;/i&gt;ReLU&lt;i&gt; and &lt;/i&gt;tanh&lt;i&gt; nets with one or four hidden layers), total learnability summed across all eigenfunctions is equal to the size of the training set. Colored components show learnabilities of individual eigenfunctions. For kernel regression with the network’s NTK (left bar in each pair), the sum is exactly the trainset size, while real trained networks (right bar in each pair) sum to approximately the trainset size. &lt;/i&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;These results show that, despite neural nets’ notorious inscrutability, we can nonetheless hope to understand when and why they work well. As in other fields of science, if we take a step back, we can find simple rules governing what naively appear to be systems of incomprehensible complexity. More work certainly remains to be done before we truly understand deep learning - our theory only applies to MSE loss, and the NTK’s eigensystem is yet unknown in all but the simplest cases - but our results so far suggest we have the makings of a bona fide theory of neural network generalization on our hands.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;the paper&lt;/a&gt; “Neural Tangent Kernel Eigenvalues Accurately Predict Generalization,” which is joint work with labmate Maddie Dickens and advisor Mike DeWeese. We provide &lt;a href=&quot;https://github.com/james-simon/eigenlearning&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 25 Oct 2021 02:00:00 -0700</pubDate>
+        <link>http://localhost:4000/physics/2021/10/25/eigenlearning.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics/2021/10/25/eigenlearning.html</guid>
+        
+        
+        <category>physics</category>
+        
+      </item>
     
       <item>
         <title>The gravitree</title>
@@ -611,67 +698,6 @@ Above that, there would be massive oceans. Water is most of the mass of a fish, 
         
         
         <category>physics</category>
-        
-      </item>
-    
-      <item>
-        <title>The expected cost of breaking quarantine</title>
-        <description>&lt;!-- ![grid26] --&gt;
-&lt;!--exc--&gt;
-
-&lt;p&gt;In countries around the world, a common message has issued from government to populace: isolate yourselves, or covid-19 will take more lives.  Most of the US is now under some degree of quarantine.  For the average American, though, the risks of coronavirus are minimal; isolation serves more as a means to shield society at large than as individual protection.  That raises a natural question, though: since quarantine in the US isn’t enforced, how bad would it be to see people anyways?&lt;/p&gt;
-
-&lt;p&gt;There’s a worldwide effort to predict the effects of coronavirus given different courses of societal action, but there’s been less focus on the risks of individual actions.  With the climate crisis, we have both global predictions and ways to gauge individuals’ impacts; a person’s carbon footprint is quantifiable.  With this pandemic, however, we agree that social distancing is crucial, but personal impact isn’t quantified.  As every person strikes a balance between isolation and normalcy - few people simply never go outside - it would help to have some way to gauge just how bad social interaction is.&lt;/p&gt;
-
-&lt;p&gt;One way to get a rough sense of the effects of different actions is with simple models of disease spread through a population.  As a first stab at a calculation, consider a population of \(N\) people of which \(c\) currently have a disease.  This disease shows no symptoms, so infected people don’t know to isolate, and it never goes away - these \(c\) people are contagious forever.  As a model for spreading, imagine people interact in randomly-drawn pairs, and if one person has the disease and the other doesn’t, the first will give it to the second.&lt;/p&gt;
-
-&lt;p&gt;It’s clear from the start that the whole population’s eventually going to be infected, but one thing we can quantify is &lt;em&gt;how many people get the disease earlier than they would’ve otherwise if one person doesn’t isolate.&lt;/em&gt;  Every infected person’s going to have a number of people downstream from them including people they’ve infected, people those people have infected, and so on.  In this model, people downstream of you would’ve stayed healthy longer if you’d isolated.  Because all the \(N - c\) uninfected people will eventually be downstream from one of the \(c\) infected people, each of the \(c\) infected people expects to have \(\frac{N - c}{c}\) people downstream on average.&lt;/p&gt;
-
-&lt;p&gt;Now imagine person \(i\) and person \(j\) have contact.  If one is infected and the other is uninfected, which happens with new-case probability \(p_{\text{nc}} = \frac{2c(N - c)}{N^2}\), a new infected person is created; there are now \(c + 1\) sick people, and the extra infected person has on average \(\frac{N - c - 1}{c + 1}\) people downstream who will get sick sooner than they would’ve if person \(i\) and person \(j\) hadn’t interacted.  Including the one of those two who got sick, that’s \(x = \frac{N - c - 1}{c + 1} + 1 = \frac{N}{c + 1}\) infections sped up per new case.  Multiplying by the probability and assuming that \(N, c \gg 1\) gives \(p_{\text{nc}} x = \frac{2c(N - c)}{N^2}\frac{N}{c + 1} \approx \frac{2(N - c)}{N}\).  When \(c \ll N\), like it is for the coronavirus, this is roughly \(2\); in this model, interacting with a random person you could’ve avoided leads to two cases of the disease happening earlier than they would’ve otherwise.  This is approximately true whether the current rate is one in fifty or one in a million; if the probability of a stranger having the disease is lower, then the expected number of downstream infections is proportionally higher.  This number of two infections is just an average - it has a high statistical uncertainty - but reasoning based on averages makes sense in this case.&lt;/p&gt;
-
-&lt;p&gt;This isn’t really how coronavirus works, though; covid doesn’t last forever, and people with symptoms can isolate.  To make the model more realistic, let’s say there are \(c\) \(c\)urrently \(c\)orona-\(c\)ontagious people who have the disease but either haven’t shown symptoms yet or won’t ever and \(r\) people who are either currently showing symptoms and isolating or have already gotten better, so they can’t infect anyone else and are \(r\)emoved from the calculation.  For now, we’ll still assume every person eventually gets the disease.  The new probability of a new case when two people interact is \(p'_{\text{nc}} = \frac{2c(N - c - r)}{N^2}\), and the expected number of downstream people from a new infected person (plus that person) is \(x' = \frac{N - r}{c + 1}\).  The expected number of accelerated infections per interaction is \(p'_{\text{nc}}x' = \frac{2(N - r)(N - c - r)}{N^2}\).  For the coronavirus, \(r,c \ll N\) - only a small fraction of the population has been infected - so this simplifies to 2 again.  Even allowing for isolation and resistance, interacting with a random person leads to, on average, two cases of coronavirus happening earlier than they would’ve. &lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;So far, we’ve assumed that everybody’s going to get the coronavirus.  That’s not likely, though; in a worst-case scenario, once ~70% of the population has been infected, herd immunity should extinguish the virus, and before then either a vaccine or extensive contact tracing could stop the virus’ spread.  If the endgame of the pandemic is herd immunity, individual actions will affect when people get the disease, but the total number of cases will mostly be set by the herd immunity threshold.  However, if a vaccine stops the spread, for example, timing matters more.  Suppose that 1000 people in a large state currently have the virus, and by the time a vaccine stops the pandemic 100000 new people have gotten it.  If the population’s much bigger than 100000, the cases don’t interact, and we can estimate that if there were 1001 contagious people to begin with, there would’ve been 100100 new cases instead; every current case causes 100 future cases.  As before, let’s say \(N\) is the population, \(r\) people are recovered or symptomatic, \(c\) people are contagious and asymptomatic, and \(s\) people are currently uninfected but will eventually get the disease (\(s\)urely \(s\)ometime \(s\)icken).  Assuming \(s\) is small compared to the total number of uninfected people as discussed (\(s \ll N - r - c\)), the average current infection causes \(y = s/c\) preventable cases.  The probability of an interaction generating a new case is still \(p'_{\text{nc}} = \frac{2c(N - c - r)}{N^2}\), which means that, in this model of a terminating pandemic, each extra interaction between strangers causes \(p'_{\text{nc}} y = \frac{2s(N - c - r)}{N^2} \approx \frac{2s}{N}\) preventable cases.  This means that, optimistically, if ~25% of the population eventually gets coronavirus and a much smaller percentage has it now, every unnecessary interaction with a stranger will cause ~0.5 extra cases of the disease.&lt;/p&gt;
-
-&lt;p&gt;This model has a few key shortcomings:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;Interactions aren’t all or nothing; most interactions fall between six feet of separation and sharing bodily fluids, so the final numbers should be reduced proportional to how likely the interaction in question is to spread coronavirus.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Actual estimates of the number of people who’ll get coronavirus are often over 50%, in which case cases interfere with each other and the final result will be less than \(\frac{2s}{N}\).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Interactions aren’t random, and interacting with someone you’ve interacted with before isn’t as bad as talking to a stranger.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If society works harder to stop the pandemic the worse the pandemic is, then there’s an unconsidered second order effect in which more cases of the coronavirus now can lead to fewer later.  Also, as mentioned, if the endgame of the pandemic is herd immunity, then in terms of total number of cases, it’s almost irrelevant what an individual does.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;These are all reasons why our calculation of \(\frac{2s}{N}\) extra cases per interaction is an overestimate.  A slightly more complicated calculation might be able to account for (2), and we can deal with (3) by saying that this calculation only applies to interactions with people you don’t already see very frequently and counts back-to-back interactions with the same person as one interaction.  (4) deals with different ways the pandemic could play out; nobody can predict that, but for now let’s suppose we’re in a regime where the calculation applies (where more cases now basically lead to more total cases); perhaps there’s only a 50% chance of that, in which case you could reduce the final expected cost by a factor of two.&lt;/p&gt;
-
-&lt;p&gt;(1), the most glaring flaw, is one we can account for, though.  This analysis assumed every contaminated interaction had 100% probability of spreading the disease; what is that probability in reality?  It would take an expert and a lot of information on the exact details of the interaction to give a precise answer, but we can make a decent approximation.  Epidemiologists use \(R_0\) to represent the average number of people each person with coronavirus infects.  If \(R_0 &amp;gt; 1\), the pandemic is getting exponentially worse, and if \(R_0 &amp;lt; 1\), it’s getting better.  \(R_0\) is estimated at 2 to 3 before social distancing, but it now varies greatly; however, since the number of new cases per day in the US &lt;a href=&quot;https://news.google.com/covid19/map?hl=en-US&amp;amp;gl=US&amp;amp;ceid=US%3Aen&amp;amp;mid=%2Fm%2F09c7w0&quot;&gt;has been pretty constant for a few weeks&lt;/a&gt; (though it varies by state), we can estimate \(R_0 \approx 1\).  If the average US citizen with coronavirus interacts with \(q\) people while infectious, then each interaction has  a \(1/q\) probability of transmission.  Asymptomatic patients are contagious for about two weeks, while symptomatic patients are contagious for a few days before their symptoms start and they hopefully isolate, and with a &lt;a href=&quot;https://www.hopkinsguides.com/hopkins/view/Johns_Hopkins_ABX_Guide/540747/all/Coronavirus_COVID_19__SARS_CoV_2_&quot;&gt;25-50% probability of a case being asymptomatic&lt;/a&gt; let’s estimate that the average contagious period is five days.  How many interactions do you think the average American has in five days during this quarantine?  I couldn’t find polling data estimating this, but in Berkeley it seems like most people only get close to a handful of other people without a mask.  Let’s give a highball estimate of 20 relatively close interactions over five days and suppose that only these close interactions will spread the virus.  That puts each close, maskless interaction at a 5% chance of spreading the virus.&lt;/p&gt;
-
-&lt;p&gt;With this estimate, we can adjust our final number: assuming 25% of the population gets coronavirus before it’s stopped and each contaminated interaction has a 5% chance of spreading the disease, we calculate that each time you have a close interaction with a new person it causes 0.5*0.05 = 0.025 new, preventable cases of coronavirus.  With a death rate of 1%, this gives 0.00025 deaths/interaction.  That’s quite high - odds of 1 in 4000 - and with the assumptions we’ve made, it might even be an underestimate.  If a fraction of a life seems intangible, Prof. Oskar Hallatschek pointed out that governments quantify the &lt;a href=&quot;https://en.wikipedia.org/wiki/Value_of_life&quot;&gt;value of a human life&lt;/a&gt;; it usually falls around a few million dollars.  If the government fined people for interactions in proportion to their risk to human life, with this estimate the fine would be around $1000.&lt;/p&gt;
-
-&lt;p&gt;These calculations are rough; though I think their logic is sound, they are carved with a heavy chisel designed only to give the right basic shape.  That is far better than nothing, though, and the hazy figure of a 0.025% chance of causing the end of a human life when interacting with a stranger is a far more tangible motivation than a government mandate to stay inside for the vague public good.  It gives a tool for reasoning; some things, like doctor’s visits, are clearly worth the risk, while others clearly aren’t, and though in most cases the right thing might’ve been intuitive, in borderline cases it helps to have a risk in mind.  At one step above the individual level, with restaurants and their ilk considering reopening, that risk of 1 in 4000 quickly compounds; if just 10 people all interact, that’s \(10 + 9 + ... + 1 = 55\) interactions, with over a 1% chance of causing a death, and that’s not accounting for the fact that interactions with people who’ve just interacted are riskier than normal.  If 100 people share germs at a concert, that gives 5050 interactions, over one statistical death, but that’s a wild underestimate for the same reason.  At a time when the US population is getting anxious and rash, it helps to have even a rough estimate of the risks involved as an aid to rationality.&lt;/p&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Someone I talked to after posting this pointed out that the number of downstream people equalling the number of accelerated infections doesn’t make sense.  He’s right - it’s actually possible for the original infection tree to catch up to the new branch.  The simplest case is when the first random contact in the model happens to be between the two people who had the unnecessary contact we’re considering - it doesn’t matter if they interacted because they’re about to interact again, and everybody who’s downstream of the extra patient would’ve gotten sick at the same time anyways.  The numbers of accelerated cases are actually just upper bounds.  I’ve left the analysis there because it explains variables and ideas used in the rest of the post, which this problem doesn’t affect. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sun, 17 May 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/stats/2020/05/17/covid-calculation.html</link>
-        <guid isPermaLink="true">http://localhost:4000/stats/2020/05/17/covid-calculation.html</guid>
-        
-        
-        <category>stats</category>
         
       </item>
     
