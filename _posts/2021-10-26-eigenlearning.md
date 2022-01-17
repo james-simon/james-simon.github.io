@@ -2,7 +2,7 @@
 layout: post
 title: "A first-principles theory of neural net generalization"
 date: 2021-10-26
-category: physics
+category: deep learning
 ---
 
 *This post also appeared on the [BAIR blog](https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/).*
