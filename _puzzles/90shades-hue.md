@@ -4,7 +4,7 @@ type: solution
 title: 90 Shades of Black
 flavortext: Agent Shade, who made this one, is a friend of mine; she seems a dark character at first impression, but that changes as you get to know her.
 origin: VT Hunt 2022
-answer: ether
+answer: hue
 ---
 
 Though the grid looks pure white and black at first glance, the squares are actually a polychromatic collage of different dark shades, and some of the lines are grey. Except for a few true-black squares, each dark square had red, green, and blue values between 1 and 26, and their color could be read as a three-letter string. Most of these denoted colors, like BLK, WHT, RED, GRN, or BLU. Recoloring squares accordingly, we get the following grid:
