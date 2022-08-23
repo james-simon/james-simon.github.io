@@ -1,6 +1,6 @@
 ---
 layout: post
-title:	"Newton vs. Leibniz Rap Battle"
+title:	"Newton vs. Leibniz rap battle"
 date:	2022-01-17 1:00
 category: physics, random, rap-battle
 read_time: (5 min watch)

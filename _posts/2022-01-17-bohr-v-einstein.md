@@ -1,6 +1,6 @@
 ---
 layout: post
-title:	"Einstein vs. Bohr Rap Battle"
+title:	"Einstein vs. Bohr rap battle"
 date:	2022-01-17 1:01
 category: physics, random
 read_time: (5 min watch)
