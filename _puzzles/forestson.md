@@ -5,6 +5,7 @@ title: Forest Son
 flavortext: What belongs in the middle?
 origin: Made for the EPA, 2020
 answer: air
+difficulty: 3
 ---
 
 <p align="center">

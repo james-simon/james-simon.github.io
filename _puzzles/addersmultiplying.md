@@ -4,6 +4,7 @@ type: puzzle
 title: Adders Multiplying
 flavortext: Like all good lovers, they start from the head.
 answer: lemons
+difficulty: 4
 ---
 
 <p align="center">

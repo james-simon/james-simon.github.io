@@ -5,6 +5,7 @@ title: Flags
 flavortext: 
 origin: VT Hunt 2018
 answer: world
+difficulty: 3
 ---
 
 <p align="center">

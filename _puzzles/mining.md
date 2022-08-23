@@ -5,6 +5,7 @@ title: Mining
 flavortext: 
 origin: VT Hunt 2020
 answer: flammable
+difficulty: 7
 ---
 
 <p align="center">

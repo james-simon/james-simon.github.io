@@ -291,7 +291,7 @@ a:visited {
 
    <a name="puzzles"></a>
    <h2>Puzzles</h2>
-   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a <a href="https://en.wikipedia.org/wiki/VT_Hunt">university tradition</a>, with the 2019, '20, and '21 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. The easiest is Flags, and the most satisfying to solve, in my view, is Maelstrom.</p>
+   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher.  It became a university tradition, with the 2019-22 VT Hunts each drawing 1000-2000 participants and raising money for charities.  I've also helped concoct six other puzzle events starting in high school.  A few of my favorite puzzles I've made are below. They're roughly ordered from easiest to hardest, so you can pick where to start.</p>
 
 <!--    {% assign npzls = 0 %}
    {% for doc in site.puzzles %}
@@ -314,15 +314,17 @@ a:visited {
    }
 </style>
 <div class="row justify-content-md-center">
-   {% for doc in site.puzzles %}
-   {% if doc.type == "puzzle" %}
-      <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-         <img class="center-cropped" src="{{ site.imgurl }}/{{ doc.title | replace: ' ', '' | downcase }}.png">
-         <div class="tint"></div>
-         <a class="hoverinfo" href="{{ doc.url | replace: '.html', '' }}"><h4>{{ doc.title | upcase }}</h4></a>
-      </div>
-   {% endif %}
-   {% endfor %}
+  {% for diff in (1..10) %}
+    {% for doc in site.puzzles %}
+      {% if doc.type == "puzzle" and doc.difficulty == diff %}
+        <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+          <img class="center-cropped" src="{{ site.imgurl }}/{{ doc.title | replace: ' ', '' | downcase }}.png">
+          <div class="tint"></div>
+          <a class="hoverinfo" href="{{ doc.url | replace: '.html', '' }}"><h4>{{ doc.title | upcase }}</h4></a>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
 </div>
 
 

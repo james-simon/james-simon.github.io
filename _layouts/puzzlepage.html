@@ -16,8 +16,11 @@ layout: default
   
     <hr class="featurette-divider">
     
-    <p style="text-align:center">The answer is an English word. You'll know it's right when you have it. To check your answer, add &quot;-xxxxx&quot; to this URL, where &quot;xxxxx&quot; is the answer in all lowercase. If you've tried it and are really stuck, the <a href="{{site.baseurl}}{{page.url | replace: ".html", "" }}-{{page.answer}}" style="font-size:16px">solution</a> is here, though I'd ask that you feel slightly sheepish when clicking the link.</p>
-
+    <p style="text-align:center">
+      {% if page.coauthor %}
+        Made in collaboration with {{ page.coauthor }}.
+      {% endif %}
+      The answer is an English word. You'll know it's right when you have it. To check your answer, add &quot;-xxxxx&quot; to this URL, where &quot;xxxxx&quot; is the answer in all lowercase. If you've tried it and are really stuck, the <a href="{{site.baseurl}}{{page.url | replace: ".html", "" }}-{{page.answer}}" style="font-size:16px">solution</a> is here, though I'd ask that you feel slightly sheepish when clicking the link.</p>
   </div>
 
 </article>
