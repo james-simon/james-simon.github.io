@@ -16,4 +16,4 @@ The calculation for snake zero is shown below.
    <img src="{{site.imgurl}}/addersmultiplyingsol.png" width="80%" />
 </p>
 
-In order, the six snakes gave 12, 5, 13, 15, 14, and 19, which, mapping A to 1 and Z to 26, translates to "LEMONS", the final answer.
+In order, the six snakes gave 12, 5, 13, 15, 14, and 19, which, mapping A to 1 and Z to 26, translates to LEMONS, the final answer.

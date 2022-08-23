@@ -2,7 +2,7 @@
 layout: post
 title:	"The principle of least power dissipation"
 date:	2020-09-06
-category: physics
+category: physics, research
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

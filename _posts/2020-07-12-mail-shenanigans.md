@@ -2,7 +2,7 @@
 layout: post
 title:   "Messing with the postal service"
 date: 2020-07-12
-category: mail
+category: mail, random
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

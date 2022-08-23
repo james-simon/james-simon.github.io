@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "A first-principles theory of neural net generalization"
+title: "A theory of generalization for wide neural nets"
 date: 2021-10-26
-category: deep learning
+category: deep learning, research
 ---
 
 *This post also appeared on the [BAIR blog](https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/).*

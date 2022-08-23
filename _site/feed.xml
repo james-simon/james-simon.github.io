@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 17 Jan 2022 20:01:17 -0500</pubDate>
-    <lastBuildDate>Mon, 17 Jan 2022 20:01:17 -0500</lastBuildDate>
+    <pubDate>Mon, 22 Aug 2022 23:24:12 -0700</pubDate>
+    <lastBuildDate>Mon, 22 Aug 2022 23:24:12 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -159,12 +159,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/p&gt;
 &lt;p&gt;Your nanoscopic jabs at me are hardly worth refutin’ \ When all’s said and done, bud, you’re Leibniz, I’m Newton.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:01:00 -0500</pubDate>
-        <link>http://localhost:4000/physics/2022/01/17/bohr-v-einstein.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2022/01/17/bohr-v-einstein.html</guid>
+        <pubDate>Mon, 17 Jan 2022 01:01:00 -0800</pubDate>
+        <link>http://localhost:4000/physics,%20random/2022/01/17/bohr-v-einstein.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20random/2022/01/17/bohr-v-einstein.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, random</category>
         
       </item>
     
@@ -180,17 +180,17 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/iframe&gt;
 &lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:00:00 -0500</pubDate>
-        <link>http://localhost:4000/physics/2022/01/17/newton-v-leibniz.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2022/01/17/newton-v-leibniz.html</guid>
+        <pubDate>Mon, 17 Jan 2022 01:00:00 -0800</pubDate>
+        <link>http://localhost:4000/physics,%20random,%20rap-battle/2022/01/17/newton-v-leibniz.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20random,%20rap-battle/2022/01/17/newton-v-leibniz.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, random, rap-battle</category>
         
       </item>
     
       <item>
-        <title>A first-principles theory of neural net generalization</title>
+        <title>A theory of generalization for wide neural nets</title>
         <description>&lt;p&gt;&lt;em&gt;This post also appeared on the &lt;a href=&quot;https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/&quot;&gt;BAIR blog&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -267,12 +267,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;the paper&lt;/a&gt; “Neural Tangent Kernel Eigenvalues Accurately Predict Generalization,” which is joint work with labmate Maddie Dickens and advisor Mike DeWeese. We provide &lt;a href=&quot;https://github.com/james-simon/eigenlearning&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 26 Oct 2021 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/deep%20learning/2021/10/26/eigenlearning.html</link>
-        <guid isPermaLink="true">http://localhost:4000/deep%20learning/2021/10/26/eigenlearning.html</guid>
+        <pubDate>Tue, 26 Oct 2021 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/deep%20learning,%20research/2021/10/26/eigenlearning.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deep%20learning,%20research/2021/10/26/eigenlearning.html</guid>
         
         
-        <category>deep learning</category>
+        <category>deep learning, research</category>
         
       </item>
     
@@ -343,12 +343,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;There’s a deeper trick we’re playing here, one that I see in inventions from &lt;a href=&quot;https://en.wikipedia.org/wiki/Reaction_wheel&quot;&gt;reaction wheels&lt;/a&gt; to &lt;a href=&quot;https://www.youtube.com/watch?v=jyQwgBAaBag&quot;&gt;faster-than-wind sailboats&lt;/a&gt;: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they’re not &lt;em&gt;technically&lt;/em&gt; breaking their mother’s rules. For all of science’s immense capacity for social good, that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it’s a potent way to inspire the curious to think a little closer about how the universe really works.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 11 Oct 2021 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/physics/2021/10/11/gravitrees.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2021/10/11/gravitrees.html</guid>
+        <pubDate>Mon, 11 Oct 2021 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/physics,%20fun-science/2021/10/11/gravitrees.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2021/10/11/gravitrees.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, fun-science</category>
         
       </item>
     
@@ -442,12 +442,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 29 Nov 2020 00:00:00 -0500</pubDate>
-        <link>http://localhost:4000/physics/2020/11/29/rocketball.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2020/11/29/rocketball.html</guid>
+        <pubDate>Sun, 29 Nov 2020 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/physics,%20fun-science/2020/11/29/rocketball.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2020/11/29/rocketball.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, fun-science</category>
         
       </item>
     
@@ -486,12 +486,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;We’ve shown that the principle of least power dissipation gives the right answers for steady-state circuit problems.  If this is really a general law of nature, though, it’d probably show up outside of just this one narrow context.  It turns out that it can also be applied to &lt;em&gt;fluid circuits&lt;/em&gt;, which are sometimes studied as somewhat-similar sister systems to electric circuits.  In the sort of fluid circuit I’m imagining, there are networks of pipes of different thicknesses instead of resistors with different resistances.  Water flow rate \(Q\) replaces current, pressure \(P\) replaces voltage, the rate of power dissipation is \(PQ\) instead of \(VI\), and pipes have an effective resistance.  An ideal pipe with laminar flow has \(\Delta P\) proportional to \(Q\) in &lt;a href=&quot;https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation&quot;&gt;an equation analogous to Ohm’s Law&lt;/a&gt;, and the quantity analogous to resistance depends on the pipe’s dimensions and the viscosity of the fluid.  The fact that these equations map onto each other so perfectly means that fluid through a network of pipes minimizes power dissipation just as electrical circuits do.  I’d be willing to bet that, just as we derived part of the differential equation for current flow, you could derive part of the Navier-Stokes equations just from minimizing power dissipation.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 06 Sep 2020 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/physics/2020/09/06/least_power_dissipation.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2020/09/06/least_power_dissipation.html</guid>
+        <pubDate>Sun, 06 Sep 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/physics,%20research/2020/09/06/least_power_dissipation.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20research/2020/09/06/least_power_dissipation.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, research</category>
         
       </item>
     
@@ -583,12 +583,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
   &lt;li&gt;&lt;a href=&quot;https://sci2s.ugr.es/keel/pdf/specific/articulo/Schmidtt%20on-the-complexity-of.pdf&quot;&gt;The most recent paper I’ve found on these nets&lt;/a&gt;, which was mentioned above, argues that multiplicative neurons perform operations that need large numbers of summing units, stating that “networks of summing units do not seem to be an adequate substitute for genuine multiplicative units.”  This post basically disproves that!&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Mon, 31 Aug 2020 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/deep%20learning/2020/08/31/multiplicative-neural-nets.html</link>
-        <guid isPermaLink="true">http://localhost:4000/deep%20learning/2020/08/31/multiplicative-neural-nets.html</guid>
+        <pubDate>Mon, 31 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/deep%20learning,%20research/2020/08/31/multiplicative-neural-nets.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deep%20learning,%20research/2020/08/31/multiplicative-neural-nets.html</guid>
         
         
-        <category>deep learning</category>
+        <category>deep learning, research</category>
         
       </item>
     
@@ -622,12 +622,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XKAtwxw7SWk&quot;&gt;Here’s a video of the second trial.&lt;/a&gt;  Most people were right at least once.  Nobody, however, predicted the stalactite.&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 20 Aug 2020 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/physics/2020/08/20/upside-down-candle.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics/2020/08/20/upside-down-candle.html</guid>
+        <pubDate>Thu, 20 Aug 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/physics,%20fun-science/2020/08/20/upside-down-candle.html</link>
+        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2020/08/20/upside-down-candle.html</guid>
         
         
-        <category>physics</category>
+        <category>physics, fun-science</category>
         
       </item>
     
@@ -734,12 +734,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 12 Jul 2020 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/mail/2020/07/12/mail-shenanigans.html</link>
-        <guid isPermaLink="true">http://localhost:4000/mail/2020/07/12/mail-shenanigans.html</guid>
+        <pubDate>Sun, 12 Jul 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/mail,%20random/2020/07/12/mail-shenanigans.html</link>
+        <guid isPermaLink="true">http://localhost:4000/mail,%20random/2020/07/12/mail-shenanigans.html</guid>
         
         
-        <category>mail</category>
+        <category>mail, random</category>
         
       </item>
     
@@ -788,12 +788,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;When factions face off, spears bristling, perhaps the boldest, most important place to stand is in the middle with hands extended to either side. Polarization in the US is as real a crisis as the coronavirus, but unlike the virus, you have significant power to fight it directly.&lt;/p&gt;
 
 </description>
-        <pubDate>Sat, 04 Jul 2020 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/society/2020/07/04/common-ground.html</link>
-        <guid isPermaLink="true">http://localhost:4000/society/2020/07/04/common-ground.html</guid>
+        <pubDate>Sat, 04 Jul 2020 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/society,%20random/2020/07/04/common-ground.html</link>
+        <guid isPermaLink="true">http://localhost:4000/society,%20random/2020/07/04/common-ground.html</guid>
         
         
-        <category>society</category>
+        <category>society, random</category>
         
       </item>
     

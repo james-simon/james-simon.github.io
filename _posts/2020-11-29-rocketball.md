@@ -2,7 +2,7 @@
 layout: post
 title:	"Could you propel a spacecraft using sports projectiles?"
 date:	2020-11-29
-category: physics
+category: physics, fun-science
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

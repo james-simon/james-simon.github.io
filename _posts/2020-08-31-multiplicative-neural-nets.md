@@ -2,7 +2,7 @@
 layout: post
 title:	"Multiplicative neural networks"
 date:	2020-08-31
-category: deep learning
+category: deep learning, research
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

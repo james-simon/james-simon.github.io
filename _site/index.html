@@ -142,7 +142,7 @@ a:visited {
       <div class="col-md-9">
          <h1>Jamie Simon</h1>
 
-         <p>I am a 3rd-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of machine learning methods. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
+         <p>I'm a 4th-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of deep neural networks. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. In my free time, I like running, puzzles, spending time in forests, and balancing things.</p>
       </div>
    </div>
 
@@ -156,16 +156,65 @@ a:visited {
 
    <div class="row">
       <div class="col-md-3">
+         <img class="mr-4" src="https://james-simon.github.io/img/shallow_learning_sketch.png" width=100%>
+      </div>
+      <div class="col-md-9">
+         <h3>Reverse engineering the neural tangent kernel</h3>
+         <strong>A first-principles method for the design of activation functions</strong>
+         <p class="blurb">
+            Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel regression.</i> Given a wide network architecture, it's well-known how to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In work with Sajant Anand, we <i>invert this mapping</i> for fully-connected nets (FCNs), allowing one to start from a desired rotation-invariant kernel and design a network (i.e. choose an activation function) to achieve it. Remarkably, achieving any such kernel requires only one hidden layer, raising questions about conventional wisdom on the benefits of depth. This allows surprising experiments, like designing a 1HL FCN that trains and generalizes like a deep ReLU FCN. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
+         </p>
+         <p class="paper-info">
+            <strong>ICML '22</strong>
+            <a href="https://arxiv.org/abs/2106.03186">[arXiv]</a>
+            <a href="https://github.com/james-simon/reverse-engineering">[code]</a>
+         </p>
+      </div>
+   </div>
+
+   <hr class="hr-thick">
+
+   <div class="row">
+      <div class="col-md-3">
+         <img class="mr-4" src="https://james-simon.github.io/img/tempered_overfitting.png" width=100%>
+      </div>
+      <div class="col-md-9">
+         <h3>Benign, tempered or catastrophic: a taxonomy of overfitting</h3>
+         <strong>How bad is neural network overfitting?</strong>
+         <p class="blurb">
+            Classical wisdom holds that overparameterization is harmful.
+            Neural nets defy this wisdom, generalizing well despite their overparameterization and interpolation of the training data.
+            How can we understand this discrepancy?
+            Recent landmark papers have explored the idea of <i>benign overfitting</i>, a phenomenon in which certain models can interpolate noisy data without harming generalization.
+            In this work with <a href="https://mallinar.xyz/">Neil Mallinar</a>, <a href="https://preetum.nakkiran.org/">Preetum Nakkiran</a>, and others, we put this idea to the empirical test, giving a new characterization of neural network overfitting and noise sensitivity.
+            We find that neural networks trained to interpolation do not overfit benignly, but neither do they exhibit the catastrophic overfitting foretold by classical wisdom: instead, they usually lie in an intermediate regime we call <i>tempered overfitting</i>.
+            I found that we can understand these three regimes of overfitting quite simply for kernel regression (a toy model for neural networks), and I proved a simple "trichotomy theorem" relating a kernel's eigenspectrum to its overfitting behavior.
+         </p>
+         <p class="paper-info">
+            <strong>(2022)</strong>
+            <strong><em>In Submission</em></strong>
+            <a href="https://arxiv.org/abs/2207.06569">[arXiv]</a>
+            <!-- <a href="https://github.com/james-simon/shallow-learning">[code]</a> -->
+         </p>
+      </div>
+   </div>
+
+   <hr class="hr-thick">
+
+   <div class="row">
+      <div class="col-md-3">
         <br>
         <video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
           <source src="https://james-simon.github.io/img/eigenlearning_exp_matches_th_small.mp4" type="video/mp4">
         </video>
       </div>
       <div class="col-md-9">
-         <h3>Neural tangent kernel eigenvalues accurately predict generalization</h3>
-         <strong>A first-principles theory of generalization for wide neural nets</strong>
+         <h3>A theory of the inductive bias and generalization of kernel ridge regression and wide neural networks</h3>
+         <strong>A conservation law framework</strong>
          <p class="blurb">
-            Of all the many mysteries of modern neural networks, perhaps the greatest is the question of generalization: why do the functions learned by neural networks generalize so well to new data? "Why" questions can be difficult to pin down, so in recent joint work with Maddie Dickens, we took up a more scientific question: <i>can we predict, from first principles, how well a given net will generalize on a given function?</i> It turns out we can - building off recent breakthroughs, we derive accurate approximations for several key metrics of neural network generalization. In the process, we prove a new "no-free-lunch" theorem characterizing a fundamental tradeoff in the inductive bias of wide neural networks: improving a network's generalization for a given target function must worsen its generalization for orthogonal functions. Our theory is transparent enough to give intuitive insights into when and why a neural network generalizes well.
+            Of all the many mysteries of modern neural networks, perhaps the greatest is the question of generalization: why do the functions learned by neural networks generalize so well to new data? "Why" questions can be difficult to pin down, so in recent joint work with Maddie Dickens, we took up a more scientific question: <i>can we predict, from first principles, how well a given net will generalize on a given function?</i> It turns out that recent breakthroughs have essentially answered this question for kernel ridge regression, furnishing accurate approximations for several key metrics of neural network generalization. In this work, we give a simpler derivation of these important results, ascribe a new interpretation to the final theory, and discuss several new applications of the theory to shed light on various aspects of neural network generalization, including double descent and the hardness of the classic parity problem.
+            Key to our formulation is a simple conservation law, latent in kernel regression, which limits the total "learnability" of any orthonormal basis of target functions.
+            Our theory is transparent enough to give intuitive insights into when and why a neural network generalizes well.
          <p class="paper-info">
             <strong>(2021)</strong>
             <strong><em>In Submission</em></strong>
@@ -176,28 +225,7 @@ a:visited {
       </div>
    </div>
 
-   <hr class="hr-thick">
-
-   <div class="row">
-      <div class="col-md-3">
-         <img class="mr-4" src="https://james-simon.github.io/img/shallow_learning_sketch.png" width=100%>
-      </div>
-      <div class="col-md-9">
-         <h3>On the power of shallow learning</h3>
-         <strong>Reverse-engineering the neural network-kernel method equivalence</strong>
-         <p class="blurb">
-            Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In recent work with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, and we used that fact to prove that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
-         </p>
-         <p class="paper-info">
-            <strong>(2021)</strong>
-            <!-- <strong><em>In Submission</em></strong> -->
-            <a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a>
-            <a href="https://github.com/james-simon/shallow-learning">[code]</a>
-         </p>
-      </div>
-   </div>
-
-   <hr class="hr-thick">
+<!--    <hr class="hr-thick">
 
    <div class="row">
       <div  class="col-md-3">
@@ -209,9 +237,9 @@ a:visited {
             I'm currently working on a phenomenological field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>. This research direction was the subject of my proposal for the NSF-GRFP.
          </p>
       </div>
-   </div>
+   </div> -->
 
-   <hr class="hr-thick">
+<!--    <hr class="hr-thick">
 
    <div class="row">
       <div class="col-md-3">
@@ -223,7 +251,7 @@ a:visited {
             One current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="/deep learning/2020/08/31/multiplicative-neural-nets">here.</a>
          </p>
       </div>
-   </div>
+   </div> -->
 
    <hr class="hr-thick">
 
@@ -465,102 +493,285 @@ a:visited {
 
    <a name="posts"></a>
    <h2>Posts</h2>
-   <ul class="post-list">
-      
-      <li>
-         <span class="post-meta">Jan 17, 2022</span>
-         <h4>
-            <a class="post-link" href="/physics/2022/01/17/bohr-v-einstein">Einstein vs. Bohr Rap Battle</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Jan 17, 2022</span>
-         <h4>
-            <a class="post-link" href="/physics/2022/01/17/newton-v-leibniz">Newton vs. Leibniz Rap Battle</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Oct 26, 2021</span>
-         <h4>
-            <a class="post-link" href="/deep%20learning/2021/10/26/eigenlearning">A first-principles theory of neural net generalization</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Oct 11, 2021</span>
-         <h4>
-            <a class="post-link" href="/physics/2021/10/11/gravitrees">The gravitree</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Nov 29, 2020</span>
-         <h4>
-            <a class="post-link" href="/physics/2020/11/29/rocketball">Could you propel a spacecraft using sports projectiles?</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Sep 6, 2020</span>
-         <h4>
-            <a class="post-link" href="/physics/2020/09/06/least_power_dissipation">The principle of least power dissipation</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Aug 31, 2020</span>
-         <h4>
-            <a class="post-link" href="/deep%20learning/2020/08/31/multiplicative-neural-nets">Multiplicative neural networks</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Aug 20, 2020</span>
-         <h4>
-            <a class="post-link" href="/physics/2020/08/20/upside-down-candle">How would an upside-down candle burn?</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Jul 12, 2020</span>
-         <h4>
-            <a class="post-link" href="/mail/2020/07/12/mail-shenanigans">Messing with the postal service</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Jul 4, 2020</span>
-         <h4>
-            <a class="post-link" href="/society/2020/07/04/common-ground">Common ground</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Jun 17, 2020</span>
-         <h4>
-            <a class="post-link" href="/physics/2020/06/17/fish-planet">What would happen if you made a planet out of fish?</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">Jun 17, 2020</span>
-         <h4>
-            <a class="post-link" href="/physics/2020/06/17/chicken-cooking">How hard do you have to hit a chicken to cook it?</a>
-         </h4>
-      </li>
-      
-      <li>
-         <span class="post-meta">May 17, 2020</span>
-         <h4>
-            <a class="post-link" href="/stats/2020/05/17/covid-calculation">The expected cost of breaking quarantine</a>
-         </h4>
-      </li>
-      
-   </ul>
+      <hr>
 
-</div>
+   <div class="row">
+      <div class="col-md-6">
+           <h4>Science (research)</h4>
+           <!-- <ul class="post-list"> -->
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/deep%20learning,%20research/2021/10/26/eigenlearning">A theory of generalization for wide neural nets</a> <small> 
+	
+	
+		(7 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Oct 26, 2021--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20research/2020/09/06/least_power_dissipation">The principle of least power dissipation</a> <small> 
+	
+	
+		(8 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Sep 6, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/deep%20learning,%20research/2020/08/31/multiplicative-neural-nets">Multiplicative neural networks</a> <small> 
+	
+	
+		(16 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Aug 31, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+           <!-- </ul> -->
+           <hr>
+
+           <h4>Potpourri</h4>
+           <!-- <ul class="post-list"> -->
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20random/2022/01/17/bohr-v-einstein">Einstein vs. Bohr Rap Battle</a> <small> 
+	(5 min watch)
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 17, 2022--> 
+<!-- </li> -->
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20random,%20rap-battle/2022/01/17/newton-v-leibniz">Newton vs. Leibniz Rap Battle</a> <small> 
+	(5 min watch)
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 17, 2022--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/mail,%20random/2020/07/12/mail-shenanigans">Messing with the postal service</a> <small> 
+	
+	
+		(4 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jul 12, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/society,%20random/2020/07/04/common-ground">Common ground</a> <small> 
+	
+	
+		(5 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jul 4, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/stats,%20society,%20random/2020/05/17/covid-calculation">The expected cost of breaking quarantine</a> <small> 
+	
+	
+		(12 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- May 17, 2020--> 
+<!-- </li> -->
+              
+              
+           <!-- </ul> -->
+      </div>
+
+
+      <div class="col-md-6">
+           <h4>Science (fun)</h4>
+           <!-- <ul class="post-list"> -->
+              
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20fun-science/2021/10/11/gravitrees">The gravitree</a> <small> 
+	
+	
+		(6 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Oct 11, 2021--> 
+<!-- </li> -->
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20fun-science/2020/11/29/rocketball">Could you propel a spacecraft using sports projectiles?</a> <small> 
+	
+	
+		(10 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Nov 29, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20fun-science/2020/08/20/upside-down-candle">How would an upside-down candle burn?</a> <small> 
+	
+	
+		(4 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Aug 20, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20fun-science/2020/06/17/fish-planet">What would happen if you made a planet out of fish?</a> <small> 
+	
+	
+		(11 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jun 17, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/physics,%20fun-science/2020/06/17/chicken-cooking">How hard do you have to hit a chicken to cook it?</a> <small> 
+	
+	
+		(1 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jun 17, 2020--> 
+<!-- </li> -->
+              
+              
+              
+              
+           <!-- </ul> -->
+      </div>
+  </div>
+
 
 
 </div>

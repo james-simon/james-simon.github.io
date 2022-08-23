@@ -2,7 +2,7 @@
 layout: post
 title:	"The gravitree"
 date:	2021-10-11
-category: physics
+category: physics, fun-science
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

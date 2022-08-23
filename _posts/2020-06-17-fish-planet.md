@@ -2,7 +2,7 @@
 layout: post
 title:	"What would happen if you made a planet out of fish?"
 date:	2020-06-17
-category: physics
+category: physics, fun-science
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

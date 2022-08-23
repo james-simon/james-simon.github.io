@@ -2,7 +2,8 @@
 layout: post
 title:	"Einstein vs. Bohr Rap Battle"
 date:	2022-01-17 1:01
-category: physics
+category: physics, random
+read_time: (5 min watch)
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

@@ -2,7 +2,7 @@
 layout: post
 title:	"Common ground"
 date:	2020-07-04
-category: society
+category: society, random
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}
