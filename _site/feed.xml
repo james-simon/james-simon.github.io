@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Aug 2022 22:51:22 -0700</pubDate>
-    <lastBuildDate>Tue, 23 Aug 2022 22:51:22 -0700</lastBuildDate>
+    <pubDate>Tue, 23 Aug 2022 22:56:12 -0700</pubDate>
+    <lastBuildDate>Tue, 23 Aug 2022 22:56:12 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -37,43 +37,43 @@ However, if our goal is not merely to understand existing architectures but to d
 In this work, we derive this inverse mapping for fully-connected networks (FCNs), allowing us to design simple nets in a principled manner by (a) positing a desired kernel and (b) designing an activation function that gives it.&lt;/p&gt;
 
 &lt;p&gt;To get a feel for how this works, let’s first visualize some neural network kernels.
-Consider a wide FCN’s NTK $K(x_1,x_2)$ on two input vectors $x_1$ and $x_2$ (which we will for simplicity assume are normalized to the same length).
-For a FCN, this kernel is &lt;em&gt;rotation-invariant&lt;/em&gt; in the sense that $K(x_1,x_2) = K(c)$, where $c$ is the cosine of the angle between the inputs.
+Consider a wide FCN’s NTK \(K(x_1,x_2)\) on two input vectors \(x_1\) and \(x_2\) (which we will for simplicity assume are normalized to the same length).
+For a FCN, this kernel is &lt;em&gt;rotation-invariant&lt;/em&gt; in the sense that \(K(x_1,x_2) = K(c)\), where \(c\) is the cosine of the angle between the inputs.
 This means we can just plot the kernel function.
-Fig. 1 shows the NTK of a four-hidden-layer (4HL) ReLU FCN.&lt;/p&gt;
+Fig. 1 shows the NTK of a four-hidden-layer (4HL) \(\textrm{ReLU}\) FCN.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig1.png&quot; width=&quot;40%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig1.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; NTK for a 4HL ReLU FCN as a function of the cosine between two input vectors $x_1$ and $x_2$. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; NTK for a 4HL ReLU FCN as a function of the cosine between two input vectors x1 and x2. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
 &lt;p&gt;There’s actually quite a lot one can learn from this plot.
 The monotonic increase means that this kernel expects closer points to have more correlated function values.
 The steep increase at the end tells us that the correlation length is not too large, and it can fit complicated functions.
-The diverging derivative at $c=1$ tells us about the smoothness of the function we expect to get.
-However, &lt;em&gt;none of these are apparent&lt;/em&gt; from looking at a plot of $\textrm{ReLU}(z)$.
-If we want to understand the effect of a choice of activation function $\phi$, then its resulting NTK is actually more informative than $\phi$ itself!
+The diverging derivative at \(c=1\) tells us about the smoothness of the function we expect to get.
+However, &lt;em&gt;none of these are apparent&lt;/em&gt; from looking at a plot of \(\textrm{ReLU}(z)\).
+If we want to understand the effect of a choice of activation function \(\phi\), then its resulting NTK is actually more informative than \(\phi\) itself!
 It thus perhaps makes sense to try to design architectures “in kernel space,” then translate them to the typical hyperparameters.&lt;/p&gt;
 
 &lt;p&gt;Our paper’s main result is a “reverse engineering theorem” that states the following:&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;For any kernel $K(c)$, we can construct an activation function $\phi$ such that, when inserted into a &lt;strong&gt;single-hidden-layer&lt;/strong&gt; FCN, it yields $K(c)$ as its NTK.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;For any kernel \(K(c)\), we can construct an activation function \(\phi\) such that, when inserted into a &lt;strong&gt;single-hidden-layer&lt;/strong&gt; FCN, it yields \(K(c)\) as its NTK.&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;We give an explicit formula for $\phi$ in terms of Hermite polynomials.
+&lt;p&gt;We give an explicit formula for \(\phi\) in terms of Hermite polynomials.
 (In practice, however, Hermite polynomial nets aren’t easy to train, so we use a different functional form with the help of some numerics.)
 Our proposed use of this idea is that, in problems with some known structure, it’ll sometimes be possible to write down a good kernel and reverse-engineer it into a trainable network with various advantages over kernel regression.
-As a proof of concept, we test this idea out on the synthetic &lt;em&gt;parity problem&lt;/em&gt; (i.e., given a bitstring, is the sum odd or even?), designing a FCN that dramatically outperforms a $\text{ReLU}$ network.&lt;/p&gt;
+As a proof of concept, we test this idea out on the synthetic &lt;em&gt;parity problem&lt;/em&gt; (i.e., given a bitstring, is the sum odd or even?), designing a FCN that dramatically outperforms a \(\text{ReLU}\) network.&lt;/p&gt;
 
 &lt;p&gt;Here’s another fun use of this theorem.
-The kernel curve above is for a 4HL ReLU FCN, but I claimed that we can achieve any kernel, including that one, with just one hidden layer.
-This implies we can come up with some new activation function $\tilde{\phi}$ that gives the same kernel &lt;em&gt;in a shallow network&lt;/em&gt;!&lt;/p&gt;
+The kernel curve above is for a 4HL \(\textrm{ReLU}\) FCN, but I claimed that we can achieve any kernel, including that one, with just one hidden layer.
+This implies we can come up with some new activation function \(\tilde{\phi}\) that gives the same kernel &lt;em&gt;in a shallow network&lt;/em&gt;!&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig2.png&quot; width=&quot;50%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig2.png&quot; width=&quot;60%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
@@ -82,7 +82,7 @@ This implies we can come up with some new activation function $\tilde{\phi}$ tha
 &lt;/p&gt;
 
 &lt;p&gt;Surprisingly, this “shallowfication” actually works.
-The left plot below shows a “mimic net” activation function $\tilde{\phi}$ that gives the same NTK as a deep ReLU FCN.
+The left plot below shows a “mimic net” activation function \(\tilde{\phi}\) that gives the same NTK as a deep \(\textrm{ReLU}\) FCN.
 The right plots then show train + test loss + accuracy traces for three FCNs on a standard tabular problem from the UCI dataset.
 Note that, while the shallow and deep ReLU nets have very different behaviors, our engineered shallow mimic net tracks the deep network almost exactly!&lt;/p&gt;
 
@@ -91,7 +91,7 @@ Note that, while the shallow and deep ReLU nets have very different behaviors, o
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 3.&lt;/b&gt; Left panel: engineered &quot;mimic&quot; activation function $\tilde{\phi}$, plotted with ReLU for comparison. Right panels: performance traces for 1HL ReLU, 4HL ReLU, and 1HL mimic FCNs trained on a UCI dataset. Note the close match between the 4HL ReLU net and the 1HL mimic net. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 3.&lt;/b&gt; Left panel: our engineered &quot;mimic&quot; activation function, plotted with ReLU for comparison. Right panels: performance traces for 1HL ReLU, 4HL ReLU, and 1HL mimic FCNs trained on a UCI dataset. Note the close match between the 4HL ReLU net and the 1HL mimic net. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
