@@ -15,6 +15,9 @@ gscholar_url:  "https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en"
 DBL: "https://dl.dropboxusercontent.com/u/16348658"
 excerpt_separator: <!--exc-->
 
+# remove category and date from post urls
+permalink: /blog/:title/
+
 collections:
  puzzles:
     name: Puzzles
