@@ -13,7 +13,7 @@ Though the grid looks pure white and black at first glance, the squares are actu
   <img style="float: center; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/90shades_sol1.png" width="50%" />
 </p>
 
-The top row reads RGB SEMAPHORE. Noting that yellow is red + green, cyan is green + blue, and magenta is blue + red, each 3x3 subgrid could be decomposed into a superposition of three red, three green, and three blue squares, and each color could be independently read as a semaphore letter. Here’s the upper-left subgrid as an example:
+The top row reads RGB SEMAPHORE. Noting that yellow is red + green, cyan is green + blue, magenta is blue + red, and white is red + green + blue, each 3x3 subgrid could be decomposed into a superposition of three red, three green, and three blue squares, and each color could be independently read as a semaphore letter. Here’s the upper-left subgrid as an example:
 
 <p align="center">
   <img style="float: center; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/90shades_sol2.png" width="80%" />
