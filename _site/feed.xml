@@ -5,53 +5,60 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 26 Aug 2022 10:38:33 -0700</pubDate>
-    <lastBuildDate>Fri, 26 Aug 2022 10:38:33 -0700</lastBuildDate>
+    <pubDate>Sun, 28 Aug 2022 22:48:32 -0700</pubDate>
+    <lastBuildDate>Sun, 28 Aug 2022 22:48:32 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title>Reverse engineering the NTK: towards first-principles architecture design</title>
+        <title>Reverse engineering the NTK</title>
         <description>&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig1.png&quot; width=&quot;40%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig1.png&quot; width=&quot;80%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; Foundational works showed how to find the kernel corresponding to a wide network. We find the inverse mapping, showing how to find the wide network corresponding to a given kernel. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; Foundational works showed how to find the kernel corresponding to a wide network. We find the inverse mapping, showing how to find the wide network corresponding to a given kernel. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
+&lt;!-- ## **Motivation** --&gt;
+
 &lt;p&gt;Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to protein engineering, but their design and application is nonetheless notoriously unprincipled.
-Consider, for perspective, how other fields of engineering operate: we start with a description of a problem, procedurally design a structure or system that solves it, and build it.
-We normally find that our system behaves close to how we predicted, and if it doesn’t, we can understand its failings.
-Deep learning, by contrast, is basically &lt;a href=&quot;https://www.youtube.com/watch?v=x7psGHgatGM&quot;&gt;alchemy&lt;/a&gt;: despite much research, practitioners still have almost no principled methods for neural architecture design, and SOTA systems are often full of hacks and hyperparameters we might not need if we understood what we were doing.
-As a result, the development of new methods is often slow and expensive, and even when we find clever new ideas, we often don’t understand why they work as well as they do.&lt;/p&gt;
+The development of tools and methods to guide this process is one of the grand challenges of deep learning theory.
+In &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;Reverse Engineering the Neural Tangent Kernel&lt;/a&gt;, we propose a paradigm for bringing some principle to the art of architecture design using recent theoretical breakthroughs: first design a good kernel function – often a much easier task – and then “reverse-engineer” a net-kernel equivalence to translate the chosen kernel into a neural network (red arrow in Fig. 1).
+Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.&lt;/p&gt;
 
 &lt;!--more--&gt;
 
-&lt;p&gt;In &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;Reverse Engineering the Neural Tangent Kernel&lt;/a&gt;, Sajant Anand, Mike DeWeese, and I propose a paradigm that we find promising for bringing some principle to the art of architecture design.
-The field of deep learning theory has recently been transformed by the realization that deep neural networks often become analytically tractable to study in the &lt;em&gt;infinite-width&lt;/em&gt; limit.
-Take the limit a certain way, and the network in fact converges to ordinary &lt;em&gt;kernel regression&lt;/em&gt;&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; using either the architecture’s &lt;a href=&quot;https://arxiv.org/abs/1806.07572&quot;&gt;“neural tangent kernel” (NTK)&lt;/a&gt; or, if only the last layer is trained (a la random feature models), its &lt;a href=&quot;https://arxiv.org/abs/1711.00165&quot;&gt;“neural network Gaussian process” (NNGP) kernel&lt;/a&gt;.
-Like the central limit theorem, the NTK limit is often a surprisingly good approximation even far from infinite width (often holding true at widths in the hundreds or thousands), giving a remarkable analytical handle on the mysteries of deep learning.&lt;/p&gt;
+&lt;h3 id=&quot;neural-network-kernels&quot;&gt;&lt;strong&gt;Neural network kernels&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;The field of deep learning theory has recently been transformed by the realization that deep neural networks often become analytically tractable to study in the &lt;em&gt;infinite-width&lt;/em&gt; limit.
+Take the limit a certain way, and the network in fact converges to an ordinary kernel method using either the architecture’s &lt;a href=&quot;https://arxiv.org/abs/1806.07572&quot;&gt;“neural tangent kernel” (NTK)&lt;/a&gt; or, if only the last layer is trained (a la random feature models), its &lt;a href=&quot;https://arxiv.org/abs/1711.00165&quot;&gt;“neural network Gaussian process” (NNGP) kernel&lt;/a&gt;.
+Like the central limit theorem, these wide-network limits are often surprisingly good approximations even far from infinite width (often holding true at widths in the hundreds or thousands), giving a remarkable analytical handle on the mysteries of deep learning.&lt;/p&gt;
+
+&lt;!-- Consider, for perspective, how other fields of engineering operate: we start with a description of a problem, procedurally design a structure or system that solves it, and build it.
+We normally find that our system behaves close to how we predicted, and if it doesn’t, we can understand its failings.
+Deep learning, by contrast, is basically [alchemy](https://www.youtube.com/watch?v=x7psGHgatGM): despite much research, practitioners still have almost no principled methods for neural architecture design, and SOTA systems are often full of hacks and hyperparameters we might not need if we understood what we were doing.
+As a result, the development of new methods is often slow and expensive, and even when we find clever new ideas, we often don't understand why they work as well as they do. --&gt;
+
+&lt;h3 id=&quot;from-networks-to-kernels-and-back-again&quot;&gt;&lt;strong&gt;From networks to kernels and back again&lt;/strong&gt;&lt;/h3&gt;
 
 &lt;p&gt;The original works exploring this net-kernel correspondence gave formulae for going from &lt;em&gt;architecture&lt;/em&gt; to &lt;em&gt;kernel&lt;/em&gt;: given a description of an architecture (e.g. depth and activation function), they give you the network’s two kernels.
 This has allowed great insights into the optimization and generalization of various architectures of interest.
 However, if our goal is not merely to understand existing architectures but to design &lt;em&gt;new&lt;/em&gt; ones, then we might rather have the mapping in the reverse direction: given a &lt;em&gt;kernel&lt;/em&gt; we want, can we find an &lt;em&gt;architecture&lt;/em&gt; that gives it to us?
-In this work, we derive this inverse mapping for fully-connected networks (FCNs), allowing us to design simple nets in a principled manner by (a) positing a desired kernel and (b) designing an activation function that gives it.&lt;/p&gt;
+In this work, we derive this inverse mapping for fully-connected networks (FCNs), allowing us to design simple networks in a principled manner by (a) positing a desired kernel and (b) designing an activation function that gives it.&lt;/p&gt;
 
-&lt;h2 id=&quot;net-kernels-and-their-reverse-engineering&quot;&gt;&lt;strong&gt;Net kernels and their reverse engineering&lt;/strong&gt;&lt;/h2&gt;
-
-&lt;p&gt;To get a feel for how this works, let’s first visualize some neural network kernels.
+&lt;p&gt;To see why this makes sense, let’s first visualize an NTK.
 Consider a wide FCN’s NTK \(K(x_1,x_2)\) on two input vectors \(x_1\) and \(x_2\) (which we will for simplicity assume are normalized to the same length).
 For a FCN, this kernel is &lt;em&gt;rotation-invariant&lt;/em&gt; in the sense that \(K(x_1,x_2) = K(c)\), where \(c\) is the cosine of the angle between the inputs.
 Since \(K(c)\) is a scalar function of a scalar argument, we can simply plot it.
-Fig. 1 shows the NTK of a four-hidden-layer (4HL) \(\textrm{ReLU}\) FCN.&lt;/p&gt;
+Fig. 2 shows the NTK of a four-hidden-layer (4HL) \(\textrm{ReLU}\) FCN.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig2.png&quot; width=&quot;50%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig2.png&quot; width=&quot;65%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; The NTK of a 4HL ReLU FCN as a function of the cosine between two input vectors x1 and x2. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 2.&lt;/b&gt; The NTK of a 4HL $\textrm{ReLU}$ FCN as a function of the cosine between two input vectors $x_1$ and $x_2$. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
@@ -59,54 +66,59 @@ Fig. 1 shows the NTK of a four-hidden-layer (4HL) \(\textrm{ReLU}\) FCN.&lt;/p&g
 The monotonic increase means that this kernel expects closer points to have more correlated function values.
 The steep increase at the end tells us that the correlation length is not too large, and it can fit complicated functions.
 The diverging derivative at \(c=1\) tells us about the smoothness of the function we expect to get.
-The key point is that &lt;em&gt;none of these facts are apparent from looking at a plot of \(\textrm{ReLU}(z)\).&lt;/em&gt;
-If we want to understand the effect of a choice of activation function \(\phi\), then its resulting NTK is actually more informative than \(\phi\) itself!
+Importantly, &lt;em&gt;none of these facts are apparent from looking at a plot of \(\textrm{ReLU}(z)\)&lt;/em&gt;!
+We claim that, if we want to understand the effect of choosing an activation function \(\phi\), then the resulting NTK is actually more informative than \(\phi\) itself.
 It thus perhaps makes sense to try to design architectures in “kernel space,” then translate them to the typical hyperparameters.&lt;/p&gt;
 
-&lt;p&gt;Our paper’s main result is a “reverse engineering theorem” that states the following:&lt;/p&gt;
+&lt;h3 id=&quot;an-activation-function-for-every-kernel&quot;&gt;&lt;strong&gt;An activation function for every kernel&lt;/strong&gt;&lt;/h3&gt;
 
-&lt;p&gt;&lt;strong&gt;Thm 1:&lt;/strong&gt; &lt;em&gt;For any kernel \(K(c)\), we can construct an activation function \(\phi\) such that, when inserted into a &lt;strong&gt;single-hidden-layer&lt;/strong&gt; FCN, it yields \(K(c)\) as its NTK.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Our main result is a “reverse engineering theorem” that states the following:&lt;/p&gt;
 
-&lt;p&gt;We give an explicit formula for \(\phi\) in terms of Hermite polynomials
-(in practice, however, Hermite polynomial nets aren’t easy to train, so we use a different functional form with the help of some numerics).
-Our proposed use of this idea is that, in problems with some known structure, it’ll sometimes be possible to write down a good kernel and reverse-engineer it into a trainable network with various advantages over kernel regression, like computational efficiency and the ability to learn features.
-As a proof of concept, we test this idea out on the synthetic &lt;em&gt;parity problem&lt;/em&gt; (i.e., given a bitstring, is the sum odd or even?), immediately coming up with an activation function that dramatically outperforms \(\text{ReLU}\) on the task.&lt;/p&gt;
+&lt;p style=&quot;padding: 10px; border: 2px solid black;&quot;&gt;
+&lt;b&gt;Thm 1:&lt;/b&gt; For any kernel $K(c)$, we can construct an activation function $\tilde{\phi}$ such that, when inserted into a &lt;i&gt;single-hidden-layer&lt;/i&gt; FCN, its infinite-width NTK or NNGP kernel is $K(c)$.
+&lt;/p&gt;
 
-&lt;h2 id=&quot;one-hidden-layer-is-all-you-need&quot;&gt;&lt;strong&gt;One hidden layer is all you need?&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;We give an explicit formula for \(\tilde{\phi}\) in terms of Hermite polynomials
+(though we use a different functional form in practice for trainability reasons).
+Our proposed use of this result is that, in problems with some known structure, it’ll sometimes be possible to write down a good kernel and reverse-engineer it into a trainable network with various advantages over pure kernel regression, like computational efficiency and the ability to learn features.
+As a proof of concept, we test this idea out on the synthetic &lt;em&gt;parity problem&lt;/em&gt; (i.e., given a bitstring, is the sum odd or even?), immediately generating an activation function that dramatically outperforms \(\text{ReLU}\) on the task.&lt;/p&gt;
+
+&lt;h3 id=&quot;one-hidden-layer-is-all-you-need&quot;&gt;&lt;strong&gt;One hidden layer is all you need?&lt;/strong&gt;&lt;/h3&gt;
 
 &lt;p&gt;Here’s another surprising use of our result.
 The kernel curve above is for a 4HL \(\textrm{ReLU}\) FCN, but I claimed that we can achieve any kernel, including that one, with just one hidden layer.
-This implies we can come up with some new activation function \(\tilde{\phi}\) that gives this “deep” NTK in a &lt;em&gt;shallow network&lt;/em&gt;!&lt;/p&gt;
+This implies we can come up with some new activation function \(\tilde{\phi}\) that gives this “deep” NTK in a &lt;em&gt;shallow network&lt;/em&gt;!
+Fig. 3 illustrates this experiment.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig3.png&quot; width=&quot;60%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 2.&lt;/b&gt; Shallowification of a deep ReLU FCN into a 1HL FCN with an engineered activation function. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 3.&lt;/b&gt; Shallowification of a deep $\textrm{ReLU}$ FCN into a 1HL FCN with an engineered activation function $\tilde{\phi}$. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
 &lt;p&gt;Surprisingly, this “shallowfication” actually works.
-The left plot below shows a “mimic” activation function \(\tilde{\phi}\) that gives virtually the same NTK as a deep \(\textrm{ReLU}\) FCN.
+The left subplot of Fig. 4 below shows a “mimic” activation function \(\tilde{\phi}\) that gives virtually the same NTK as a deep \(\textrm{ReLU}\) FCN.
 The right plots then show train + test loss + accuracy traces for three FCNs on a standard tabular problem from the UCI dataset.
-Note that, while the shallow and deep ReLU nets have very different behaviors, our engineered shallow mimic net tracks the deep network almost exactly!&lt;/p&gt;
+Note that, while the shallow and deep ReLU networks have very different behaviors, our engineered shallow mimic network tracks the deep network almost exactly!&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig4.png&quot; width=&quot;70%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img	/ntk-reveng/rev_eng_fig4.png&quot; width=&quot;70%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 3.&lt;/b&gt; Left panel: our engineered &quot;mimic&quot; activation function, plotted with ReLU for comparison. Right panels: performance traces for 1HL ReLU, 4HL ReLU, and 1HL mimic FCNs trained on a UCI dataset. Note the close match between the 4HL ReLU net and the 1HL mimic net. &lt;/i&gt;
+&lt;i&gt; &lt;b&gt;Fig 4.&lt;/b&gt; Left panel: our engineered &quot;mimic&quot; activation function, plotted with ReLU for comparison. Right panels: performance traces for 1HL ReLU, 4HL ReLU, and 1HL mimic FCNs trained on a UCI dataset. Note the close match between the 4HL ReLU and 1HL mimic networks.&lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
 
-&lt;p&gt;This is interesting from an engineering perspective because the shallow net uses fewer parameters than the deep network to achieve the same performance.
+&lt;p&gt;This is interesting from an engineering perspective because the shallow network uses fewer parameters than the deep network to achieve the same performance.
 It’s also interesting from a theoretical perspective because it raises fundamental questions about the value of depth.
 A common belief deep learning belief is that deeper is not only better but &lt;em&gt;qualitatively different&lt;/em&gt;: that deep networks will efficiently learn functions that shallow networks simply cannot.
-Our shallowification result suggests that, at least for FCNs, this isn’t true: if we know what we’re doing, then depth doesn’t buy us anything&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+Our shallowification result suggests that, at least for FCNs, this isn’t true: if we know what we’re doing, then depth doesn’t buy us anything.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;conclusion&quot;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h2&gt;
+&lt;h3 id=&quot;conclusion&quot;&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/h3&gt;
 
 &lt;p&gt;This work comes with lots of caveats.
 The biggest is that our result only applies to FCNs, which alone are rarely state-of-the-art.
@@ -114,22 +126,22 @@ However, work on convolutional NTKs is &lt;a href=&quot;https://arxiv.org/abs/21
 
 &lt;p&gt;Theoretical work has so far furnished relatively few tools for practical deep learning theorists.
 We aim for this to be a modest step in that direction.
-Even without a science to guide their design, neural networks have already enabled wonders, so just imagine what we’ll be able to do with them once we finally have one.&lt;/p&gt;
+Even without a science to guide their design, neural networks have already enabled wonders.
+Just imagine what we’ll be able to do with them once we finally have one.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;the paper&lt;/a&gt; “Reverse Engineering the Neural Tangent Kernel,” which is joint work with &lt;a href=&quot;https://www.sajant.com/&quot;&gt;Sajant Anand&lt;/a&gt; and &lt;a href=&quot;https://deweeselab.com/&quot;&gt;Mike DeWeese&lt;/a&gt;. We provide &lt;a href=&quot;https://github.com/james-simon/reverse-engineering&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
 
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;In case you’re unfamiliar with kernels or kernel regression, a kernel is basically a similarity function between two samples generalizing the dot product, and kernel regression is just linear regression with the dot product replaced by the kernel function. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures.) &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures.) &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
         <pubDate>Tue, 23 Aug 2022 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/deep%20learning,%20research/2022/08/23/reverse-engineering.html</link>
-        <guid isPermaLink="true">http://localhost:4000/deep%20learning,%20research/2022/08/23/reverse-engineering.html</guid>
+        <link>http://localhost:4000/blog/reverse-engineering/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/reverse-engineering/</guid>
         
         
         <category>deep learning, research</category>
@@ -287,8 +299,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;Your nanoscopic jabs at me are hardly worth refutin’ \ When all’s said and done, bud, you’re Leibniz, I’m Newton.&lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Jan 2022 01:01:00 -0800</pubDate>
-        <link>http://localhost:4000/physics,%20random/2022/01/17/bohr-v-einstein.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20random/2022/01/17/bohr-v-einstein.html</guid>
+        <link>http://localhost:4000/blog/bohr-v-einstein/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/bohr-v-einstein/</guid>
         
         
         <category>physics, random</category>
@@ -308,8 +320,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Jan 2022 01:00:00 -0800</pubDate>
-        <link>http://localhost:4000/physics,%20random,%20rap-battle/2022/01/17/newton-v-leibniz.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20random,%20rap-battle/2022/01/17/newton-v-leibniz.html</guid>
+        <link>http://localhost:4000/blog/newton-v-leibniz/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/newton-v-leibniz/</guid>
         
         
         <category>physics, random, rap-battle</category>
@@ -395,8 +407,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;the paper&lt;/a&gt; “Neural Tangent Kernel Eigenvalues Accurately Predict Generalization,” which is joint work with labmate Maddie Dickens and advisor Mike DeWeese. We provide &lt;a href=&quot;https://github.com/james-simon/eigenlearning&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 26 Oct 2021 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/deep%20learning,%20research/2021/10/26/eigenlearning.html</link>
-        <guid isPermaLink="true">http://localhost:4000/deep%20learning,%20research/2021/10/26/eigenlearning.html</guid>
+        <link>http://localhost:4000/blog/eigenlearning/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/eigenlearning/</guid>
         
         
         <category>deep learning, research</category>
@@ -471,8 +483,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;There’s a deeper trick we’re playing here, one that I see in inventions from &lt;a href=&quot;https://en.wikipedia.org/wiki/Reaction_wheel&quot;&gt;reaction wheels&lt;/a&gt; to &lt;a href=&quot;https://www.youtube.com/watch?v=jyQwgBAaBag&quot;&gt;faster-than-wind sailboats&lt;/a&gt;: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they’re not &lt;em&gt;technically&lt;/em&gt; breaking their mother’s rules. For all of science’s immense capacity for social good, that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it’s a potent way to inspire the curious to think a little closer about how the universe really works.&lt;/p&gt;
 </description>
         <pubDate>Mon, 11 Oct 2021 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/physics,%20fun-science/2021/10/11/gravitrees.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2021/10/11/gravitrees.html</guid>
+        <link>http://localhost:4000/blog/gravitrees/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/gravitrees/</guid>
         
         
         <category>physics, fun-science</category>
@@ -570,8 +582,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 29 Nov 2020 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/physics,%20fun-science/2020/11/29/rocketball.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2020/11/29/rocketball.html</guid>
+        <link>http://localhost:4000/blog/rocketball/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/rocketball/</guid>
         
         
         <category>physics, fun-science</category>
@@ -614,8 +626,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;We’ve shown that the principle of least power dissipation gives the right answers for steady-state circuit problems.  If this is really a general law of nature, though, it’d probably show up outside of just this one narrow context.  It turns out that it can also be applied to &lt;em&gt;fluid circuits&lt;/em&gt;, which are sometimes studied as somewhat-similar sister systems to electric circuits.  In the sort of fluid circuit I’m imagining, there are networks of pipes of different thicknesses instead of resistors with different resistances.  Water flow rate \(Q\) replaces current, pressure \(P\) replaces voltage, the rate of power dissipation is \(PQ\) instead of \(VI\), and pipes have an effective resistance.  An ideal pipe with laminar flow has \(\Delta P\) proportional to \(Q\) in &lt;a href=&quot;https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation&quot;&gt;an equation analogous to Ohm’s Law&lt;/a&gt;, and the quantity analogous to resistance depends on the pipe’s dimensions and the viscosity of the fluid.  The fact that these equations map onto each other so perfectly means that fluid through a network of pipes minimizes power dissipation just as electrical circuits do.  I’d be willing to bet that, just as we derived part of the differential equation for current flow, you could derive part of the Navier-Stokes equations just from minimizing power dissipation.&lt;/p&gt;
 </description>
         <pubDate>Sun, 06 Sep 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/physics,%20research/2020/09/06/least_power_dissipation.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20research/2020/09/06/least_power_dissipation.html</guid>
+        <link>http://localhost:4000/blog/least_power_dissipation/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/least_power_dissipation/</guid>
         
         
         <category>physics, research</category>
@@ -711,8 +723,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/ul&gt;
 </description>
         <pubDate>Mon, 31 Aug 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/deep%20learning,%20research/2020/08/31/multiplicative-neural-nets.html</link>
-        <guid isPermaLink="true">http://localhost:4000/deep%20learning,%20research/2020/08/31/multiplicative-neural-nets.html</guid>
+        <link>http://localhost:4000/blog/multiplicative-neural-nets/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/multiplicative-neural-nets/</guid>
         
         
         <category>deep learning, research</category>
@@ -750,8 +762,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 </description>
         <pubDate>Thu, 20 Aug 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/physics,%20fun-science/2020/08/20/upside-down-candle.html</link>
-        <guid isPermaLink="true">http://localhost:4000/physics,%20fun-science/2020/08/20/upside-down-candle.html</guid>
+        <link>http://localhost:4000/blog/upside-down-candle/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/upside-down-candle/</guid>
         
         
         <category>physics, fun-science</category>
@@ -862,8 +874,8 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.&lt;/p&gt;
 </description>
         <pubDate>Sun, 12 Jul 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/mail,%20random/2020/07/12/mail-shenanigans.html</link>
-        <guid isPermaLink="true">http://localhost:4000/mail,%20random/2020/07/12/mail-shenanigans.html</guid>
+        <link>http://localhost:4000/blog/mail-shenanigans/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/mail-shenanigans/</guid>
         
         
         <category>mail, random</category>
