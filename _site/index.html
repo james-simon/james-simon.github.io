@@ -2,7 +2,34 @@
 <html>
 
   <head>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -957,6 +984,8 @@ a:visited {
            <!-- <ul class="post-list"> -->
               
               
+              
+              
               <!-- <li> -->
 <h5>
 <a class="post-link" href="/blog/reverse-engineering/">Reverse engineering the NTK</a> <small> 
@@ -1045,6 +1074,8 @@ a:visited {
 
            <h4>Potpourri</h4>
            <!-- <ul class="post-list"> -->
+              
+              
               
               
               
@@ -1145,6 +1176,22 @@ a:visited {
       <div class="col-md-6">
            <h4>Science (fun)</h4>
            <!-- <ul class="post-list"> -->
+              
+              
+              <!-- <li> -->
+<h5>
+<a class="post-link" href="/blog/time-reversed-random-walks/">Time-reversed random walks</a> <small> 
+	
+	
+		(5 min read)
+	
+ </small>
+</h5>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Sep 3, 2022--> 
+<!-- </li> -->
+              
               
               
               

@@ -2,13 +2,40 @@
 <html>
 
   <head>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Reverse engineering the NTK</title>
-  <meta name="description" content=" Fig 1. Foundational works showed how to find the kernel corresponding to a wide network. We find the inverse mapping, showing how to find the wide network c...">
+  <meta name="description" content="This post also appeared on the BAIR blog.Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to prot...">
 
   <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
   <script src="/boostrap/js/bootstrap.js"></script> -->
@@ -56,21 +83,21 @@
     </header>
 
     <div class="post-content" itemprop="articleBody">
-      <p style="text-align:center;">
+      <p><em>This post also appeared on the <a href="https://bair.berkeley.edu/blog/2022/08/29/reverse-engineering/">BAIR blog</a>.</em></p>
+
+<p>Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to protein engineering, but their design and application is nonetheless notoriously unprincipled.
+The development of tools and methods to guide this process is one of the grand challenges of deep learning theory.
+In <a href="https://arxiv.org/abs/2106.03186">Reverse Engineering the Neural Tangent Kernel</a>, we propose a paradigm for bringing some principle to the art of architecture design using recent theoretical breakthroughs: first design a good kernel function – often a much easier task – and then “reverse-engineer” a net-kernel equivalence to translate the chosen kernel into a neural network.
+Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.</p>
+
+<p style="text-align:center;">
 <img src="https://james-simon.github.io/img/rev_eng_fig1.png" width="80%" />
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
-<i> <b>Fig 1.</b> Foundational works showed how to find the kernel corresponding to a wide network. We find the inverse mapping, showing how to find the wide network corresponding to a given kernel. </i>
+<i> Foundational works derived formulae that map from wide neural networks to their corresponding kernels. We obtain an inverse mapping, permitting us to start from a desired kernel and turn it back into a network architecture. </i>
 </small>
 </p>
-
-<!-- ## **Motivation** -->
-
-<p>Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to protein engineering, but their design and application is nonetheless notoriously unprincipled.
-The development of tools and methods to guide this process is one of the grand challenges of deep learning theory.
-In <a href="https://arxiv.org/abs/2106.03186">Reverse Engineering the Neural Tangent Kernel</a>, we propose a paradigm for bringing some principle to the art of architecture design using recent theoretical breakthroughs: first design a good kernel function – often a much easier task – and then “reverse-engineer” a net-kernel equivalence to translate the chosen kernel into a neural network (red arrow in Fig. 1).
-Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.</p>
 
 <!--more-->
 
@@ -179,7 +206,7 @@ Just imagine what we’ll be able to do with them once we finally have one.</p>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
-      <p>(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures.) <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures. Also, careful readers might note that our analysis is in the kernel regime, but it’s possible that depth does buy us something in the feature-learning regime. However, there is weak evidence that <em>feature learning itself</em> is undesirable for FCNs on realistic tasks, and that the best performance occurs in the kernel regime. For example, it is robustly found in many papers (including ours and <a href="https://arxiv.org/abs/1711.00165">Lee et. al (2018)</a>) that “wider is better” for FCNs.) <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

@@ -5,27 +5,181 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 28 Aug 2022 22:48:32 -0700</pubDate>
-    <lastBuildDate>Sun, 28 Aug 2022 22:48:32 -0700</lastBuildDate>
+    <pubDate>Sun, 04 Sep 2022 12:20:12 -0700</pubDate>
+    <lastBuildDate>Sun, 04 Sep 2022 12:20:12 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
+        <title>Time-reversed random walks</title>
+        <description>&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Random_walk&quot;&gt;random walk&lt;/a&gt; is a basic stochastic process in which a point explores a space by taking steps in random directions.
+This process is used to model a swath of phenomena including the paths of diffusing particles, fluctuating stock prices, and the movements of foraging animals, and it’s found use in essentially every discipline of science.
+In the classic random walk, a particle starts at the origin at time zero and diffuses outwards.
+In this post, we’ll look at the statistics of this process when it’s run backwards in time.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-1d-discrete-random-walk&quot;&gt;The 1D discrete random walk&lt;/h3&gt;
+
+&lt;p&gt;The simplest random walk is a 1D random walk with discrete steps.
+Let \(x_0, x_1, x_2, ..., x_t, ...\) be integers denoting the position of a random walker on a line at each timestep.
+The initial condition and transition dynamics will be&lt;/p&gt;
+
+\[x_0 = 0,\]
+
+\[\begin{equation}
+\label{eqn:forward_step}
+x_{t+1} =
+\left\{
+\begin{array}{lr}
+x_t, &amp;amp; p = \frac{1}{2} \\
+x_t + 1, &amp;amp; p = \frac{1}{2}.
+\end{array}
+\right.
+\end{equation}\]
+
+&lt;p&gt;In words, the random walker begins at zero and, at each timestep, flips a coin and either remains put or moves to \(x \rightarrow x + 1\) accordingly.
+(It’s worth noting that we could’ve also chosen the possible steps to be not \(\{0,1\}\) but rather \(\{-1,1\}\) to ensure that the random walk has mean zero.
+It will prove mathematically simpler to use our current formulation, however, but we can always recover the latter setting by constructing \(\tilde{x}_t \equiv 2 x_t - t\).
+We will use \(\tilde{x}_t\) in our visualizations below.)&lt;/p&gt;
+
+&lt;p&gt;This process obeys the following closed-form expression for \(x_t\) (which is easy to derive recursively):
+\(p(x_t) = 2^{-t} \left( \begin{array}{c} t \\ x_t \end{array} \right)\).&lt;/p&gt;
+
+&lt;p&gt;Here’s an illustration of this random walk.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig1a.png&quot; width=&quot;30%&quot; /&gt;
+   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig1b.pdf&quot; width=&quot;30%&quot; /&gt;
+&lt;/p&gt;
+&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
+&lt;small&gt;
+&lt;i&gt;
+	&lt;b&gt;Left.&lt;/b&gt;
+	In the 1D discrete random walk, the particle moves left or right at each timestep with probability $1/2$.
+	&lt;b&gt;Right.&lt;/b&gt;
+	Simulated random walks.
+	The upper plot shows a histogram of final positions (blue) and the predicted distribution (red)[^d].
+&lt;/i&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&quot;running-it-back&quot;&gt;Running it back&lt;/h3&gt;
+
+&lt;p&gt;The above random walks start at the origin at \(t=0\) and take uncorrelated steps from then on.
+This is easy to simulate, as every step is independent of every other step.
+Let us now imagine how these trajectories look to an observer moving backwards in time&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.
+Particles start in a diffuse distribution, take fairly random steps, and magically converge at the origin at \(t=0\).
+Suppose you wish to find the statistics of this process from the point of view of this backwards observer: given that they observe a particle at a given spot at time \(t\), how will it move?
+(Equivalently, we could forget about the time reversal and ask about the statistics of a path conditioned on its intersecting a particular point, but that’s less fun.)&lt;/p&gt;
+
+&lt;p&gt;Mathematically, we’d like to obtain an update equation similar to Equation \(\ref{eqn:forward_step}\) which gives us the statistics of \(x_{t-1}\) as a function of \(x_t\).
+[FOOTNOTE ABOUT THIS BEING A MARKOV PROCESS, SO WE DON’T NEED TO WORRY ABOUT OTHER X’S]
+We can do so using &lt;a href=&quot;https://en.wikipedia.org/wiki/Bayes%27_theorem&quot;&gt;Bayes’ rule&lt;/a&gt;, which, applied to our case, tells us that&lt;/p&gt;
+
+\[p \left( x_{t-1} | x_{t} \right) = \frac{ p \left( x_{t} | x_{t-1} \right) p \left( x_{t} \right) }{ p \left( x_{t-1}\right) }.\]
+
+&lt;p&gt;Some algebra and use of our closed-form expression for \(p(x_t)\) tells us that&lt;/p&gt;
+
+\[x_{t-1} =
+\left\{
+\begin{array}{lr}
+x_{t} - 1, &amp;amp; p = \frac{x_t}{t} \\
+x_{t}, &amp;amp; p = \frac{t - x_t}{t}
+\end{array}
+\right.\]
+
+&lt;!-- $$
+p \left( x_{-t} | x_{-t+1} \right) = 
+\left\{
+\begin{array}{lr}
+\frac{1}{2}, &amp; x_{-t} = x_{-t+1} \ \ \textrm{ or } \ \ x_{-t} = x_{-t+1}-1\\
+0, &amp; \textrm{else.} \\
+\end{array}
+\right.
+$$
+
+$$p \left( x_{-t} \right) = $$
+
+$$
+p \left( x_{-t+1} | x_{-t} \right) =
+\frac{
+	\frac{1}{t!} \left( \begin{array}{c} t \\ x_{-t} \end{array} \right)
+}{
+	2	\frac{1}{(t-1)!} \left( \begin{array}{c} t-1 \\ x_{-t+1} \end{array} \right)
+}
+=
+$$ --&gt;
+
+&lt;p&gt;Examining these transition probabilities, we see that, when run backwards in time, our random walk is biased towards taking a step right if \(x_t &amp;lt; \frac{t}{2}\) and biased left if \(x_t &amp;gt; \frac{t}{2}\), and that the probability of a step left interpolates linearly from \(0\) to \(1\) as \(x_t\) increases from \(0\) to \(t\).
+These centerwards biases ensure the particle remains in the “lightcone” leading into the origin.
+When \(x_t \approx \frac{t}{2}\), the step is roughly unbiased, and backward propagation is simply the same random walk as the forward propagation.
+We generally expect \(x_t \approx \frac{t}{2}\) at large \(t\), and so the biasedness of the reverse process only comes into play at small \(t\) or when \(x_t\) drifts unusually close to the edges of \([0,t]\).&lt;/p&gt;
+
+&lt;p&gt;Here is a simulation of a backward random walk with [PARAMETERS].&lt;/p&gt;
+
+&lt;h3 id=&quot;random-walk-with-gaussian-steps&quot;&gt;Random walk with Gaussian steps&lt;/h3&gt;
+
+&lt;h3 id=&quot;the-continuum-limit&quot;&gt;The continuum limit&lt;/h3&gt;
+
+&lt;p&gt;[intro to the 1D random walk]
+[solution for discrete steps]
+[simulation]&lt;/p&gt;
+
+&lt;p&gt;[what does it mean to go backwards?]&lt;/p&gt;
+
+&lt;p&gt;[random walk backwards in time]
+“backwards in time,” diffusing with the constraint that it must reach the origin at a&lt;/p&gt;
+
+&lt;p&gt;[solution for Gaussian steps]&lt;/p&gt;
+
+&lt;p&gt;Time-reversed random walks&lt;/p&gt;
+
+&lt;p&gt;Normal RWs are forwards in time. Here’s what they look like.&lt;/p&gt;
+
+&lt;p&gt;Inspired by Tenet, I started to think about time-reversed (quasi)random processes.
+What if we simulate a random walk backwards in time, with the constraint that it reaches zero at time t?
+What are its statistics? Can we simulate it forwards?&lt;/p&gt;
+
+&lt;p&gt;Yes. Here’s how.&lt;/p&gt;
+
+&lt;p&gt;[example for binary steps]&lt;/p&gt;
+
+&lt;p&gt;[example for Gaussian steps?]&lt;/p&gt;
+
+&lt;p&gt;[time-reversed Weiner process?]&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;If you were wondering, yes, this question was inspired by the movie &lt;em&gt;Tenet&lt;/em&gt;, which forces you to think about the dynamics of things from the point of view of an observer moving the other way through time. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sat, 03 Sep 2022 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/time-reversed-random-walks/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/time-reversed-random-walks/</guid>
+        
+        
+        <category>math, fun-science</category>
+        
+      </item>
+    
+      <item>
         <title>Reverse engineering the NTK</title>
-        <description>&lt;p style=&quot;text-align:center;&quot;&gt;
+        <description>&lt;p&gt;&lt;em&gt;This post also appeared on the &lt;a href=&quot;https://bair.berkeley.edu/blog/2022/08/29/reverse-engineering/&quot;&gt;BAIR blog&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to protein engineering, but their design and application is nonetheless notoriously unprincipled.
+The development of tools and methods to guide this process is one of the grand challenges of deep learning theory.
+In &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;Reverse Engineering the Neural Tangent Kernel&lt;/a&gt;, we propose a paradigm for bringing some principle to the art of architecture design using recent theoretical breakthroughs: first design a good kernel function – often a much easier task – and then “reverse-engineer” a net-kernel equivalence to translate the chosen kernel into a neural network.
+Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;https://james-simon.github.io/img/rev_eng_fig1.png&quot; width=&quot;80%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; Foundational works showed how to find the kernel corresponding to a wide network. We find the inverse mapping, showing how to find the wide network corresponding to a given kernel. &lt;/i&gt;
+&lt;i&gt; Foundational works derived formulae that map from wide neural networks to their corresponding kernels. We obtain an inverse mapping, permitting us to start from a desired kernel and turn it back into a network architecture. &lt;/i&gt;
 &lt;/small&gt;
 &lt;/p&gt;
-
-&lt;!-- ## **Motivation** --&gt;
-
-&lt;p&gt;Deep neural networks have enabled technological wonders ranging from voice recognition to machine transition to protein engineering, but their design and application is nonetheless notoriously unprincipled.
-The development of tools and methods to guide this process is one of the grand challenges of deep learning theory.
-In &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;Reverse Engineering the Neural Tangent Kernel&lt;/a&gt;, we propose a paradigm for bringing some principle to the art of architecture design using recent theoretical breakthroughs: first design a good kernel function – often a much easier task – and then “reverse-engineer” a net-kernel equivalence to translate the chosen kernel into a neural network (red arrow in Fig. 1).
-Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -134,7 +288,7 @@ Just imagine what we’ll be able to do with them once we finally have one.&lt;/
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures.) &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;(It’s the belief of this author that deeper really is different for CNNs, and so studies aiming to understand the benefits of depth for generalization should focus on CNNs and other structured architectures. Also, careful readers might note that our analysis is in the kernel regime, but it’s possible that depth does buy us something in the feature-learning regime. However, there is weak evidence that &lt;em&gt;feature learning itself&lt;/em&gt; is undesirable for FCNs on realistic tasks, and that the best performance occurs in the kernel regime. For example, it is robustly found in many papers (including ours and &lt;a href=&quot;https://arxiv.org/abs/1711.00165&quot;&gt;Lee et. al (2018)&lt;/a&gt;) that “wider is better” for FCNs.) &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
@@ -767,118 +921,6 @@ I’m generally special; my work’s especially general \ My greatness endures, 
         
         
         <category>physics, fun-science</category>
-        
-      </item>
-    
-      <item>
-        <title>Messing with the postal service</title>
-        <description>&lt;!-- ![grid26] --&gt;
-&lt;!--exc--&gt;
-
-&lt;p&gt;The United States’ postal system is an institution of renown, a conduit for objects and information older than the Constitution.  Even now, amid financial difficulties and numerous competing ways to send things, it’s still remarkably effective - neither snow nor hail nor remote destinations nor heavy loads fazes the US’ army of postal workers.  This raises a natural question: can we find something that does?&lt;/p&gt;
-
-&lt;p&gt;Out of related curiosity, over years I’ve mailed a slew of things I’d guess were new to postmen.  These included a letter with a hole in the middle (arrived), a pentagonal letter (arrived), an origami crane (arrived), a pack of sticky notes with an instruction on the back for any postal worker reading it to take one note (arrived missing many), a dollar bill addressed like a postcard (returned, in an envelope, due to not having an envelope), a note in an envelope made of dollar bills (arrived), and a literal stick with an address written on it (arrived in a bag with an apology for any damages).  A piece of crumbling bark, two letters tied together, and a spherical rock the size of a golf ball weren’t successfully delivered.&lt;/p&gt;
-
-&lt;p&gt;Why’d some of these objects arrive while others didn’t?  The USPS’ regulations and pricing seem to assume that anything sent is either a letter or in a large envelope or box, but I haven’t found anything explicitly forbidding sending things without boxes.  The lack of explicit rules probably means postal workers have a lot of leeway in deciding what to do with weird items, which makes sense and fits the data - I don’t see a sharp line that separates the successes from the failures above, but the failed items do seem a little more obnoxious.&lt;/p&gt;
-
-&lt;p&gt;There are an infinite number of ways to mess with the postal service, though, and alone I’ve tried only a handful.  The theme’s worth some more variations.  I once led a group of children at a summer camp in mailing random objects, but only so much is accessible in the middle of the woods.  At the end of the spring 2020 semester, I and 11 other members of my physics cohort formed a group to mail each other weird things in the style of a secret Santa.  The group, dubbed the University Society of Postal Shenanigans (USPS), finished its first round in June.  Here are our results, ordered subjectively by the mailed object’s ridiculousness.&lt;/p&gt;
-
-&lt;h4 id=&quot;halloween-decoration&quot;&gt;Halloween decoration&lt;/h4&gt;
-&lt;p&gt;Delivered after several weeks&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/ween.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;mint-box&quot;&gt;Mint box&lt;/h4&gt;
-&lt;p&gt;Not accepted via mailbox delivery and rejected at a post office by a persnickety employee&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/mints.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;hand-sanitizer&quot;&gt;Hand sanitizer&lt;/h4&gt;
-&lt;p&gt;Delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/sanitizer.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;bonne-maman-jam-lid&quot;&gt;Bonne Maman jam lid&lt;/h4&gt;
-&lt;p&gt;Not delivered&lt;/p&gt;
-
-&lt;h4 id=&quot;anticannibalism-bracelet&quot;&gt;Anticannibalism bracelet&lt;/h4&gt;
-&lt;p&gt;Delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/strap.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;glove&quot;&gt;Glove&lt;/h4&gt;
-&lt;p&gt;Not delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/glove.jpg&quot; width=&quot;300px&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/gloveback.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;lemon-from-my-backyard-with-address-and-urgent-written-on-it-in-sharpie-mailed-within-berkeley&quot;&gt;Lemon from my backyard with address and URGENT written on it in Sharpie mailed within Berkeley&lt;/h4&gt;
-&lt;p&gt;Delivered in a few days&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/lemon.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;lemon-coincidentally-picked-from-another-bay-area-backyard-and-mailed-to-berkeley&quot;&gt;Lemon coincidentally picked from another Bay area backyard and mailed to Berkeley&lt;/h4&gt;
-&lt;p&gt;Delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/lemon2.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;origami-box-containing-three-origami-cranes&quot;&gt;Origami box containing three origami cranes&lt;/h4&gt;
-&lt;p&gt;Delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/origami_box.jpg&quot; width=&quot;300px&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/origami_crane.jpg&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;lone-stamp-with-address-and-odd-message-on-back&quot;&gt;Lone stamp with address and odd message on back&lt;/h4&gt;
-&lt;p&gt;Not delivered&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/stamp_front.jpg&quot; height=&quot;350px&quot; /&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/stamp_back.jpg&quot; height=&quot;350px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;chicago-flag-socks-with-an-address-and-stamps-sewn-into-one&quot;&gt;Chicago flag socks with an address and stamps sewn into one&lt;/h4&gt;
-&lt;p&gt;Delivered (credit to Madeline Bernstein for the quality item)&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/sock.png&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;3d-ball-maze&quot;&gt;3D ball maze&lt;/h4&gt;
-&lt;p&gt;Delivered despite having too little postage.  As the postman collected perhaps the best $2.55 I’ve ever spent, he made it clear with his manner that he’d never seen something like this and wasn’t going to miss the chance to make fun of it&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/usps/maze.png&quot; width=&quot;300px&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;dehydrated-celery-stalk-partially-wrapped-in-duct-tape&quot;&gt;Dehydrated celery stalk partially wrapped in duct tape&lt;/h4&gt;
-&lt;p&gt;Not Delivered&lt;/p&gt;
-
-&lt;p&gt;There are a few clear conclusions we can draw from these experiments.  First, the sheer probability of the postal service delivering something weird is shockingly high.  Second, they’re more likely to deliver something when there’s no way to give it back to the sender - the mint box was refusable, and my single dollar had a return address, and both failed, while almost nothing else risky had a return address.  Third, though object ridiculousness wasn’t very correlated with success, the apparent value of objects was - the ball maze, socks, and hand sanitizer all have some obvious use, while the celery, jam lid, and single glove don’t.  A natural combination of these conclusions is that the postal service will probably deliver anything weird they can’t return as long as it seems important enough.  I’d bet you could mail basically anything - a seat cushion, a balloon, a constantly-beeping speaker - if you permanently attached it to something that looks like a bill with no return address.&lt;/p&gt;
-
-&lt;p&gt;The USPS’ experiments will continue, but I’d love to hear from anyone else who’s tried pushing the envelope of the postal system.  Please tell me of your experiments by writing a message on the exterior of a full-size replica of a blue public mailbox and mailing it to the Berkeley physics department.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 12 Jul 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/mail-shenanigans/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/mail-shenanigans/</guid>
-        
-        
-        <category>mail, random</category>
         
       </item>
     
