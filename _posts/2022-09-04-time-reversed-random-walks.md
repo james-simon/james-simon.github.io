@@ -10,24 +10,25 @@ The idea's not that they time-travel or that they merely age backwards, it's tha
 To get an idea of what I mean, [here's](https://www.youtube.com/watch?v=4xj0KRqzo-0) a clip of the protagonists fighting two time-reversed opponents.
 
 This mechanism immediately presents a number of free-will-related paradoxes.
-For example, if you start a fight with a time-reversed adversary, it seems you're guaranteed you won't incapacitate them because they're up and fighting at a time that's earlier for you but later for them (the one exception then being if you "recapactitate" them with your first blow).
+For example, if you start a fight with a time-reversed adversary, it seems you're guaranteed you won't incapacitate them because you observed them up and fighting at a time that's earlier for you but later for them (if you are to win, you must have "recapactitated" them with your first blow).
 Similarly, it seems you couldn't break a time-reversed vase or light a time-reversed match, and things would probably end badly if you tried to eat a time-reversed sandwich.
-Ultimately, however, these are paradoxes of free will, and if you remove human agency as a consideration, these events' impossibility feels more believable.
-I wanted to understand if the core idea made sense in terms of *physics*.
+Ultimately, however, these are paradoxes of human agency, and if you remove free will as a consideration, these events' impossibility feels more believable.
+Let us examine the movie's core idea through the lens of *physics*.
 
-At a first glance, it looks like Newtonian mechanics is clearly broken, like when the gear jumps up to meet the scientist's hand [here](https://youtu.be/L3pk_TBkihU?t=41).
-After some more thought, however, it turns out this is fine: the randomly jiggling particles of the supporting surface can all come together and move in the same direction, giving the gear a big push upwards and leaving the surface a little colder.
-This is the time-reversed process of the forwards event.
+At a first glance, it looks like several scenes clearly violate Newtonian mechanics, such as [this scene](https://youtu.be/L3pk_TBkihU?t=41) in which a gear jumps off a table to meet a hand that dropped it backwards in time.
+However, it turns out this is not strictly impossible: the thermally jiggling particles of the surface beneath the gear could all come together and move in the same direction, giving the gear a big push upwards and leaving the surface a little colder.
+This is precisely the time-reversed process of the forwards event.
 This sequence of steps seems absurdly implausible - and in our world, it would be - but it doesn't break conservation of momentum or energy or violate any ironclad law of physics.
-In general, these sorts of backwards processes will always exist because the laws of Newtonian physics and electromagnetism are [time-reversal symmetric](https://en.wikipedia.org/wiki/T-symmetry)[^a].
+These sorts of backwards processes are always possible because the laws of Newtonian physics and electromagnetism are [time-reversal symmetric](https://en.wikipedia.org/wiki/T-symmetry)[^a].
 
-It turns out the apparent flow of time in the world we see around us is due entirely to thermodynamics, a statistical set of laws that emerge from the basic rules of the universe in macroscopic systems like vases and Christopher Nolan.
+It turns out the apparent flow of time in the world we see around us is due principally to thermodynamics, a statistical set of effective laws that emerge from the basic rules of the universe when considering macroscopic systems like vases and Christopher Nolan.
 Time-reversed versions of events are not fundamentally impossible even in ordinary circunstances, they're merely much less likely than their forwards-time counterparts.
-In practice, the gear will stay on the surface for as long as you watch it, but there is indeed some tiny probability it'll jump up to meet your hand each moment.
-In a very deep sense, fragile objects shatter forwards in time because, well, they're not broken now, and there are lots of ways they can break, so statistics doesn't have to work too hard to make it happen, but if you sweep together a bunch of glass shards, there's only one way they can all fit together, so their perfect coalescence is very unlikely.
+In practice, the gear will stay on the surface for as long as you watch it, but there is indeed a miniscule probability it'll jump up to meet your hand each moment.
+In a very deep sense, fragile objects shatter forwards in time because, well, they're not broken now, and there are lots of ways they can break, so statistics doesn't have to work too hard to make it happen.
+If you sweep together a bunch of glass shards, however, there's only one way they can all fit together, so their perfect coalescence is very unlikely.
 In our universe, things happen to generally be more ordered back in the direction we call the past on account of the Big Bang.
-However, if you took another universe and enforced the constraint that things are ordered and nice at some *final* time, time-reversal would give you a universe flowing "backwards" in time, though its inhabitants would never know the difference.
-This is the difference between specifying the initial and final conditions of a dynamical process and extrapolating to the rest of time, which is no difference at all for a time-symmetric process.
+However, if you took another universe and enforced the constraint that things are ordered and nice at some *final* time, time-reversal would give you a universe flowing "backwards" in time, though its inhabitants would of course never know the difference.
+This is the difference between specifying the initial and final conditions of a dynamical process and extrapolating to the rest of time, and this is no difference at all for a time-symmetric process.
 
 Okay, but how do you get things moving both forwards and backwards?
 This is weird, since you normally can't specify both initial *and* final conditions for a dynamical process.
@@ -35,24 +36,22 @@ However, one way to do it and avoid a paradox might be to specify only *partial*
 For example, suppose I enforce that the left half of a room contains person A at time $$t=0$$, and the right half of the same room contains person B at time $$t=T$$, and I don't specify anything else.
 This is an underdetermined system which is likely to have many solutions.
 Actually finding one would be hard - you'd probably have to iterate forwards and backwards in time for a bunch of cycles in a nonlocal fashion until you satisfy all the boundary conditions - but it's not impossible in principle.
-The solution might be these two people fighting.
+Given appropriate brain states in these boundary conditions, the obtained dynamical solution might be these two people fighting.
 This way of thinking about the problem is weird and nonlocal, but so is Tenet, and it feels more satisfying than prioritizing one time direction and viewing reversed events as simply a series of flukes.
 
 This is a concrete enough way of looking at the problem that we could start to think about how to simulate it.
-The ultimate dream here would be to make a video game where you actually have to fight and interact with creatures moving backwards in time.
-In order to make that happen, though, we need to understand how to model things which obey a certain set of rules forwards in time when they're moving backwards in time.
-The rest of this post explores how to do that using the simplest dynamical model in thermodynamics, the random walk.
+The ultimate dream here would be a video game in which you fight and interact with creatures moving backwards in time.
+In order to make that happen, though, we need to understand how to model rule-based processes from the point of view of an observer moving the other way in time.
+The rest of this post obtains the math for doing this using the simplest dynamical model in thermodynamics, the random walk.
 
 ### The 1D discrete random walk
 
-The [random walk](https://en.wikipedia.org/wiki/Random_walk) is a basic stochastic process in which a point explores a space by taking steps in random directions.
+The [random walk](https://en.wikipedia.org/wiki/Random_walk) is a basic stochastic process in which a particle, which we refer to as a walker, explores a space by taking steps in random directions.
 This process is used to model a swath of phenomena including the paths of diffusing particles, fluctuating stock prices, and the movements of foraging animals, and it's found use in essentially every discipline of science.
-In the classic random walk, a particle starts at the origin at time zero and diffuses outwards.
-In this post, we'll look at the statistics of this process when it's run backwards in time.
 
-The simplest random walk is a 1D random walk with discrete steps.
-Let $$x_0, x_1, x_2, ..., x_t, ...$$ be integers denoting the position of a random walker on a line at each timestep.
-The initial condition and transition dynamics will be
+The simplest example of this process is a 1D random walk with discrete steps.
+Let $$x_0, x_1, x_2, ..., x_t, ...$$ be integers denoting the position of a random walker on the real line at each timestep.
+The initial condition and transition dynamics are
 
 $$x_0 = 0,$$
 
@@ -71,7 +70,7 @@ $$
 
 In words, the random walker begins at zero and, at each timestep, flips a coin and either remains put or moves to $$x \rightarrow x + 1$$ accordingly.
 (It's worth noting that we could've also chosen the possible steps to be not $$\{0,1\}$$ but rather $$\{-1,1\}$$ to ensure that the random walk has mean zero.
-It will prove mathematically simpler to use our current formulation, however, but we can always recover the latter setting by constructing $$\tilde{x}_t \equiv 2 x_t - t$$.
+It will prove mathematically simpler to use our current formulation, but we can always recover the latter setting by constructing $$\tilde{x}_t \equiv 2 x_t - t$$.
 We will use $$\tilde{x}_t$$ in our visualizations below, and we will refer to the two possible steps as "leftwards" and "rightwards.")
 
 
@@ -89,7 +88,7 @@ Figure 1 gives an schematic illustration of this random walk as well as a visual
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig1b.svg" width="30%">
 </p>
-<p style="margin-left:20%; margin-right:20%;">
+<p style="margin-left:10%; margin-right:10%;">
 <small>
 <i>
 	<b>Figure 1.</b>
@@ -105,11 +104,11 @@ Figure 1 gives an schematic illustration of this random walk as well as a visual
 The above random walks start at the origin at $$t=0$$ and take uncorrelated steps from then on.
 This is easy to simulate, as every step is independent of every other step.
 Let us now imagine how these trajectories look to an observer moving backwards in time.
-The walkers start in a wide distribution, take fairly random steps, but then magically converge at the origin at $$t=0$$.
+The walkers start in a wide distribution, take fairly random steps, but then all converge at the origin at $$t=0$$.
 Suppose you wish to find the statistics of this process from the point of view of this backwards observer: given that they observe a walker at position $$x_t$$ at time $$t$$, what are its transition probabilities for the step to time $$t - 1$$?
 (Equivalently, we could forget about the time reversal and ask about the statistics of a path conditioned on its intersecting $$(t, x_t)$$, but that's less fun.)
 
-We would like to obtain an update equation similar to Equation $$\ref{eqn:forward_step}$$ which gives us the statistics of $$x_{t-1}$$ as a function of $$x_t$$ (because the random walk is a Markov process, we need not consider $$x_{t+1}$$ and so on).
+We would like to obtain an update equation similar to Equation $$\ref{eqn:forward_step}$$ which gives us the statistics of $$x_{t-1}$$ as a function of $$x_t$$ (because the random walk is a Markov process, we need not consider $$x_{t+1}$$ and so on in finding the statistics of $$x_{t-1}$$).
 We can do so using [Bayes' rule](https://en.wikipedia.org/wiki/Bayes%27_theorem), which, applied to our case, tells us that
 
 $$p \left( x_{t-1} | x_{t} \right) = \frac{ p \left( x_{t} | x_{t-1} \right) p \left( x_{t} \right) }{ p \left( x_{t-1}\right) }.$$
@@ -124,28 +123,28 @@ x_{t-1} =
 \left\{
 \begin{array}{lr}
 x_{t} - 1, & p = \frac{x_t}{t} \\
-x_{t}, & p = \frac{t - x_t}{t}
+x_{t}, & p = \frac{t - x_t}{t}.
 \end{array}
 \right.
 \end{equation}
 $$
 
+The resulting backward process is illustrated schematically in the left subfigure of Figure 2.
 Examining these transition probabilities, we see that, when run backwards in time, our random walk is biased towards taking a step right if $$x_t < \frac{t}{2}$$ and biased towards taking a step left if $$x_t > \frac{t}{2}$$, and that the probability of a step left interpolates linearly from $$0$$ to $$1$$ as $$x_t$$ increases from $$0$$ to $$t$$.
-These centerwards biases ensure the walker remains in the "lightcone" leading into the origin.
+This centerwards bias ensures the walker remains in the "lightcone" leading into the origin.
 When $$x_t \approx \frac{t}{2}$$, the step is roughly unbiased, and backward propagation is simply the same random walk as the forward propagation.
 We generally expect $$x_t \approx \frac{t}{2}$$ at large $$t$$, and so the biasedness of the reverse process only comes into play at small $$t$$ or when $$x_t$$ drifts unusually close to the edges of $$[0,t]$$.
-These position-dependent transition probabiliteis are illustrated schematically in the left subfigure of Figure 2.
 
 The center and right subfigures of Figure 2 depict simulated reversed random walks starting at a particular point and run backwards to $$t=0$$ using Equation $$\ref{eqn:backward_step}$$.
 The resulting trajectories look a lot like normal random walks for the first few steps, pick up a noticeable drift towards the origin as time proceeds, and quickly coalesce to the origin towards the end, in line with our expectation that the constraint of intersection with the origin is felt most strongly as $$t=0$$ draws near.
-It's worth noting that we could have generated these trajectories by randomly sampling *forwards* walks and only keeping those which intersect our chosen starting point, but directly simulating the backwards process is way more efficient.
+It's worth noting that we could have generated these trajectories by randomly sampling *forwards* walks and only keeping those which intersect our chosen starting point, but directly simulating the backwards process is far more efficient, so our reversed-time transition probabilities are worth having.
 
 <p align="center">
    <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2a.png" width="30%">
 	&nbsp;&nbsp;&nbsp;
    <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2b.svg" width="60%">
 </p>
-<p style="margin-left:20%; margin-right:20%;">
+<p style="margin-left:10%; margin-right:10%;">
 <small>
 <i>
 	<b>Figure 2.</b>
@@ -245,7 +244,7 @@ x_{t}
 \mathcal{N}\left(0,dt\right).
 $$
 
-We can now simply take $$dt \rightarrow 0$$ and arrive at a differential equation for the continuum limit, findin ghtat
+We can now simply take $$dt \rightarrow 0$$ and arrive at a differential equation for the continuum limit, finding that
 
 $$
 \begin{equation}
@@ -255,8 +254,8 @@ $$
 $$
 
 where $$\eta(t)$$ is the classic white noise process defined by having mean zero and covariance $$\mathbb{E}[\eta(t)\eta(t')] = \delta(t - t')$$.
-We can now see that this equation has a simple interpretation: this is an ordinary random walk with a *drift* towards $$x = 0$$ with strength $$t^{-1}$$.
-As the process runs backwards, the random walker is drawn towards the origin on average and is ultimately sucked in as $$t \rightarrow 0$$.
+This equation has a simple interpretation: this is an ordinary random walk with a pull towards the origin with strength $$t^{-1}$$.
+The strength of this pull diverges as $$t \rightarrow 0$$, sucking the walker in to $$x = 0$$.
 
 Neglecting the driving noise and looking at only the drift term, we see that the mean of our distribution $$\mu(t) \equiv \mathbb{E}[x(t)]$$ obeys
 
@@ -266,14 +265,14 @@ $$
 
 for some constant $$C$$.
 This tells us that we expect that the mean of the distribution to approach zero linearly.
-Looking at the red curves in Figure 2, we see this is exactly what happens!
+Looking at the red curves in Figure 2, we see this is exactly what happens.
 
 ### Chasing a moving target
 
 Unlike the forward process, this reversed process isn't stationary (i.e. time-translation invariant): as it runs, it approaches $$t = 0$$, and its behavior changes.
 Stationary processes are nice, though; is there simple a way we could modify it to make it $$t$$-independent?
-One idea is to make it so the particle is chasing a moving target in a carrot-on-a-stick fashion: we fix some time $$T$$ and "move" $$t=0$$ so it is always time $$T$$ away from the present.
-Like the advent of self-driving cars or quantum computing, the end of this process will always be a fixed time away.
+One idea is to make it so the particle is chasing a moving target in a carrot-on-a-stick fashion: we fix some time $$T$$ and "move" $$t=0$$ so the random walk feels it is always a time $$T$$ away from convergence.
+Much like the advent of quantum computing, the end of this process will always appear to be a fixed time away.
 Mathematically, this corresponds to replacing $$t \rightarrow T$$ in Equation $$\ref{eqn:sde}$$, yielding
 
 $$
@@ -281,19 +280,19 @@ $$
 $$
 
 This process is stationary and has an even simpler interpretation.
-In fact, it's exactly the classic [Orenstein-Uhlenbeck process](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process),
-a mean-reverting process which a particle's simultaneously driven and damped towards zero.
+In fact, neglecting the flipped direction of time, it's exactly the classic [Orenstein-Uhlenbeck process](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process),
+which describes a random walker in a quadratic potential.
 Interestingly, the stationary distribution of this process is a centered Gaussian with mean $$\frac{T}{2}$$, while from the forward walk we might expect it to have mean $$T$$.
-I was surprised by this and made some sense of it by noting that, if we started with the stationary distribution of $$x_T$$ and applied many backwards steps, it'd contract to a narrower distribution.
+I was surprised by this; I made some sense of it by noting that, if we started with the stationary distribution of $$x_T$$ and applied many backwards steps, it'd contract to a narrower distribution, but it still feels weird to me.
 
 ### Conclusions
 
 So, what are the prospects for our Tenet-inspired video game?
-We've figured out how to model a simple random walk from the point of view of an observer moving the other direction in time.
-It's easy to imagine doing a similar thing for a walker with more complicated rules, like wandering around a map or interacting with objects around it.
-It's also not too far-fetched to imagine incorporating rules that depend on the player, like moving towards the player or attacking with some probability, though we then run into the difficulty that the player's future actions are unknown.
+We've figured out how to model a simple random walk from the point of view of an observer moving backwards in time.
+It's easy to imagine doing a similar thing for a walker with more complicated rules, like wandering around a map or interacting with objects.
+It's also not too far-fetched to imagine rules that depend on the player, like a bias for moving towards the player or attacking with some probability, though we then run into the  difficulty that the player's future actions are unknown (a problem that's a cousin of our earlier paradoxes regarding free will).
 This blocks our Bayesian calculation and needs a clever trick or two to give a good game mechanic.
-If any game-design-minded folks see this and are interested, feel free to reach out!
+If you're game-design-minded and interested in thinking through this further, feel free to reach out!
 
 #### Note on the genesis of this post
 
@@ -302,7 +301,7 @@ This writeup was made by starting with a blank file and randomly hitting a time-
 
 #### Footnotes
 
-[^a]: It turns out the weak nuclear force actually does violate time symmetry just a little, so you'd see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let's ignore that for now.
+[^a]: It turns out the weak nuclear force actually does violate time symmetry just a little, so you'd see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let's ignore that for now. We'll also neglect questions of quantum measurement.
 
 [^b]: We might have let the possible steps be $$\{-1,1\}$$ instead of $$\{0,1\}$$. This yields a centered random walk but a slightly more complicated final expression, so we stick with $$\{0,1\}$$ for the math.
 
