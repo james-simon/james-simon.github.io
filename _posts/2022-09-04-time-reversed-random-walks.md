@@ -295,6 +295,11 @@ It's also not too far-fetched to imagine incorporating rules that depend on the 
 This blocks our Bayesian calculation and needs a clever trick or two to give a good game mechanic.
 If any game-design-minded folks see this and are interested, feel free to reach out!
 
+#### Note on the genesis of this post
+
+This idea was largely inspired by a post-*Tenet* conversation with Vishal Talasani.
+This writeup was made by starting with a blank file and randomly hitting a time-reversed delete key until it was done.
+
 #### Footnotes
 
 [^a]: It turns out the weak nuclear force actually does violate time symmetry just a little, so you'd see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let's ignore that for now.
