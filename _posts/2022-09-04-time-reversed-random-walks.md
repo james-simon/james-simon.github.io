@@ -5,12 +5,50 @@ date: 2022-09-03
 category: math, fun-science
 ---
 
+A year or so ago, at the height of the pandemic, a few friends and I watched *Tenet (2020)*, an action movie whose core conceit is that certain people and objects move the opposite direction through time.
+The idea's not that they time-travel or that they merely age backwards, it's that they're truly time-reversed, appearing to ordinary observers like a video played backwards.
+To get an idea of what I mean, [here's](https://www.youtube.com/watch?v=4xj0KRqzo-0) a clip of the protagonists fighting two time-reversed opponents.
+
+This mechanism immediately presents a number of free-will-related paradoxes.
+For example, if you start a fight with a time-reversed adversary, it seems you're guaranteed you won't incapacitate them because they're up and fighting at a time that's earlier for you but later for them (the one exception then being if you "recapactitate" them with your first blow).
+Similarly, it seems you couldn't break a time-reversed vase or light a time-reversed match, and things would probably end badly if you tried to eat a time-reversed sandwich.
+Ultimately, however, these are paradoxes of free will, and if you remove human agency as a consideration, these events' impossibility feels more believable.
+I wanted to understand if the core idea made sense in terms of *physics*.
+
+At a first glance, it looks like Newtonian mechanics is clearly broken, like when the gear jumps up to meet the scientist's hand [here](https://youtu.be/L3pk_TBkihU?t=41).
+After some more thought, however, it turns out this is fine: the randomly jiggling particles of the supporting surface can all come together and move in the same direction, giving the gear a big push upwards and leaving the surface a little colder.
+This is the time-reversed process of the forwards event.
+This sequence of steps seems absurdly implausible - and in our world, it would be - but it doesn't break conservation of momentum or energy or violate any ironclad law of physics.
+In general, these sorts of backwards processes will always exist because the laws of Newtonian physics and electromagnetism are [time-reversal symmetric](https://en.wikipedia.org/wiki/T-symmetry)[^a].
+
+It turns out the apparent flow of time in the world we see around us is due entirely to thermodynamics, a statistical set of laws that emerge from the basic rules of the universe in macroscopic systems like vases and Christopher Nolan.
+Time-reversed versions of events are not fundamentally impossible even in ordinary circunstances, they're merely much less likely than their forwards-time counterparts.
+In practice, the gear will stay on the surface for as long as you watch it, but there is indeed some tiny probability it'll jump up to meet your hand each moment.
+In a very deep sense, fragile objects shatter forwards in time because, well, they're not broken now, and there are lots of ways they can break, so statistics doesn't have to work too hard to make it happen, but if you sweep together a bunch of glass shards, there's only one way they can all fit together, so their perfect coalescence is very unlikely.
+In our universe, things happen to generally be more ordered back in the direction we call the past on account of the Big Bang.
+However, if you took another universe and enforced the constraint that things are ordered and nice at some *final* time, time-reversal would give you a universe flowing "backwards" in time, though its inhabitants would never know the difference.
+This is the difference between specifying the initial and final conditions of a dynamical process and extrapolating to the rest of time, which is no difference at all for a time-symmetric process.
+
+Okay, but how do you get things moving both forwards and backwards?
+This is weird, since you normally can't specify both initial *and* final conditions for a dynamical process.
+However, one way to do it and avoid a paradox might be to specify only *partial* information at both points in time.
+For example, suppose I enforce that the left half of a room contains person A at time $$t=0$$, and the right half of the same room contains person B at time $$t=T$$, and I don't specify anything else.
+This is an underdetermined system which is likely to have many solutions.
+Actually finding one would be hard - you'd probably have to iterate forwards and backwards in time for a bunch of cycles in a nonlocal fashion until you satisfy all the boundary conditions - but it's not impossible in principle.
+The solution might be these two people fighting.
+This way of thinking about the problem is weird and nonlocal, but so is Tenet, and it feels more satisfying than prioritizing one time direction and viewing reversed events as simply a series of flukes.
+
+This is a concrete enough way of looking at the problem that we could start to think about how to simulate it.
+The ultimate dream here would be to make a video game where you actually have to fight and interact with creatures moving backwards in time.
+In order to make that happen, though, we need to understand how to model things which obey a certain set of rules forwards in time when they're moving backwards in time.
+The rest of this post explores how to do that using the simplest dynamical model in thermodynamics, the random walk.
+
+### The 1D discrete random walk
+
 The [random walk](https://en.wikipedia.org/wiki/Random_walk) is a basic stochastic process in which a point explores a space by taking steps in random directions.
 This process is used to model a swath of phenomena including the paths of diffusing particles, fluctuating stock prices, and the movements of foraging animals, and it's found use in essentially every discipline of science.
 In the classic random walk, a particle starts at the origin at time zero and diffuses outwards.
 In this post, we'll look at the statistics of this process when it's run backwards in time.
-
-### The 1D discrete random walk
 
 The simplest random walk is a 1D random walk with discrete steps.
 Let $$x_0, x_1, x_2, ..., x_t, ...$$ be integers denoting the position of a random walker on a line at each timestep.
@@ -47,9 +85,9 @@ p(x_t) = 2^{-t} \left( \begin{array}{c} t \\ x_t \end{array} \right).
 Figure 1 gives an schematic illustration of this random walk as well as a visualization of many simulated runs[^d].
 
 <p align="center">
-   <img src="../../img/reversed_rws/rev_rws_fig1a.png" width="30%">
+   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig1a.png" width="30%">
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <img src="../../img/reversed_rws/rev_rws_fig1b.svg" width="30%">
+   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig1b.svg" width="30%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -66,7 +104,7 @@ Figure 1 gives an schematic illustration of this random walk as well as a visual
 
 The above random walks start at the origin at $$t=0$$ and take uncorrelated steps from then on.
 This is easy to simulate, as every step is independent of every other step.
-Let us now imagine how these trajectories look to an observer moving backwards in time[^c].
+Let us now imagine how these trajectories look to an observer moving backwards in time.
 The walkers start in a wide distribution, take fairly random steps, but then magically converge at the origin at $$t=0$$.
 Suppose you wish to find the statistics of this process from the point of view of this backwards observer: given that they observe a walker at position $$x_t$$ at time $$t$$, what are its transition probabilities for the step to time $$t - 1$$?
 (Equivalently, we could forget about the time reversal and ask about the statistics of a path conditioned on its intersecting $$(t, x_t)$$, but that's less fun.)
@@ -103,9 +141,9 @@ The resulting trajectories look a lot like normal random walks for the first few
 It's worth noting that we could have generated these trajectories by randomly sampling *forwards* walks and only keeping those which intersect our chosen starting point, but directly simulating the backwards process is way more efficient.
 
 <p align="center">
-   <img src="../../img/reversed_rws/rev_rws_fig2a.png" width="30%">
+   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2a.png" width="30%">
 	&nbsp;&nbsp;&nbsp;
-   <img src="../../img/reversed_rws/rev_rws_fig2b.svg" width="60%">
+   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2b.svg" width="60%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -155,7 +193,7 @@ which reduces to Equation $$\ref{eqn:backward_step}$$ when $$t' - t = 1$$.
 ### The continuum limit
 
 While the discrete random walk is the easiest to grasp, in practice one often takes a *continuum limit* in which the walker's motion is continuous in both time and space.
-This can be seen as the limit of a discrete-time random walk like the one studied above where, instead of taking $$\mathcal{O}(1)$$ jumps with timesteps of size $$1$$, our walker takes $$\mathcal{O}(dt^{1/2})$$ jumps with timesteps of size $$dt$$.
+This can be seen as the limit of a discrete-time random walk like the one studied above where, instead of taking $$\mathcal{O}(1)$$ jumps with timesteps of size $$1$$, our walker takes $$\mathcal{O}(dt^{1/2})$$ jumps with timesteps of size $$dt$$[^e].
 
 To get to the continuum, we'll first switch from a discrete random walk to one in which the steps are sampled from a Gaussian distribution.
 This will make our walk continuous in *space*, which will simplify the subsequent process of making it continuous in time.
@@ -250,9 +288,16 @@ I was surprised by this and made some sense of it by noting that, if we started 
 
 ### Conclusions
 
+So, what are the prospects for our Tenet-inspired video game?
+We've figured out how to model a simple random walk from the point of view of an observer moving the other direction in time.
+It's easy to imagine doing a similar thing for a walker with more complicated rules, like wandering around a map or interacting with objects around it.
+It's also not too far-fetched to imagine incorporating rules that depend on the player, like moving towards the player or attacking with some probability, though we then run into the difficulty that the player's future actions are unknown.
+This blocks our Bayesian calculation and needs a clever trick or two to give a good game mechanic.
+If any game-design-minded folks see this and are interested, feel free to reach out!
+
 #### Footnotes
 
-[^a]: This post was inspired by the movie *Tenet*.
+[^a]: It turns out the weak nuclear force actually does violate time symmetry just a little, so you'd see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let's ignore that for now.
 
 [^b]: We might have let the possible steps be $$\{-1,1\}$$ instead of $$\{0,1\}$$. This yields a centered random walk but a slightly more complicated final expression, so we stick with $$\{0,1\}$$ for the math.
 
@@ -260,4 +305,4 @@ I was surprised by this and made some sense of it by noting that, if we started 
 
 [^d]: The theoretical distribution plotted in Figure 1 (right) is actually a Gaussian distribution obtained by expanding Equation $$\ref{eqn:p_forwards}$$ around its mean. This Gaussian is both easier to deal with mathematically and nicer to plot.
 
-[^3]: The $$dt^{1/2}$$ scaling is necessary because we want the jump to have *variance* $$dt$$, because variances add, so the total variance of the process will grow like $$t$$. If the steps were instead $$\mathcal{O}(dt)$$, the total variance would grow like $$t dt \approx 0$$, and our walker wouldn't go anywhere.
+[^e]: The $$dt^{1/2}$$ scaling is necessary because we want the jump to have *variance* $$dt$$, because variances add, so the total variance of the process will grow like $$t$$. If the steps were instead $$\mathcal{O}(dt)$$, the total variance would grow like $$t dt \approx 0$$, and our walker wouldn't go anywhere.
