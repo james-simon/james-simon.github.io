@@ -9,15 +9,16 @@ A year or so ago, at the height of the pandemic, a few friends and I watched *Te
 The idea's not that they time-travel or that they merely age backwards, it's that they're truly time-reversed, appearing to ordinary observers like a video played backwards.
 To get an idea of what I mean, [here's](https://www.youtube.com/watch?v=4xj0KRqzo-0) a clip of the protagonists fighting two time-reversed opponents.
 
-This mechanism immediately presents a number of free-will-related paradoxes.
+Does this concept make sense?
+Thinking about it for a bit, one immediately bumps up against a number of free-will-related paradoxes.
 For example, if you start a fight with a time-reversed adversary, it seems you're guaranteed you won't incapacitate them because you observed them up and fighting at a time that's earlier for you but later for them (if you are to win, you must have "recapactitated" them with your first blow).
 Similarly, it seems you couldn't break a time-reversed vase or light a time-reversed match, and things would probably end badly if you tried to eat a time-reversed sandwich.
 Ultimately, however, these are paradoxes of human agency, and if you remove free will as a consideration, these events' impossibility feels more believable.
-Let us examine the movie's core idea through the lens of *physics*.
+Accepting the lack of free will, is the movie's core idea physically possible?
 
 At a first glance, it looks like several scenes clearly violate Newtonian mechanics, such as [this scene](https://youtu.be/L3pk_TBkihU?t=41) in which a gear jumps off a table to meet a hand that dropped it backwards in time.
 However, it turns out this is not strictly impossible: the thermally jiggling particles of the surface beneath the gear could all come together and move in the same direction, giving the gear a big push upwards and leaving the surface a little colder.
-This is precisely the time-reversed process of the forwards event.
+This is precisely the time-reversed process of the forwards event of dropping the gear.
 This sequence of steps seems absurdly implausible - and in our world, it would be - but it doesn't break conservation of momentum or energy or violate any ironclad law of physics.
 These sorts of backwards processes are always possible because the laws of Newtonian physics and electromagnetism are [time-reversal symmetric](https://en.wikipedia.org/wiki/T-symmetry)[^a].
 
@@ -28,7 +29,7 @@ In a very deep sense, fragile objects shatter forwards in time because, well, th
 If you sweep together a bunch of glass shards, however, there's only one way they can all fit together, so their perfect coalescence is very unlikely.
 In our universe, things happen to generally be more ordered back in the direction we call the past on account of the Big Bang.
 However, if you took another universe and enforced the constraint that things are ordered and nice at some *final* time, time-reversal would give you a universe flowing "backwards" in time, though its inhabitants would of course never know the difference.
-This is the difference between specifying the initial and final conditions of a dynamical process and extrapolating to the rest of time, and this is no difference at all for a time-symmetric process.
+This is the difference between specifying the initial and final conditions of a dynamical process, and this is no difference at all for a time-symmetric process.
 
 Okay, but how do you get things moving both forwards and backwards?
 This is weird, since you normally can't specify both initial *and* final conditions for a dynamical process.
@@ -37,7 +38,7 @@ For example, suppose I enforce that the left half of a room contains person A at
 This is an underdetermined system which is likely to have many solutions.
 Actually finding one would be hard - you'd probably have to iterate forwards and backwards in time for a bunch of cycles in a nonlocal fashion until you satisfy all the boundary conditions - but it's not impossible in principle.
 Given appropriate brain states in these boundary conditions, the obtained dynamical solution might be these two people fighting.
-This way of thinking about the problem is weird and nonlocal, but so is Tenet, and it feels more satisfying than prioritizing one time direction and viewing reversed events as simply a series of flukes.
+This way of thinking about the problem is weird and nonlocal, but so is Tenet, and it feels more satisfying to me than prioritizing one time direction and viewing time-reversed events like the leap of the gear as simply a series of flukes.
 
 This is a concrete enough way of looking at the problem that we could start to think about how to simulate it.
 The ultimate dream here would be a video game in which you fight and interact with creatures moving backwards in time.
@@ -257,7 +258,7 @@ where $$\eta(t)$$ is the classic white noise process defined by having mean zero
 This equation has a simple interpretation: this is an ordinary random walk with a pull towards the origin with strength $$t^{-1}$$.
 The strength of this pull diverges as $$t \rightarrow 0$$, sucking the walker in to $$x = 0$$.
 
-Neglecting the driving noise and looking at only the drift term, we see that the mean of our distribution $$\mu(t) \equiv \mathbb{E}[x(t)]$$ obeys
+Neglecting the mean-zero driving noise and looking at only the drift term, we see that the mean of our distribution $$\mu(t) \equiv \mathbb{E}[x(t)]$$ obeys
 
 $$
 \frac{d \mu(t)}{-dt} = - \frac{\mu(t)}{t} \ \ \ \Rightarrow \ \ \ \mu(t) = C t
@@ -272,7 +273,7 @@ Looking at the red curves in Figure 2, we see this is exactly what happens.
 Unlike the forward process, this reversed process isn't stationary (i.e. time-translation invariant): as it runs, it approaches $$t = 0$$, and its behavior changes.
 Stationary processes are nice, though; is there simple a way we could modify it to make it $$t$$-independent?
 One idea is to make it so the particle is chasing a moving target in a carrot-on-a-stick fashion: we fix some time $$T$$ and "move" $$t=0$$ so the random walk feels it is always a time $$T$$ away from convergence.
-Much like the advent of quantum computing, the end of this process will always appear to be a fixed time away.
+The end of this process will always appear to be a fixed time away, much like the advent of quantum computing or the release of Half Life-3.
 Mathematically, this corresponds to replacing $$t \rightarrow T$$ in Equation $$\ref{eqn:sde}$$, yielding
 
 $$
