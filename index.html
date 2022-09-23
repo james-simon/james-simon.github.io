@@ -321,12 +321,15 @@ a:visited {
         <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
           <img class="center-cropped" src="{{ site.imgurl }}/{{ doc.title | replace: ' ', '' | downcase }}.png">
           <div class="tint"></div>
-          <a class="hoverinfo" href="{{ doc.url | replace: '.html', '' }}"><h4>{{ doc.title | upcase }}</h4></a>
+          <a class="hoverinfo" href="{{ doc.url }}"><h4>{{ doc.title | upcase }}</h4></a>
         </div>
       {% endif %}
     {% endfor %}
   {% endfor %}
 </div>
+
+<!-- | replace: '.html', ''  -->
+<!-- | append: 'zzz' | replace: '/zzz', ''  -->
 
 
    <hr class="hr-thick">

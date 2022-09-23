@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 08 Sep 2022 13:41:43 -0700</pubDate>
-    <lastBuildDate>Thu, 08 Sep 2022 13:41:43 -0700</lastBuildDate>
+    <pubDate>Fri, 23 Sep 2022 10:57:50 -0700</pubDate>
+    <lastBuildDate>Fri, 23 Sep 2022 10:57:50 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -247,7 +247,7 @@ Abusing notation a bit, we can write that&lt;/p&gt;
 This equation has a simple interpretation: this is an ordinary random walk with a pull towards the origin with strength \(t^{-1}\).
 The strength of this pull diverges as \(t \rightarrow 0\), sucking the walker in to \(x = 0\).&lt;/p&gt;
 
-&lt;p&gt;Neglecting the driving noise and looking at only the drift term, we see that the mean of our distribution \(\mu(t) \equiv \mathbb{E}[x(t)]\) obeys&lt;/p&gt;
+&lt;p&gt;Neglecting the mean-zero driving noise and looking at only the drift term, we see that the mean of our distribution \(\mu(t) \equiv \mathbb{E}[x(t)]\) obeys&lt;/p&gt;
 
 \[\frac{d \mu(t)}{-dt} = - \frac{\mu(t)}{t} \ \ \ \Rightarrow \ \ \ \mu(t) = C t\]
 
