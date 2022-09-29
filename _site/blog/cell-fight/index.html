@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Simulating cells fighting to the death</title>
+  <meta name="description" content="Physics is humanity’s finest tool for understanding the world around us, a rich and wonderful framework deserving of our highest reverence.I recently used it...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/cell-fight/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Posts</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">Simulating cells fighting to the death</h1>
+      <p class="post-meta"><time datetime="2022-09-24T00:00:00-08:00" itemprop="datePublished">Sep 24, 2022</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p>Physics is humanity’s finest tool for understanding the world around us, a rich and wonderful framework deserving of our highest reverence.
+I recently used it to simulate a bunch of cells fighting to the death like little gladiators.
+Here’s a video.</p>
+
+<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
+    <source src="https://james-simon.github.io/img/cell_fight/cell_fight.mp4" type="video/mp4" />
+</video>
+
+<p>I’ll give a lightning overview of how this works.
+This is a simulation lying on a grid, with every color either empty or part of a cell.
+The grid’s evolving in time according to a modified version of the <a href="https://en.wikipedia.org/wiki/Cellular_Potts_model">cellular Potts model</a>, which is basically the <a href="https://en.wikipedia.org/wiki/Ising_model">Ising model</a> plus a few terms.
+In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
+Here’s the Ising model:</p>
+
+<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
+    <source src="https://james-simon.github.io/img/cell_fight/ising_test.mp4" type="video/mp4" />
+</video>
+
+<p>Skipping a mathematical explanation, the basic algorithm at play here is the following: at every timestep, (a) choose a random grid site and (b) flip its value with some probability.
+The probability of flipping is higher if flipping will make it more like its neighbors, and this is coded in terms of an “energy” which is lower the more sites match their neighbors.</p>
+
+<p>The Potts model is a generalization to more than two values.
+In the <em>cellular</em> Potts model, we simply add another term to the energy.
+For each value \(i\) besides the “empty value” \(0\), we count up the number of sites of type \(i\) and penalize the difference from a target volume \(V_i\).
+This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
+Here’s the cellular Potts model with a few randomly-placed cells:</p>
+
+<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
+    <source src="https://james-simon.github.io/img/cell_fight/stationary_cells.mp4" type="video/mp4" />
+</video>
+
+<p>To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.</p>
+
+<p>Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
+These cells exhibit high-level “purposeful” behavior, but their motion is entirelly driven by extremely simple low-level rules (and they’re not even deterministic!).
+Just like in a real organism - just like in <em>us</em>, arguably - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
+These cells were not programmed via top-down rules, as one might code a videogame enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.</p>
+
+<p>That said, it seemed like it’d be pretty fun to be able to control them manually, so I made them take keyboard input and gave them the ability to fire bullets.
+Here’s a fight between my brother and I.</p>
+
+<p>[VIDEO]</p>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 574-05-7179
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>

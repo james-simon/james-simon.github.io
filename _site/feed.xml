@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 29 Sep 2022 12:42:10 -0800</pubDate>
-    <lastBuildDate>Thu, 29 Sep 2022 12:42:10 -0800</lastBuildDate>
+    <pubDate>Thu, 29 Sep 2022 14:43:09 -0800</pubDate>
+    <lastBuildDate>Thu, 29 Sep 2022 14:43:09 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -16,10 +16,8 @@ I recently used it to simulate a bunch of cells fighting to the death like littl
 Here’s a video.&lt;/p&gt;
 
 &lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_fight.mov&quot; /&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_fight.mp4&quot; type=&quot;video/mp4&quot; /&gt;
 &lt;/video&gt;
-
-&lt;!-- type=&quot;video/mov&quot; --&gt;
 
 &lt;p&gt;I’ll give a lightning overview of how this works.
 This is a simulation lying on a grid, with every color either empty or part of a cell.
@@ -27,7 +25,9 @@ The grid’s evolving in time according to a modified version of the &lt;a href=
 In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
 Here’s the Ising model:&lt;/p&gt;
 
-&lt;p&gt;[VIDEO]&lt;/p&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/ising_test.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
 
 &lt;p&gt;Skipping a mathematical explanation, the basic algorithm at play here is the following: at every timestep, (a) choose a random grid site and (b) flip its value with some probability.
 The probability of flipping is higher if flipping will make it more like its neighbors, and this is coded in terms of an “energy” which is lower the more sites match their neighbors.&lt;/p&gt;
@@ -36,9 +36,11 @@ The probability of flipping is higher if flipping will make it more like its nei
 In the &lt;em&gt;cellular&lt;/em&gt; Potts model, we simply add another term to the energy.
 For each value \(i\) besides the “empty value” \(0\), we count up the number of sites of type \(i\) and penalize the difference from a target volume \(V_i\).
 This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
-Here’s the cellular Potts model with a few cells:&lt;/p&gt;
+Here’s the cellular Potts model with a few randomly-placed cells:&lt;/p&gt;
 
-&lt;p&gt;[VIDEO]&lt;/p&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/stationary_cells.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
 
 &lt;p&gt;To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.&lt;/p&gt;
 
