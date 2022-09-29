@@ -5,9 +5,61 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 23 Sep 2022 10:57:50 -0700</pubDate>
-    <lastBuildDate>Fri, 23 Sep 2022 10:57:50 -0700</lastBuildDate>
+    <pubDate>Thu, 29 Sep 2022 12:42:10 -0800</pubDate>
+    <lastBuildDate>Thu, 29 Sep 2022 12:42:10 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Simulating cells fighting to the death</title>
+        <description>&lt;p&gt;Physics is humanity’s finest tool for understanding the world around us, a rich and wonderful framework deserving of our highest reverence.
+I recently used it to simulate a bunch of cells fighting to the death like little gladiators.
+Here’s a video.&lt;/p&gt;
+
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_fight.mov&quot; /&gt;
+&lt;/video&gt;
+
+&lt;!-- type=&quot;video/mov&quot; --&gt;
+
+&lt;p&gt;I’ll give a lightning overview of how this works.
+This is a simulation lying on a grid, with every color either empty or part of a cell.
+The grid’s evolving in time according to a modified version of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Cellular_Potts_model&quot;&gt;cellular Potts model&lt;/a&gt;, which is basically the &lt;a href=&quot;https://en.wikipedia.org/wiki/Ising_model&quot;&gt;Ising model&lt;/a&gt; plus a few terms.
+In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
+Here’s the Ising model:&lt;/p&gt;
+
+&lt;p&gt;[VIDEO]&lt;/p&gt;
+
+&lt;p&gt;Skipping a mathematical explanation, the basic algorithm at play here is the following: at every timestep, (a) choose a random grid site and (b) flip its value with some probability.
+The probability of flipping is higher if flipping will make it more like its neighbors, and this is coded in terms of an “energy” which is lower the more sites match their neighbors.&lt;/p&gt;
+
+&lt;p&gt;The Potts model is a generalization to more than two values.
+In the &lt;em&gt;cellular&lt;/em&gt; Potts model, we simply add another term to the energy.
+For each value \(i\) besides the “empty value” \(0\), we count up the number of sites of type \(i\) and penalize the difference from a target volume \(V_i\).
+This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
+Here’s the cellular Potts model with a few cells:&lt;/p&gt;
+
+&lt;p&gt;[VIDEO]&lt;/p&gt;
+
+&lt;p&gt;To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.&lt;/p&gt;
+
+&lt;p&gt;Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
+These cells exhibit high-level “purposeful” behavior, but their motion is entirelly driven by extremely simple low-level rules (and they’re not even deterministic!).
+Just like in a real organism - just like in &lt;em&gt;us&lt;/em&gt;, arguably - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
+These cells were not programmed via top-down rules, as one might code a videogame enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.&lt;/p&gt;
+
+&lt;p&gt;That said, it seemed like it’d be pretty fun to be able to control them manually, so I made them take keyboard input and gave them the ability to fire bullets.
+Here’s a fight between my brother and I.&lt;/p&gt;
+
+&lt;p&gt;[VIDEO]&lt;/p&gt;
+</description>
+        <pubDate>Sat, 24 Sep 2022 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/blog/cell-fight/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/cell-fight/</guid>
+        
+        
+        <category>physics, fun-science</category>
+        
+      </item>
     
       <item>
         <title>Time-reversed random walks</title>
@@ -301,7 +353,7 @@ This writeup was made by starting with a blank file and randomly hitting a time-
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sat, 03 Sep 2022 00:00:00 -0700</pubDate>
+        <pubDate>Sat, 03 Sep 2022 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/time-reversed-random-walks/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/time-reversed-random-walks/</guid>
         
@@ -440,7 +492,7 @@ Just imagine what we’ll be able to do with them once we finally have one.&lt;/
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 23 Aug 2022 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 23 Aug 2022 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/reverse-engineering/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/reverse-engineering/</guid>
         
@@ -599,7 +651,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/p&gt;
 &lt;p&gt;Your nanoscopic jabs at me are hardly worth refutin’ \ When all’s said and done, bud, you’re Leibniz, I’m Newton.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:01:00 -0800</pubDate>
+        <pubDate>Mon, 17 Jan 2022 01:01:00 -0900</pubDate>
         <link>http://localhost:4000/blog/bohr-v-einstein/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/bohr-v-einstein/</guid>
         
@@ -620,7 +672,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/iframe&gt;
 &lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:00:00 -0800</pubDate>
+        <pubDate>Mon, 17 Jan 2022 01:00:00 -0900</pubDate>
         <link>http://localhost:4000/blog/newton-v-leibniz/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/newton-v-leibniz/</guid>
         
@@ -707,7 +759,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;the paper&lt;/a&gt; “Neural Tangent Kernel Eigenvalues Accurately Predict Generalization,” which is joint work with labmate Maddie Dickens and advisor Mike DeWeese. We provide &lt;a href=&quot;https://github.com/james-simon/eigenlearning&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 26 Oct 2021 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 26 Oct 2021 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/eigenlearning/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/eigenlearning/</guid>
         
@@ -783,7 +835,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;There’s a deeper trick we’re playing here, one that I see in inventions from &lt;a href=&quot;https://en.wikipedia.org/wiki/Reaction_wheel&quot;&gt;reaction wheels&lt;/a&gt; to &lt;a href=&quot;https://www.youtube.com/watch?v=jyQwgBAaBag&quot;&gt;faster-than-wind sailboats&lt;/a&gt;: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they’re not &lt;em&gt;technically&lt;/em&gt; breaking their mother’s rules. For all of science’s immense capacity for social good, that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it’s a potent way to inspire the curious to think a little closer about how the universe really works.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 11 Oct 2021 00:00:00 -0700</pubDate>
+        <pubDate>Mon, 11 Oct 2021 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/gravitrees/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitrees/</guid>
         
@@ -882,7 +934,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 29 Nov 2020 00:00:00 -0800</pubDate>
+        <pubDate>Sun, 29 Nov 2020 00:00:00 -0900</pubDate>
         <link>http://localhost:4000/blog/rocketball/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/rocketball/</guid>
         
@@ -926,7 +978,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;We’ve shown that the principle of least power dissipation gives the right answers for steady-state circuit problems.  If this is really a general law of nature, though, it’d probably show up outside of just this one narrow context.  It turns out that it can also be applied to &lt;em&gt;fluid circuits&lt;/em&gt;, which are sometimes studied as somewhat-similar sister systems to electric circuits.  In the sort of fluid circuit I’m imagining, there are networks of pipes of different thicknesses instead of resistors with different resistances.  Water flow rate \(Q\) replaces current, pressure \(P\) replaces voltage, the rate of power dissipation is \(PQ\) instead of \(VI\), and pipes have an effective resistance.  An ideal pipe with laminar flow has \(\Delta P\) proportional to \(Q\) in &lt;a href=&quot;https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation&quot;&gt;an equation analogous to Ohm’s Law&lt;/a&gt;, and the quantity analogous to resistance depends on the pipe’s dimensions and the viscosity of the fluid.  The fact that these equations map onto each other so perfectly means that fluid through a network of pipes minimizes power dissipation just as electrical circuits do.  I’d be willing to bet that, just as we derived part of the differential equation for current flow, you could derive part of the Navier-Stokes equations just from minimizing power dissipation.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 06 Sep 2020 00:00:00 -0700</pubDate>
+        <pubDate>Sun, 06 Sep 2020 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/least_power_dissipation/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/least_power_dissipation/</guid>
         
@@ -1023,51 +1075,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
   &lt;li&gt;&lt;a href=&quot;https://sci2s.ugr.es/keel/pdf/specific/articulo/Schmidtt%20on-the-complexity-of.pdf&quot;&gt;The most recent paper I’ve found on these nets&lt;/a&gt;, which was mentioned above, argues that multiplicative neurons perform operations that need large numbers of summing units, stating that “networks of summing units do not seem to be an adequate substitute for genuine multiplicative units.”  This post basically disproves that!&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Mon, 31 Aug 2020 00:00:00 -0700</pubDate>
+        <pubDate>Mon, 31 Aug 2020 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/multiplicative-neural-nets/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/multiplicative-neural-nets/</guid>
         
         
         <category>deep learning, research</category>
-        
-      </item>
-    
-      <item>
-        <title>How would an upside-down candle burn?</title>
-        <description>&lt;!-- ![grid26] --&gt;
-&lt;!--exc--&gt;
-
-&lt;p&gt;As every child knows, sometimes it’s fun to do something exactly wrong.  In that spirit, what would happen if you burned a candle upside-down?&lt;/p&gt;
-
-&lt;p&gt;To take a guess, we need to understand how candles work.  Their simplicity is deceptive; burning candles are actually pretty complex systems with many interacting parts and processes.  They illustrate a slew of different chemical and physical effects so elegantly that the famous physicist Michael Faraday gave a &lt;a href=&quot;https://www.youtube.com/watch?v=RrHnLXMTOWM&quot;&gt;series of lectures&lt;/a&gt; on candles using them to demonstrate effects from from turbulence to buoyancy to blackbody radiation and to explain the chemistry of fire.  Candle flames are such common sights that we often overlook their complicated anatomy; look at one closely and you’re likely to see a number of features, from the blue glow at the bottom to the tapering of the tip, that everybody recognizes but few people could actually explain if asked.&lt;/p&gt;
-
-&lt;p&gt;Explaining all of candle physics would take a textbook, but for this question, we only need to think about things that change when the candle is turned upside down, which simplifies the problem a lot.  The most obvious is that the heat of the flame, normally drawn up and away because hot air’s less dense than cold air, will flow directly into the tip of the candle.  Under normal operation, the tip of the candle wax is just hot enough to melt a small pool of wax but not hot enough to boil it, putting it at between 50°C and 370°C.  By contrast, the spot one wick-length above the tip of the wick is in the core of the flame, with a temperature in the vicinity of 1000°C.  If you could somehow turn just the flame upside-down without turning the rest of the candle, the flame would melt the wax a lot.&lt;/p&gt;
-
-&lt;p&gt;However, candles are cyclic systems with a lot of feedback - the flame melts the wax which feeds the flame and so on.  We’ve guessed how the change in the flame caused by flipping the candle might affect the wax, but how would that change in the wax then affect the flame in turn?&lt;/p&gt;
-
-&lt;p&gt;The flame’s shape would obviously change since the hot gas would be deflected as it rises by the block of wax in its way.  How would the burning itself change, though?  An important fact is that in candles, the wax only combusts as a vapor.  It starts as a solid, is melted and drawn up into the wick and into the heart of the flame by capillary action, and is vaporized by the high heat.  It’s only then that combusion happens - the hot, vaporized wax molecules react with oxygen and give off heat, perpetuating the process.  In the upside-down candle, more wax would be in the region of high heat, so there would be more hot surface area for vapor to escape from.  This means that wax would vaporize and burn at a higher rate, which, all else being equal, should give a bigger flame.&lt;/p&gt;
-
-&lt;p&gt;However, there’s a problem with this situation.  This augmented flame would melt a lot of wax; what if it melts wax faster than it can vaporize it?  In a normal candle, there’s a small cup in the solid wax that holds the melted wax, but in the upside-down candle, the cup’s turned over.  All the excess wax might run and fall off the candle unburnt, so the candle would both go through wax faster and drip a lot.  There’s a stranger possibility, though.  What if the flame melts wax that floods down over the wick too thickly for the flame to vaporize it in time and snuffs it out?  Like Icarus, it’d die from melting wax and its own zeal.  This was my guess for what would happen to the upside-down candle.&lt;/p&gt;
-
-&lt;p&gt;I also asked friends to guess how an upside-down candle would burn and got around 10 responses.  Most people either gave the self-snuffing scenario - let’s call it scenario (1) - or the second, self-sustaining scenario - say, (2).&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/candle_scenarios.png&quot; width=&quot;30%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;To answer this question, I dangled a candle, set up another for comparison, and lit them.  &lt;a href=&quot;https://www.youtube.com/watch?v=tJv4IOTvCWY&quot;&gt;A video of the result is here.&lt;/a&gt;  Forgive the subpar quality.&lt;/p&gt;
-
-&lt;p&gt;This matched scenario (1) - the candle initially burns, but once it starts to melt wax it’s quickly put out.  Out of curiosity, though, I ran another trial with the same candle.  The result was wholly different, matching scenario (2).  It turns out that the same candle can follow either path, probably depending on the initial shape of the tip and wick.  The phase-space of this upside-down candle has two basins of attraction.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XKAtwxw7SWk&quot;&gt;Here’s a video of the second trial.&lt;/a&gt;  Most people were right at least once.  Nobody, however, predicted the stalactite.&lt;/p&gt;
-
-</description>
-        <pubDate>Thu, 20 Aug 2020 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/upside-down-candle/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/upside-down-candle/</guid>
-        
-        
-        <category>physics, fun-science</category>
         
       </item>
     
