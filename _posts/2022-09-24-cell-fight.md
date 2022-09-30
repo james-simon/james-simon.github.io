@@ -41,10 +41,20 @@ To make them fight, I just added a third energy term which makes a site more lik
 
 Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
 These cells exhibit high-level "purposeful" behavior, but their motion is entirelly driven by extremely simple low-level rules (and they're not even deterministic!).
-Just like in a real organism - just like in *us*, arguably - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
-These cells were not programmed via top-down rules, as one might code a videogame enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.
+Just like in a real organism - just like in *us*, science believes - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
+These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.
 
-That said, it seemed like it'd be pretty fun to be able to control them manually, so I made them take keyboard input and gave them the ability to fire bullets.
+In a typical video game, the player's character, too, is controlled via top-down instructions, now from a live human.
+Could one design a game in which the player's influence is exerted from the bottom up, as a slight modification to the low-level rules instead of a top-level directive?
+Turns out you can do that with this simulator: I just replaced one cell's stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
 Here's a fight between my brother and I.
 
-[VIDEO]
+<video autoplay loop muted playsinline width="60%" style="display:block; margin: 0 auto;">
+    <source src="{{site.imgurl}}/cell_fight/human_cell_fight.mp4" type="video/mp4">
+</video>
+
+Okay, I also gave them bullets.
+
+<!-- These two possible methods of exerting outside influence on a simulation are intriguingly similar to certain human conceptions of divine intervention in the universe.
+The older notion is that a deity would directly change the world as desired (e.g., if they don't want a tree to exist, just smite it).
+A newer notion is that a deity might act by minimal intervention, subtly changing low-level parameters of the universe (e.g. if they don't want a tree to exist, slightly deplete the CO2 in the vicinity during its growth, or spike a few neurons in a squirrel brain to make it find and eat the tree as a seed, or so on). -->
