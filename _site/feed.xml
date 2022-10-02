@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 29 Sep 2022 15:02:09 -0800</pubDate>
-    <lastBuildDate>Thu, 29 Sep 2022 15:02:09 -0800</lastBuildDate>
+    <pubDate>Sun, 02 Oct 2022 13:37:57 -0800</pubDate>
+    <lastBuildDate>Sun, 02 Oct 2022 13:37:57 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -15,7 +15,7 @@
 I recently used it to simulate a bunch of cells fighting to the death like little gladiators.
 Here’s a video.&lt;/p&gt;
 
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
     &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_fight.mp4&quot; type=&quot;video/mp4&quot; /&gt;
 &lt;/video&gt;
 
@@ -25,7 +25,7 @@ The grid’s evolving in time according to a modified version of the &lt;a href=
 In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
 Here’s the Ising model:&lt;/p&gt;
 
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
     &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/ising_test.mp4&quot; type=&quot;video/mp4&quot; /&gt;
 &lt;/video&gt;
 
@@ -38,8 +38,8 @@ For each value \(i\) besides the “empty value” \(0\), we count up the number
 This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
 Here’s the cellular Potts model with a few randomly-placed cells:&lt;/p&gt;
 
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/stationary_cells.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cells_stationary.mp4&quot; type=&quot;video/mp4&quot; /&gt;
 &lt;/video&gt;
 
 &lt;p&gt;To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.&lt;/p&gt;
@@ -47,18 +47,20 @@ Here’s the cellular Potts model with a few randomly-placed cells:&lt;/p&gt;
 &lt;p&gt;Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
 These cells exhibit high-level “purposeful” behavior, but their motion is entirelly driven by extremely simple low-level rules (and they’re not even deterministic!).
 Just like in a real organism - just like in &lt;em&gt;us&lt;/em&gt;, science believes - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
-These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.&lt;/p&gt;
+These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges fully from the bottom up.&lt;/p&gt;
 
-&lt;p&gt;In a typical video game, the player’s character, too, is controlled via top-down instructions, now from a live human.
+&lt;p&gt;In a typical video game, the &lt;em&gt;player’s&lt;/em&gt; character, too, is controlled via top-down instructions, in this case from a live human.
 Could one design a game in which the player’s influence is exerted from the bottom up, as a slight modification to the low-level rules instead of a top-level directive?
-Turns out you can do that with this simulator: I just replaced one cell’s stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
+This is indeed doable with this simulator: I just replaced one cell’s stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
 Here’s a fight between my brother and I.&lt;/p&gt;
 
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;60%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/human_cell_fight.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_duel.mp4&quot; type=&quot;video/mp4&quot; /&gt;
 &lt;/video&gt;
 
-&lt;p&gt;Okay, I also gave them bullets.&lt;/p&gt;
+&lt;p&gt;Okay, I also added bullets.&lt;/p&gt;
+
+&lt;p&gt;You can find code for these simulations &lt;a href=&quot;https://github.com/james-simon/cell-fight&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;!-- These two possible methods of exerting outside influence on a simulation are intriguingly similar to certain human conceptions of divine intervention in the universe.
 The older notion is that a deity would directly change the world as desired (e.g., if they don't want a tree to exist, just smite it).

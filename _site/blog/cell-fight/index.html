@@ -87,7 +87,7 @@
 I recently used it to simulate a bunch of cells fighting to the death like little gladiators.
 Here’s a video.</p>
 
-<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
+<video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
     <source src="https://james-simon.github.io/img/cell_fight/cell_fight.mp4" type="video/mp4" />
 </video>
 
@@ -97,7 +97,7 @@ The grid’s evolving in time according to a modified version of the <a href="ht
 In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
 Here’s the Ising model:</p>
 
-<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
+<video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
     <source src="https://james-simon.github.io/img/cell_fight/ising_test.mp4" type="video/mp4" />
 </video>
 
@@ -110,8 +110,8 @@ For each value \(i\) besides the “empty value” \(0\), we count up the number
 This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
 Here’s the cellular Potts model with a few randomly-placed cells:</p>
 
-<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/stationary_cells.mp4" type="video/mp4" />
+<video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
+    <source src="https://james-simon.github.io/img/cell_fight/cells_stationary.mp4" type="video/mp4" />
 </video>
 
 <p>To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.</p>
@@ -119,18 +119,20 @@ Here’s the cellular Potts model with a few randomly-placed cells:</p>
 <p>Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
 These cells exhibit high-level “purposeful” behavior, but their motion is entirelly driven by extremely simple low-level rules (and they’re not even deterministic!).
 Just like in a real organism - just like in <em>us</em>, science believes - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
-These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges from the bottom up.</p>
+These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges fully from the bottom up.</p>
 
-<p>In a typical video game, the player’s character, too, is controlled via top-down instructions, now from a live human.
+<p>In a typical video game, the <em>player’s</em> character, too, is controlled via top-down instructions, in this case from a live human.
 Could one design a game in which the player’s influence is exerted from the bottom up, as a slight modification to the low-level rules instead of a top-level directive?
-Turns out you can do that with this simulator: I just replaced one cell’s stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
+This is indeed doable with this simulator: I just replaced one cell’s stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
 Here’s a fight between my brother and I.</p>
 
-<video autoplay="" loop="" muted="" playsinline="" width="60%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/human_cell_fight.mp4" type="video/mp4" />
+<video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
+    <source src="https://james-simon.github.io/img/cell_fight/cell_duel.mp4" type="video/mp4" />
 </video>
 
-<p>Okay, I also gave them bullets.</p>
+<p>Okay, I also added bullets.</p>
+
+<p>You can find code for these simulations <a href="https://github.com/james-simon/cell-fight">here</a>.</p>
 
 <!-- These two possible methods of exerting outside influence on a simulation are intriguingly similar to certain human conceptions of divine intervention in the universe.
 The older notion is that a deity would directly change the world as desired (e.g., if they don't want a tree to exist, just smite it).
