@@ -5,9 +5,200 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 02 Oct 2022 13:37:57 -0800</pubDate>
-    <lastBuildDate>Sun, 02 Oct 2022 13:37:57 -0800</lastBuildDate>
+    <pubDate>Fri, 14 Oct 2022 09:59:14 -0700</pubDate>
+    <lastBuildDate>Fri, 14 Oct 2022 09:59:14 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Can a chemical reaction measure the size of its container?</title>
+        <description>&lt;p&gt;All modern society rests on a suite of basic chemical processes, developed over centuries, that let us feed ourselves, power our cities, and make virtually every artifact of technology we manufacture.
+We know chemical processes that let us &lt;a href=&quot;https://en.wikipedia.org/wiki/Haber_process&quot;&gt;fix nitrogen&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Polymerization&quot;&gt;string together polymers&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Electroplating&quot;&gt;coat surfaces with metal&lt;/a&gt;, and perform a thousand other wonders.
+This is a post about a chemical capability which we do not yet have.
+It’s not a particularly useful one, but we’ll find there are things to be learned by considering it nonetheless.&lt;/p&gt;
+
+&lt;p&gt;My favorite useless-but-cool chemical reaction is the &lt;a href=&quot;https://en.wikipedia.org/wiki/Briggs%E2%80%93Rauscher_reaction&quot;&gt;Briggs-Rauscher oscillating clock reaction&lt;/a&gt;, a reaction common in chemistry classrooms which dramatically changes color from blue to clear every few seconds for a minute or more.
+“Chemical oscillator” reactions like this one are famous among chemists because an oscillating reaction seems so counterintuitive (when they were first discovered, nobody believed the discoverer!).
+Steady oscillation is a behavior you’d expect from a mechanical or electronic system but not from a purely chemical one.
+In the case of the Briggs-Rauscher reaction, this behavior’s powered by a sort of entropic battery and can be understood in loose analogy to electromechanical clocks:
+one reactant is steadily consumed to power an oscillating system of other chemicals, much like a grandfather clock is powered by the potential energy of a weight or an electronic oscillator is powered by a battery.
+This clever system demonstrates (at least to me) that, if we’re creative, the medium of chemistry affords sufficient freedom to make much more than one imagines at first look.&lt;/p&gt;
+
+&lt;p&gt;Let’s trust this is true – that pure chemical systems can do many things that you’d think you need electromechanics for – and let’s not worry about doing things that are useful, just things that are interesting.
+What might we hope to make?
+Could we make reactions that detect temperature?
+Reproduce music?
+Precipitate entire 3D objects?
+Do math?
+Are there chemical reactions which are Turing-complete?
+Is there a simple set of “chemical modules,” analogous to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Logic_gate&quot;&gt;logic gates&lt;/a&gt; or the &lt;a href=&quot;https://en.wikipedia.org/wiki/Simple_machine&quot;&gt;simple machines&lt;/a&gt;, which one might use as basic building blocks for more complex processes?&lt;/p&gt;
+
+&lt;p&gt;This broad direction seems interesting, and I know of no theoretical work discussing it.
+We’ll revisit it at the end.
+For now, however, I’d like to explore one specific application which I find particularly intriguing.
+Let us ponder whether one could conceivably make…&lt;/p&gt;
+
+&lt;h4 id=&quot;a-chemical-reaction-that-measures-the-volume-of-its-container&quot;&gt;A chemical reaction that measures the volume of its container&lt;/h4&gt;
+
+&lt;p&gt;Is it possible for a purely chemical system to measure the volume of its vessel?
+This is easily done with the mechanical methods of a volumetric flask, a scale, or a ruler, but can we do it with pure chemistry?&lt;/p&gt;
+
+&lt;p&gt;I should clarify what exactly I mean by this.
+I want a reaction such that we can (a) combine some chemicals in a beaker (without too much sensitivity to initial conditions), (b) wait some time for a reaction to occur, and (c) measure the final concentration of one of the reaction products and straightforwardly read out the volume of solution (for example, maybe the solution is saltier or more opaque in proportion to its volume).
+Is such a system possible?&lt;/p&gt;
+
+&lt;p&gt;There is an easy solution which we’ll disallow: if you just dissolve a known mass $m$ of solute in the solution, the volume $V$ can be read off from the final concentration $m/V$.
+This violates our stipulation on sensitivity to initial conditions – we needed exactly mass $m$ – and, for clarity and good measure, let’s also disallow it with the natural requirement that, if you just combine the full contents of two beakers at time zero, you should read out the sum of their volumes at the end (a criterion this hacky solution does not satisfy).&lt;/p&gt;
+
+&lt;p&gt;Making such a volumetric reaction is trickier than it might seem at first glance.
+If you ponder it for some time, you’ll find that the difficulty is that volume is an &lt;em&gt;extensive&lt;/em&gt; quantity (one that increases proportional to the amount of stuff, like a system’s mass), but chemical reactions are local and only depend on &lt;em&gt;intensive&lt;/em&gt; quantities like concentrations or temperature (which are independent of the total size of the system).
+How can we design a &lt;em&gt;local&lt;/em&gt; system that takes a &lt;em&gt;global&lt;/em&gt; measurement?&lt;/p&gt;
+
+&lt;h4 id=&quot;the-reaction-diffusion-equations&quot;&gt;The reaction-diffusion equations&lt;/h4&gt;
+
+&lt;p&gt;Now is the point when I confess I know little about practical chemistry and have no idea how to either design or test a chemical reaction.
+That said, I &lt;em&gt;am&lt;/em&gt; a theorist, and I know some nice equations that can help out.
+Our proposition is sufficiently interesting that it’s worth figuring out if it’s even possible in principle, and for answering that question, we can use the &lt;em&gt;reaction-diffusion equations&lt;/em&gt;, a mathematical model for a reacting chemical system spread across a volume.&lt;/p&gt;
+
+&lt;p&gt;The reaction-diffusion equations describe the time-evolution of a concentration vector $\mathbf{u}(x, t) \in \mathbf{R}^n$, where $x$ is a spatial coordinate, $t$ is time, and the $n$ elements of $\mathbf{u}$ represent the concentrations of $n$ chemical species.
+The concentration vector evolves according to&lt;/p&gt;
+
+\[\begin{equation}
+\label{eqn:rd}
+\partial_t \mathbf{u} = \mathbf{D} \nabla^2 \mathbf{u} + \mathbf{r}(\mathbf{u}),
+\end{equation}\]
+
+&lt;p&gt;where $\mathbf{D} = \text{diag}(D_1, …, D_n)$ is a diagonal matrix of diffusion coefficients, $\nabla^2$ is the Laplacian, and $\mathbf{r}(\cdot)$ is an arbitrary local reaction function.
+The first term in this evolution describes each species undergoing ordinary diffusion, which acts to spatially smooth out their concentrations, while the second term describes a local reaction in which chemical species multiply or change identities.
+Let’s suppose we’re working in 1D with a total volume $V$ and periodic boundary conditions.
+The question we pose to ourselves is: &lt;strong&gt;can we find diffusion constants $D_i$ and a reaction function $\mathbf{r}$ such that, as $t \rightarrow \infty$, one of the concentrations - say, $u_n$ - is proportional to V?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;turing-patterns&quot;&gt;Turing patterns&lt;/h4&gt;
+
+&lt;p&gt;If you’ve heard of reaction-diffusion equations before, it’s probably in conjunction with &lt;a href=&quot;https://en.wikipedia.org/wiki/Turing_pattern&quot;&gt;Turing patterns&lt;/a&gt;.
+Turing patterns are beautiful, amorphous-looking spatial patterns in the concentration of chemical species that emerge spontaneously as a result of reaction diffusion evolution with certain kinds of reaction term.
+Here are some examples (&lt;a href=&quot;https://www.youtube.com/watch?v=MR79V9UmM6s&quot;&gt;source here&lt;/a&gt;):&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+	&lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/turing_patterns.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;(Note that these are 2D, while we’ll be working in 1D.)
+&lt;a href=&quot;https://jasonwebb.github.io/reaction-diffusion-playground/&quot;&gt;Here’s&lt;/a&gt; a site with animations showing how these patterns develop spontaneously in time.
+If Turing patterns look somewhat biological to you, that’s a good instinct - lots of coloration patterns on animals are created by similar processes.&lt;/p&gt;
+
+&lt;p&gt;The fact that Turing patterns give spatial structure from nothing seems like a good start in our endeavor to make a volumetric reaction.
+The bumps have a characteristic spacing, so it seems like all we have to do is let the pattern form and count the ridges.
+We’ll then just have to make sure some other chemical species’ concentration encodes the final count.&lt;/p&gt;
+
+&lt;p&gt;While that sounds great, it’s not obvious (at least to me) how to then make a reaction that counts the ridges, so we’ll need to think harder.
+My first thought was to instantiate a big set of Turing patterns in different components of $\mathbf{u}$, each with a different characteristic wavelength, and see what the longest-wavelength species that grew a bump was, but then I had a better idea.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-plan&quot;&gt;The plan&lt;/h4&gt;
+
+&lt;p&gt;Our core difficulty is that it’s difficult to escape the world of intrinsic quantities.
+Measuring volume would be easy if we had &lt;em&gt;one&lt;/em&gt; extrinsic quantity to use as a foothold.
+Here’s an idea to this effect: create exactly one “concentration bump” of a known shape at a random location.
+The “bump density” $1/V$ (in units of bumps per volume) is easy to measure chemically, and it’s easy to convert from that to $V$!&lt;/p&gt;
+
+&lt;p&gt;Stable bumps of known shape are easy to make using reaction-diffusion systems, as Turing patterns make evident.
+Turing patterns have fixed bump density, though – not fixed bump count, which is what we need – so we’ll have to adapt the system so one bump suppresses all others.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-execution&quot;&gt;The execution&lt;/h4&gt;
+
+&lt;p&gt;I figured out how to do this with a reaction-diffusion equation with six chemical species.
+These consist of four “fast-diffusing” species, for which the time to diffuse across the vessel $V^2 / D_i$ is much shorter than all other timescales and concentration is uniform, and two “slow-difffusing” species which create spatial structure.
+These species play the following roles:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$u_1$ (fast): a &lt;em&gt;timer&lt;/em&gt; whose concentration steadly grows from zero and regulates other reactions.&lt;/li&gt;
+  &lt;li&gt;$u_2$ (slow): a &lt;em&gt;randomly-diffusing agent&lt;/em&gt; which amplifies random variation in its initial concentration to create a random concentration profile.&lt;/li&gt;
+  &lt;li&gt;$u_3$ (fast): a &lt;em&gt;maxfinder&lt;/em&gt; whose concentration converges to just below the max concentration of agent $2$, with only the peak above it.&lt;/li&gt;
+  &lt;li&gt;$u_4$ (slow): a &lt;em&gt;bump-forming agent&lt;/em&gt; which forms a bump of a certain size starting from the site of max concentration of agent $2$ at a prescribed time.&lt;/li&gt;
+  &lt;li&gt;$u_5$ (fast): a &lt;em&gt;bump measurer&lt;/em&gt; which is produced by the indicator bump and converges to concentration inversely-proportional to $V$.&lt;/li&gt;
+  &lt;li&gt;$u_6$ (fast): a &lt;em&gt;readout agent&lt;/em&gt; which concerges to concentration $\propto 1 / u_5$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I’ll defer further discussion and the equations themselves to the &lt;a href=&quot;#appendix&quot;&gt;Appendix&lt;/a&gt;.
+Let’s just jump to the good part: here are videos of the reaction working.&lt;/p&gt;
+
+&lt;p&gt;[VIDEOS]&lt;/p&gt;
+
+&lt;p&gt;In both cases, the concentration of the readout species converges to the volume of the system ($V=X,Y$, respectively) at around $t=60$!
+Figure 1 shows the spread of final concentrations for $V \in {1,…,6}$.
+The medians land right on the true volumes.
+(The long tails of outliers reporting smaller volumes reflects cases in which more than one bump was formed; the reaction’s pretty noisy, but I count this as success since it works most of the time.)&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/volumetric_reaction/volumetric_reaction_vol_test.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
+&lt;small&gt;
+&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; Final readout concentrations $u_5(t_f)$ with $t_f = 70$ over 10 trials with $V \in \{1,...,6\}$.&lt;/i&gt;
+&lt;/small&gt;
+&lt;/p&gt;
+
+&lt;h4 id=&quot;discussion&quot;&gt;Discussion&lt;/h4&gt;
+
+&lt;p&gt;We’ve seen that it’s possible for a reaction-diffusion equation with random initial conditions to measure the global volume of its vessel despite its being a fundamentally local process.
+So, could there be real chemical species that’d make this work in reality?
+Perhaps the greatest stretch is the continuously-increasing timer ($u_1$) that regulates other reactions, but then we’ve already seen that clock reactions exist in practice, and in the worst case we could drop the timer and have the experimenter mix in new chemicals at specified times.
+The readout $u_6$ converging to $\propto 1 / u_5$ is a bit suspicious, too – it’s rare for a reaction to be sensitive to the inverse of a concentration – but I suspect one could design a process that approximates that sensitivity in some regime, and in the worst case again, the chemist could just measure $u_4$ and make that calculation manually.
+It’s worth noting that this process in reality would probably include additional species for support (just as a motor contains many more parts than those which are directly part of the core process).
+That said, I see nothing that suggests that something like it couldn’t work in the real world.&lt;/p&gt;
+
+&lt;p&gt;[RD golf]&lt;/p&gt;
+
+&lt;p&gt;So what?
+This reaction is cool, but it’s not useful; its value is in its serving as a test case for a broader idea.
+Having crafted a volumetric reaction-diffusion system, we could now use it as a module in other more complex systems, like one that renders an image or pattern autoscaled to the space available.
+We’ve crafted a &lt;em&gt;transferrable module&lt;/em&gt; which &lt;em&gt;robustly does something interpretable&lt;/em&gt; and which &lt;em&gt;we can combine with other modules to make more complex systems.&lt;/em&gt;
+This process of crafting modular abstractions is how all fields of engineering work (think of physical mechanisms, simple circuits, software packages, etc.).
+Chemical engineering has basic reactions for doing simple manipulations to chemicals (cutting, splicing, oxidizing, polymerizing, etc.)
+The things one can ultimately make are defined by the elements of this basic modular algebra, and so it’s fascinating to think that there could be a “different basis” of chemical modules which do things like measure, render, count, perform logic, etc.&lt;/p&gt;
+
+&lt;p&gt;There are various senses in which an algebra of basic chemical processes could be “complete.”
+One might be: can reaction-diffusion processes be used to simulate &lt;em&gt;any&lt;/em&gt; isotropic PDE?
+Most PDEs are not reaction-diffusion processes – for example, one might contain terms like $u_1 \nabla^2 u_2$ – but perhaps a reaction-diffusion process with some auxiliary fields could simulate such terms (much like auxiliary particle fields create effective interaction terms in particle physics).
+More generally, we could ask if one could make an arbitrary Turing machine.
+The hard part seems to be breaking the left-right symmetry, but I’m fairly confident it’s doable.
+It’d be rather beautiful if Turing patterns were Turing-complete.&lt;/p&gt;
+
+&lt;p&gt;[Broad philosophy: this process of identifying general composable modules is how all fields of engineering work]
+[Could be how deep learning works, too, once we understand what the modules we desire are]&lt;/p&gt;
+
+&lt;h4 id=&quot;appendix-details-of-the-reaction&quot;&gt;Appendix: details of the reaction&lt;/h4&gt;
+&lt;p&gt;&lt;a name=&quot;appendix&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The reaction-diffusion system of Equation $\ref{eqn:rd}$ is defined by its diffusion constants and reaction function.
+We choose the diffusion constants to be&lt;/p&gt;
+
+\[D_1 = D_3 = D_5 = D_6 = \infty, \ \ D_2 = 2, \ \ D_4 = 1,\]
+
+&lt;p&gt;where $D_i = \infty$ means that species $i$ diffuses much faster than all other timescales (implemented in simulation via global averaging every timestep).
+We choose the six componts of the reaction function $\mathbf{r}(u)$ to be&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$r_1 = .1,$&lt;/li&gt;
+  &lt;li&gt;$r_2 = .1 \, u_1 \ I(0,t_a),$&lt;/li&gt;
+  &lt;li&gt;$r_3 = 10^3 \ \text{max}(u_2 - u_1, 0),$&lt;/li&gt;
+  &lt;li&gt;$r_4 = 30 \, (1 - u_4) \ \mathbb{1}_{u_2 &amp;gt; u_3} \ I(t_a - .1, t_a) + .15 \ I(t_a, t_b) + (2 u_4 - 1) - (2 u_4 - 1)^3,$&lt;/li&gt;
+  &lt;li&gt;$r_5 = (10 u_4 - u_5) \ I(t_b, \infty),$&lt;/li&gt;
+  &lt;li&gt;$r_6 = (2.9 u_4^{-1} - u_5) \ I(t_b + .5, \infty),$&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;where $t_a = 2$, $t_b = 5$, and $I(t_1, t_2) \equiv 1_{t_1 \le u_1 &amp;lt; t_2}$.
+All components are initialized as random functions with variance $.2$ (see the code for details).
+I arrived at these formulae after a lot of trials and error, working from the top of the list down, developing each step of the mechanism sequentially.
+The hardest part was reliably getting a single bump to develop in $u_4$; I was close to thinking this might be impossible to get one bump to spontaneously form and suppress all others, but using the initial randomness to break the symmetry let me do it.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 10 Oct 2022 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/volumetric-reaction/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/volumetric-reaction/</guid>
+        
+        
+        <category>chemistry, physics, fun-science</category>
+        
+      </item>
     
       <item>
         <title>Simulating cells fighting to the death</title>
@@ -66,7 +257,7 @@ Here’s a fight between my brother and I.&lt;/p&gt;
 The older notion is that a deity would directly change the world as desired (e.g., if they don't want a tree to exist, just smite it).
 A newer notion is that a deity might act by minimal intervention, subtly changing low-level parameters of the universe (e.g. if they don't want a tree to exist, slightly deplete the CO2 in the vicinity during its growth, or spike a few neurons in a squirrel brain to make it find and eat the tree as a seed, or so on). --&gt;
 </description>
-        <pubDate>Sat, 24 Sep 2022 00:00:00 -0800</pubDate>
+        <pubDate>Sat, 24 Sep 2022 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/cell-fight/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/cell-fight/</guid>
         
@@ -367,7 +558,7 @@ This writeup was made by starting with a blank file and randomly hitting a time-
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sat, 03 Sep 2022 00:00:00 -0800</pubDate>
+        <pubDate>Sat, 03 Sep 2022 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/time-reversed-random-walks/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/time-reversed-random-walks/</guid>
         
@@ -506,7 +697,7 @@ Just imagine what we’ll be able to do with them once we finally have one.&lt;/
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 23 Aug 2022 00:00:00 -0800</pubDate>
+        <pubDate>Tue, 23 Aug 2022 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/reverse-engineering/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/reverse-engineering/</guid>
         
@@ -665,7 +856,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/p&gt;
 &lt;p&gt;Your nanoscopic jabs at me are hardly worth refutin’ \ When all’s said and done, bud, you’re Leibniz, I’m Newton.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:01:00 -0900</pubDate>
+        <pubDate>Mon, 17 Jan 2022 01:01:00 -0800</pubDate>
         <link>http://localhost:4000/blog/bohr-v-einstein/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/bohr-v-einstein/</guid>
         
@@ -686,7 +877,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 &lt;/iframe&gt;
 &lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Jan 2022 01:00:00 -0900</pubDate>
+        <pubDate>Mon, 17 Jan 2022 01:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/newton-v-leibniz/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/newton-v-leibniz/</guid>
         
@@ -773,7 +964,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;&lt;em&gt;This post is based on &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;the paper&lt;/a&gt; “Neural Tangent Kernel Eigenvalues Accurately Predict Generalization,” which is joint work with labmate Maddie Dickens and advisor Mike DeWeese. We provide &lt;a href=&quot;https://github.com/james-simon/eigenlearning&quot;&gt;code&lt;/a&gt; to reproduce all our results. We’d be delighted to field your questions or comments.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 26 Oct 2021 00:00:00 -0800</pubDate>
+        <pubDate>Tue, 26 Oct 2021 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/eigenlearning/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/eigenlearning/</guid>
         
@@ -849,7 +1040,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;There’s a deeper trick we’re playing here, one that I see in inventions from &lt;a href=&quot;https://en.wikipedia.org/wiki/Reaction_wheel&quot;&gt;reaction wheels&lt;/a&gt; to &lt;a href=&quot;https://www.youtube.com/watch?v=jyQwgBAaBag&quot;&gt;faster-than-wind sailboats&lt;/a&gt;: once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they’re not &lt;em&gt;technically&lt;/em&gt; breaking their mother’s rules. For all of science’s immense capacity for social good, that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it’s a potent way to inspire the curious to think a little closer about how the universe really works.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 11 Oct 2021 00:00:00 -0800</pubDate>
+        <pubDate>Mon, 11 Oct 2021 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gravitrees/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitrees/</guid>
         
@@ -948,7 +1139,7 @@ I’m generally special; my work’s especially general \ My greatness endures, 
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 29 Nov 2020 00:00:00 -0900</pubDate>
+        <pubDate>Sun, 29 Nov 2020 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/rocketball/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/rocketball/</guid>
         
@@ -992,109 +1183,12 @@ I’m generally special; my work’s especially general \ My greatness endures, 
 
 &lt;p&gt;We’ve shown that the principle of least power dissipation gives the right answers for steady-state circuit problems.  If this is really a general law of nature, though, it’d probably show up outside of just this one narrow context.  It turns out that it can also be applied to &lt;em&gt;fluid circuits&lt;/em&gt;, which are sometimes studied as somewhat-similar sister systems to electric circuits.  In the sort of fluid circuit I’m imagining, there are networks of pipes of different thicknesses instead of resistors with different resistances.  Water flow rate \(Q\) replaces current, pressure \(P\) replaces voltage, the rate of power dissipation is \(PQ\) instead of \(VI\), and pipes have an effective resistance.  An ideal pipe with laminar flow has \(\Delta P\) proportional to \(Q\) in &lt;a href=&quot;https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation&quot;&gt;an equation analogous to Ohm’s Law&lt;/a&gt;, and the quantity analogous to resistance depends on the pipe’s dimensions and the viscosity of the fluid.  The fact that these equations map onto each other so perfectly means that fluid through a network of pipes minimizes power dissipation just as electrical circuits do.  I’d be willing to bet that, just as we derived part of the differential equation for current flow, you could derive part of the Navier-Stokes equations just from minimizing power dissipation.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 06 Sep 2020 00:00:00 -0800</pubDate>
+        <pubDate>Sun, 06 Sep 2020 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/least_power_dissipation/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/least_power_dissipation/</guid>
         
         
         <category>physics, research</category>
-        
-      </item>
-    
-      <item>
-        <title>Multiplicative neural networks</title>
-        <description>&lt;!-- ![grid26] --&gt;
-&lt;!--exc--&gt;
-
-&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;p&gt;In the past decade, neural networks have proven to be stunningly effective tools for a slew of machine learning tasks as diverse as classifying images, generating 3D graphics, and playing games.  These incredible successes all stem from neural networks’ remarkable ability to perform a central task in machine intelligence: given complex data, find underlying patterns.&lt;/p&gt;
-
-&lt;p&gt;Boiled down to their core, neural networks are just a series of &lt;em&gt;hierarchical nonlinear transformations&lt;/em&gt;.  Each layer of the neural network is one layer in this hierarchy, transforming a feature vector and passing it to the next layer up, until it reaches the output.  Each layer usually involves a step that mixes the elements of the feature vector according to a set of weights followed by a nonlinear function applied to each element of the vector.  All types of neural networks use a series of these layers to do the basic information processing.&lt;/p&gt;
-
-&lt;p&gt;Within that hierarchical nonlinear structure, however, there are many variations.  There are a vast array of different ways layers can be connected and parameterized, giving different architectures like convolutional nets, recurrent nets, and resnets specialized to certain types of task.  However, there are also lower-level things that can be changed.  One example is the nonlinear function, usually denoted \(\sigma\).  The field’s explored many options for \(\sigma\) over the years, and the most popular choice has changed over time.  The \(\tanh\) function (and similar sigmoid) were once the leading choice, but the \(\text{ReLU}\) (defined by \(\sigma(x) = \max(x, 0)\)) is now more popular.  Choosing a different nonlinearity can improve performance slightly, but to me it is more striking that the choice of nonlinearity matters so &lt;em&gt;little&lt;/em&gt;.  On the face of it, the \(\text{ReLU}\) and \(\tanh\) functions are basically as different as they could be within reason.  \(\tanh\) is smooth, saturating, nonlinear on every finite set, and is symmetric about the origin.  \(\text{ReLU}\) has a kink, is unbounded, piecewise-linear, and never takes negative values, not to mention that it outputs zero on half of its domain.  The fact that both of these functions could work reasonably well speaks to the fact that even though the hierarchical nonlinear structure is core to the effectiveness of neural nets, the exact choice of nonlinearity is, surprisingly, not crucial.&lt;/p&gt;
-
-&lt;p&gt;In fact, even the typical layer structure of matrix multiplication + elementwise nonlinearity isn’t crucial to performance.  It has been shown that tensor networks, a completely different type of hierarchical nonlinear model commonly used in physics, can also learn machine learning tasks.  &lt;a href=&quot;https://arxiv.org/abs/1605.05775&quot;&gt;This paper&lt;/a&gt; develops the idea and gets 1% test error on MNIST, which is pretty good for a totally new approach.  Interestingly, neural networks have recently been used instead of tensor networks in computational physics problems and achieved good performance there.  This raises a natural question: how do we know that the matrix multiplication + elementwise nonlinearity structure is really the best one?  To my knowledge, there’s no known fundamental, theoretical reason why it would be better than other options.&lt;/p&gt;
-
-&lt;h2 id=&quot;multiplicative-nets&quot;&gt;Multiplicative nets&lt;/h2&gt;
-
-&lt;p&gt;Here’s an idea for a different type of nonlinear hierarchical model.  What if we took a neural network and replaced the matrix multiplication step \(\sum_j w_{ij} x_j\) with a product step \(\prod_j x_j ^ {w_{ij}}\), with the weights as exponents in a product instead of coefficients in a sum?  This would still mix together the elements of the feature vector \(x\), just like a matrix operation, but in a different, nonlinear way.  Given the way deep learning systems can sometimes be surprisingly invariant to details of implementation, maybe this new, different sort of model could still work well.&lt;/p&gt;
-
-&lt;p&gt;Architectures using this idea are called &lt;strong&gt;multiplicative neural networks&lt;/strong&gt;.  The idea was &lt;a href=&quot;https://dl.acm.org/doi/10.1162/neco.1989.1.1.133&quot;&gt;first proposed in 1989&lt;/a&gt; by neuroscientists seeing multiplication as more biologically plausible and potentially more powerful than addition.  They were &lt;a href=&quot;https://clgiles.ist.psu.edu/papers/NIPS94.product.units.pdf&quot;&gt;tested experimentally&lt;/a&gt; on some very small problems in the next decade and once &lt;a href=&quot;https://sci2s.ugr.es/keel/pdf/specific/articulo/Schmidtt%20on-the-complexity-of.pdf&quot;&gt;analyzed from a complexity standpoint&lt;/a&gt; in the decade after.  The architectures these papers describe are a little more general - they consider combining additive and multiplicative neurons in the same net and using hybrid terms with more weights of the form \(v_1 \prod_j x_j ^ {w_{ij1}} + v_2 \prod_j x_j ^ {w_{ij2}} + ... + v_n \prod_j x_j ^ {w_{ijn}}\) - but their key innovation is the multiplicative form.  However, despite this research, multiplicative nets never broke through to practical use; we still use additive neural networks with normal matrix operations.&lt;/p&gt;
-
-&lt;p&gt;This is pretty understandable - at a first glance, multiplicative nets seem like they’d have some problems.  One immediate question is what to do when \(x_i &amp;lt; 0\) and \(w_{ij}\) isn’t an integer, in which case \(x_i ^ {w_{ij}}\) isn’t  uniquely defined, but to avoid that problem let’s just set things up so that all the \(x_i\) are positive, which I’ll show we can do with the right choice of data and nonlinearity.  Even dealing with this, though, these nets have some pretty prolific potential practical problems.  First, there’s been a lot of research and hardware development into making matrix operations faster, and this wouldn’t use them.  Second, replacing simple matrix operations with something more complex could lead to weird gradients and failed optimization.  Third, as a friend noted, even from a pure computational complexity standpoint, calculating \(x^y\) is more expensive than calculating \(x*y\), so this would be slow.  Finally, the advantages of switching to this architecture are far from clear, so there’s no incentive to overcome these problems.&lt;/p&gt;
-
-&lt;p&gt;The purpose of this post is to explore something interesting that isn’t discussed in the above papers: &lt;strong&gt;the multiplicative nets you get by replacing \(\sum_j w_{ij} x_j\) with \(\prod_j x_j ^ {w_{ij}}\) are basically identical to normal, additive neural nets with a different choice of nonlinearity.&lt;/strong&gt;  The basic reason is that, as the 1989 paper did note, \(\prod_j x_j ^ {w_{ij}} = \exp \big( \sum_j w_{ij} \ln(x_j) \big)\), so a multiplicative layer is the same as an additive layer where you take the logarithm before and an exponential after.  The main trick we’ll use is the fact that you can then absorb the \(\ln\) and \(\exp\) into the nonlinearity to get a new nonlinearity \(\sigma'(x) = \exp\sigma(\ln(x)))\), or, with compositional notation, \(\sigma' = \exp \circ \sigma \circ \ln\).&lt;/p&gt;
-
-&lt;p&gt;My argument could easily be laid out with standard symbolic math.  However, that’s not how I think about it, and I don’t think it’s the clearest way to explain it.  Notation matters; different ways of writing the same thing inspire different kinds of manipulations, and cleaner notations are better to learn with.  Instead of algebra, I’ll use diagrams.&lt;/p&gt;
-
-&lt;p&gt;Basic neural nets are built of a few basic pieces.  There are &lt;em&gt;input nodes&lt;/em&gt;, where input data vectors go into the net.  There are &lt;em&gt;output nodes&lt;/em&gt;, where the net’s output comes out.  There are elementwise &lt;em&gt;nonlinear functions&lt;/em&gt;, mapping real numbers to real numbers.  There are &lt;em&gt;additive&lt;/em&gt; or &lt;em&gt;matrix operations&lt;/em&gt;, each with its own 2D array of parameters \(W\), which in normal neural nets come between applications of nonlinear functions.  Lastly, we’ll include &lt;em&gt;multiplicative operations&lt;/em&gt;, which also each have their own 2D array array of parameters &lt;span style=&quot;color:purple&quot;&gt;\(W\)&lt;/span&gt; as discussed above.  We’ll use color to differentiate between additive and multiplicative operations; additive will be black, multiplicative will be purple.  Note that changing an operation from additive to multiplicative or vice versa doesn’t change its parameter matrix; the same numerical weights are just interpreted differently in a different operation.  We could also add pieces like biases or specialized layers like softmax or maxpooling, but we’ll leave those out for now for simplicity.  We could cast these pieces into diagrammatic form as follows:&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/net_components.png&quot; width=&quot;30%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;We can now build neural nets out of these components.  For example, the following is a standard additive neural net with 3-dimensional input, 3-dimensional output, two hidden layers with width 3, and a nonlinearity \(\sigma\).&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/net_example.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;There are a few different ways we can manipulate these diagrams while still keeping the model the same.  The first way is &lt;em&gt;function composition&lt;/em&gt;.  If there are two nonlinear functions in a row, we can just replace them with one new function.  This is just saying that the double function application \(f(g(x))\) is equivalent to the single function application \(h(x)\), defining \(h = f \circ g\).  One special, familiar case is when the two functions are each other’s inverses, and the new function is simply the identity; for example, \(\ln(\exp(x)) = x\).  Instead of writing the identity function explicitly, we can just write a line.  Note that in the notation \(f \circ g\), functions are applied right to left, but in our diagramas, everything flows from left to right, so the ordering of the composed functions might seem backwards at first.  There’s also the multiplicative-additive net identity we talked about earlier: \(\prod_j x_j ^ {w_{ij}} = \exp \big( \sum_j w_{ij} \ln(x_j) \big)\).  A multiplicative layer is the same as an additive layer with logarithms before and exponentials afterwards.  We can write these rules like this:&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/net_diagram_rules.png&quot; width=&quot;40%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;These rules lay out ways we can manipulate diagrams.  As a test of this notation, with just these simple rules we can derive a companion rule to the multiplicative-additive identity.  Just as you can take a function of both sides of an algebraic equation, we’re allowed to modify a diagrammatic equation by attaching pieces to dangling ends of both diagrams in the same way.  In this case, we’ll attach exponentials on all dangling ends on the left and logarithms on the right of both diagrams.  This gives us a new diagrammatic equation.  We can then use function composition to simplify the adjacent logarithms and exponentials to get a new, simple identity.  This one tells us that \(\ln \big( \prod_j  \exp(x_j)^{w_{ij}} \big) = \sum_j w_{ij} x_j\), which you can algebraically check is true.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/manipulation_example.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Now, let’s put together a multiplicative net and see what we can derive.  Our starting point will be the same simple 3-3-3-3 net as before, but with multiplicative layers; it will be clear that our operations will generalize to different sizes.  First, we use the multiplicative-additive identity to get an additive net.  However, instead of just having one nonlinear function acting on each element of the feature vector, there are now three in succession.  Using function composition, we can just group these into a new nonlinearity we define as \(\sigma' = \ln \circ \sigma \circ \exp\).  We now arrive at an additive net &lt;em&gt;exactly equivalent to the multiplicative net&lt;/em&gt;.  The only major oddity of the new additive net is elementwise logarithms at the start and exponentials at the end.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/multiplicative_net_transformation.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;These logarithms and exponentials at the start and end aren’t surprising.  We’re requiring that multiplicative nets need positive input and give positive output, so since logarithms of negative numbers aren’t real, these logarithms enforce the positivity of the input.  The exponentials similarly enforce the positivity of the output.  Also, as long as \(\sigma\) maps positive numbers to positive numbers, the net only operates on positive numbers intermediately, and we don’t have the undefined power problem.  We can make our diagram even simpler by absorbing the logarithms and exponentials into the inputs as follows:&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/end_absorption.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;It turns out that a multiplicative net is basically the same as an additive net &lt;em&gt;with the same weights!&lt;/em&gt;  Our choice of notation emphasizes the similarity of form.  However, is this really a meaningful, useful correspondence?  The main question is this: what’s the nonlinearity \(\sigma'\) like?  It’s possible that \(\sigma' = \ln \circ \sigma \circ \exp\) is some bizarre function that’d be totally nonfunctional in an additive net, which would bode badly for our multiplicative net.  To answer this, a few examples are plotted below.  The blue curves show different choices of nonlinearity for multiplicative nets, defined only for positive inputs, and the orange curves show the corresponding additive nonlinearities.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/net_diagrams/nonlinearities.png&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;As shown in (a), when \(\sigma\) is the \(\tanh\) function, \(\sigma'\) looks a lot like a smoothed \(\text{ReLU}\), also called a softplus!  It’s flipped across the x- and y-axes, but that doesn’t change the usefulness of a nonlinearity in an additive neural net.  This would definitely work as an activation function.  Surprisingly, (b) shows that when \(\sigma\) is a sigmoid, \(\sigma'\) is also roughly a sigmoid (but again flipped across both axes), which also works as a nonlinearity.  Shown in (c) is the case when the multiplicative net uses a \(\text{ReLU}\) nonlinearity.  This is a distinctly horrendous choice for only positive inputs, since it’s the same as the identity on positive input, which is reflected in the fact that \(\sigma'(x) = x\).  A multiplicative neural net with \(\text{ReLU}\) nonlinearities is basically linear; adding extra layers doesn’t give it any power since, for additive networks, a multilayer linear net is reducible to a linear model.  With a slight modification, however, we get a very useful nonlinearity.  As shown in (d), if the nonlinear net uses a modified \(\text{ReLU}\) - specifically, \(\sigma(x) = \max(x, 1)\) - the corresponding linear net has exactly \(\text{ReLU}\) activations.&lt;/p&gt;
-
-&lt;p&gt;It might not be clear what, exactly, this means for multiplicative nets.  Let’s suppose that we’re using a multiplicative neural net to do a task - say, classifying images - and we operate it by exponentiating the pixel values at input and taking the log of the output.  We have shown that, for a reasonable nonlinearity, the function the multiplicative net computes as a function of weights and data - say, \(f(X ; W)\) - is exactly the same as for a reasonable additive net.  That means that the loss surface is the same.  That means that the gradients are the same, and that means that the trainability is the same, and all this means that the theoretical usefulness of multiplicative neural nets, including their representational power and optimization behavior, are the same as the standard additive neural nets that have been the focus of such intense study.  Multiplicative nets are just as effective, there’s a correspondence to additive nets, and we have the conversion algorithm.&lt;/p&gt;
-
-&lt;p&gt;This fact is intriguing, but what does it mean in a broader sense?  This doesn’t make multiplicative nets practically useful; it’s still faster to perform a matrix multiplication than a multiplicative step, and since they amount to the same thing there’s no reason to prefer the latter.  To me, the reason this fact bears consideration is the hint it might be towards what truly gives deep learning its unreasonable effectiveness.  Multiplicative and additive nets have starkly different functional forms, and at a first glance I’d guess they have wholly different behavior as models.  The fact that they actually have equivalent power and utility seems like a hint that the fundamental magic of deep learning doesn’t lie in the details of implementation, like the choice of activation function or even the choice of matrix multiplication for mixing; the latter’s just preferred for convenience.  It seems likely that the key to deep learning’s success is something more deep and general about hierarchical nonlinear structures, and wildly disparate hierarchical models, from standard neural nets to multiplicative nets to tensor networks, all succeed because in some deep way they all fit this broad category.  Perhaps efforts to understand deep learning will eventually uncover a mathematical understanding of something like this.&lt;/p&gt;
-
-&lt;h2 id=&quot;extras&quot;&gt;Extras&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;“Wait,” you might say, “there’s no clean correspondence to an additive net if the multiplicative net has a more complicated form, like involving a sum of product terms.  This analysis only works in one case when it happens to be trivial!”  It’s true that the exact correspondence is easy to break by adding a bell or a whistle to the multiplicative net.  The question, however, is whether these modifications add anything fundamentally different, or whether they’d be incremental changes at most.  I can only conjecture for now - maybe I’ll do experiments if this becomes a paper - but I’d guess it’s likely that there are many ways to superficially change the form of multiplicative nets without fundamentally changing their behavior because the same is true of additive nets.  For example, you can add extra parameters to neural nets by parameterizing the activation functions themselves; &lt;a href=&quot;https://arxiv.org/pdf/2006.03179.pdf&quot;&gt;this paper&lt;/a&gt; not only tried that, but ran an evolutionary algorithm to build complicated activation functions, and their error rates were only a few percent lower than with simple \(\text{ReLU}\)s.  Many such engineering intricacies lead to no big change in performance.  For that reason, I think it’s a decent hypothesis that multiplicative nets behave similarly to additive nets even when there’s no exact correspondence.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;In the diagrams I drew, the nets have only weights, not biases.  Since \(\exp \big( \sum_j w_{ij} \ln( x_j ) + b_j \big) = e^{b_j} \prod_j x_j ^ {w_{ij}}\), we can add them by multiplying the product by \(e^{b_j}\), where \(b_j\) is a new bias parameter.&lt;/li&gt;
-  &lt;li&gt;The choice of base \(e\) (i.e. \(\exp\) and \(\ln\)) in this article was arbitrary, and any other base would’ve worked.&lt;/li&gt;
-  &lt;li&gt;Many types of specialized neural net layer can also be translated into multiplicative nets.  For example, a softmax is similar, but it doesn’t even require taking the exponentals.  \(\exp\) and \(\ln\) are monotonic, so they commute through max operations, so maxpool layers are the same for multiplicate nets.&lt;/li&gt;
-  &lt;li&gt;Are there other choices for the mixing operation besides the matrices of additive nets and the multiplication operation shown here?  One way to generalize the concept to include both is to make the mixing transform \(f \big( \sum_j w_{ij} f^{-1}(x_j) \big)\), with \(f\) an invertible function mapping reals to reals.  In the case of \(f = \text{identity}\), this gives additive nets.  In the case of \(f = \exp\), this gives multiplicative nets.  In a case like \(f(x) = x^3\), though, it would give something new, but still equivalent to an additive net by the same sort of proof.&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://sci2s.ugr.es/keel/pdf/specific/articulo/Schmidtt%20on-the-complexity-of.pdf&quot;&gt;The most recent paper I’ve found on these nets&lt;/a&gt;, which was mentioned above, argues that multiplicative neurons perform operations that need large numbers of summing units, stating that “networks of summing units do not seem to be an adequate substitute for genuine multiplicative units.”  This post basically disproves that!&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 31 Aug 2020 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/multiplicative-neural-nets/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/multiplicative-neural-nets/</guid>
-        
-        
-        <category>deep learning, research</category>
         
       </item>
     
