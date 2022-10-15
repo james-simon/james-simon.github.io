@@ -114,6 +114,7 @@ These species play the following roles:
 
 I'll defer further discussion and the equations themselves to the [Appendix](#appendix).
 Let's just jump to the good part: here are videos of the reaction working.
+Note how, around $t = 60$, the concentration $u_6$ of the readout component is equal to the size of the system.
 
 <p style="text-align:center;">
 <img src="{{site.imgurl}}/reaction_diffusion/rd_sim_v=3.gif" width="30%">
@@ -169,9 +170,9 @@ In my case, I used six, and had I cleverly reused some of them, I expect I could
 I could see this game being fun given an interesting set of objectives.
 Since all engineering fields use this paradigm, we could in principle play it in lots of other domains, too, trying to e.g. make a circuit that does a certain task with as few components (or as few logic gates) as possible or designing a physical mechanism with as few degrees of freedom as possible.
 
-As cool as I find it, I don't study chemistry, I study deep learning, and there are lessons I take from this exercise as to how we might think about neural nets.
+My main field of study isn't chemistry, it's deep learning theory, and there are lessons I take from this exercise as to how we might think about neural nets.
 Deep learning has a reputation for being modular -- the basic architectural units in PyTorch are literally called [Modules](https://pytorch.org/docs/stable/generated/torch.nn.Module.html) -- but it's unique in that *nobody knows how to think about what the modules are really doing.*
-Modern chemical engineering is composed of well-understood steps, but medieval alchemy was composed of lots of *poorly-understood* steps!
+Modern chemical engineering is composed of well-understood steps, but medieval alchemy, by contrast, was composed of lots of *poorly-understood* steps.
 Deep learning in 2022 is much more like alchemy: we have modules like transformer layers, batchnorm layers, and so on, but we don't truly understand what they do or how we ought to combine them to accomplish a broader task.
 I imagine thinking in terms of the actions of modules could've helped the alchemists clarify their thinking and develop chemistry, and I similarly expect thinking in terms of what quantitative effect each deep learning module does will prove clarifying for the field.
 It's my belief that, in doing so, we'll eventually arrive at a state in which the design of a deep learning system resembles the selection and combination of well-defined modules like in every other field of engineering.
