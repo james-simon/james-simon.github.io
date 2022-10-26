@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 14 Oct 2022 17:41:46 -0700</pubDate>
-    <lastBuildDate>Fri, 14 Oct 2022 17:41:46 -0700</lastBuildDate>
+    <pubDate>Wed, 26 Oct 2022 12:53:43 -0700</pubDate>
+    <lastBuildDate>Wed, 26 Oct 2022 12:53:43 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -119,8 +119,7 @@ These species play the following roles:&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;I’ll defer further discussion and the equations themselves to the &lt;a href=&quot;#appendix&quot;&gt;Appendix&lt;/a&gt;.
-Let’s just jump to the good part: here are videos of the reaction working.
-Note how, around $t = 60$, the concentration $u_6$ of the readout component is equal to the size of the system.&lt;/p&gt;
+Let’s just jump to the good part: here are videos of the reaction working.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/rd_sim_v=3.gif&quot; width=&quot;30%&quot; /&gt;
@@ -132,7 +131,7 @@ Note how, around $t = 60$, the concentration $u_6$ of the readout component is e
 &lt;/small&gt;
 &lt;/p&gt;
 
-&lt;p&gt;In both cases, the concentration of the readout species converges to the volume of the system ($V=3,5$, respectively) at around $t=60$!
+&lt;p&gt;Note how, in both cases, the concentration $u_6$ of the readout species is equal to to the volume of the system ($V=3,5$, respectively) at around $t=60$!
 Figure 1 shows the spread of final concentrations for $V \in {1,…,6}$.
 The medians land right on the true volumes.
 (The long tails of outliers reporting smaller volumes reflects cases in which more than one bump was formed; the reaction’s pretty noisy, but I count this as success since it works most of the time.)&lt;/p&gt;

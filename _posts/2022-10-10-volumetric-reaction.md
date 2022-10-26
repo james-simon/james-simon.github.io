@@ -114,7 +114,6 @@ These species play the following roles:
 
 I'll defer further discussion and the equations themselves to the [Appendix](#appendix).
 Let's just jump to the good part: here are videos of the reaction working.
-Note how, around $t = 60$, the concentration $u_6$ of the readout component is equal to the size of the system.
 
 <p style="text-align:center;">
 <img src="{{site.imgurl}}/reaction_diffusion/rd_sim_v=3.gif" width="30%">
@@ -126,7 +125,7 @@ Note how, around $t = 60$, the concentration $u_6$ of the readout component is e
 </small>
 </p>
 
-In both cases, the concentration of the readout species converges to the volume of the system ($V=3,5$, respectively) at around $t=60$!
+Note how, in both cases, the concentration $u_6$ of the readout species is equal to to the volume of the system ($V=3,5$, respectively) at around $t=60$!
 Figure 1 shows the spread of final concentrations for $V \in \{1,...,6\}$.
 The medians land right on the true volumes.
 (The long tails of outliers reporting smaller volumes reflects cases in which more than one bump was formed; the reaction's pretty noisy, but I count this as success since it works most of the time.)
