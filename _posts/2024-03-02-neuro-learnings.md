@@ -5,17 +5,17 @@ date: 2024-03-02
 category: neuroscience, research
 ---
 
-Have you ever lived in a neighborhood for years and realized, as you prepare to move out, that you never got to know the people who live next door? For me, that unknown neighbor is the field of neuroscience. I am nearing the end of a PhD in [a lab that does largely neuroscience](deweeselab.com) and live under the umbrella of the [Redwood Center for Theoretical Neuroscience](https://redwood.berkeley.edu/](https://redwood.berkeley.edu/), but I confess I’ve never engaged with the field in any serious way.
+Have you ever lived in a neighborhood for years and realized, as you prepare to move out, that you never got to know the guy who lives next door? For me, that unknown neighbor is the field of neuroscience. I am nearing the end of a PhD in [a lab that does largely neuroscience](deweeselab.com) and live under the umbrella of the [Redwood Center for Theoretical Neuroscience](https://redwood.berkeley.edu/](https://redwood.berkeley.edu/), but I confess I’ve never engaged with the field in any serious way.
 
-As with that neighbor you don’t really know, I’ve often *seen* neuroscience — I regularly pass by it on the sidewalk, so to speak, exchanging cordial pleasantries but never really engaging, always with something just a little more important to do. Look, I’m sure neuroscience is a *nice guy* and all that, but we just don’t have that much in common! A lot of people seem to like him, but we’ve just never really clicked! It’s hard for me to understand what he’s saying or why, so when we pass each other on the street, I usually just smile and nod and continue on my way.
+As with that neighbor you don’t really know, I’ve often *seen* neuroscience — I regularly pass by it on the sidewalk, so to speak, exchanging cordial pleasantries but never really engaging, always with something just a little more important to do. Look, I’m sure neuroscience is a *nice guy* and all that, but we just don’t have that much in common! A lot of people seem to like him, but we’ve just never really clicked -- and besides, isn't he the one with all those rats? It’s hard for me to understand what he’s saying or why, so when we pass each other on the street, I usually just smile and nod and continue on my way.
 
 **No more. I’ve decided to learn some neuroscience. These past weeks, I’ve been doing basic reading in an effort to absorb some of the big ideas. This post will summarize some of what I’ve learned.** If you come from a similar academic background and have a similar curiosity, perhaps you’ll find some of this interesting.
 
-## Why would I learn neuroscience?
+### Why would I learn neuroscience?
 
 I’m doing this for two main reasons. The first is self-knowledge: I’m in a reflective period in which I aim to better understand myself, and I suspected that some basic neuro- and cognitive science might help me better understand my own experience — and indeed it has! Seeing the important ways in which our brains are hacky really gives me a sense of humility and a feeling that human experience is often different and much stranger than we conceive it to be, so we ought to really look at it. The second is more general: if you’ve never touched a field, there are often big foundational ideas sitting on the surface for you to learn, and so a fairly short period of learning can give outsize returns because you’re on the steep part of the learning curve. That also turned out to be true — I’d underestimated how much we know about the brain, and how easily some of my naive notions could be improved.
 
-## Plan of attack
+### Plan of attack
 
 I’m a physicist by training, and I like to think about general principles and big ideas, so over the past few weeks I read Sterling and Laughlin’s *Principles of Neural Design.* This is an introductory book focused less on the specifics of anatomy and much more on broad principles which govern neural circuitry across brain regions and across species. This was a good match for the level of detail at which I wanted to learn things — I don’t need to know about, say, the superior temporal gyrus or the difference between norepinephrine and epinephrine, but I do want to know that neural circuitry aggressively tries to minimize wire length and energy consumption.  It gives a nice overview of how someone familiar with physical or systems thinking could begin to start thinking about the brain. I also read some of Kandel et al.’s *Principles of Neural Science*,[^1] a classic introductory text.
 
@@ -23,7 +23,7 @@ I’m a physicist by training, and I like to think about general principles and 
 
 Without further ado, here’s a bunch of stuff I learned.
 
-## The brain is very structurally complicated
+### The brain is very structurally complicated
 
 Coming from machine learning, my naive picture of the brain was basically that it’s a big homogeneous mass of neurons initially connected in a mostly random fashion, with inputs to some regions and outputs from others, and that learning from experience leads to gradual strengthening and weakening of neural connections so that this mass of neurons eventually knows and learns.
 
@@ -47,13 +47,13 @@ In fact, even the cerebral cortex — the big wrinkly part that covers most of t
 
 This complexity extends down to the level of individual neurons. There isn’t just one type of “neuron” — rather, the brain has tens to hundreds of different types of firing and support cells with very different geometries adapted to different roles and parts of the brain. On the small end, cerebellar [granule cells]([https://en.wikipedia.org/wiki/Granule_cell](https://en.wikipedia.org/wiki/Granule_cell)) are only ~5 µm in size with axons of width on the order of only 200 nm (!). These connect directly with [Purkinje cells]([https://en.wikipedia.org/wiki/Purkinje_cell](https://en.wikipedia.org/wiki/Purkinje_cell)), which have cell bodies about 10x wider and dendritic arbors that spread out in a striking planar shape as far as several millimeters. The retina, which translates incoming light into neural signals, contains multiple layers of many distinct cell types, starting with specialized rod and cone cells and leading up to the optic nerve, which is essentially a cable-like bundle of about 10^6 axons which extend for several *centimeters* (!) from the eye to the visual cortex. The largest neurons in the body stretch from the spinal cord to the ends of the limbs and can be over a meter in length. Thinking of these all as “neurons” seems as reductive as referring to all components of a mechanical system or electronic circuit as just “components” — it’s not wrong, but it’s almost always more useful to work at a finer level of abstraction.
 
-### Why are things so complicated?
+#### Why are things so complicated?
 
 Here’s another amazing fact which will turn out to be related: in the nematode C. elegans, every individual has exactly 302 neurons, and they’re always in the same place and connected the same way.[^3] This might seem shocking — after all, aren’t central nervous systems these flexible, adaptive systems that differ between individuals? It certainly surprises me until I remember that, well, the adult human body has exactly 206 bones and some 600 muscles, and they’re always in the same place and connected the same way. Biology is certainly capable of specifying this level of detail. Since the nematode doesn’t really need to learn, why *not* just hard-code a rigid rule-based control system for its simple body?
 
 The important fact here is that the main role of a central nervous system is not to *learn,* it is to dictate global actions and share information between different parts of an organism’s body necessary for doing so. Sterling and Laughlin illustrate this beautifully by pointing to the rudimentary chemical and electrical signaling of the paramecium — which is hard-coded and includes commands like “back up” and “turn” — as the ancestor of our own nervous systems. Learning in its various forms is sort of a remarkable recent development which allows a nervous system to adapt to its environment. In this light, it makes a lot of sense that the brain would be so complicated — it’s evolved from nervous systems like those of C. elegans, except instead of 302 hard-coded neurons, our brains have a few hundred hard-coded parts, and the fact that some learning can occur within each part is somewhat secondary to the overall control flow.
 
-## The brain generally obeys a handful of low-level design principles
+### The brain generally obeys a handful of low-level design principles
 
 What does it mean to “understand the brain”? Coming from machine learning theory, I’d held this notion to a high bar: surely *understanding* in neuroscience would mean we know the precise encoding scheme for memories, or can give a mathematical model of human reasoning played out in neural firings, or concretely explain what happens neurologically when you imagine something. I hadn’t appreciated the degree to which these cognitive, experiential things are really just the highest level of the layer cake of neuroscience. There are in fact many lower levels of abstraction which we understand fairly well!
 
@@ -72,7 +72,7 @@ There are, of course, plenty of exceptions here: the design of the vertebrate re
 - **Minimize wire.** Rather intuitively, longer axons take up more space, cost more energy, and slow signal transmission, so the brain tends to shorten wires as much as possible. This is achieved partially at the level of individual neurons, which tend to take shapes and choose branching points that reach all their connections in a local minimum of total distance.[^4] It is also achieved via organization of neural regions into maps — for example, the early visual cortex is arranged spatially in a 2D way that mimics the retina, which minimizes diagonal cross-wiring. Some brain areas have peculiar neural organization, like the aforementioned [fan-shaped Purkinje cells stacked in the cerebellum]([https://www.snexplores.org/wp-content/uploads/2020/04/1030_LL_trees-1028x579.png](https://www.snexplores.org/wp-content/uploads/2020/04/1030_LL_trees-1028x579.png)), and this organization allows for lots of dense connections in a small volume.
 - **Complicate and specialize.** The cost of a neural design is *not* in its complexity, it’s in the amount of resources it uses — that is, space, energy, time, and physical materials. If a neural circuit can be complicated in exchange for using less of one of these, it often will! As a result, there are a huge number of different neurons with different geometries, firing rates, sensitivities, and so on, which economize some resource. Every part of a signaling pathway in the brain is thus adapted to its place in the chain, and will adapt so it fulfills its role — transmitting with a particular fidelity, across a particular distance, and in a particular time — as cheaply as possible. An example I like: opsin molecules in rod cells in the eye are occasionally activated by random thermal noise… but they’re designed to be just robust enough that this noise level is just a few times below the activity rate when looking around in starlight.
 
-## There are many levels at which we might want to “understand” the brain
+### There are many levels at which we might want to “understand” the brain
 
 As aforementioned, I hail from physics, where the bar for understanding is quite high: one expects a tight, testable, ideally-mathematical theory before one believes one understands a complex system. Applied to the brain, a physicist might want, say, a clean, elegant, mathematical theory for how high-level concepts are represented and manipulated in the brain before saying we understand what it’s doing, perhaps using notions of sparsity, information theory, high-dimensional geometry, and so on. This still seems like a reasonable-albeit-distant dream to me,[^5] but there are many more levels at which we could understand the brain. Here are two:
 
@@ -84,7 +84,7 @@ It seems to me like most of our high-level brain knowledge is of this form: we h
 
 One interesting takeaway I glean from all this is that it now seems like the thing I purport to want — a simple mathematical description of learning — actually lies not at the highest level of abstraction, but actually at an intermediate level, above the level of small circuits but below the level of brain regions. I’m also less confident that it’s really a good goal!
 
-## How do we learn?
+### How do we learn?
 
 The nature of learning is still pretty unclear to me from my reading. It seems like there are a bunch of different mechanisms — synapses that have fired recently more readily fire again in the following seconds and minutes, synapses that have fired many times tend to increase their sensitivity, dopamine release (which is globally mediated) tends to reinforce neurons to do whatever they were just doing. I’m confused as to how to think about these mechanisms — is there a sharp difference between short-term and long-term memory? Is there a difference between short-term memory and “what you’re thinking about right now”? Is most learning distributed and reward-signal free, or is it top-down modulated as in machine learning? What tasks even count as “learning” — I could believe there are many more than the typical testing suite I envision! I feel I’ve gotten a bit of flavor for some of these learning mechanisms, but not enough to have any real picture of learning in the brain.
 
@@ -96,7 +96,7 @@ This set of questions seems particularly interesting where it intersects with ou
 
 * What’s the difference between factual learning and wisdom? Why does some learning feel like it affects our worldview, while other learning feels like just memorizing facts?
 
-## Fun facts
+### Fun facts
 
 Some disconnected fun facts from my reading:
 
