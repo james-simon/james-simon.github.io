@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 02 Mar 2024 17:08:05 -0800</pubDate>
-    <lastBuildDate>Sat, 02 Mar 2024 17:08:05 -0800</lastBuildDate>
+    <pubDate>Sat, 02 Mar 2024 17:16:02 -0800</pubDate>
+    <lastBuildDate>Sat, 02 Mar 2024 17:16:02 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -34,7 +34,7 @@
 &lt;p&gt;Coming from machine learning, my naive picture of the brain was basically that it’s a big homogeneous mass of neurons initially connected in a mostly random fashion, with inputs to some regions and outputs from others, and that learning from experience leads to gradual strengthening and weakening of neural connections so that this mass of neurons eventually knows and learns.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/self_conception.png&quot; width=&quot;50%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/neuro/self_conception.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;In reality, the brain is highly structured. This is actually pretty apparent from anatomy, even at a coarse level: the inside of the brain is whitish (containing mostly long insulated communication channels, or &lt;em&gt;white matter&lt;/em&gt;), while the outer few millimeters is greyish (containing lots of neurons with dense short-range connections, or &lt;em&gt;grey matter&lt;/em&gt;). Different regions of the brain have different textures, with peculiarly-shaped masses on the inside and in the hindbrain.&lt;/p&gt;
@@ -42,7 +42,7 @@
 &lt;p&gt;In fact, even the cerebral cortex — the big wrinkly part that covers most of the outside of the brain — is in reality made up of lots of distinct regions which differ in their cellular structure! Over a century ago, Korbinian Brodmann made close examination of the cytostructure of the cortex and identified some &lt;a href=&quot;[https://en.wikipedia.org/wiki/Brodmann_area](https://en.wikipedia.org/wiki/Brodmann_area)&quot;&gt;52 distinct regions&lt;/a&gt; with different cellular composition and patterning. Some of these regions have since been found to be robustly responsible for distinct brain functions, like &lt;a href=&quot;[https://en.wikipedia.org/wiki/Auditory_cortex](https://en.wikipedia.org/wiki/Auditory_cortex)&quot;&gt;processing sound&lt;/a&gt;, &lt;a href=&quot;[https://en.wikipedia.org/wiki/Postcentral_gyrus](https://en.wikipedia.org/wiki/Postcentral_gyrus)&quot;&gt;processing touch&lt;/a&gt;, and &lt;a href=&quot;[https://en.wikipedia.org/wiki/Broca's_area](https://en.wikipedia.org/wiki/Broca%27s_area)&quot;&gt;language production&lt;/a&gt;. The fact that these different regions of the homogenous-looking cortex are physiologically distinct and consistently perform different roles is a surprise to me!&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/brodmann_areas.png&quot; width=&quot;60%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/neuro/brodmann_areas.png&quot; width=&quot;60%&quot; /&gt;
 &lt;/p&gt;
 &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
 &lt;small&gt;
@@ -71,7 +71,7 @@
 &lt;/ul&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/axon_size.png&quot; width=&quot;50%&quot; /&gt;
+&lt;img src=&quot;https://james-simon.github.io/img/neuro/axon_size.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;ul&gt;

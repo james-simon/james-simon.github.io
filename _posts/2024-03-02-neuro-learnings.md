@@ -28,7 +28,7 @@ Without further ado, here’s a bunch of stuff I learned.
 Coming from machine learning, my naive picture of the brain was basically that it’s a big homogeneous mass of neurons initially connected in a mostly random fashion, with inputs to some regions and outputs from others, and that learning from experience leads to gradual strengthening and weakening of neural connections so that this mass of neurons eventually knows and learns.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/self_conception.png" width="50%">
+<img src="{{site.imgurl}}/neuro/self_conception.png" width="50%">
 </p>
 
 In reality, the brain is highly structured. This is actually pretty apparent from anatomy, even at a coarse level: the inside of the brain is whitish (containing mostly long insulated communication channels, or *white matter*), while the outer few millimeters is greyish (containing lots of neurons with dense short-range connections, or *grey matter*). Different regions of the brain have different textures, with peculiarly-shaped masses on the inside and in the hindbrain.
@@ -36,7 +36,7 @@ In reality, the brain is highly structured. This is actually pretty apparent fro
 In fact, even the cerebral cortex — the big wrinkly part that covers most of the outside of the brain — is in reality made up of lots of distinct regions which differ in their cellular structure! Over a century ago, Korbinian Brodmann made close examination of the cytostructure of the cortex and identified some [52 distinct regions]([https://en.wikipedia.org/wiki/Brodmann_area](https://en.wikipedia.org/wiki/Brodmann_area)) with different cellular composition and patterning. Some of these regions have since been found to be robustly responsible for distinct brain functions, like [processing sound]([https://en.wikipedia.org/wiki/Auditory_cortex](https://en.wikipedia.org/wiki/Auditory_cortex)), [processing touch]([https://en.wikipedia.org/wiki/Postcentral_gyrus](https://en.wikipedia.org/wiki/Postcentral_gyrus)), and [language production]([https://en.wikipedia.org/wiki/Broca's_area](https://en.wikipedia.org/wiki/Broca%27s_area)). The fact that these different regions of the homogenous-looking cortex are physiologically distinct and consistently perform different roles is a surprise to me![^2]
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/brodmann_areas.png" width="60%">
+<img src="{{site.imgurl}}/neuro/brodmann_areas.png" width="60%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -64,7 +64,7 @@ What does it mean to “understand the brain”? Coming from machine learning th
 - **Send at the lowest acceptable rate.** A fun fact I hadn’t known: sending a neural signal faster requires a thicker axon, which ultimately requires superlinearly more resources and energy! The brain’s thus incentivized to send information as slowly as possible. This is basically true everywhere in the brain — I suppose it’s evolutionarily “easy” to tweak axons to be thinner and slower, so they’ll always tend to settle down to the slowest rate that works well enough. An amazing example of this is the speeds of different sensory modalities: olfaction (smell) has no need to be fast, so it uses a cable of 10^7 very thin axons to send information quite slowly, while on the other end, the vestibular sense (balance) needs to send little information but needs to send it fast to keep us upright, so it uses far fewer axons which are about 100x cross-sectionally larger.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/axon_size.png" width="50%">
+<img src="{{site.imgurl}}/neuro/axon_size.png" width="50%">
 </p>
 
 - **Minimize wire.** Rather intuitively, longer axons take up more space, cost more energy, and slow signal transmission, so the brain tends to shorten wires as much as possible. This is achieved partially at the level of individual neurons, which tend to take shapes and choose branching points that reach all their connections in a local minimum of total distance.[^4] It is also achieved via organization of neural regions into maps — for example, the early visual cortex is arranged spatially in a 2D way that mimics the retina, which minimizes diagonal cross-wiring. Some brain areas have peculiar neural organization, like the aforementioned [fan-shaped Purkinje cells stacked in the cerebellum]([https://www.snexplores.org/wp-content/uploads/2020/04/1030_LL_trees-1028x579.png](https://www.snexplores.org/wp-content/uploads/2020/04/1030_LL_trees-1028x579.png)), and this organization allows for lots of dense connections in a small volume.
