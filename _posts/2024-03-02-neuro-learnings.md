@@ -5,7 +5,7 @@ date: 2024-03-02
 category: neuroscience, research
 ---
 
-Have you ever lived in a neighborhood for years and realized, as you prepare to move out, that you never got to know the people who live next door? For me, that unknown neighbor is the field of neuroscience. I am nearing the end of a PhD in [a lab that does largely neuroscience](deweeselab.com) and live under the umbrella of the [Redwood Center for Theoretical Neuroscience]([https://redwood.berkeley.edu/](https://redwood.berkeley.edu/), but I confess I’ve never engaged with the field in any serious way.
+Have you ever lived in a neighborhood for years and realized, as you prepare to move out, that you never got to know the people who live next door? For me, that unknown neighbor is the field of neuroscience. I am nearing the end of a PhD in [a lab that does largely neuroscience](deweeselab.com) and live under the umbrella of the [Redwood Center for Theoretical Neuroscience](https://redwood.berkeley.edu/](https://redwood.berkeley.edu/), but I confess I’ve never engaged with the field in any serious way.
 
 As with that neighbor you don’t really know, I’ve often *seen* neuroscience — I regularly pass by it on the sidewalk, so to speak, exchanging cordial pleasantries but never really engaging, always with something just a little more important to do. Look, I’m sure neuroscience is a *nice guy* and all that, but we just don’t have that much in common! A lot of people seem to like him, but we’ve just never really clicked! It’s hard for me to understand what he’s saying or why, so when we pass each other on the street, I usually just smile and nod and continue on my way.
 
