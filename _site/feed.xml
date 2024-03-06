@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 04 Mar 2024 14:04:20 -0800</pubDate>
-    <lastBuildDate>Mon, 04 Mar 2024 14:04:20 -0800</lastBuildDate>
+    <pubDate>Tue, 05 Mar 2024 08:56:10 -0800</pubDate>
+    <lastBuildDate>Tue, 05 Mar 2024 08:56:10 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -91,7 +91,7 @@
 
 &lt;p&gt;It seems to me like most of our high-level brain knowledge is of this form: we have stories like “Part A is responsible for task X. Task X also requires input from Part B, so Parts A and B are wired together, and that wiring strengthens as one performs more of Task X.” We pretty rarely have a low-level understanding of how neural circuitry is computing, but we have stories like this for lots and lots of parts and tasks. This view is reminscent of &lt;a href=&quot;https://notes.andymatuschak.org/zQnTUMfm4YPLyi8GFA1Ym1e&quot;&gt;Marr’s three levels of abstraction&lt;/a&gt;, which proposes that computing systems can be studied at the level of the task ultimately performed (the highest level), the algorithm used to perform that task (the middle level), or the hardware used to implement that algorithm (the lowest level). Perhaps a good story here is that neuroscience has made major progress on the lowest and highest levels, but it’s still unclear how to connect them: we cannot extract the algorithms &lt;em&gt;performed by&lt;/em&gt; neural hardware which &lt;em&gt;implement&lt;/em&gt; the high-level functions which we know brain regions to perform.&lt;/p&gt;
 
-&lt;p&gt;One interesting takeaway I glean from all this is that it now seems like the thing I purport to want — a simple mathematical description of learning — actually lies not at the highest level of abstraction, but actually at an intermediate level, above the level of small circuits but below the level of brain regions. I’m also less confident that it’s really a good goal!&lt;/p&gt;
+&lt;p&gt;One interesting takeaway I glean from all this is that it now seems like the thing I purport to want — a simple mathematical description of learning — actually lies not at the highest level of abstraction but at an intermediate level, above the level of small circuits but below the level of brain regions. I’m also less confident that it’s really a good goal!&lt;/p&gt;
 
 &lt;h3 id=&quot;how-do-we-learn&quot;&gt;How do we learn?&lt;/h3&gt;
 
@@ -131,7 +131,7 @@
 
 &lt;p&gt;I set out to see if I could glean a high-level view of the field of neuroscience from some foundational background reading. I actually feel I’ve managed to do that to a modest degree! It was an endeavor well worth the time investment; I’d recommend it to others who are interested, and will probably do it again myself with different fields.&lt;/p&gt;
 
-&lt;p&gt;In general, I’d say we actually understand more about neuroscience than I’d thought! While the things I thought were mysteries generally do seem to be unknown, I was blind to the many levels at which modern neuroscience examines the brain and thus to the very real progress we’ve made towards characterizing the brain’s functioning and relating it to both evolutionary pressures and our own human experience. I’m left quite impressed by the sheer amount of work required to get to this point — as an acquaintance recently told me, it takes a PhD’s worth of work to get one line in a textbook.&lt;/p&gt;
+&lt;p&gt;In general, I’d say we actually understand more about neuroscience than I’d thought! While the things I thought were mysteries generally do seem to be unknown, I was blind to the many levels at which modern neuroscience examines the brain and thus to the very real progress we’ve made towards characterizing the brain’s functioning and relating it to both evolutionary pressures and our own human experience. I’m left quite impressed by the sheer amount of work required to get to this point — as an acquaintance recently told me, it takes a PhD’s worth of work to get one line in a textbook.&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;The most profound conceptual discoveries in the sciences — perhaps simply in general — often build bridges between two things that previously seemed to live in different worlds. My interest in neuroscience basically stems from a hope of this nature. Our lives as human beings take place largely in the world of our own internal processing: our cognition, sensation, and action; our feelings, reactions, and dreams. However, we have far more concrete, reliable understanding of the physical world of atoms and molecules, proteins and neurons, circuits and brains. I’m excited (both selfishly and altruistically) by the prospects for building bridges between these realms, starting to understand our own human experience in terms of basic science.&lt;/p&gt;
 
@@ -153,6 +153,9 @@
     &lt;/li&gt;
     &lt;li id=&quot;fn:5&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;In all honesty, I personally find this question so appealing and seductive that it’s distracting from more concrete problems. &lt;a href=&quot;#fnref:5&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:6&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;That said, it’s likely I’m too optimistic about understanding here given that I’ve just read a compendium of lots of things we understand. It seems likely that there are lots of things we don’t understand, even at the lowest and highest levels of abstraction: plenty of microscopic neural processes remain difficult or impossible to characterize with current tools, and there are surely lots of macroscopic brain areas about which we don’t have really compelling stories as to their function. &lt;a href=&quot;#fnref:6&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
