@@ -64,9 +64,12 @@ Here’s a thought experiment which this principle suggests, and which is sort o
 
 In some idealized mathematical setting, the answer *has* to be yes: quality is only increasing as per the oracle, so eventually it will either reach some local maximum or cross an arbitrary threshold. However, this is a real interesting question in practice thanks to the fact that every component is flawed! *Is the oracle reliable enough? Are the perturbations accepted at a good enough rate? Do we reach the promised land of high-quality text in a **reasonable amount of time?***
 
-I don’t know the answer here, but it seems like it’d be a really cool result if it worked! In particular, I’m curious how dumb the source of perturbations can be in order for it to work. It’d also be really cool to see how the text changes as the process runs — what does it look like, say, 10% of the way through? 25%? 75%? Does it first form good English sentences, then gradually get on topic, then finally become high quality? If it gets stuck, at what point in this progression?
+I don’t know the answer here, but it seems like it’d be a really cool result if it worked! In particular, I’m curious how dumb the source of perturbations can be in order for it to work. It’d also be really cool to see how the text changes as the process runs — what does it look like, say, 10% of the way through? 25%? 75%? Does it first form good English sentences, then gradually get on topic, then finally become high quality? If it gets stuck, at what point in this progression?[^2]
 
 I’m pretty curious about this! It actually seems like an experiment that could be run by some entity with a lot of compute.
+
+
+***
 
 
 [^1]: In a meta sense, this is also fundamentally how reinforcement learning works: the learning algorithm converts task feedback scores (the oracle) into a system that can generate new good actions (generated samples). (This process is more expensive than schemes that generate only one sample, but once you’re done you have a system for cheaply generating lots of samples.) It’s not totally clear to me how to relate this meta-bootstrapping — aka learning — to the base-level bootstrapping that generates only one sample, as in this attack and optimization algorithms, but they sure feel suspiciously related to me.
