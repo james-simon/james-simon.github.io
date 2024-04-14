@@ -248,7 +248,7 @@ layout: default
       <!-- </ul> -->
       <hr>
       <h4>Potpourri</h4>
-      <!-- <ul class="post-list"> --> {% for post in site.posts %} {% if post.category contains "random" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+      <!-- <ul class="post-list"> --> {% for post in site.posts %} {% if post.category contains "random" or post.category contains "personal" %} {% include make_post_link.html %} {% endif %} {% endfor %}
       <!-- </ul> -->
     </div>
     <div class="col-md-6">
