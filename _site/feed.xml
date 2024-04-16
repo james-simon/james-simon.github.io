@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 15 Apr 2024 20:05:08 -0700</pubDate>
-    <lastBuildDate>Mon, 15 Apr 2024 20:05:08 -0700</lastBuildDate>
+    <pubDate>Tue, 16 Apr 2024 09:13:35 -0700</pubDate>
+    <lastBuildDate>Tue, 16 Apr 2024 09:13:35 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -29,7 +29,7 @@
 
 \[\text{[US birth rate]} \approx \frac{\text{[US population]}}{\text{[human lifespan]}} \approx \frac{3 \times 10^8 \ \text{people}}{100 \ \text{years}} = 3 \times 10^6 \ \frac{\text{people}}{\text{year}}\]
 
-&lt;p&gt;We estimate the eclipse path size as a long thin rectangle from memory:&lt;/p&gt;
+&lt;p&gt;We estimate the eclipse path size as a long thin rectangle whose dimensions we’re guessing from memory:&lt;/p&gt;
 
 \[\text{[eclipse path size]} \approx 1000 \times 50 \ \text{mi}^2 = 5 \times 10^4 \ \text{mi}^2\]
 
