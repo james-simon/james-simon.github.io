@@ -184,6 +184,8 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
     </div>
 </div>
 
+***
+
 ## Some lessons
 
 This trip afforded me ample time for reflection and coincided with a more extended personal journey I've been on for the past year in which I've been figuring out how to live as an adult in ways feel good. I learned a number of things about roadtripping, including that

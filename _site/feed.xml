@@ -5,9 +5,69 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 16 Apr 2024 09:13:35 -0700</pubDate>
-    <lastBuildDate>Tue, 16 Apr 2024 09:13:35 -0700</lastBuildDate>
+    <pubDate>Wed, 17 Apr 2024 16:15:59 -0700</pubDate>
+    <lastBuildDate>Wed, 17 Apr 2024 16:15:59 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Favorite quotes from &lt;em&gt;Letters to a Young Poet&lt;/em&gt;</title>
+        <description>&lt;style&gt;
+blockquote {
+    border-left: 4px solid #ccc;  /* Adds a left border to the block quote */
+    margin: 1em 10px;             /* Adds margin for better spacing */
+    padding-left: 15px;           /* Adds padding to the left for text indent */
+    font-style: italic;           /* Makes the text italic */
+    color: #333;                  /* Sets the text color */
+    background-color: #f9f9f9;    /* Sets a light background for visibility */
+}
+&lt;/style&gt;
+
+&lt;p&gt;Rainier Maria Rilke’s &lt;em&gt;Letters to a Young Poet&lt;/em&gt; is a short and singular book, consisting of a sequence of ten letters written by the famous poet and novelist to an aspiring young poet who initiated their correspondence in search of advice in poetry. Rilke’s letters are remarkable for their candor and sincerity and depth of feeling: Rilke’s advice extends beyond the question of how to compose literature to the question of how to live.&lt;/p&gt;
+
+&lt;p&gt;I read this collection at a time in which I’m trying to work out how best to express some artistic tendencies of mine, and it was useful to hear Rilke’s thoughts on authentic living and artistic authenticity. Here are some of my favorite quotes.&lt;/p&gt;
+
+&lt;p&gt;On living questions without knowing the answers:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;You are so young, so before all beginning, and I want to beg you, as much as I can. dear sir, to be patient toward all that is unsolved in your heart and to try to love the questions themselves like locked rooms and like books that are written in a very foreign tongue. Do not now seek the answers , which cannot be given you because you would not be able to live them. And the point is. to live everything. Live the questions now. Perhaps you will then gradually, without noticing it. live along some distant day into the answer.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On solitude:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;The necessary thing is after all but this: solitude, great inner solitude. Going into oneself and for hours meeting no one – this one must be able to attain. To be solitary, the way one was solitary as a child, when the grownups went around involved with things that seemed important and big because they themselves looked so busy and because one comprehended nothing of their doings.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On Rilke’s own inner sadness:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;And if there is one thing more that I must say to you, it is this: Do not believe that he who seeks to comfort you lives untroubled among the simple and quiet words that sometimes do you good. His life has much difficulty and sadness and remains far behind yours. Were it otherwise he would never have been able to find those words.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On working in traditional genres:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Avoid at first those forms that are too facile and commonplace: they are the most difficult, for it takes a great, fully matured power to give something of your own where good and even excellent traditions come to mind in quantity.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On one’s relationship with one’s skeptical parents:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Ask no advice from them and count upon no understanding; but believe in a love that is being stored up for you like an inheritance and trust that in this love there is a strength and a blessing, out beyond which you do not have to step in order to go very far!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;On whether one should write:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;You ask whether your verses are good. You ask me. You have asked others before. You send them to magazines. You compare them with other poems, and you are disturbed when certain editors reject your efforts. Now (since you have allowed me to advise you) I beg you to give up all that. You are looking outward, and that above all you should not do now.&lt;/p&gt;
+
+  &lt;p&gt;Nobody can counsel and help you, nobody. Search for the reason that bids you write; find out whether it is spreading out its roots in the deepest places of your heart, acknowledge to yourself whether you would have to die if it were denied you to write. This above all—ask yourself in the stillest hour of your night: must I write? Delve into yourself for a deep answer.&lt;/p&gt;
+
+  &lt;p&gt;And if this should be affirmative, if you may meet this earnest question with a strong and simple, “I must,” then build your life according to this necessity; your life even into its most indifferent and slightest hour must be a sign of this urge and a testimony to it.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Wed, 17 Apr 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/quotes-from-l-t-a-y-p/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/quotes-from-l-t-a-y-p/</guid>
+        
+        
+        <category>random</category>
+        
+      </item>
     
       <item>
         <title>How many babies were born during the 2024 eclipse?</title>
@@ -283,6 +343,8 @@
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
+
+&lt;hr /&gt;
 
 &lt;h2 id=&quot;some-lessons&quot;&gt;Some lessons&lt;/h2&gt;
 
@@ -1360,165 +1422,6 @@ Just imagine what we’ll be able to do with them once we finally have one.&lt;/
         
         
         <category>deep learning, research</category>
-        
-      </item>
-    
-      <item>
-        <title>Einstein vs. Bohr rap battle</title>
-        <description>&lt;!-- ![grid26] --&gt;
-&lt;!--exc--&gt;
-
-&lt;p&gt;They say an excellent scientist ought to know not just their field’s science but also its history. In a cynical move intended purely to improve our job prospects, Ashwin Singh and I decided to flaunt our copious knowledge of the history of physics by writing and performing an embarrassingly nerdy rap battle between Niels Bohr and Albert Einstein at our 2021 departmental holiday party and posting it on the internet. Potential employers can find the recording below.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-&lt;iframe width=&quot;600&quot; height=&quot;400&quot; src=&quot;https://www.youtube.com/embed/k7Nj7IUHveY&quot;&gt;
-&lt;/iframe&gt;
-&lt;/p&gt;
-
-&lt;h2 align=&quot;center&quot;&gt;
-LYRICS
-&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;[BOHR]&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Do you really want to reignite this debate? \ History’s already set the record straight
-&lt;/p&gt;
-&lt;p&gt;Why you chose to battle me I can only wonder \ It’ll go down as your greatest blunder&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-You started anti-quantum but then slowly changed your ways \ I guess that your denial was just a Berry phase
-&lt;/p&gt;
-&lt;p&gt;Your life was full of sexual activity but \ you married your cousin? That’s “special relativity”!&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-All you know is maths \ and if you built an Einstein Rosen bridge, I bet it would collapse.
-&lt;/p&gt;
-&lt;p&gt;And your famous shorthand is pure castration \ Cutting off sums? That’s Einstein &lt;em&gt;dumb&lt;/em&gt; notation&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-To prove quantum, look at Einstein at his prime \ one man with two women at the same damn time!
-&lt;/p&gt;
-&lt;p&gt;But it only works theoretically \ A million extra qubits won’t correct that infidelity&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-You’ve many talents, especially misogyny \ People tend to like you, except for your progeny
-&lt;/p&gt;
-&lt;p&gt;I’m a better father and it isn’t hard to tell \ Your son you didn’t know well; my son won a Nobel!&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I’m creative, made s p d and f \ and I’ve got *a dagger* but I’m boutta act left
-&lt;/p&gt;
-&lt;p&gt;Give up Einstein - you’re not a match for me \ or I’ll annihilate you in an ultraviolent catastrophe&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;[EINSTEIN]&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Einstein’s my name, but “mc” will suffice \ watch out - this rap god does not play nice
-&lt;/p&gt;
-&lt;p&gt;You’re one great Dane, I have to admit \ but now I’m taking the stage, so roll over and sit&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I’m General Relativity, the field’s commanding officer \ You? Eh, you’re more of a philosopher
-&lt;/p&gt;
-&lt;p&gt;I’m king of the cosmos; I fused space and time \ now watch me unify rhythm and rhyme&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-No modern man can match the breadth of things that I wrote on \ I'd still be above your level if I’d omitted the photon
-&lt;/p&gt;
-&lt;p&gt;I’m a hero of theory, stand a light-year tall \ Even in your rest frame, you’re relatively small&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I solved mysteries from gravity to light \ You couldn’t even get hydrogen right
-&lt;/p&gt;
-&lt;p&gt;Here’s a new Bohr model (and this one won’t flop): \ physics has levels, and I’m on top.&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I’m a star on both sides of the ocean \ Every time I speak I cause a Brownian commotion
-&lt;/p&gt;
-&lt;p&gt;Your lectures are dull, though I’d not known before \ that one could stretch time just by being a Bohr&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-In this deterministic world one can predict what comes to pass \ and I can prove my geodesic leads my foot into your [CENSORED]
-&lt;/p&gt;
-&lt;p&gt;Oh, and as for women, why don’t you just ask your wife \ if Einsteinium or Bohrium’s got the longer half-life?&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;[BOHR]&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Those lines were so bad I’m nauseous \ Tell me did you learn them at the patent office?
-&lt;/p&gt;
-&lt;p&gt;I’m Bohr Dissing Einstein, got BDE \ You’re more degenerate than a BEC&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-In history you’re an eccentric defector \ who's easily perturbed like the Runge Lenz vector
-&lt;/p&gt;
-&lt;p&gt;Your math went missing on many occasions: \ you couldn’t even solve your own field equations&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-So much wrong about how things behave \ like “uh there’s no energy in gravitational waves”
-&lt;/p&gt;
-&lt;p&gt;Oh, and what do people think of EPR? \ Yeah, that theory’s gonna need some CPR&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-You also never understood Schrödinger’s cat \ Imagine tonight at the start of the act
-&lt;/p&gt;
-&lt;p&gt;they see you and me both behind and ahead \ but after my verse they realize that you’re dead&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Oh my conjugate man \ you must be feeling uncertain cause I know where I stand
-&lt;/p&gt;
-&lt;p&gt;All eyes are on me, but you’re in superposition \ ‘cause to not observe you is a superb omission&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I’m done, and there’s one clear conclusion \ I'm the only winner here by Pauli’s exclusion
-&lt;/p&gt;
-&lt;p&gt;Oh, and for Einsteinium, let’s use a bit of rigor: \ every chemist knows that Bohrium is bigger&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;[EINSTEIN]&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-When I walk around Princeton, the ladies all stare \ even black holes tell me “ah, I wish I had your hair!”
-&lt;/p&gt;
-&lt;p&gt;In attractiveness, I am the crest, you’re the trough \ there’s a name for the phenomenon: “the Bohr magnet-off”&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Forget singularities, folks, we’ve found something denser \ scare me all you want, you can’t make Einstein tensor
-&lt;/p&gt;
-&lt;p&gt;I built my own fame, you relied on your betters; \ guess that explains why you published our letters&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I'm unchallenged master of problems abstract \ I think so fast your thoughts Lorentz-contract
-&lt;/p&gt;
-&lt;p&gt;Yeah, you might as well call me “c” \ ‘cause you’ve got no chance of catching up with me&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Socially, I’m a champion of simple coexistence \ resisting and assisting, consistently insisting
-&lt;/p&gt;
-&lt;p&gt;politically, your presence more or less is nonexistent \ you can’t spookily better the world from a distance.&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-Here’s a little lesson in relativity \ there’s a twin paradox here between you and me:
-&lt;/p&gt;
-&lt;p&gt;see, since I ran circles ‘round you all life long \ your work’s long dead, but mine’s still going strong&lt;/p&gt;
-
-&lt;p style=&quot;margin:0;padding-top:0;&quot;&gt;
-I’m generally special; my work’s especially general \ My greatness endures, Bohr, but yours was ephemeral
-&lt;/p&gt;
-&lt;p&gt;Your nanoscopic jabs at me are hardly worth refutin’ \ When all’s said and done, bud, you’re Leibniz, I’m Newton.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 17 Jan 2022 01:01:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/bohr-v-einstein/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/bohr-v-einstein/</guid>
-        
-        
-        <category>physics, random</category>
         
       </item>
     
