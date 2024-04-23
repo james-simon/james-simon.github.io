@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Crystal math in croplands"
+title: "Geometric patterns in croplands"
 date: 2024-04-21
 category: fun-math, random
 ---
