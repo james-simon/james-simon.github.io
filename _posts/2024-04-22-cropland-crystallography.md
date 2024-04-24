@@ -8,7 +8,7 @@ category: fun-math, random
 
 I've lived in California for five years now and have had the good fortune to roam up and down the state and see its mountains, valleys, and deserts.
 As any outdoorsy Californian will know, these treks often featured long drives through the Central Valley, past wide fields of California crops: fruits, nuts, grain.
-As a frequent passenger in these drives, I've come to look forward to gazing out a changing windowful of cropland -- particularly when it makes a certain sort of geometric pattern.
+As a frequent passenger in these drives, I've come to look forward to gazing out a changing windowful of cropland, particularly when it makes a certain sort of geometric pattern.
 
 <p style="text-align:center;">
 	<a href="https://www.google.com/maps/@35.8815158,-119.858065,3a,75y,51.88h,81.48t/data=!3m6!1e1!3m4!1sXlBlznQpA42OVCiQcwKAEg!2e0!7i16384!8i8192?entry=ttu">
@@ -21,7 +21,7 @@ As you scan across the strip, you'll notice places where the saplings form lines
 The lines have different degrees of definition, and the gaps between the lines have different sizes in different places.
 The "regions" of lines seem to have a curious fractal pattern: if you look between two neighboring line-regions, you'll find another, smaller set of more closely spaced lines, and so on recursively.
 I find it mysterious and beautiful.
-For fun, you can click on the above image to be taken to that spot in Streetview if you want to explore it for yourself.
+For fun, you can click on the above image to be taken to the corresponding spot in Google Streetview if you want to explore it for yourself.
 
 <p style="text-align:center;">
 	<img src="{{site.baseurl}}/img/croprows/cropland_with_regions.jpg" width="100%">
@@ -140,6 +140,7 @@ I'll use a proxy metric I can compute in Python: with trees of diameter $$d$$, w
 Well, actually, I'll use a metric that's almost the same (in particular being infinite in the same places) but easier to compute: with pointlike trees, what's the longest rectangle of width $$d$$ that one can fit anywhere in the lattice with long side at angle $$\theta$$ from an axis?
 
 Here's a gif of the result.[^b]
+
 [^b]: Note that I'm changing the size of the trees in this animation here even though it's really the width of an imaginary rectangle that's changing.
 
 
@@ -155,7 +156,7 @@ There also seem to be no local maxima that aren't vertical asymptotes.
 These properties give the process a sort of fractally feel: concave-up regions between vertical asymptotes get recursively split in two by new asymptotes.
 
 This is cool and all -- it's a parameterized function which gains vertical asymptotes corresponding to all the rational numbers as the parameter decreases! -- but I still want a nice analytical version of this.
-If you have any ideas, let me know.
+If you have any ideas, let me know!
 
 
 <br>
