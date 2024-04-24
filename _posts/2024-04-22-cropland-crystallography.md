@@ -16,7 +16,7 @@ As a frequent passenger in these drives, I've come to look forward to gazing out
 	</a>
 </p>
 
-Take a minute to really examine the strip of field planted with the baby trees.
+If you're not familiar with this effect, take a minute to really examine the strip of field planted with the baby trees.
 As you scan across the strip, you'll notice places where the saplings form lines leading off into the distance.
 The lines have different degrees of definition, and the gaps between the lines have different sizes in different places.
 The "regions" of lines seem to have a curious fractal pattern: if you look between two neighboring line-regions, you'll find another, smaller set of more closely spaced lines, and so on recursively.
