@@ -163,7 +163,7 @@ If you have any ideas, let me know.
 #### Code and acknowledgements
 
 You can find my code for generating these plots [here](https://github.com/james-simon/lattice-math).
-Thanks to Vincent Wang for pointing me to Farey sequences.
+Thanks to Vincent Huang for pointing me to Farey sequences.
 
 
 ***
