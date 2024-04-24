@@ -7,7 +7,7 @@ category: fun-math, random
 
 
 I've lived in California for five years now and have had the good fortune to roam up and down the state and see its mountains, valleys, and deserts.
-As any outdoorsy California will know, these treks often featured long drives through the Central Valley, past endless fields of California crops: fruits, nuts, grain.
+As any outdoorsy Californian will know, these treks often featured long drives through the Central Valley, past wide fields of California crops: fruits, nuts, grain.
 As a frequent passenger in these drives, I've come to look forward to gazing out a changing windowful of cropland -- particularly when it makes a certain sort of geometric pattern.
 
 <p style="text-align:center;">
