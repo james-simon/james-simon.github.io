@@ -137,7 +137,13 @@
 
     <div class="col-md-9">
       <h1>Jamie Simon</h1>
-      <p>I'm a 5th-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of deep neural networks. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. I'm also a research fellow at <a href="https://imbue.com/">Imbue</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="/blog/gravitrees">balancing things</a>. </p>
+      <p>I'm a final-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of deep neural networks. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. I'm also a research fellow at <a href="https://imbue.com/">Imbue</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="/blog/gravitrees">balancing things</a>.
+      <br>
+      <br>
+      A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing
+      [<a href="https://arxiv.org/abs/2106.03186v1">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>, more in prep].
+      Some of these ideas came about from quick conversations! If you've got a curious empirical phenomenon you're trying to explain, feel free to reach out :)
+  	  </p>
     </div>
 
   </div>
@@ -145,6 +151,90 @@
   <hr class="hr-thin">
   <a name="research"></a>
   <h2>Research</h2>
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="/img/more_is_better_mainpage_figure.png" width=100%>
+    </div>
+    <div class="col-md-9">
+      <h3>More is better: when infinite overparameterization is optimal and overfitting is obligatory</h3>
+      <strong>Explaining mysteries of modern ML with the toy model of RF regression</strong>
+      <p class="blurb"> We give a theory of the generalization of random feature models. We conclude they perform better with more parameters, more data, and less regularization, putting theoretical backing to these observations in modern ML. This gives a fairly solid mathematical picture to replace classical intuitions about the risks of overparameterization and overfitting. Our picture of the generalization of RF models takes the form of some nice closed-form equations we think can be used to answer lots of other questions. </p>
+      <p class="paper-info">
+        <strong>ICLR '24</strong>
+        <a href="tinyurl.com/more-is-better">[arXiv]</a>
+      </p>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="/img/spectral_scaling_mainpage_figure.png" width=100%>
+    </div>
+    <div class="col-md-9">
+      <h3>A spectral condition for feature learning</h3>
+      <strong> A simple picture of feature learning in wide nets </strong>
+      <p class="blurb"> We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the "mu-parameterization," this is probably the easiest place to start ca. 2024. </p>
+      <p class="paper-info">
+        <a href="tinyurl.com/feature-learning">[arXiv]</a>
+      </p>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="/img/stepwise_mainpage_figure.png" width=100%>
+    </div>
+    <div class="col-md-9">
+      <h3>On the stepwise nature of self-supervised learning</h3>
+      <strong>A theory of the training dynamics of contrastive learning</strong>
+      <p class="blurb"> We give a theory of the training dynamics of contrastive self-supervised learning and validate it empirically. We find that representations are learned <i> one dimension at a time in a stepwise fashion </i> -- that is, the rank of the model's final representations increases by one at each step. Our theory is derived for linearized models, but we clearly see our stepwise phenomenon even for ResNets trained on image data. Large-scale ML mostly uses unsupervised and self-supervised training these days, and we describe a behavior we think is fairly generic in SSL. </p>
+      <p class="paper-info">
+        <strong>ICML '23</strong>
+        <a href="tinyurl.com/stepwise-ssl">[arXiv]</a>
+      </p>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="/img/fedex_attack_mainpage_figure.png" width=100%>
+    </div>
+    <div class="col-md-9">
+      <h3>You can just put up a poster at ICML and nobody will stop you</h3>
+      <strong>Exposing vulnerabilities in the conference review system</strong>
+      <p class="blurb"> A perennial problem in machine learning research has been how to most efficiently have a poster at ICML. In this work, we show that one can bypass OpenReview via a simple “FedEx trick," similar to yet entirely different from the kernel trick in machine learning. (I'm putting this here as an easter egg to see if people actually read these. If you see this and saw + were amused by the original poster, feel free to drop me a line.) </p>
+      <p class="paper-info">
+        <strong>ICML '23</strong>
+        <a href="https://x.com/_dsevero/status/1684677903382982656">[viral tweet]</a>
+      </p>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="/img/eigenlearning_mainpage_figure.png" width=80%>
+    </div>
+    <div class="col-md-9">
+      <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
+      <strong>A theory of the training dynamics of contrastive learning</strong>
+      <p class="blurb"> We give a simple picture of the generalization of kernel ridge regression in terms of task eigenstructure and use it to solve some theoretical problems. </p>
+      <p class="paper-info">
+        <strong>TMLR</strong>
+        <a href="tinyurl.com/eigenlearning">[arXiv]</a>
+      </p>
+    </div>
+  </div>
+
   <hr class="hr-thick">
 
   <div class="row">
@@ -984,7 +1074,7 @@
       <h4>Potpourri</h4>
       <!-- <ul class="post-list"> -->   <!-- <li> -->
 <h5>
-<a class="post-link" href="/blog/cropland-crystallography/">Crystal math in croplands</a> <small> (April 2024, 
+<a class="post-link" href="/blog/cropland-crystallography/">Geometric patterns in croplands</a> <small> (April 2024, 
 	
 	
 		11 min read

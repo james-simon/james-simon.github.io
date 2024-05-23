@@ -90,7 +90,8 @@ This is precisely what we see:
 	<img src="{{site.baseurl}}/img/croprows/cropland_with_regions_labeled.jpg" width="100%">
 </p>
 
-If we had an infinite field and a camera of good enough precision, we'd expect to see open directions corresponding to all irreducible $$(a, b)$$ such that $$w_{a, b} < d$$.
+Note that the different lattice directions look like they're parallel in this image, but they actually point radially outwards from the camera at different angles.
+If we had an infinite field and a camera of good enough precision, we'd expect to see open directions corresponding to all irreducible $$(a, b)$$ such that $$w_{a, b}$$ is less than the width of one sapling.
 
 <br>
 
