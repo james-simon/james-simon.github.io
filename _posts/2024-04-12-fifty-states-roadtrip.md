@@ -91,7 +91,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
             <div class="hover-container">
                 <img src="{{site.baseurl}}/img/states_roadtrip/memphis_pyramid.jpg" class="image">
                 <div class="overlay">
-                    <div class="text">This ridiculous Bass Pro Shops pyramid stands in Memphis. Like the greater pyramids of Egypt, this structure sports four triangular sides, various anti-robbery mechanisms, and an assortment of dead animals, and is fascinating to anthropologists. Instead of mummies, however, this modern pyramid only contains old people.</div>
+                    <div class="text">This ridiculous Bass Pro Shops pyramid stands in Memphis. Like the greater pyramids of Egypt, this structure sports four triangular sides, various anti-robbery mechanisms, and an assortment of dead animals, and is similarly anthropologically fascinating. Instead of mummies, however, this modern pyramid only contains old people.</div>
                 </div>
             </div>
             <br>
@@ -105,7 +105,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
             <div class="hover-container">
                 <img src="{{site.baseurl}}/img/states_roadtrip/kansas_3.jpg" class="image">
                 <div class="overlay">
-                    <div class="text">Kansas was expansive, calm, and flat. As I drove north from Arkanasas, I could see the land change, quickly turning from rocky forested hills to flatter Southern forest to plains, all in the span of an hour or two.</div>
+                    <div class="text">Kansas was expansive, calm, and flat. As I drove north from Arkanasas, I could see the land change, quickly turning from rocky forested hills to flat Southern forest to open plains, all in the span of an hour or two.</div>
                 </div>
             </div>
             <br>
@@ -162,7 +162,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
             <div class="hover-container">
                 <img src="{{site.baseurl}}/img/states_roadtrip/nebraska.jpg" class="image">
                 <div class="overlay">
-                    <div class="text">Nebraska allegedly has some cool buttes and bluffs off on its western side (actually, all the plains states seem to get cooler as you go west), but I skirted its eastern border, following the Missouri River, camping on its banks.</div>
+                    <div class="text">Nebraska allegedly has some cool buttes and bluffs off on its western side (actually, all the plains states seem to get cooler as you go west), but I skirted its eastern border, following the Missouri River and camping on the shore.</div>
                 </div>
             </div>
             <br>
@@ -176,7 +176,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
             <div class="hover-container">
                 <img src="{{site.baseurl}}/img/states_roadtrip/north_dakota.jpg" class="image">
                 <div class="overlay">
-                    <div class="text">I sent this picture to my brother and father after I told them I had some news.</div>
+                    <div class="text">I sent this picture to my brother and father after I told them I had some news. Yes, they were mad, and it was great.</div>
                 </div>
             </div>
             <div class="col-2"></div>
@@ -191,9 +191,9 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
 This trip afforded me ample time for reflection and coincided with a more extended personal journey I've been on for the past year in which I've been figuring out how to live as an adult in ways feel good. I learned a number of things about roadtripping, including that
 
 * it's very useful to run a tight ship logistically, taking care of problems as soon as they arise and keeping gear quite organized. I never had any major logistical problems, which is unusual for me, and it's because I gave problems my attention when they were still small.
-* Talking to strangers is a great joy of travel, and a good way to quickly get the feel of a place. Unplanned conversations were highlights of the trip. (See [Why I Talk To Strangers]({{site.baseurl/blog/why-i-talk-to-strangers/}})).
+* Talking to strangers is a great joy of travel, and a good way to quickly get the feel of a place. Unplanned conversations were highlights of the trip. (See [Why I Talk To Strangers]({{site.baseurl/blog/why-i-talk-to-strangers/}}).)
 * Driving on snow is way harder than I expected.
-* The land is big, but it's fathomably big. Taking a plane from coast to coast gives little sense of how much land there is since you really have no physical feeling of how fast you're traveling. Driving across the heartland gave me a real sense of how big the land is: if I drive for an hour or two or three, the character of the land will differ -- hills turn to forest, forest turns to grassland, grassland to plains, to prairie, to badlands -- and if I go for ten or twenty of these changes I'll go from one side of the country to the other. America feels like a much more tangible thing to me now.
+* The land is big, but it's fathomably big. Taking a plane from coast to coast gives little sense of how much land there is since you really have no physical feeling of how fast you're traveling. Driving across the heartlands gave me a real sense of how big the land is: if I drive for an hour or two or three, the character of the land will differ -- hills turn to forest, forest turns to grassland, grassland to plains, to prairie, to badlands -- and if I go for ten or twenty of these changes I'll go from one side of the country to the other. America feels like a much more tangible thing to me now.
 
 And, even more valuable, some broader life lessons and realizations:
 * A career has to be fun to be fulfilling. No matter how important I feel science is, and how convinced I am that I could make a valuable contribution, it's not worth doing if it's not fun.

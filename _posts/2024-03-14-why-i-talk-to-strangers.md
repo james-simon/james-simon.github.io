@@ -67,4 +67,4 @@ but that, of course, isn't the point\
 and i am glowing regardless\
 with the feeling\
 of having caught\
-a glimpse of humanity
+a glimpse of the whole
