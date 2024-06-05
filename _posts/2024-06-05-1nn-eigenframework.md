@@ -36,7 +36,7 @@ This is the eigenframework for 1NN in 1D! The generalization of 1NN on *any* tar
 
 [^2]: Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation.
 
-Here are some experiments that show we’ve got it right.
+Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode.
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/1nn_eigenframework/1nn_1d_learning_curves.png" width="80%">
@@ -69,7 +69,7 @@ $$
 </div>
 
 <br>
-Here are some experiments that show that we’ve got it right:
+Here are some experiments that show that we've got the 2D case right, too.
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/1nn_eigenframework/1nn_2d_learning_curves.png" width="80%">

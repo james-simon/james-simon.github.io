@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 05 Jun 2024 12:59:49 -0700</pubDate>
-    <lastBuildDate>Wed, 05 Jun 2024 12:59:49 -0700</lastBuildDate>
+    <pubDate>Wed, 05 Jun 2024 14:33:03 -0700</pubDate>
+    <lastBuildDate>Wed, 05 Jun 2024 14:33:03 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -37,7 +37,7 @@ $$
 
 &lt;p&gt;This is the eigenframework for 1NN in 1D! The generalization of 1NN on &lt;em&gt;any&lt;/em&gt; target function in 1D is described by this equation.&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;p&gt;Here are some experiments that show we’ve got it right.&lt;/p&gt;
+&lt;p&gt;Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/1nn_eigenframework/1nn_1d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
@@ -70,7 +70,7 @@ $$
 &lt;/div&gt;
 
 &lt;p&gt;&lt;br /&gt;
-Here are some experiments that show that we’ve got it right:&lt;/p&gt;
+Here are some experiments that show that we’ve got the 2D case right, too.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/1nn_eigenframework/1nn_2d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
