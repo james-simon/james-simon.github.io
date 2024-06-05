@@ -191,7 +191,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
 This trip afforded me ample time for reflection and coincided with a more extended personal journey I've been on for the past year in which I've been figuring out how to live as an adult in ways feel good. I learned a number of things about roadtripping, including that
 
 * it's very useful to run a tight ship logistically, taking care of problems as soon as they arise and keeping gear quite organized. I never had any major logistical problems, which is unusual for me, and it's because I gave problems my attention when they were still small.
-* Talking to strangers is a great joy of travel, and a good way to quickly get the feel of a place. Unplanned conversations were highlights of the trip. (See [Why I Talk To Strangers]({{site.baseurl/blog/why-i-talk-to-strangers/}}).)
+* Talking to strangers is a great joy of travel, and a good way to quickly get the feel of a place. Unplanned conversations were highlights of the trip. (See [Why I Talk To Strangers]({{site.baseurl}}/blog/why-i-talk-to-strangers/).)
 * Driving on snow is way harder than I expected.
 * The land is big, but it's fathomably big. Taking a plane from coast to coast gives little sense of how much land there is since you really have no physical feeling of how fast you're traveling. Driving across the heartlands gave me a real sense of how big the land is: if I drive for an hour or two or three, the character of the land will differ -- hills turn to forest, forest turns to grassland, grassland to plains, to prairie, to badlands -- and if I go for ten or twenty of these changes I'll go from one side of the country to the other. America feels like a much more tangible thing to me now.
 

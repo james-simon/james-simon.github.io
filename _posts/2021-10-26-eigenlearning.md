@@ -64,9 +64,9 @@ We ultimately derive expressions for not just learnability but for *all first- a
 
 In addition to approximations for generalization performance, we also prove a simple exact result we call the “no-free-lunch theorem for kernel regression.” The classical [no-free-lunch theorem for learning algorithms](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.390.9412&rep=rep1&type=pdf) roughly states that, averaged over all possible target functions $$f$$, any supervised learning algorithm has the same expected generalization performance. This makes intuitive sense - after all, most functions look like white noise, with no discernable patterns - but it is also not very useful since the set of “all functions” is usually enormous. Our extension, specific to kernel regression, essentially states that
 
-$$\begin{align}
+$$
 	\sum_i \mathcal{L}(\phi_i) = \text{[training set size]}.
-\end{align}$$
+$$
 
 That is, the sum of learnabilities across all kernel eigenfunctions equals the training set size. This exact result paints a vivid picture of a kernel’s inductive bias: the kernel has exactly $\text{[training set size]}$ units of learnability to parcel out to its eigenmodes - no more, no less - and thus eigenmodes are locked in a zero-sum competition to be learned. As shown in Fig 2, we find that this basic conservation law holds exactly for NTK regression and even approximately for finite networks. To our knowledge, this is the first result quantifying such a tradeoff in kernel regression or deep learning. It also applies to linear regression, a special case of kernel regression.
 
