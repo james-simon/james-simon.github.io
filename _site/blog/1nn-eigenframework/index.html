@@ -108,9 +108,11 @@ $$
 </div>
 </div>
 
+<p><br /></p>
+
 <p>This is the eigenframework for 1NN in 1D! The generalization of 1NN on <em>any</em> target function in 1D is described by this equation.<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
 
-<p>Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode.</p>
+<p>Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode, and we’re using the <a href="https://mathworld.wolfram.com/FourierSeriesTriangleWave.html">known Fourier decomposition of the triangle wave</a>.</p>
 
 <p style="text-align:center;">
 <img src="/img/1nn_eigenframework/1nn_1d_learning_curves.png" width="80%" />
@@ -169,7 +171,7 @@ Here are some experiments that show that we’ve got the 2D case right, too.</p>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
-      <p>Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the <a href="[https://arxiv.org/abs/2110.03922](https://arxiv.org/abs/2110.03922)">“conservation of learnability” condition</a> obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the <a href="https://arxiv.org/abs/2110.03922">“conservation of learnability” condition</a> obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
       <p>Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>

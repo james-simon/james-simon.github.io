@@ -12,7 +12,7 @@ In this blogpost, I’ll present an eigenframework giving the generalization of 
 
 I think 1NN is a good candidate for [“solving” in the omniscient sense]({{site.baseurl}}/blog/lets-solve-more-learning-rules) because it’s relatively simple, and it’s also a *linear learning rule* in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.[^1]
 
-[^1]: Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the [“conservation of learnability” condition]([https://arxiv.org/abs/2110.03922](https://arxiv.org/abs/2110.03922)) obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently.
+[^1]: Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the [“conservation of learnability” condition](https://arxiv.org/abs/2110.03922) obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently.
 
 ## 1NN on the unit circle (aka the 1-torus)
 
@@ -32,11 +32,13 @@ $$
 </div>
 </div>
 
+<br>
+
 This is the eigenframework for 1NN in 1D! The generalization of 1NN on *any* target function in 1D is described by this equation.[^2]
 
 [^2]: Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation.
 
-Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode.
+Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode, and we're using the [known Fourier decomposition of the triangle wave](https://mathworld.wolfram.com/FourierSeriesTriangleWave.html).
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/1nn_eigenframework/1nn_1d_learning_curves.png" width="80%">
