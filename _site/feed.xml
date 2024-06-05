@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 05 Jun 2024 16:43:18 -0700</pubDate>
-    <lastBuildDate>Wed, 05 Jun 2024 16:43:18 -0700</lastBuildDate>
+    <pubDate>Wed, 05 Jun 2024 16:43:48 -0700</pubDate>
+    <lastBuildDate>Wed, 05 Jun 2024 16:43:48 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -22,7 +22,7 @@
 &lt;p&gt;The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png&quot; width=&quot;40%&quot; /&gt;
+&lt;img src=&quot;/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png&quot; width=&quot;55%&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;We will describe generalization in terms of the &lt;em&gt;Fourier decomposition&lt;/em&gt; of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where ${ v_k }$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that&lt;/p&gt;

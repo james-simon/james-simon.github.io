@@ -19,7 +19,7 @@ I think 1NN is a good candidate for [“solving” in the omniscient sense]({{si
 The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples $$\{x_i\}_{i=1}^n$$ from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:
 
 <p style="text-align:center;">
-<img src="{{site.baseurl}}/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png" width="40%">
+<img src="{{site.baseurl}}/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png" width="55%">
 </p>
 
 We will describe generalization in terms of the *Fourier decomposition* of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where $\{ v_k \}$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that
