@@ -5,9 +5,245 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 23 May 2024 13:45:38 -0700</pubDate>
-    <lastBuildDate>Thu, 23 May 2024 13:45:38 -0700</lastBuildDate>
+    <pubDate>Wed, 05 Jun 2024 12:33:54 -0700</pubDate>
+    <lastBuildDate>Wed, 05 Jun 2024 12:33:54 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>A eigenframework for the generalization of 1NN</title>
+        <description>&lt;p&gt;In this blogpost, I’ll present an eigenframework giving the generalization of the nearest-neighbor algorithm (1NN) on two simple domains — the unit circle and the 2-torus — and discuss the prospects for a general theory.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-1nn&quot;&gt;Why 1NN?&lt;/h2&gt;
+
+&lt;p&gt;I think 1NN is a good candidate for &lt;a href=&quot;/blog/lets-solve-more-learning-rules&quot;&gt;“solving” in the omniscient sense&lt;/a&gt; because it’s relatively simple, and it’s also a &lt;em&gt;linear learning rule&lt;/em&gt; in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;1nn-on-the-unit-circle-aka-the-1-torus&quot;&gt;1NN on the unit circle (aka the 1-torus)&lt;/h2&gt;
+
+&lt;p&gt;The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png&quot; width=&quot;40%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;We will describe generalization in terms of the &lt;em&gt;Fourier decomposition&lt;/em&gt; of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where ${ v_k }$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;div style=&quot;border: 1px solid black; padding: 10px; display: inline-block;&quot;&gt;
+$$
+[\text{test MSE}]_\text{1D} = \sum_k \frac{2 \pi^2 k^2}{\pi^2 k^2 + n^2} \, v_k^2 + 2 \epsilon^2. 
+$$
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is the eigenframework for 1NN in 1D! The generalization of 1NN on &lt;em&gt;any&lt;/em&gt; target function in 1D is described by this equation.&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;Here are some experiments that show we’ve got it right.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/1nn_eigenframework/1nn_1d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This equation can be found a few ways, but most simply you (a) argue by symmetry that the eigenmodes contribute independently to MSE and then (b) find the test MSE for a particular eigenmode, which isn’t too hard to do. I made two approximations: (1) instead of having exactly $n$ samples, I let the samples be distributed as a Poisson process (i.e., each point has an i.i.d. chance of containing a sample), and (2) I assume the domain is infinite when computing a certain integral. Neither of these matters when $n$ is moderately large.&lt;/p&gt;
+
+&lt;p&gt;Before moving on to the 2D case, I want to pause to highlight a few cool features of this framework:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The Fourier modes do not interact — no crossterms $v_j v_k$ appear in the framework. Because 1NN is a linear learning rule, it’s inevitably possible to “diagonalize” the theory in this way for a particular $n$, but the fact that it’s simultaneously diagonalizable for all $n$ is pretty cool!&lt;/li&gt;
+  &lt;li&gt;Ignoring the factors of $\pi$, we see that mode $k$ is unlearned when $n \ll k$ and fully learned when $n \gg k$. This makes a lot of sense — it’s sort of a soft version of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Nyquist_frequency&quot;&gt;Nyquist frequency&lt;/a&gt; cutoff.&lt;/li&gt;
+  &lt;li&gt;Things simplify a bit if, instead of using the index $k$, we write in terms of the Laplacian eigenvalues $\lambda_k = 4 \pi^2 k^2$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;1nn-on-the-2-torus&quot;&gt;1NN on the 2-Torus&lt;/h2&gt;
+
+&lt;p&gt;We now undertake the same problem, but we’re in 2D: our data is i.i.d. from $[0,1)^2$, again with circular boundary conditions. Our Fourier decomposition now looks like&lt;/p&gt;
+
+\[f(\mathbf{x}) = \sum_{\mathbf{k} \in \mathbb{Z}^2} e^{2 \pi i \, \mathbf{k} \cdot \mathbf{x}}.\]
+
+&lt;p&gt;The same procedure as in the 1D case yields that&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;div style=&quot;border: 1px solid black; padding: 10px; display: inline-block;&quot;&gt;
+$$
+[\text{test MSE}]_\text{2D} = \sum_\mathbf{k} \left( 2 - 2 e^{- \pi \mathbf{k}^2 / n} \right) \, v_\mathbf{k}^2 + 2 \epsilon^2. 
+$$
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+Here are some experiments that show that we’ve got it right:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/1nn_eigenframework/1nn_2d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;h4 id=&quot;can-you-extend-these-to-k-nearest-neighbors-instead-of-just-one&quot;&gt;Can you extend these to k nearest neighbors instead of just one?&lt;/h4&gt;
+
+&lt;p&gt;Probably! I haven’t tried, though.&lt;/p&gt;
+
+&lt;h2 id=&quot;can-we-find-a-general-theory&quot;&gt;Can we find a general theory?&lt;/h2&gt;
+
+&lt;p&gt;The most remarkable feature of the eigenframework for linear regression is that one set of equations works for every distribution. Can we find that here?&lt;/p&gt;
+
+&lt;p&gt;I’m not sure. At first blush, the 1D and 2D equations look pretty different — if we were in search of some master equation, we’d almost certainly want it to unify those two cases, but the functional forms look pretty different! I suspect it might be possible, though — the linear regression eigenframework requires solving an implicit equation that depends on all the eigenvalues and can yield pretty different-looking final expressions for different spectra, so it’s believable to me that there’s some common thread here.&lt;/p&gt;
+
+&lt;p&gt;A big question in the search for a general eigenframework is: what’s the right notion of &lt;em&gt;eigenfunction?&lt;/em&gt; In these highly symmetric domains, it’s easy — the Fourier modes are the eigenfunctions of any translation-invariant operator we might choose. In general, though, I don’t know what operator we want to diagonalize, or how to use its eigenvalues. This puzzles me. I don’t know the answer! So strange.&lt;/p&gt;
+
+&lt;p&gt;Even without a general theory, though, I think it’d be really interesting just to continue this chain of special cases up to the arbitrary $d$-torus! I got stuck at $d=2,$ but I’d bet it can be done. Then we could think about how 1NN differs from kernel regression in high dimensions!&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; My understanding is that 1NN is worse, but I don’t actually know any quantification of this. (If you know one, drop me a line!)&lt;/p&gt;
+
+&lt;p&gt;So that’s where things stand: these two special cases serve as proof of principle that there &lt;em&gt;might&lt;/em&gt; be a general eigenframework for 1NN… and if that exists, it’d be a cool proof of principle that more learning rules than linear regression can be “solved.” Seems like a neat problem! If I make much more progress on it, maybe I’ll write up a little paper. Let me know if you have thoughts or want to collaborate.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the &lt;a href=&quot;[https://arxiv.org/abs/2110.03922](https://arxiv.org/abs/2110.03922)&quot;&gt;“conservation of learnability” condition&lt;/a&gt; obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This is particularly interesting because it could let us get at a puzzle posed by Misha Belkin &lt;a href=&quot;https://arxiv.org/abs/2105.14368&quot;&gt;here&lt;/a&gt; of why &lt;em&gt;inverse&lt;/em&gt; methods like KRR outperform &lt;em&gt;direct&lt;/em&gt; methods like kNN and kernel smoothing in high dimensions. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 05 Jun 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/1nn-eigenframework/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/1nn-eigenframework/</guid>
+        
+        
+        <category>research</category>
+        
+      </item>
+    
+      <item>
+        <title>Let's solve more learning rules</title>
+        <description>&lt;p&gt;&lt;em&gt;TLDR: the field now has an “omniscient solution” for the generalization of linear regression. We should try to find comparable solutions for other simple learning rules, like k-nearest-neighbors and kernel smoothing!
+This post is motivation for &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;part two&lt;/a&gt;, where I give a partial omniscient solution to the nearest-neighbor algorithm.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;intro-what-does-it-mean-to-solve-a-learning-rule&quot;&gt;Intro: what does it mean to “solve” a learning rule?&lt;/h2&gt;
+
+&lt;p&gt;Essentially all of machine learning theory aims to understand the performance and behavior of different schemes for making predictions on unseen data. This is often very difficult. Given the amount of effort expended in this direction, it’s worth stepping back and asking what we’re ultimately trying to do here — that is, how will we know when we’re done?&lt;/p&gt;
+
+&lt;p&gt;To me, one gold-standard answer is the following: &lt;strong&gt;for each learning rule under study, we want a simple set of equations that tells us how well the learning rule will perform&lt;/strong&gt; in terms of the task eigenstructure and number of samples $n$&lt;strong&gt;.&lt;/strong&gt; This isn’t the only thing we might want, but it’s clearly a powerful milestone: you could use such a theory to work out when the algorithm will perform well or poorly, and in order to derive the theory you’d have to understand a lot about the behavior of the learning rule. Viewing each learning rule as presenting a puzzle for theorists, I’d consider the development of such a theory as tantamount to “solving” the learning rule.&lt;/p&gt;
+
+&lt;p&gt;An important clarification is that this is an “omniscient” solution in the sense that you assume complete and exact knowledge of the training task. This isn’t very useful by itself as a practical tool, but it is very useful for conceptual understanding of the learning rule (e.g. for characterizing its inductive bias). In light of this, to be more precise, we’ll say that this sort of theory is an “omniscient solution” for a learning rule.&lt;/p&gt;
+
+&lt;p&gt;In my view, one of the most significant recent developments in machine learning theory is that &lt;em&gt;we have an omniscient solution for linear regression!&lt;/em&gt; That is, thanks to &lt;a href=&quot;https://papers.nips.cc/paper_files/paper/2001/hash/d68a18275455ae3eaa2c291eebb46e6d-Abstract.html&quot;&gt;lots&lt;/a&gt; &lt;a href=&quot;https://www.arxiv.org/abs/2002.02561&quot;&gt;and&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2006.09796&quot;&gt;lots&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2210.08571&quot;&gt;of&lt;/a&gt; &lt;a href=&quot;https://proceedings.neurips.cc/paper/2021/file/9704a4fc48ae88598dcbdcdf57f3fdef-Paper.pdf&quot;&gt;recent&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/1903.08560&quot;&gt;papers&lt;/a&gt;, we now have a simple set of closed-form equations that accurately predict the test performance of linear regression in terms of the task eigenstructure.&lt;/p&gt;
+
+&lt;p&gt;Here’s some flavor for how this theory looks. First, we define an orthonormal basis of functions ${ \phi_k }$ over the input space. (In the case of linear regression, these are linear functions and are the principal directions of the feature covariance matrix.) We then decompose the target function $f$ into this basis as&lt;/p&gt;
+
+\[f(x) = \sum_k v_k \phi_k(x)\]
+
+&lt;p&gt;where ${ v_k }$ are the eigencoefficients. (Noise may also be included, but I omit it here for simplicity.) The eigenframework then takes the form&lt;/p&gt;
+
+\[\text{test MSE} = \sum_k g(n, k)  \, v_k^2,\]
+
+&lt;p&gt;where $g(n,k)$ tells you what fraction of the signal in mode $k$ contributes to test error at $n$ samples. (The function $g(n,k)$ typically decreases to zero as $n$ grows.)&lt;/p&gt;
+
+&lt;p&gt;Here are some remarkable facts about this eigenframework:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;It gives accurate predictions of test MSE even on real data!&lt;/li&gt;
+  &lt;li&gt;The eigenmodes don’t interact! That is, there are no crossterms $v_j v_k$ in the final expression.&lt;/li&gt;
+  &lt;li&gt;It’s very mathematically simple! In particular, the function $g$ isn’t too complicated, I just didn’t want to get into the details here. It’s simple enough that you can study it in various limits to really get intuition for how linear regression generalizes.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;I’m a big fan of results of this type.&lt;/strong&gt; They feel like the way to make progress in this field: rather than showing every new result from square one, first we derive this simple and general eigenframework &lt;em&gt;once,&lt;/em&gt; and then can use it as a starting point to compute other quantities — error bounds, convergence rates, effects of dimensionality, effects of regularization, and more.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;This is how physics (and specifically statistical mechanics) works — when studying a complex system, you first seek a simple effective theory for the system, and then can easily ask lots of downstream questions about the &lt;em&gt;effective&lt;/em&gt; theory.&lt;/p&gt;
+
+&lt;h2 id=&quot;call-to-action-lets-solve-more-learning-rules&quot;&gt;Call to action: &lt;em&gt;let’s solve more learning rules!&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;The above omniscient solution for linear regression has been very impactful. We should try to do this for more learning rules.&lt;/p&gt;
+
+&lt;p&gt;Learning rules like k-nearest-neighbors (kNN), kernel smoothing, spline interpolation, decision trees, clustering, SVMs, and generalized additive models are widely used in practice, but we do not understand any of them as well as we now understand linear regression. It would be very impactful to solve any of them. Furthermore, the first three — kNN, kernel smoothing, and spline interpolation — are &lt;em&gt;linear&lt;/em&gt; learning rules in the sense that the predicted function depends linearly on the training targets (i.e., the training $y$’s), which suggests that an eigenframework of the &lt;em&gt;same&lt;/em&gt; type as that for linear regression might be possible. These last three seem simple enough that you might be able to solve them in one paper!&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;I suspect that omnisciently solving more learning rules would have a large impact — potentially a paradigm-altering impact, actually. Right now, all these learning rules are just a bag of disjoint algorithms: we don’t really understand any of them individually, and we sure don’t understand how they relate to each other. Any intuition I have about their relative performance is extremely ad-hoc — for example, kNN works best in low dimensions and at low noise, SVMs are often better in high dimensions, decision trees work well when different features have different notions of distance, and so on. &lt;strong&gt;If we understood all these learning rules in the same way as we understand linear regression, we could compare them on the same footing!&lt;/strong&gt; Instead of a bunch of ad-hoc intuitions, we could start to think of all these learning rules in one unified way. This feels like a place that machine learning ought to eventually get to.&lt;/p&gt;
+
+&lt;p&gt;In &lt;a href=&quot;(/blog/1nn-eigenframework)&quot;&gt;part two&lt;/a&gt;, I’ll give the solution for 1NN on the unit circle and 2-torus and discuss what it might look like to solve 1NN in general!&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;To illustrate this point, &lt;a href=&quot;https://arxiv.org/abs/2207.06569&quot;&gt;here&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/pdf/2306.13185&quot;&gt;are&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;four&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;papers&lt;/a&gt; in which I’ve used this eigenframework as a starting point to easily derive other results. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Two other learning rules: obviously we’d all love to understand neural networks, but they’re still too poorly understood for a theory of generalization, I think — we need to understand more about their dynamics first. Second, random feature (RF) regression is a nice generalization of linear regression — and I derived an eigenframework for RF regression for &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;a recent paper&lt;/a&gt; ;) &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Tue, 04 Jun 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/lets-solve-learning-rules/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/lets-solve-learning-rules/</guid>
+        
+        
+        <category>research</category>
+        
+      </item>
+    
+      <item>
+        <title>Ibuprofen vs. aspirin vs naproxen vs acetaminophen</title>
+        <description>&lt;p&gt;Ibuprofen, aspirin, naproxen, and acetaminophen are the most common drugs for pain relief.
+They’re staples of the modern pharmaceutical arsenal, and they’re in virtually every American home.
+After years of not bothering to learn the difference between them, I finally sat down and did it yesterday, and I figured I’d write this as a reference.
+I’ll give a bit about each drug, and then close with some bigger questions that feel interesting to me.&lt;/p&gt;
+
+&lt;h2 id=&quot;basic-drug-facts&quot;&gt;Basic drug facts&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Ibuprofen&lt;/strong&gt; (brand names Advil, Motrin) is a “non-steroidal anti-inflammatory drug” (NSAID).
+As the term suggests, it’s an anti-inflammatory drug, so it’s particularly useful for treating pain caused by inflammation, including headaches, menstrual cramps, and arthritis.
+It works by temporarily binding to (and thus interfering with) “cyclooxygenase” (COX) enzymes which produce prostaglandins, which are involved in pathways for inflammation.
+It was developed in the 1960s as a safer alternative to aspirin.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Aspirin&lt;/strong&gt; (which apparently has no brand names) is a different NSAID.
+It’s sometimes prescribed for long-term use as a means of reducing the risk of heart attacks.
+It also works by binding to COX enzymes, but interesting, in the case of aspirin, this binding is permanent – it stays bound until the enzyme is destroyed!
+It’s pretty old – it was developed in the late 1890s!
+It’s more dangerous than ibuprofen, though, with more risk of side effects on the digestive system, which I imagine is why ibuprofen is the more common over-the-counter medication these days.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Naproxen&lt;/strong&gt; (brand name Aleve) is also an NSAID and also dates from the 1960s.
+It acts very similarly to ibuprofen, but it lasts maybe 2x longer (but takes a bit longer to kick in).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Acetaminophen&lt;/strong&gt; (brand name Tylenol; also called paracetamol internationally) is &lt;em&gt;not&lt;/em&gt; a NSAID.
+It still affects the same pathway as NSAIDs, though, interfering with COX enzymes, and generally seems pretty similar, though &lt;a href=&quot;https://now.tufts.edu/2022/09/14/how-does-acetaminophen-work&quot;&gt;it’s still a mystery how exactly it works.&lt;/a&gt;
+It has fewer side effects, &lt;em&gt;but&lt;/em&gt; seems to have much higher risks of overdose – in fact, it’s responsible for more overdoses than any other drug in the Western world!
+It seems to primarily harm the liver and combine particularly poorly with alcohol.&lt;/p&gt;
+
+&lt;p&gt;In my home growing up, there was also a small bottle of something called “excedrin.” Somewhat ridiculously, this looks to be a combination of aspirin, acetaminophen, and &lt;em&gt;caffeine&lt;/em&gt;!&lt;/p&gt;
+
+&lt;h2 id=&quot;so-what-are-these-things-anyways&quot;&gt;So what &lt;em&gt;are&lt;/em&gt; these things anyways?&lt;/h2&gt;
+
+&lt;p&gt;These drug facts are well and good – it’s nice to know the &lt;em&gt;effects&lt;/em&gt; of these substances – but what &lt;em&gt;are&lt;/em&gt; they?
+Each substance consists of just one fairly small molecule.
+Here they are – see if you can guess which is which. Answers are at the bottom of the page.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/pain_relievers/structures.png&quot; width=&quot;60%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I find it pretty amazing that these small molecules can have such specific effects!
+The body is huge and has a truly immense number of processes going all the time, and these molecules are taken orally and presumably spread throughout most of the body, and they &lt;em&gt;don’t seem complicated enough&lt;/em&gt; to be addressed to a very specific function, and yet they specifically target one particular enzyme in one particular pathway.
+It’s even more surprising to me that multiple simple molecules all do this job – though perhaps that’s just an indication that that enzyme is easily messed with.&lt;/p&gt;
+
+&lt;p&gt;Looking at these molecular structures, I’m reminded anew of how weird and unintuitive biochemistry tends to be.
+If you show me a picture of a mechanical part and tell me what it does, I can generally imagine how it might perform that role, and how a similar part might not be as good a choice for it, but I almost never have this experience looking at a biomolecule, and when I find out how the biomolecule works, it usually sounds ad hoc and overly complicated to me!
+I wonder if learning some basic biochemistry would make things seem more mechanically intuitive.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;The molecules are 1) naproxen, 2) aspirin, 3) ibuprofen, and 4) acetaminophen. I have no idea how you could guess this, so congratulations if you did.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 01 Jun 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/otc-pain-relievers/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/otc-pain-relievers/</guid>
+        
+        
+        <category>unlisted</category>
+        
+      </item>
     
       <item>
         <title>Geometric patterns in croplands</title>
@@ -629,7 +865,7 @@ but that, of course, isn’t the point&lt;br /&gt;
 and i am glowing regardless&lt;br /&gt;
 with the feeling&lt;br /&gt;
 of having caught&lt;br /&gt;
-a glimpse of humanity&lt;/p&gt;
+a glimpse of the whole&lt;/p&gt;
 </description>
         <pubDate>Fri, 15 Mar 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/why-i-talk-to-strangers/</link>
@@ -785,16 +1021,16 @@ a glimpse of humanity&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Principles of Neural Design&lt;/em&gt; sets out to collect some low-level principles, and I found many of these quite compelling! Here are a few:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Compute with chemistry whenever possible.&lt;/strong&gt; Neural firing is energetically expensive — it’s much cheaper to transmit signals via releasing chemicals which travel diffusively! However, diffusive signaling spreads only as [distance] ~ [time]^1/2^, which ends up meaning it’s usually not a good choice when you need to go, say, more than a millimeter in one direction. Chemical computing tends also to require fewer parts and take up less space. The animal nervous system reliably uses chemical signal for either short-distance processing (e.g., across synapses or within cells) or slow global signal transmission (e.g., hormones in the bloodstream), and makes surprising use of proteins which change conformation in the presence of a ligand in order to perform basic computational operations.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Compute with chemistry whenever possible.&lt;/strong&gt; Neural firing is energetically expensive — it’s much cheaper to transmit signals via releasing chemicals which travel diffusively! However, diffusive signaling spreads only as [distance] ~ [time]${}^{1/2}$, which ends up meaning it’s usually not a good choice when you need to go, say, more than a millimeter in one direction. Chemical computing tends also to require fewer parts and take up less space. The animal nervous system reliably uses chemical signal for either short-distance processing (e.g., across synapses or within cells) or slow global signal transmission (e.g., hormones in the bloodstream), and makes surprising use of proteins which change conformation in the presence of a ligand in order to perform basic computational operations.&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Send only what is needed.&lt;/strong&gt; Signal transmission is expensive — the brain uses almost 20% of the body’s energy, over half of which goes to neurons’ ion pumps! It’s therefore important to be economical in what’s sent — sending half as much information roughly cuts the energy cost in half. Across areas, the brain has robustly developed to only transmit necessary information and compress it as much as possible — often in ways that seem surprising given our experience of the world! The classic example of this is the visual system — we only have detailed vision in the central region of our field of view, and it’s shockingly low-res in the periphery — &lt;a href=&quot;https://www.scientificamerican.com/article/put-your-peripheral-vision-to-the-test/&quot;&gt;people regularly underestimate how bad their peripheral vision is&lt;/a&gt;. I honestly find it a bit annoying when I notice it, but it makes a lot of sense evolutionarily — the point of the visual system isn’t to provide our brain with a beautiful detailed image of the outside world, it’s to give us enough information to do survival and social tasks, and we can do these tasks quite well with only a small area of high-res vision that we scan around! This principle also applies to the postprocessing that occurs in the retina, which famously &lt;a href=&quot;http://www.scholarpedia.org/article/Sparse_coding&quot;&gt;compresses visual information by translating to a sparse basis&lt;/a&gt; before transmission through the optic nerve.&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Send at the lowest acceptable rate.&lt;/strong&gt; A cool fact I hadn’t known: sending a neural signal faster requires a thicker axon, which for biophysical reasons turns out to require superlinearly more resources and energy! The brain’s thus incentivized to send information as slowly as possible. This is basically true everywhere in the brain — I suppose it’s evolutionarily “easy” to tweak axons to be thinner and slower, so they’ll always tend to settle down to the slowest rate that works well enough. An amazing example of this is the speeds of different sensory modalities: olfaction (smell) has no need to be fast, so it uses a cable of $10^7$ very thin axons to send information quite slowly, while on the other end, the vestibular sense (balance) needs to send little information but needs to send it fast to keep us upright, so it uses far fewer axons which are about 100x cross-sectionally larger.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;There are, of course, plenty of exceptions here: the design of the vertebrate retina is famously silly, with processing circuitry partially blocking the photosensitive cells and the optic nerve creating a blind spot in each eye. I’m not sure how to square these cases with the observation that the brain often does a good job finding efficient design. Maybe the satisfaction of these principles is achieved via a kind of local gradient descent – e.g., by making small adjustments to axon thickness, neuron count, connectivity, and so on – and these weird cases reflect evolutionary “local minima” that are hard to escape?&lt;/p&gt;
-
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;https://james-simon.github.io/img/neuro/axon_sizes.png&quot; width=&quot;60%&quot; /&gt;
 &lt;/p&gt;
+
+&lt;p&gt;There are, of course, plenty of exceptions here: the design of the vertebrate retina is famously silly, with processing circuitry partially blocking the photosensitive cells and the optic nerve creating a blind spot in each eye. I’m not sure how to square these cases with the observation that the brain often does a good job finding efficient design. Maybe the satisfaction of these principles is achieved via a kind of local gradient descent – e.g., by making small adjustments to axon thickness, neuron count, connectivity, and so on – and these weird cases reflect evolutionary “local minima” that are hard to escape?&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;strong&gt;Minimize wire.&lt;/strong&gt; Rather intuitively, longer axons take up more space, cost more energy, and slow signal transmission, so the brain tends to shorten wires as much as possible. This is achieved partially at the level of individual neurons, which tend to take shapes and choose branching points that reach all their connections in a local minimum of total distance.&lt;sup id=&quot;fnref:4&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; It is also achieved via organization of neural regions into maps — for example, the early visual cortex is arranged spatially in a 2D way that mimics the retina, which minimizes diagonal cross-wiring. Some brain areas have peculiar neural organization, like the aforementioned &lt;a href=&quot;https://www.snexplores.org/wp-content/uploads/2020/04/1030_LL_trees-1028x579.png&quot;&gt;fan-shaped Purkinje cells stacked in the cerebellum&lt;/a&gt;, and this organization allows for lots of dense connections in a small volume.&lt;/li&gt;
@@ -815,7 +1051,7 @@ a glimpse of humanity&lt;/p&gt;
 
 &lt;h3 id=&quot;how-do-we-learn&quot;&gt;How do we learn?&lt;/h3&gt;
 
-&lt;p&gt;The nature of learning is still pretty unclear to me from my reading. It seems like there are a bunch of different mechanisms — synapses that have fired recently more readily fire again in the following seconds and minutes, synapses that have fired many times tend to increase their sensitivity, dopamine release (which is globally mediated) tends to reinforce neurons to do whatever they were just doing. I’m confused as to how to think about these mechanisms — is there a sharp difference between short-term and long-term memory? Is there a difference between short-term memory and “what you’re thinking about right now”? Is most learning distributed and reward-signal free, or is it top-down modulated as in machine learning? What tasks even count as “learning” — I could believe there are many more than the typical testing suite I envision! I feel I’ve gotten a bit of flavor for some of these learning mechanisms, but not enough to have any real picture of learning in the brain.&lt;/p&gt;
+&lt;p&gt;The nature of learning is still pretty unclear to me from my reading. It seems like there are a bunch of different mechanisms — synapses that have fired recently more readily fire again in the following seconds and minutes, synapses that have fired many times tend to increase their sensitivity, dopamine release (which is globally mediated) tends to reinforce neurons to do whatever they were just doing. I’m confused as to how to think about these mechanisms — is there a sharp difference between short-term and lon-term memory? Is there a difference between short-term memory and “what you’re thinking about right now”? Is most learning distributed and reward-signal-free, or is it top-down modulated as in machine learning? What tasks even count as “learning” — I could believe there are many more than the typical testing suite I envision! I feel I’ve gotten a bit of flavor for some of these learning mechanisms, but not enough to have any real picture of learning in the brain.&lt;/p&gt;
 
 &lt;p&gt;This set of questions seems particularly interesting where it intersects with our everyday human experience. For example:&lt;/p&gt;
 
@@ -886,583 +1122,6 @@ a glimpse of humanity&lt;/p&gt;
         
         
         <category>neuroscience, research</category>
-        
-      </item>
-    
-      <item>
-        <title>Can a chemical reaction measure the size of its container?</title>
-        <description>&lt;p&gt;All modern society rests on a suite of basic chemical processes, developed over centuries, that let us feed ourselves, power our cities, and make virtually every artifact of technology we manufacture.
-We know chemical processes that let us &lt;a href=&quot;https://en.wikipedia.org/wiki/Haber_process&quot;&gt;fix nitrogen&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Polymerization&quot;&gt;string together polymers&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Electroplating&quot;&gt;coat surfaces with metal&lt;/a&gt;, and perform a thousand other wonders.
-This is a post about a chemical capability which we do not yet have.
-It’s not a particularly useful one, but we’ll find there are things to be learned by considering it nonetheless.&lt;/p&gt;
-
-&lt;p&gt;My favorite useless-but-cool chemical reaction is the &lt;a href=&quot;https://en.wikipedia.org/wiki/Briggs%E2%80%93Rauscher_reaction&quot;&gt;Briggs-Rauscher oscillating clock reaction&lt;/a&gt;, a reaction common in chemistry classrooms which dramatically changes color from blue to clear every few seconds for a minute or more.
-“Chemical oscillator” reactions like this one are famous among chemists because an oscillating reaction seems so counterintuitive (when they were first discovered, nobody believed the discoverer!).
-Steady oscillation is a behavior you’d expect from a mechanical or electronic system but not from a purely chemical one.
-In the case of the Briggs-Rauscher reaction, this behavior’s powered by a sort of entropic battery and can be understood in loose analogy to electromechanical clocks:
-one reactant is steadily consumed to power an oscillating system of other chemicals, much like a grandfather clock is powered by the potential energy of a weight or an electronic oscillator is powered by a battery.
-This clever system demonstrates (at least to me) that, if we’re creative, the medium of chemistry affords sufficient freedom to make much more than one imagines at first look.&lt;/p&gt;
-
-&lt;p&gt;Let’s trust this is true – that pure chemical systems can do many things that you’d think you need electromechanics for – and let’s not worry about doing things that are useful, just things that are interesting.
-What might we hope to make?
-Could we make reactions that detect temperature?
-Reproduce music?
-Precipitate entire 3D objects?
-Do math?
-Are there chemical reactions which are Turing-complete?
-Is there a simple set of “chemical modules,” analogous to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Logic_gate&quot;&gt;logic gates&lt;/a&gt; or the &lt;a href=&quot;https://en.wikipedia.org/wiki/Simple_machine&quot;&gt;simple machines&lt;/a&gt;, which one might use as basic building blocks for more complex processes?&lt;/p&gt;
-
-&lt;p&gt;This broad direction seems interesting, and I know of no theoretical work discussing it.
-We’ll revisit it at the end.
-For now, however, I’d like to explore one specific application which I find particularly intriguing.
-Let us ponder whether one could conceivably make…&lt;/p&gt;
-
-&lt;h4 id=&quot;a-chemical-reaction-that-measures-the-volume-of-its-container&quot;&gt;A chemical reaction that measures the volume of its container&lt;/h4&gt;
-
-&lt;p&gt;Is it possible for a purely chemical system to measure the volume of its vessel?
-This is easily done with the mechanical methods of a volumetric flask, a scale, or a ruler, but can we do it with pure chemistry?&lt;/p&gt;
-
-&lt;p&gt;I should clarify what exactly I mean by this.
-I want a reaction such that we can (a) combine some chemicals in a beaker (without too much sensitivity to initial conditions), (b) wait some time for a reaction to occur, and (c) measure the final concentration of one of the reaction products and straightforwardly read out the volume of solution (for example, maybe the solution is saltier or more opaque in proportion to its volume).
-Is such a system possible?&lt;/p&gt;
-
-&lt;p&gt;There is an easy solution which we’ll disallow: if you just dissolve a known mass $m$ of solute in the solution, the volume $V$ can be read off from the final concentration $m/V$.
-This violates our stipulation on sensitivity to initial conditions – we needed exactly mass $m$ – and, for clarity and good measure, let’s also disallow it with the natural requirement that, if you just combine the full contents of two beakers at time zero, you should read out the sum of their volumes at the end (a criterion this hacky solution does not satisfy).&lt;/p&gt;
-
-&lt;p&gt;Making such a volumetric reaction is trickier than it might seem at first glance.
-If you ponder it for some time, you’ll find that the difficulty is that volume is an &lt;em&gt;extensive&lt;/em&gt; quantity (one that increases proportional to the amount of stuff, like a system’s mass), but chemical reactions are local and only depend on &lt;em&gt;intensive&lt;/em&gt; quantities like concentrations or temperature (which are independent of the total size of the system).
-How can we design a &lt;em&gt;local&lt;/em&gt; system that takes a &lt;em&gt;global&lt;/em&gt; measurement?&lt;/p&gt;
-
-&lt;h4 id=&quot;the-reaction-diffusion-equations&quot;&gt;The reaction-diffusion equations&lt;/h4&gt;
-
-&lt;p&gt;Now is the point when I confess I know little about practical chemistry and have no idea how to either design or test a chemical reaction.
-That said, I &lt;em&gt;am&lt;/em&gt; a theorist, and I know some nice equations that can help out.
-Our proposition is sufficiently interesting that it’s worth figuring out if it’s even possible in principle, and for answering that question, we can use the &lt;em&gt;reaction-diffusion equations&lt;/em&gt;, a mathematical model for a reacting chemical system spread across a volume.&lt;/p&gt;
-
-&lt;p&gt;The reaction-diffusion equations describe the time-evolution of a concentration vector $\mathbf{u}(x, t) \in \mathbf{R}^n$, where $x$ is a spatial coordinate, $t$ is time, and the $n$ elements of $\mathbf{u}$ represent the concentrations of $n$ chemical species.
-The concentration vector evolves according to&lt;/p&gt;
-
-\[\begin{equation}
-\label{eqn:rd}
-\partial_t \mathbf{u} = \mathbf{D} \nabla^2 \mathbf{u} + \mathbf{r}(\mathbf{u}),
-\end{equation}\]
-
-&lt;p&gt;where $\mathbf{D} = \text{diag}(D_1, …, D_n)$ is a diagonal matrix of diffusion coefficients, $\nabla^2$ is the Laplacian, and $\mathbf{r}(\cdot)$ is an arbitrary local reaction function.
-The first term in this evolution describes each species undergoing ordinary diffusion, which acts to spatially smooth out their concentrations, while the second term describes a local reaction in which chemical species multiply or change identities.
-Let’s suppose we’re working in 1D with a total volume $V$ and periodic boundary conditions.
-The question we pose to ourselves is: &lt;strong&gt;can we find diffusion constants $D_i$ and a reaction function $\mathbf{r}$ such that, as $t \rightarrow \infty$, one of the concentrations - say, $u_n$ - is proportional to V?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;turing-patterns&quot;&gt;Turing patterns&lt;/h4&gt;
-
-&lt;p&gt;If you’ve heard of reaction-diffusion equations before, it’s probably in conjunction with &lt;a href=&quot;https://en.wikipedia.org/wiki/Turing_pattern&quot;&gt;Turing patterns&lt;/a&gt;.
-Turing patterns are beautiful, amorphous-looking spatial patterns in the concentration of chemical species that emerge spontaneously as a result of reaction diffusion evolution with certain kinds of reaction term.
-Here are some examples (&lt;a href=&quot;https://www.youtube.com/watch?v=MR79V9UmM6s&quot;&gt;source here&lt;/a&gt;):&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-	&lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/turing_patterns.png&quot; width=&quot;50%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;(Note that these are 2D, while we’ll be working in 1D.)
-&lt;a href=&quot;https://jasonwebb.github.io/reaction-diffusion-playground/&quot;&gt;Here’s&lt;/a&gt; a site with animations showing how these patterns develop spontaneously in time.
-If Turing patterns look somewhat biological to you, that’s a good instinct - lots of coloration patterns on animals are created by similar processes.&lt;/p&gt;
-
-&lt;p&gt;The fact that Turing patterns give spatial structure from nothing seems like a good start in our endeavor to make a volumetric reaction.
-The bumps have a characteristic spacing, so it seems like all we have to do is let the pattern form and count the ridges.
-We’ll then just have to make sure some other chemical species’ concentration encodes the final count.&lt;/p&gt;
-
-&lt;p&gt;While that sounds great, it’s not obvious (at least to me) how to then make a reaction that counts the ridges, so we’ll need to think harder.
-My first thought was to instantiate a big set of Turing patterns in different components of $\mathbf{u}$, each with a different characteristic wavelength, and see what the longest-wavelength species that grew a bump was, but then I had a better idea.&lt;/p&gt;
-
-&lt;h4 id=&quot;the-plan&quot;&gt;The plan&lt;/h4&gt;
-
-&lt;p&gt;Our core difficulty is that it’s difficult to escape the world of intrinsic quantities.
-Measuring volume would be easy if we had &lt;em&gt;one&lt;/em&gt; extrinsic quantity to use as a foothold.
-Here’s an idea to this effect: create exactly one “concentration bump” of a known shape at a random location.
-The “bump density” $1/V$ (in units of bumps per volume) is easy to measure chemically, and it’s easy to convert from that to $V$!&lt;/p&gt;
-
-&lt;p&gt;Stable bumps of known shape are easy to make using reaction-diffusion systems, as Turing patterns make evident.
-Turing patterns have fixed bump density, though – not fixed bump count, which is what we need – so we’ll have to adapt the system so one bump suppresses all others.&lt;/p&gt;
-
-&lt;h4 id=&quot;the-execution&quot;&gt;The execution&lt;/h4&gt;
-
-&lt;p&gt;I figured out how to do this with a reaction-diffusion equation with six chemical species.
-These consist of four “fast-diffusing” species, for which the time to diffuse across the vessel $V^2 / D_i$ is much shorter than all other timescales and concentration is uniform, and two “slow-difffusing” species which create spatial structure.
-These species play the following roles:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$u_1$ (fast): a &lt;em&gt;timer&lt;/em&gt; whose concentration steadly grows from zero and regulates other reactions.&lt;/li&gt;
-  &lt;li&gt;$u_2$ (slow): a &lt;em&gt;randomly-diffusing agent&lt;/em&gt; which amplifies random variation in its initial concentration to create a random concentration profile.&lt;/li&gt;
-  &lt;li&gt;$u_3$ (fast): a &lt;em&gt;maxfinder&lt;/em&gt; whose concentration converges to just below the max concentration of agent $2$, with only the peak above it.&lt;/li&gt;
-  &lt;li&gt;$u_4$ (slow): a &lt;em&gt;bump-forming agent&lt;/em&gt; which forms a bump of a certain size starting from the site of max concentration of agent $2$ at a prescribed time.&lt;/li&gt;
-  &lt;li&gt;$u_5$ (fast): a &lt;em&gt;bump measurer&lt;/em&gt; which is produced by the indicator bump and converges to concentration inversely-proportional to $V$.&lt;/li&gt;
-  &lt;li&gt;$u_6$ (fast): a &lt;em&gt;readout agent&lt;/em&gt; which concerges to concentration $\propto 1 / u_5$.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I’ll defer further discussion and the equations themselves to the &lt;a href=&quot;#appendix&quot;&gt;Appendix&lt;/a&gt;.
-Let’s just jump to the good part: here are videos of the reaction working.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/rd_sim_v=3.gif&quot; width=&quot;30%&quot; /&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/rd_sim_v=5.gif&quot; width=&quot;44%&quot; /&gt;
-&lt;/p&gt;
-&lt;p style=&quot;margin-left:18%; margin-right:18%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 1.&lt;/b&gt; Simulations of the volumetric reaction for $V = 3,5$. A timer component regulates a multi-step process in which one bump of known size forms, emits a measurement agent, and allows the deduction of the system size.&lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Note how, in both cases, the concentration $u_6$ of the readout species is equal to to the volume of the system ($V=3,5$, respectively) at around $t=60$!
-Figure 1 shows the spread of final concentrations for $V \in {1,…,6}$.
-The medians land right on the true volumes.
-(The long tails of outliers reporting smaller volumes reflects cases in which more than one bump was formed; the reaction’s pretty noisy, but I count this as success since it works most of the time.)&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/reaction_diffusion/volumetric_reaction_vol_test.png&quot; width=&quot;40%&quot; /&gt;
-&lt;/p&gt;
-&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt; &lt;b&gt;Fig 2.&lt;/b&gt; Final readout concentrations $u_5(t_f)$ with $t_f = 70$ over 10 trials with $V \in \{1,...,6\}$.&lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;discussion&quot;&gt;Discussion&lt;/h4&gt;
-
-&lt;p&gt;We’ve seen that it’s possible for a reaction-diffusion equation with random initial conditions to measure the global volume of its vessel despite its being a fundamentally local process.
-So, could there be real chemical species that’d make this work in reality?
-Perhaps the greatest stretch is the continuously-increasing timer ($u_1$) that regulates other reactions, but then we’ve already seen that clock reactions exist in practice, and in the worst case we could drop the timer and have the experimenter mix in new chemicals at specified times.
-The readout $u_6$ converging to $\propto 1 / u_5$ is a bit suspicious, too – it’s rare for a reaction to be sensitive to the inverse of a concentration – but I suspect one could design a process that approximates that sensitivity in some regime, and in the worst case again, the chemist could just measure $u_4$ and make that calculation manually.
-It’s worth noting that this process in reality would probably include additional species for support (just as a motor contains many more parts than those which are directly part of the core process).
-That said, I see nothing that suggests that something like it couldn’t work in the real world.
-If you know more chemistry than I and have thoughts, please reach out!&lt;/p&gt;
-
-&lt;p&gt;So what?
-This reaction is cool, but it’s not useful; its value is in its serving as a test case for a broader idea.
-Having crafted a volumetric reaction-diffusion system, we could now use it as a module in other more complex systems, like one that renders an image or pattern autoscaled to the space available.
-We’ve crafted a &lt;em&gt;transferrable module&lt;/em&gt; which &lt;em&gt;robustly does something interpretable&lt;/em&gt; and which &lt;em&gt;we can combine with other modules to make more complex systems.&lt;/em&gt;
-This process of crafting modular abstractions is how all fields of engineering work (think of physical mechanisms, simple circuits, software packages, etc.).
-Chemical engineering has basic reactions for doing simple manipulations to chemicals (cutting, splicing, oxidizing, polymerizing, etc.)
-The things one can ultimately make are defined by the elements of this basic modular algebra, and so it’s fascinating to think that there could be a “different basis” of chemical modules which do things like measure, render, count, perform logic, etc.&lt;/p&gt;
-
-&lt;p&gt;There are various senses in which an algebra of basic chemical processes could be “complete.”
-One might be: can reaction-diffusion processes be used to simulate &lt;em&gt;any&lt;/em&gt; isotropic PDE?
-Most PDEs are not reaction-diffusion processes – for example, one might contain terms like $u_1 \nabla^2 u_2$ – but perhaps a reaction-diffusion process with some auxiliary fields could simulate such terms (much like auxiliary particle fields create effective interaction terms in particle physics).
-More generally, we could ask if one could make an arbitrary Turing machine.
-The hard part seems to be breaking the left-right symmetry, but I’m fairly confident it’s doable.
-It’d be rather beautiful if Turing patterns were Turing-complete.&lt;/p&gt;
-
-&lt;p&gt;There is a game that could be played here which is akin to &lt;a href=&quot;https://en.wikipedia.org/wiki/Code_golf&quot;&gt;code golf&lt;/a&gt;: how few chemical species can we make this reaction with?
-In my case, I used six, and had I cleverly reused some of them, I expect I could get it down to three or four.
-I could see this game being fun given an interesting set of objectives.
-Since all engineering fields use this paradigm, we could in principle play it in lots of other domains, too, trying to e.g. make a circuit that does a certain task with as few components (or as few logic gates) as possible or designing a physical mechanism with as few degrees of freedom as possible.&lt;/p&gt;
-
-&lt;p&gt;My main field of study isn’t chemistry, it’s deep learning theory, and there are lessons I take from this exercise as to how we might think about neural nets.
-Deep learning has a reputation for being modular – the basic architectural units in PyTorch are literally called &lt;a href=&quot;https://pytorch.org/docs/stable/generated/torch.nn.Module.html&quot;&gt;Modules&lt;/a&gt; – but it’s unique in that &lt;em&gt;nobody knows how to think about what the modules are really doing.&lt;/em&gt;
-Modern chemical engineering is composed of well-understood steps, but medieval alchemy, by contrast, was composed of lots of &lt;em&gt;poorly-understood&lt;/em&gt; steps.
-Deep learning in 2022 is much more like alchemy: we have modules like transformer layers, batchnorm layers, and so on, but we don’t truly understand what they do or how we ought to combine them to accomplish a broader task.
-I imagine thinking in terms of the actions of modules could’ve helped the alchemists clarify their thinking and develop chemistry, and I similarly expect thinking in terms of what quantitative effect each deep learning module does will prove clarifying for the field.
-It’s my belief that, in doing so, we’ll eventually arrive at a state in which the design of a deep learning system resembles the selection and combination of well-defined modules like in every other field of engineering.&lt;/p&gt;
-
-&lt;h4 id=&quot;appendix-details-of-the-reaction&quot;&gt;Appendix: details of the reaction&lt;/h4&gt;
-&lt;p&gt;&lt;a name=&quot;appendix&quot;&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The reaction-diffusion system of Equation $\ref{eqn:rd}$ is defined by its diffusion constants and reaction function.
-We choose the diffusion constants to be&lt;/p&gt;
-
-\[D_1 = D_3 = D_5 = D_6 = \infty, \ \ D_2 = 2, \ \ D_4 = 1,\]
-
-&lt;p&gt;where $D_i = \infty$ means that species $i$ diffuses much faster than all other timescales (implemented in simulation via global averaging every timestep).
-We choose the six componts of the reaction function $\mathbf{r}(u)$ to be&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$r_1 = .1,$&lt;/li&gt;
-  &lt;li&gt;$r_2 = .1 \, u_1 \ I(0,t_a),$&lt;/li&gt;
-  &lt;li&gt;$r_3 = 10^3 \ \text{max}(u_2 - u_1, 0),$&lt;/li&gt;
-  &lt;li&gt;$r_4 = 30 \, (1 - u_4) \ \mathbb{1}_{u_2 &amp;gt; u_3} \ I(t_a - .1, t_a) + .15 \ I(t_a, t_b) + (2 u_4 - 1) - (2 u_4 - 1)^3,$&lt;/li&gt;
-  &lt;li&gt;$r_5 = (10 u_4 - u_5) \ I(t_b, \infty),$&lt;/li&gt;
-  &lt;li&gt;$r_6 = (2.9 u_4^{-1} - u_5) \ I(t_b + .5, \infty),$&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;where $t_a = 2$, $t_b = 5$, and $I(t_1, t_2) \equiv 1_{t_1 \le u_1 &amp;lt; t_2}$.
-All components are initialized as random functions with variance $.2$ (see the code for details).
-I arrived at these formulae after a lot of trials and error, working from the top of the list down, developing each step of the mechanism sequentially.
-The hardest part was reliably getting a single bump to develop in $u_4$; I was close to thinking this might be impossible to get one bump to spontaneously form and suppress all others, but using the initial randomness to break the symmetry let me do it.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://colab.research.google.com/drive/1kIMunZCWxD53LWlDAnOxuj5iRB2UfEyw#scrollTo=loonoeZ3Rjms&quot;&gt;Here’s&lt;/a&gt; the colab notebook I used to implement these.
-Slightly different calibrated reaction constants were used to generate Figure 2.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 10 Oct 2022 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/volumetric-reaction/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/volumetric-reaction/</guid>
-        
-        
-        <category>chemistry, physics, fun-science</category>
-        
-      </item>
-    
-      <item>
-        <title>Simulating cells fighting to the death</title>
-        <description>&lt;p&gt;Physics is humanity’s finest tool for understanding the world around us, a rich and wonderful framework deserving of our highest reverence.
-I recently used it to simulate a bunch of cells fighting to the death like little gladiators.
-Here’s a video.&lt;/p&gt;
-
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_fight.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-
-&lt;p&gt;I’ll give a lightning overview of how this works.
-This is a simulation lying on a grid, with every color either empty or part of a cell.
-The grid’s evolving in time according to a modified version of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Cellular_Potts_model&quot;&gt;cellular Potts model&lt;/a&gt;, which is basically the &lt;a href=&quot;https://en.wikipedia.org/wiki/Ising_model&quot;&gt;Ising model&lt;/a&gt; plus a few terms.
-In the Ising model, each cell prefers to match its neighbors, so the grid forms big regions of the same color.
-Here’s the Ising model:&lt;/p&gt;
-
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/ising_test.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-
-&lt;p&gt;Skipping a mathematical explanation, the basic algorithm at play here is the following: at every timestep, (a) choose a random grid site and (b) flip its value with some probability.
-The probability of flipping is higher if flipping will make it more like its neighbors, and this is coded in terms of an “energy” which is lower the more sites match their neighbors.&lt;/p&gt;
-
-&lt;p&gt;The Potts model is a generalization to more than two values.
-In the &lt;em&gt;cellular&lt;/em&gt; Potts model, we simply add another term to the energy.
-For each value \(i\) besides the “empty value” \(0\), we count up the number of sites of type \(i\) and penalize the difference from a target volume \(V_i\).
-This enforces that the sites with value \(i\) have total volume around \(V_i\), and the Ising term from before makes it so these sites tend to stick together, forming a round droplet like water molecules.
-Here’s the cellular Potts model with a few randomly-placed cells:&lt;/p&gt;
-
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cells_stationary.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-
-&lt;p&gt;To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.&lt;/p&gt;
-
-&lt;p&gt;Superficially, this is just a cute simulation of some artificial cells, but, for me, it gets at one of the deep wonders of life.
-These cells exhibit high-level “purposeful” behavior, but their motion is entirelly driven by extremely simple low-level rules (and they’re not even deterministic!).
-Just like in a real organism - just like in &lt;em&gt;us&lt;/em&gt;, science believes - this purposeful behavior emerges from the interaction of many pseudorandom low-level components.
-These cells were not programmed via top-down rules, as one might code a video game enemy (walk towards player, move limbs while doing so, fire when X feet away, etc.); their high-level behavior emerges fully from the bottom up.&lt;/p&gt;
-
-&lt;p&gt;In a typical video game, the &lt;em&gt;player’s&lt;/em&gt; character, too, is controlled via top-down instructions, in this case from a live human.
-Could one design a game in which the player’s influence is exerted from the bottom up, as a slight modification to the low-level rules instead of a top-level directive?
-This is indeed doable with this simulator: I just replaced one cell’s stochastic bias towards its nearest neighbor with a bias towards the direction of keyboard input.
-Here’s a fight between my brother and I.&lt;/p&gt;
-
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;https://james-simon.github.io/img/cell_fight/cell_duel.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-
-&lt;p&gt;Okay, I also added bullets.&lt;/p&gt;
-
-&lt;p&gt;You can find code for these simulations &lt;a href=&quot;https://github.com/james-simon/cell-fight&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;!-- These two possible methods of exerting outside influence on a simulation are intriguingly similar to certain human conceptions of divine intervention in the universe.
-The older notion is that a deity would directly change the world as desired (e.g., if they don't want a tree to exist, just smite it).
-A newer notion is that a deity might act by minimal intervention, subtly changing low-level parameters of the universe (e.g. if they don't want a tree to exist, slightly deplete the CO2 in the vicinity during its growth, or spike a few neurons in a squirrel brain to make it find and eat the tree as a seed, or so on). --&gt;
-</description>
-        <pubDate>Sat, 24 Sep 2022 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/cell-fight/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/cell-fight/</guid>
-        
-        
-        <category>physics, fun-science</category>
-        
-      </item>
-    
-      <item>
-        <title>Time-reversed random walks</title>
-        <description>&lt;p&gt;A year or so ago, at the height of the pandemic, a few friends and I watched &lt;em&gt;Tenet (2020)&lt;/em&gt;, an action movie whose core conceit is that certain people and objects move the opposite direction through time.
-The idea’s not that they time-travel or that they merely age backwards, it’s that they’re truly time-reversed, appearing to ordinary observers like a video played backwards.
-To get an idea of what I mean, &lt;a href=&quot;https://www.youtube.com/watch?v=4xj0KRqzo-0&quot;&gt;here’s&lt;/a&gt; a clip of the protagonists fighting two time-reversed opponents.&lt;/p&gt;
-
-&lt;p&gt;Does this concept make sense?
-Thinking about it for a bit, one immediately bumps up against a number of free-will-related paradoxes.
-For example, if you start a fight with a time-reversed adversary, it seems you’re guaranteed you won’t incapacitate them because you observed them up and fighting at a time that’s earlier for you but later for them (if you are to win, you must have “recapactitated” them with your first blow).
-Similarly, it seems you couldn’t break a time-reversed vase or light a time-reversed match, and things would probably end badly if you tried to eat a time-reversed sandwich.
-Ultimately, however, these are paradoxes of human agency, and if you remove free will as a consideration, these events’ impossibility feels more believable.
-Accepting the lack of free will, is the movie’s core idea physically possible?&lt;/p&gt;
-
-&lt;p&gt;At a first glance, it looks like several scenes clearly violate Newtonian mechanics, such as &lt;a href=&quot;https://youtu.be/L3pk_TBkihU?t=41&quot;&gt;this scene&lt;/a&gt; in which a gear jumps off a table to meet a hand that dropped it backwards in time.
-However, it turns out this is not strictly impossible: the thermally jiggling particles of the surface beneath the gear could all come together and move in the same direction, giving the gear a big push upwards and leaving the surface a little colder.
-This is precisely the time-reversed process of the forwards event of dropping the gear.
-This sequence of steps seems absurdly implausible - and in our world, it would be - but it doesn’t break conservation of momentum or energy or violate any ironclad law of physics.
-These sorts of backwards processes are always possible because the laws of Newtonian physics and electromagnetism are &lt;a href=&quot;https://en.wikipedia.org/wiki/T-symmetry&quot;&gt;time-reversal symmetric&lt;/a&gt;&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
-
-&lt;p&gt;It turns out the apparent flow of time in the world we see around us is due principally to thermodynamics, a statistical set of effective laws that emerge from the basic rules of the universe when considering macroscopic systems like vases and Christopher Nolan.
-Time-reversed versions of events are not fundamentally impossible even in ordinary circunstances, they’re merely much less likely than their forwards-time counterparts.
-In practice, the gear will stay on the surface for as long as you watch it, but there is indeed a miniscule probability it’ll jump up to meet your hand each moment.
-In a very deep sense, fragile objects shatter forwards in time because, well, they’re not broken now, and there are lots of ways they can break, so statistics doesn’t have to work too hard to make it happen.
-If you sweep together a bunch of glass shards, however, there’s only one way they can all fit together, so their perfect coalescence is very unlikely.
-In our universe, things happen to generally be more ordered back in the direction we call the past on account of the Big Bang.
-However, if you took another universe and enforced the constraint that things are ordered and nice at some &lt;em&gt;final&lt;/em&gt; time, time-reversal would give you a universe flowing “backwards” in time, though its inhabitants would of course never know the difference.
-This is the difference between specifying the initial and final conditions of a dynamical process, and this is no difference at all for a time-symmetric process.&lt;/p&gt;
-
-&lt;p&gt;Okay, but how do you get things moving both forwards and backwards?
-This is weird, since you normally can’t specify both initial &lt;em&gt;and&lt;/em&gt; final conditions for a dynamical process.
-However, one way to do it and avoid a paradox might be to specify only &lt;em&gt;partial&lt;/em&gt; information at both points in time.
-For example, suppose I enforce that the left half of a room contains person A at time \(t=0\), and the right half of the same room contains person B at time \(t=T\), and I don’t specify anything else.
-This is an underdetermined system which is likely to have many solutions.
-Actually finding one would be hard - you’d probably have to iterate forwards and backwards in time for a bunch of cycles in a nonlocal fashion until you satisfy all the boundary conditions - but it’s not impossible in principle.
-Given appropriate brain states in these boundary conditions, the obtained dynamical solution might be these two people fighting.
-This way of thinking about the problem is weird and nonlocal, but so is Tenet, and it feels more satisfying to me than prioritizing one time direction and viewing time-reversed events like the leap of the gear as simply a series of flukes.&lt;/p&gt;
-
-&lt;p&gt;This is a concrete enough way of looking at the problem that we could start to think about how to simulate it.
-The ultimate dream here would be a video game in which you fight and interact with creatures moving backwards in time.
-In order to make that happen, though, we need to understand how to model rule-based processes from the point of view of an observer moving the other way in time.
-The rest of this post obtains the math for doing this using the simplest dynamical model in thermodynamics, the random walk.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-1d-discrete-random-walk&quot;&gt;The 1D discrete random walk&lt;/h3&gt;
-
-&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Random_walk&quot;&gt;random walk&lt;/a&gt; is a basic stochastic process in which a particle, which we refer to as a walker, explores a space by taking steps in random directions.
-This process is used to model a swath of phenomena including the paths of diffusing particles, fluctuating stock prices, and the movements of foraging animals, and it’s found use in essentially every discipline of science.&lt;/p&gt;
-
-&lt;p&gt;The simplest example of this process is a 1D random walk with discrete steps.
-Let \(x_0, x_1, x_2, ..., x_t, ...\) be integers denoting the position of a random walker on the real line at each timestep.
-The initial condition and transition dynamics are&lt;/p&gt;
-
-\[x_0 = 0,\]
-
-\[\begin{equation}
-\label{eqn:forward_step}
-x_{t+1} =
-\left\{
-\begin{array}{lr}
-x_t, &amp;amp; p = \frac{1}{2} \\
-x_t + 1, &amp;amp; p = \frac{1}{2}.
-\end{array}
-\right.
-\end{equation}\]
-
-&lt;p&gt;In words, the random walker begins at zero and, at each timestep, flips a coin and either remains put or moves to \(x \rightarrow x + 1\) accordingly.
-(It’s worth noting that we could’ve also chosen the possible steps to be not \(\{0,1\}\) but rather \(\{-1,1\}\) to ensure that the random walk has mean zero.
-It will prove mathematically simpler to use our current formulation, but we can always recover the latter setting by constructing \(\tilde{x}_t \equiv 2 x_t - t\).
-We will use \(\tilde{x}_t\) in our visualizations below, and we will refer to the two possible steps as “leftwards” and “rightwards.”)&lt;/p&gt;
-
-&lt;p&gt;Suppose we want to know \(p(x_t)\), the probability of the walker being at position \(x_t\) at time \(t\).
-By placing this random walk on Pascal’s triangle, it’s easy to show that this distribution is given by&lt;/p&gt;
-
-\[\begin{equation} \label{eqn:p_forwards}
-p(x_t) = 2^{-t} \left( \begin{array}{c} t \\ x_t \end{array} \right).
-\end{equation}\]
-
-&lt;p&gt;Figure 1 gives an schematic illustration of this random walk as well as a visualization of many simulated runs&lt;sup id=&quot;fnref:d&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:d&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig1a.png&quot; width=&quot;30%&quot; /&gt;
-   &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
-   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig1b.svg&quot; width=&quot;30%&quot; /&gt;
-&lt;/p&gt;
-&lt;p style=&quot;margin-left:10%; margin-right:10%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt;
-	&lt;b&gt;Figure 1.&lt;/b&gt;
-	Left: in the 1D discrete random walk, the walker moves left or right at each timestep with probability $1/2$.
-	Right: simulated random walks.
-	The upper plot shows a histogram of final positions (blue) and the theoretical distribution (red).
-&lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt;
-
-&lt;h3 id=&quot;reversing-time&quot;&gt;Reversing time&lt;/h3&gt;
-
-&lt;p&gt;The above random walks start at the origin at \(t=0\) and take uncorrelated steps from then on.
-This is easy to simulate, as every step is independent of every other step.
-Let us now imagine how these trajectories look to an observer moving backwards in time.
-The walkers start in a wide distribution, take fairly random steps, but then all converge at the origin at \(t=0\).
-Suppose you wish to find the statistics of this process from the point of view of this backwards observer: given that they observe a walker at position \(x_t\) at time \(t\), what are its transition probabilities for the step to time \(t - 1\)?
-(Equivalently, we could forget about the time reversal and ask about the statistics of a path conditioned on its intersecting \((t, x_t)\), but that’s less fun.)&lt;/p&gt;
-
-&lt;p&gt;We would like to obtain an update equation similar to Equation \(\ref{eqn:forward_step}\) which gives us the statistics of \(x_{t-1}\) as a function of \(x_t\) (because the random walk is a Markov process, we need not consider \(x_{t+1}\) and so on in finding the statistics of \(x_{t-1}\)).
-We can do so using &lt;a href=&quot;https://en.wikipedia.org/wiki/Bayes%27_theorem&quot;&gt;Bayes’ rule&lt;/a&gt;, which, applied to our case, tells us that&lt;/p&gt;
-
-\[p \left( x_{t-1} | x_{t} \right) = \frac{ p \left( x_{t} | x_{t-1} \right) p \left( x_{t} \right) }{ p \left( x_{t-1}\right) }.\]
-
-&lt;p&gt;Equation \(\ref{eqn:forward_step}\) gives \(p \left( x_{t} | x_{t-1} \right)\) and Equation \(\ref{eqn:p_forwards}\) tells us \(p(x_{t-1})\) and \(p(x_t)\).
-Inserting the results and simplifying algebraically, we find that&lt;/p&gt;
-
-\[\begin{equation}
-\label{eqn:backward_step}
-x_{t-1} =
-\left\{
-\begin{array}{lr}
-x_{t} - 1, &amp;amp; p = \frac{x_t}{t} \\
-x_{t}, &amp;amp; p = \frac{t - x_t}{t}.
-\end{array}
-\right.
-\end{equation}\]
-
-&lt;p&gt;The resulting backward process is illustrated schematically in the left subfigure of Figure 2.
-Examining these transition probabilities, we see that, when run backwards in time, our random walk is biased towards taking a step right if \(x_t &amp;lt; \frac{t}{2}\) and biased towards taking a step left if \(x_t &amp;gt; \frac{t}{2}\), and that the probability of a step left interpolates linearly from \(0\) to \(1\) as \(x_t\) increases from \(0\) to \(t\).
-This centerwards bias ensures the walker remains in the “lightcone” leading into the origin.
-When \(x_t \approx \frac{t}{2}\), the step is roughly unbiased, and backward propagation is simply the same random walk as the forward propagation.
-We generally expect \(x_t \approx \frac{t}{2}\) at large \(t\), and so the biasedness of the reverse process only comes into play at small \(t\) or when \(x_t\) drifts unusually close to the edges of \([0,t]\).&lt;/p&gt;
-
-&lt;p&gt;The center and right subfigures of Figure 2 depict simulated reversed random walks starting at a particular point and run backwards to \(t=0\) using Equation \(\ref{eqn:backward_step}\).
-The resulting trajectories look a lot like normal random walks for the first few steps, pick up a noticeable drift towards the origin as time proceeds, and quickly coalesce to the origin towards the end, in line with our expectation that the constraint of intersection with the origin is felt most strongly as \(t=0\) draws near.
-It’s worth noting that we could have generated these trajectories by randomly sampling &lt;em&gt;forwards&lt;/em&gt; walks and only keeping those which intersect our chosen starting point, but directly simulating the backwards process is far more efficient, so our reversed-time transition probabilities are worth having.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig2a.png&quot; width=&quot;30%&quot; /&gt;
-	&amp;nbsp;&amp;nbsp;&amp;nbsp;
-   &lt;img src=&quot;https://james-simon.github.io/img/reversed_rws/rev_rws_fig2b.svg&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-&lt;p style=&quot;margin-left:10%; margin-right:10%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt;
-	&lt;b&gt;Figure 2.&lt;/b&gt;
-	Left: example transition probabilities at various points in a reversed random walk.
-	Center: simulated reversed random walks starting at $t = 100, x_t = 10$.
-	The red curve shows the mean position.
-	Right: simulated reversed random walks starting at $t = 1000, x_t = 40$.
-	The red curve shows the mean position.
-&lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt;
-
-&lt;h3 id=&quot;jumps-of-many-timesteps&quot;&gt;Jumps of many timesteps&lt;/h3&gt;
-
-&lt;p&gt;In all our analysis so far, we’ve only tried to move forwards or backwards in time one step at a time.
-However, if we’re not interested in the intermediate trajectory, it’s easy to jump forwards multiple steps at a time, and it turns out we can do this backwards, too.
-Consider two times \(t, t'\) with \(t' &amp;gt; t\).
-Noting that the section of the random walk from \(t\) to \(t'\) is itself a random walk of length \(t' - t\), we find that&lt;/p&gt;
-
-\[\begin{equation}
-\label{eqn:p_forwards_jump}
-p\left(x_{t'} | x_t\right) = 2^{-(t' - t)} \left( \begin{array}{c} t' - t \\ x_{t'} - x_t \end{array} \right).
-\end{equation}\]
-
-&lt;p&gt;With the same Bayesian approach as before, we can derive transition probabilities for a backwards jump.
-This yields that&lt;/p&gt;
-
-\[\begin{equation}
-\label{eqn:p_backwards_jump}
-p\left(x_{t} | x_{t'}\right) =
-\frac{
-	\left( \begin{array}{c} x_{t'} \\ x_{t} \end{array} \right)
-	\left( \begin{array}{c} t' - x_{t'} \\ t - x_{t} \end{array} \right)
-}{
-	\left( \begin{array}{c} t' \\ t \end{array} \right)
-},
-\end{equation}\]
-
-&lt;p&gt;which reduces to Equation \(\ref{eqn:backward_step}\) when \(t' - t = 1\).&lt;/p&gt;
-
-&lt;h3 id=&quot;the-continuum-limit&quot;&gt;The continuum limit&lt;/h3&gt;
-
-&lt;p&gt;While the discrete random walk is the easiest to grasp, in practice one often takes a &lt;em&gt;continuum limit&lt;/em&gt; in which the walker’s motion is continuous in both time and space.
-This can be seen as the limit of a discrete-time random walk like the one studied above where, instead of taking \(\mathcal{O}(1)\) jumps with timesteps of size \(1\), our walker takes \(\mathcal{O}(dt^{1/2})\) jumps with timesteps of size \(dt\)&lt;sup id=&quot;fnref:e&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:e&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
-
-&lt;p&gt;To get to the continuum, we’ll first switch from a discrete random walk to one in which the steps are sampled from a Gaussian distribution.
-This will make our walk continuous in &lt;em&gt;space&lt;/em&gt;, which will simplify the subsequent process of making it continuous in time.
-We shall redefine our random walk as&lt;/p&gt;
-
-\[x_0 = 0,\]
-
-\[\begin{equation}
-\label{eqn:forward_step_gaussian}
-x_{t+dt} \sim \mathcal{N}(x_t, dt),
-\end{equation}\]
-
-&lt;p&gt;where \(dt\) is a small constant step size and \(\mathcal{N}(\mu,\sigma^2)\) is a Gaussian random variable with mean \(\mu\) and variance \(\sigma^2\).
-Time-reversing this process with our same Bayesian trick, we find that&lt;/p&gt;
-
-\[x_{t}
-\sim
-\mathcal{N}\left(
-\frac{
-x_{t+dt}
-}{
-1 + \frac{dt}{t}
-},
-\frac{
-dt
-}{
-1 + \frac{dt}{t}
-}
-\right)
-\approx
-\mathcal{N}\left(
-\left(1 - \frac{dt}{t}\right) x_{t+dt}
-,
-dt
-\right),\]
-
-&lt;p&gt;where in the last step we’ve simplified assuming that \(dt \ll t\).
-Abusing notation a bit, we can write that&lt;/p&gt;
-
-\[x_{t}
-\approx
-\left(1 - \frac{dt}{t}\right) x_{t+dt}
-+
-\mathcal{N}\left(0,dt\right).\]
-
-&lt;p&gt;We can now simply take \(dt \rightarrow 0\) and arrive at a differential equation for the continuum limit, finding that&lt;/p&gt;
-
-\[\begin{equation}
-\label{eqn:sde}
-\frac{d x(t)}{-dt} = - \frac{x(t)}{t} + \eta(t),
-\end{equation}\]
-
-&lt;p&gt;where \(\eta(t)\) is the classic white noise process defined by having mean zero and covariance \(\mathbb{E}[\eta(t)\eta(t')] = \delta(t - t')\).
-This equation has a simple interpretation: this is an ordinary random walk with a pull towards the origin with strength \(t^{-1}\).
-The strength of this pull diverges as \(t \rightarrow 0\), sucking the walker in to \(x = 0\).&lt;/p&gt;
-
-&lt;p&gt;Neglecting the mean-zero driving noise and looking at only the drift term, we see that the mean of our distribution \(\mu(t) \equiv \mathbb{E}[x(t)]\) obeys&lt;/p&gt;
-
-\[\frac{d \mu(t)}{-dt} = - \frac{\mu(t)}{t} \ \ \ \Rightarrow \ \ \ \mu(t) = C t\]
-
-&lt;p&gt;for some constant \(C\).
-This tells us that we expect that the mean of the distribution to approach zero linearly.
-Looking at the red curves in Figure 2, we see this is exactly what happens.&lt;/p&gt;
-
-&lt;h3 id=&quot;chasing-a-moving-target&quot;&gt;Chasing a moving target&lt;/h3&gt;
-
-&lt;p&gt;Unlike the forward process, this reversed process isn’t stationary (i.e. time-translation invariant): as it runs, it approaches \(t = 0\), and its behavior changes.
-Stationary processes are nice, though; is there simple a way we could modify it to make it \(t\)-independent?
-One idea is to make it so the particle is chasing a moving target in a carrot-on-a-stick fashion: we fix some time \(T\) and “move” \(t=0\) so the random walk feels it is always a time \(T\) away from convergence.
-The end of this process will always appear to be a fixed time away, much like the advent of quantum computing or the release of Half Life-3.
-Mathematically, this corresponds to replacing \(t \rightarrow T\) in Equation \(\ref{eqn:sde}\), yielding&lt;/p&gt;
-
-\[\frac{d x(t)}{-dt} = - \frac{x(t)}{T} + \eta(t).\]
-
-&lt;p&gt;This process is stationary and has an even simpler interpretation.
-In fact, neglecting the flipped direction of time, it’s exactly the classic &lt;a href=&quot;https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process&quot;&gt;Orenstein-Uhlenbeck process&lt;/a&gt;,
-which describes a random walker in a quadratic potential.
-Interestingly, the stationary distribution of this process is a centered Gaussian with mean \(\frac{T}{2}\), while from the forward walk we might expect it to have mean \(T\).
-I was surprised by this; I made some sense of it by noting that, if we started with the stationary distribution of \(x_T\) and applied many backwards steps, it’d contract to a narrower distribution, but it still feels weird to me.&lt;/p&gt;
-
-&lt;h3 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h3&gt;
-
-&lt;p&gt;So, what are the prospects for our Tenet-inspired video game?
-We’ve figured out how to model a simple random walk from the point of view of an observer moving backwards in time.
-It’s easy to imagine doing a similar thing for a walker with more complicated rules, like wandering around a map or interacting with objects.
-It’s also not too far-fetched to imagine rules that depend on the player, like a bias for moving towards the player or attacking with some probability, though we then run into the  difficulty that the player’s future actions are unknown (a problem that’s a cousin of our earlier paradoxes regarding free will).
-This blocks our Bayesian calculation and needs a clever trick or two to give a good game mechanic.
-If you’re game-design-minded and interested in thinking through this further, feel free to reach out!&lt;/p&gt;
-
-&lt;h4 id=&quot;note-on-the-genesis-of-this-post&quot;&gt;Note on the genesis of this post&lt;/h4&gt;
-
-&lt;p&gt;This idea was largely inspired by a post-&lt;em&gt;Tenet&lt;/em&gt; conversation with Vishal Talasani.
-This writeup was made by starting with a blank file and randomly hitting a time-reversed delete key until it was done.&lt;/p&gt;
-
-&lt;h4 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h4&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;It turns out the weak nuclear force actually does violate time symmetry just a little, so you’d see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let’s ignore that for now. We’ll also neglect questions of quantum measurement. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:d&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;The theoretical distribution plotted in Figure 1 (right) is actually a Gaussian distribution obtained by expanding Equation \(\ref{eqn:p_forwards}\) around its mean. This Gaussian is both easier to deal with mathematically and nicer to plot. &lt;a href=&quot;#fnref:d&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:e&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;The \(dt^{1/2}\) scaling is necessary because we want the jump to have &lt;em&gt;variance&lt;/em&gt; \(dt\), because variances add, so the total variance of the process will grow like \(t\). If the steps were instead \(\mathcal{O}(dt)\), the total variance would grow like \(t dt \approx 0\), and our walker wouldn’t go anywhere. &lt;a href=&quot;#fnref:e&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sat, 03 Sep 2022 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/time-reversed-random-walks/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/time-reversed-random-walks/</guid>
-        
-        
-        <category>math, fun-science</category>
         
       </item>
     

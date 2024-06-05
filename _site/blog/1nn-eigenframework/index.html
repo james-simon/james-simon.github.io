@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>A eigenframework for the generalization of 1NN</title>
+  <meta name="description" content="In this blogpost, I’ll present an eigenframework giving the generalization of the nearest-neighbor algorithm (1NN) on two simple domains — the unit circle an...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/1nn-eigenframework/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">A eigenframework for the generalization of 1NN</h1>
+      <p class="post-meta"><time datetime="2024-06-05T00:00:00-07:00" itemprop="datePublished">Jun 5, 2024</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p>In this blogpost, I’ll present an eigenframework giving the generalization of the nearest-neighbor algorithm (1NN) on two simple domains — the unit circle and the 2-torus — and discuss the prospects for a general theory.</p>
+
+<h2 id="why-1nn">Why 1NN?</h2>
+
+<p>I think 1NN is a good candidate for <a href="/blog/lets-solve-more-learning-rules">“solving” in the omniscient sense</a> because it’s relatively simple, and it’s also a <em>linear learning rule</em> in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
+
+<h2 id="1nn-on-the-unit-circle-aka-the-1-torus">1NN on the unit circle (aka the 1-torus)</h2>
+
+<p>The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:</p>
+
+<p style="text-align:center;">
+<img src="/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png" width="40%" />
+</p>
+
+<p>We will describe generalization in terms of the <em>Fourier decomposition</em> of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where ${ v_k }$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that</p>
+
+<div style="text-align: center;">
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+$$
+[\text{test MSE}]_\text{1D} = \sum_k \frac{2 \pi^2 k^2}{\pi^2 k^2 + n^2} \, v_k^2 + 2 \epsilon^2. 
+$$
+</div>
+</div>
+
+<p>This is the eigenframework for 1NN in 1D! The generalization of 1NN on <em>any</em> target function in 1D is described by this equation.<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
+
+<p>Here are some experiments that show we’ve got it right.</p>
+
+<p style="text-align:center;">
+<img src="/img/1nn_eigenframework/1nn_1d_learning_curves.png" width="80%" />
+</p>
+
+<p>This equation can be found a few ways, but most simply you (a) argue by symmetry that the eigenmodes contribute independently to MSE and then (b) find the test MSE for a particular eigenmode, which isn’t too hard to do. I made two approximations: (1) instead of having exactly $n$ samples, I let the samples be distributed as a Poisson process (i.e., each point has an i.i.d. chance of containing a sample), and (2) I assume the domain is infinite when computing a certain integral. Neither of these matters when $n$ is moderately large.</p>
+
+<p>Before moving on to the 2D case, I want to pause to highlight a few cool features of this framework:</p>
+
+<ul>
+  <li>The Fourier modes do not interact — no crossterms $v_j v_k$ appear in the framework. Because 1NN is a linear learning rule, it’s inevitably possible to “diagonalize” the theory in this way for a particular $n$, but the fact that it’s simultaneously diagonalizable for all $n$ is pretty cool!</li>
+  <li>Ignoring the factors of $\pi$, we see that mode $k$ is unlearned when $n \ll k$ and fully learned when $n \gg k$. This makes a lot of sense — it’s sort of a soft version of the <a href="https://en.wikipedia.org/wiki/Nyquist_frequency">Nyquist frequency</a> cutoff.</li>
+  <li>Things simplify a bit if, instead of using the index $k$, we write in terms of the Laplacian eigenvalues $\lambda_k = 4 \pi^2 k^2$.</li>
+</ul>
+
+<h2 id="1nn-on-the-2-torus">1NN on the 2-Torus</h2>
+
+<p>We now undertake the same problem, but we’re in 2D: our data is i.i.d. from $[0,1)^2$, again with circular boundary conditions. Our Fourier decomposition now looks like</p>
+
+\[f(\mathbf{x}) = \sum_{\mathbf{k} \in \mathbb{Z}^2} e^{2 \pi i \, \mathbf{k} \cdot \mathbf{x}}.\]
+
+<p>The same procedure as in the 1D case yields that</p>
+
+<div style="text-align: center;">
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+$$
+[\text{test MSE}]_\text{2D} = \sum_\mathbf{k} \left( 2 - 2 e^{- \pi \mathbf{k}^2 / n} \right) \, v_\mathbf{k}^2 + 2 \epsilon^2. 
+$$
+</div>
+</div>
+
+<p><br />
+Here are some experiments that show that we’ve got it right:</p>
+
+<p style="text-align:center;">
+<img src="/img/1nn_eigenframework/1nn_2d_learning_curves.png" width="80%" />
+</p>
+
+<h4 id="can-you-extend-these-to-k-nearest-neighbors-instead-of-just-one">Can you extend these to k nearest neighbors instead of just one?</h4>
+
+<p>Probably! I haven’t tried, though.</p>
+
+<h2 id="can-we-find-a-general-theory">Can we find a general theory?</h2>
+
+<p>The most remarkable feature of the eigenframework for linear regression is that one set of equations works for every distribution. Can we find that here?</p>
+
+<p>I’m not sure. At first blush, the 1D and 2D equations look pretty different — if we were in search of some master equation, we’d almost certainly want it to unify those two cases, but the functional forms look pretty different! I suspect it might be possible, though — the linear regression eigenframework requires solving an implicit equation that depends on all the eigenvalues and can yield pretty different-looking final expressions for different spectra, so it’s believable to me that there’s some common thread here.</p>
+
+<p>A big question in the search for a general eigenframework is: what’s the right notion of <em>eigenfunction?</em> In these highly symmetric domains, it’s easy — the Fourier modes are the eigenfunctions of any translation-invariant operator we might choose. In general, though, I don’t know what operator we want to diagonalize, or how to use its eigenvalues. This puzzles me. I don’t know the answer! So strange.</p>
+
+<p>Even without a general theory, though, I think it’d be really interesting just to continue this chain of special cases up to the arbitrary $d$-torus! I got stuck at $d=2,$ but I’d bet it can be done. Then we could think about how 1NN differs from kernel regression in high dimensions!<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup> My understanding is that 1NN is worse, but I don’t actually know any quantification of this. (If you know one, drop me a line!)</p>
+
+<p>So that’s where things stand: these two special cases serve as proof of principle that there <em>might</em> be a general eigenframework for 1NN… and if that exists, it’d be a cool proof of principle that more learning rules than linear regression can be “solved.” Seems like a neat problem! If I make much more progress on it, maybe I’ll write up a little paper. Let me know if you have thoughts or want to collaborate.</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the <a href="[https://arxiv.org/abs/2110.03922](https://arxiv.org/abs/2110.03922)">“conservation of learnability” condition</a> obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>This is particularly interesting because it could let us get at a puzzle posed by Misha Belkin <a href="https://arxiv.org/abs/2105.14368">here</a> of why <em>inverse</em> methods like KRR outperform <em>direct</em> methods like kNN and kernel smoothing in high dimensions. <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 314-15-9265
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>

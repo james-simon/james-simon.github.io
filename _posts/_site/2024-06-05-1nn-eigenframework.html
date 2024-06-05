@@ -1,0 +1,119 @@
+<h1 id="1nn-eigenframework-blogpost">1NN eigenframework blogpost</h1>
+
+<p><strong>Summary: in a compelling sense, the field has “solved” the generalization of linear regression. We should try to find comparable solutions for other simple learning rules, like k-nearest-neighbors and kernel smoothing!</strong></p>
+
+<h2 id="intro-what-does-it-mean-to-solve-a-learning-rule">Intro: what does it mean to “solve” a learning rule?</h2>
+
+<p>Essentially all of machine learning theory aims to understand the performance and behavior of different schemes for making predictions on unseen data. This is often very difficult. Given the amount of effort expended in this direction, it’s worth stepping back and asking what we’re ultimately trying to do here — that is, how will we know when we’re done?</p>
+
+<p>To me, one gold-standard answer is the following: <strong>for each learning rule under study, we want a simple set of equations that tells us how well the learning rule will perform</strong> in terms of the task eigenstructure and number of samples $n$<strong>.</strong> This isn’t the only thing we might want, but it’s clearly a powerful milestone: you could use such a theory to work out when the algorithm will perform well or poorly, and in order to derive the theory you’d have to understand a lot about the behavior of the learning rule. Viewing each learning rule as presenting a puzzle for theorists, I’d consider the development of such a theory as tantamount to “solving” the learning rule.</p>
+
+<p>[FOOTNOTE: An important clarification is that this is an “omniscient” solution in the sense that you assume complete and exact knowledge of the training task. This isn’t very useful by itself as a practical tool, but it is very useful for conceptual understanding of the learning rule (e.g. for characterizing its inductive bias).]</p>
+
+<p>In my view, one of the most significant recent developments in machine learning theory is that <em>we have solved linear regression in this sense!</em> That is, thanks to <a href="https://papers.nips.cc/paper_files/paper/2001/hash/d68a18275455ae3eaa2c291eebb46e6d-Abstract.html">lots</a> <a href="https://www.arxiv.org/abs/2002.02561">and</a> <a href="https://arxiv.org/abs/2006.09796">lots</a> <a href="https://arxiv.org/abs/2210.08571">of</a> <a href="https://proceedings.neurips.cc/paper/2021/file/9704a4fc48ae88598dcbdcdf57f3fdef-Paper.pdf">recent</a> <a href="https://arxiv.org/abs/1903.08560">papers</a>, we now have a simple set of closed-form equations that accurately predict the test performance of linear regression in terms of the task eigenstructure.</p>
+
+<p>Here’s some flavor for how this theory looks. First, we define an orthonormal basis of functions ${ \phi_k }$ over the input space. (In the case of linear regression, these are linear functions and are the principal directions of the feature covariance matrix.) We then decompose the target function $f$ into this basis as</p>
+
+\[f(x) = \sum_k v_k \phi_k(x)\]
+
+<p>where ${ v_k }$ are the eigencoefficients. (Noise may also be included, but I omit it here for simplicity.) The eigenframework then takes the form</p>
+
+\[\text{test MSE} = \sum_k g(n, k)  \, v_k^2,\]
+
+<p>where $g(n,k)$ tells you what fraction of the signal in mode $k$ contributes to test error at $n$ samples. (The function $g(n,k)$ typically decreases to zero as $n$ grows.)</p>
+
+<p>Here are some remarkable facts about this eigenframework:</p>
+
+<ul>
+  <li>It gives accurate predictions of test MSE even on real data!</li>
+  <li>The eigenmodes don’t interact! That is, there are no crossterms $v_j v_k$ in the final expression.</li>
+  <li>It’s very mathematically simple! In particular, the function $g$ isn’t too complicated, I just didn’t want to get into the details here. It’s simple enough that you can study it in various limits to really get intuition for how linear regression generalizes.</li>
+</ul>
+
+<p><strong>I’m a big fan of results of this type.</strong> They feel like the way to make progress in this field: rather than showing every new result from square one, first we derive this simple and general eigenframework <em>once,</em> and then can use it as a starting point to compute other quantities — error bounds, convergence rates, effects of dimensionality, effects of regularization, and more.</p>
+
+<p>[FOOTNOTE: To illustrate this point, <a href="https://arxiv.org/abs/2207.06569">here</a> <a href="https://arxiv.org/pdf/2306.13185">are</a> <a href="https://arxiv.org/abs/2311.14646">four</a> <a href="https://arxiv.org/abs/2110.03922">papers</a> in which I’ve used this eigenframework as a starting point to easily derive other results.]</p>
+
+<p>This is how physics (and specifically statistical mechanics) works — when studying a complex system, you first seek a simple effective theory for the system, and then can easily ask lots of downstream questions about the <em>effective</em> theory.</p>
+
+<h2 id="call-to-action-lets-solve-more-learning-rules">Call to action: <em>let’s solve more learning rules!</em></h2>
+
+<p>The above solution for linear regression has been very impactful. We should try to do this for more learning rules.</p>
+
+<p>Learning rules like k-nearest-neighbors (kNN), kernel smoothing, spline interpolation, decision trees, clustering, SVMs, and generalized additive models are widely used in practice, but we do not understand any of them as well as we now understand linear regression. It would be very impactful to solve any of them. Furthermore, the first three — kNN, kernel smoothing, and spline interpolation — are <em>linear</em> learning rules in the sense that the predicted function depends linearly on the training targets (i.e., the training $y$’s), which suggests that an eigenframework of the <em>same</em> type as that for linear regression might be possible. These last three seem simple enough that you might be able to solve them in one paper!</p>
+
+<p>[FOOTNOTE: Two other learning rules: obviously we’d all love to understand neural networks, but they’re still too poorly understood for a theory of generalization, I think — we need to understand more about their dynamics first. Second, random feature (RF) regression is a nice generalization of linear regression — and I derived an eigenframework for RF regression for <a href="https://arxiv.org/abs/2311.14646">a recent paper</a> :)]</p>
+
+<p>I suspect that solving more learning rules would have a large impact — potentially a paradigm-altering impact, actually. Right now, all these learning rules are just a bag of disjoint algorithms: we don’t really understand any of them individually, and we sure don’t understand how they relate to each other. Any intuition I have about their relative performance is extremely ad-hoc — for example, kNN works best in low dimensions and at low noise, SVMs are often better in high dimensions, decision trees work well when different features have different notions of distance, and so on. <strong>If we understood all these learning rules in the same way as we understand linear regression, we could compare them on the same footing!</strong> Instead of a bunch of ad-hoc intuitions, we could start to think of all these learning rules in one unified way. This feels like a place that machine learning ought to eventually get to.</p>
+
+<p>In part two of this blogpost, I’ll give the solution for 1NN on the unit circle and 2-torus and discuss what it might look like to solve 1NN in general!</p>
+
+<h2 id="an-eigenframework-for-1nn">An eigenframework for 1NN</h2>
+
+<p>In this blogpost, I’ll present an eigenframework giving the generalization of the nearest-neighbor algorithm (1NN) on two simple domains — the unit circle and the 2-torus — and discuss the prospects for a general theory.</p>
+
+<h2 id="why-1nn">Why 1NN?</h2>
+
+<p>I think 1NN is a good candidate for <a href="LINK">“solving” in the omniscient sense</a> because it’s relatively simple, and it’s also a <em>linear learning rule</em> in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.</p>
+
+<p>[FOOTNOTE: Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the <a href="[https://arxiv.org/abs/2110.03922](https://arxiv.org/abs/2110.03922)">“conservation of learnability” condition</a> obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently.]</p>
+
+<h2 id="1nn-on-the-unit-circle-aka-the-1-torus">1NN on the unit circle (aka the 1-torus)</h2>
+
+<p>The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples ${x_i}<em>{i=1}^n$ from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y</em>{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:</p>
+
+<p>[PLOT]</p>
+
+<p>We will describe generalization in terms of the <em>Fourier decomposition</em> of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where ${ v_k }$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that</p>
+
+\[[\text{test MSE}]_\text{1D} = \sum_k \frac{2 \pi^2 k^2}{\pi^2 k^2 + n^2} \, v_k^2 + 2 \epsilon^2.\]
+
+<p>[BOX THIS EQUATION]</p>
+
+<p>This is the eigenframework for 1NN in 1D! The generalization of 1NN on <em>any</em> target function in 1D is described by this equation. [FOOTNOTE: Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation.</p>
+
+<p>Here are some experiments that show we’ve got it right.</p>
+
+<p>[PLOTS]</p>
+
+<p>This equation can be found a few ways, but most simply you (a) argue by symmetry that the eigenmodes contribute independently to MSE and then (b) find the test MSE for a particular eigenmode, which isn’t too hard to do. I made two approximations: (1) instead of having exactly $n$ samples, I let the samples be distributed as a Poisson process (i.e., each point has an i.i.d. chance of containing a sample), and (2) I assume the domain is infinite when computing a certain integral. Neither of these matters when $n$ is moderately large.</p>
+
+<p>Before moving on to the 2D case, I want to pause to highlight a few cool features of this framework:</p>
+
+<ul>
+  <li>The Fourier modes do not interact — no crossterms $v_j v_k$ appear in the framework. Because 1NN is a linear learning rule, it’s inevitably possible to “diagonalize” the theory in this way for a particular $n$, but the fact that it’s simultaneously diagonalizable for all $n$ is pretty cool!</li>
+  <li>Ignoring the factors of $\pi$, we see that mode $k$ is unlearned when $n \ll k$ and fully learned when $n \gg k$. This makes a lot of sense — it’s sort of a soft version of the <a href="https://en.wikipedia.org/wiki/Nyquist_frequency">Nyquist frequency</a> cutoff.</li>
+  <li>Things simplify a bit if, instead of using the index $k$, we write in terms of the Laplacian eigenvalues $\lambda_k = 4 \pi^2 k^2$.</li>
+</ul>
+
+<h2 id="1nn-on-the-2-torus">1NN on the 2-Torus</h2>
+
+<p>We now undertake the same problem, but we’re in 2D: our data is i.i.d. from $[0,1)^2$, again with circular boundary conditions. Our Fourier decomposition now looks like</p>
+
+\[f(\mathbf{x}) = \sum_{\mathbf{k} \in \mathbb{Z}^2} e^{2 \pi i \, \mathbf{k} \cdot \mathbf{x}}.\]
+
+<p>The same procedure as in the 1D case yields that</p>
+
+\[[\text{test MSE}]_\text{2D} = \sum_\mathbf{k} \left( 2 - 2 e^{- \pi \mathbf{k}^2 / n} \right) \, v_\mathbf{k}^2 + 2 \epsilon^2.\]
+
+<p>Here are some experiments that show that we’ve got it right:</p>
+
+<p>[PLOTS]</p>
+
+<h2 id="can-you-extend-these-to-k-nearest-neighbors-instead-of-just-one">Can you extend these to k nearest neighbors instead of just one?</h2>
+
+<p>Probably! I haven’t tried, though.</p>
+
+<h2 id="can-we-find-a-general-theory">Can we find a general theory?</h2>
+
+<p>The most remarkable feature of the eigenframework for linear regression is that one set of equations works for every distribution. Can we find that here?</p>
+
+<p>I’m not sure. At first blush, the 1D and 2D equations look pretty different — if we were in search of some master equation, we’d almost certainly want it to unify those two cases, but the functional forms look pretty different! I suspect it might be possible, though — the linear regression eigenframework requires solving an implicit equation that depends on all the eigenvalues and can yield pretty different-looking final expressions for different spectra, so it’s believable to me that there’s some common thread here.</p>
+
+<p>A big question in the search for a general eigenframework is: what’s the right notion of <em>eigenfunction?</em> In these highly symmetric domains, it’s easy — the Fourier modes are the eigenfunctions of any translation-invariant operator we might choose. In general, though, I don’t know what operator we want to diagonalize, or how to use its eigenvalues. This puzzles me. I don’t know the answer! So strange.</p>
+
+<p>Even without a general theory, though, I think it’d be really interesting just to continue this chain of special cases up to the arbitrary $d$-torus! I got stuck at $d=2,$ but I’d bet it can be done. Then we could think about how 1NN differs from kernel regression in high dimensions! My understanding is that 1NN is worse, but I don’t actually know any quantification of this. (If you know one, drop me a line!)</p>
+
+<p>[FOOTNOTE: This is particularly interesting because it could let us get at a puzzle posed by Misha Belkin <a href="https://arxiv.org/abs/2105.14368">here</a> of why <em>inverse</em> methods like KRR outperform <em>direct</em> methods like kNN and kernel smoothing in high dimensions.]</p>
+
+<p>So that’s where things stand: these two special cases serve as proof of principle that there <em>might</em> be a general eigenframework for 1NN… and if that exists, it’d be a cool proof of principle that more learning rules than linear regression can be “solved.” Seems like a neat problem! If I make much more progress on it, maybe I’ll write up a little paper. Let me know if you have thoughts or want to collaborate.</p>
