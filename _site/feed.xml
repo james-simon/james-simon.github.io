@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 05 Jun 2024 16:48:40 -0700</pubDate>
-    <lastBuildDate>Wed, 05 Jun 2024 16:48:40 -0700</lastBuildDate>
+    <pubDate>Wed, 05 Jun 2024 16:50:55 -0700</pubDate>
+    <lastBuildDate>Wed, 05 Jun 2024 16:50:55 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -15,11 +15,11 @@
 
 &lt;h2 id=&quot;why-1nn&quot;&gt;Why 1NN?&lt;/h2&gt;
 
-&lt;p&gt;I think 1NN is a good candidate for &lt;a href=&quot;/blog/lets-solve-more-learning-rules&quot;&gt;“solving” in the omniscient sense&lt;/a&gt; because it’s relatively simple, and it’s also a &lt;em&gt;linear learning rule&lt;/em&gt; in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;I think 1NN is a good candidate for &lt;a href=&quot;/blog/lets-solve-learning-rules&quot;&gt;“solving” in the omniscient sense&lt;/a&gt; because it’s relatively simple, and it’s also a &lt;em&gt;linear learning rule&lt;/em&gt; in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;1nn-on-the-unit-circle-aka-the-1-torus&quot;&gt;1NN on the unit circle (aka the 1-torus)&lt;/h2&gt;
 
-&lt;p&gt;The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:&lt;/p&gt;
+&lt;p&gt;The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a triangle wave with 20 points:&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png&quot; width=&quot;55%&quot; /&gt;
@@ -178,8 +178,8 @@ This post is motivation for &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;p
 &lt;/div&gt;
 </description>
         <pubDate>Tue, 04 Jun 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/lets-solve-more-learning-rules/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/lets-solve-more-learning-rules/</guid>
+        <link>http://localhost:4000/blog/lets-solve-learning-rules/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/lets-solve-learning-rules/</guid>
         
         
         <category>research</category>

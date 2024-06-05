@@ -88,11 +88,11 @@
 
 <h2 id="why-1nn">Why 1NN?</h2>
 
-<p>I think 1NN is a good candidate for <a href="/blog/lets-solve-more-learning-rules">“solving” in the omniscient sense</a> because it’s relatively simple, and it’s also a <em>linear learning rule</em> in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
+<p>I think 1NN is a good candidate for <a href="/blog/lets-solve-learning-rules">“solving” in the omniscient sense</a> because it’s relatively simple, and it’s also a <em>linear learning rule</em> in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
 
 <h2 id="1nn-on-the-unit-circle-aka-the-1-torus">1NN on the unit circle (aka the 1-torus)</h2>
 
-<p>The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a sawtooth function with 20 points:</p>
+<p>The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a triangle wave with 20 points:</p>
 
 <p style="text-align:center;">
 <img src="/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png" width="55%" />
