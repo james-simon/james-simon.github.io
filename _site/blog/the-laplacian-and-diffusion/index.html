@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Using the Laplacian to take a local average of a function</title>
+  <meta name="description" content="The Laplacian operator in $d$ dimensions is defined as $\nabla^2 \equiv \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2}$. It’s widely used to model diffusion ...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/the-laplacian-and-diffusion/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">Using the Laplacian to take a local average of a function</h1>
+      <p class="post-meta"><time datetime="2024-06-06T00:00:00-07:00" itemprop="datePublished">Jun 6, 2024</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p>The Laplacian operator in $d$ dimensions is defined as $\nabla^2 \equiv \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2}$. It’s widely used to model diffusion processes in physics — for example, the <a href="https://en.wikipedia.org/wiki/Heat_equation">heat equation</a>, which describes the diffusion of heat through a material, is given by $\frac{\partial f(\mathbf{x},t)}{\partial t} = \nabla^2 f(\mathbf{x}, t)$. This operator’s come up in <a href="/blog/1nn-eigenframework">my recent thinking about the 1NN algorithm</a>: in particular, I’ve been trying to write down a linear operator that replaces a function with its local average, and I had a sense that you could probably do this with the Laplacian somehow. In thinking this through, I encountered something neat I hadn’t appreciated before: for any analytic function $f$, it holds that</p>
+
+<div style="text-align: center;">
+<div style="border: 1px solid black; padding: 10px; display: inline-block;">
+$$
+\left( e^{\frac{\sigma^2}{2} \nabla^2} f \right)(\mathbf x) = \mathbb{E}_{\mathbf{\boldsymbol{\delta}} \sim \mathcal{N}(0, \sigma^2 \mathbf{I}_d)}[f(\mathbf{x} + \boldsymbol{\delta})].
+$$
+</div>
+</div>
+
+<p>That is, the (exponentiated) Laplacian of a function (LHS) is equal to its local average w.r.t. a Gaussian measure (RHS). The RHS is nonlocal, but the LHS is entirely local, so this has some spooky-action-at-a-distance vibes.</p>
+
+<p>Why is this the case? I’ll give two explanations in 1D, and it’ll be relatively clear how to extend it to higher dimension.</p>
+
+<h2 id="argument-from-discretization-of-space">Argument from discretization of space</h2>
+
+<p>The Laplacian can be understood intuitively as the limit of its definition on a discretized lattice as the lattice spacing goes to zero. Suppose that instead of a function over the reals, the function $f$ only takes values on the points $\epsilon \mathbb{Z}$ — that is, ${\ldots, -2\epsilon, -\epsilon, 0, \epsilon, 2\epsilon, \ldots }$ — for some small value of $\epsilon$. We could represent the <em>derivative</em> of $f$ as</p>
+
+\[(Df)(x) = \frac{f(x + \epsilon) - f(x)}{\epsilon},\]
+
+<p>where $x \in \epsilon \mathbb{Z}$. Similarly, we can define the Laplacian as</p>
+
+\[\left( \nabla^2 f \right)(x) = \frac{f(x - \epsilon) - 2 f(x) + f(x + \epsilon)}{\epsilon^2}.\]
+
+<p>If we add the identity to the Laplacian operator, we see that</p>
+
+\[\left( \left[1 + \frac{\epsilon^2}{4} \nabla^2 \right] f \right)(x) = \frac{f(x - \epsilon) + 2 f(x) + f(x + \epsilon)}{4}.\]
+
+<p>(The choice of $\frac{1}{4}$ as the prefactor here is arbitrary, but will make things simpler.) We see then that the operator $1 + \frac{\epsilon^2}{4} \nabla^2$ takes a weighted average of the function value at a point and its two neighbors (with weights $\frac 14, \frac 12, \frac 14$ respectively).</p>
+
+<p>We can see this as a single step of a random walk. Taking a dual view where instead of staying fixed at the point $x$, we follow the diffusion of the function mass that <em>started</em> at $x$, we see that $\frac 14$ of the mass has gone one point to the left, $\frac 12$ of the mass has remained in place, and $\frac 14$ of the mass has moved one point to the right.</p>
+
+<p>After many steps, a random walk on an infinite lattice approaches a (discretized) Gaussian distribution by the central limit theorem. In particular, if we take $n \gg 1$ steps, the corresponding Gaussian will have a variance of $\frac {\epsilon^2 n}{2}$. If we choose $n = \frac{2 \sigma^2}{\epsilon^2}$, we get a Gaussian with variance $\sigma^2$, which gives us the RHS of the boxed equation above!</p>
+
+<p>As for the LHS, since we’ve iterated this operator $n$ times, it corresponds to</p>
+
+\[\left[1 + \frac{\epsilon^2}{4} \nabla^2 \right]^n = \left[1 + \frac{\epsilon^2}{4} \nabla^2 \right]^{\frac{2 \sigma^2}{\epsilon^2}}
+\xrightarrow{\epsilon \rightarrow 0}
+e^{\frac {\sigma^2} 2 \nabla^2}.\]
+
+<p>Great! Let’s test this conclusion on the eigenfunctions of the Laplacian. Let $f_k(x) = e^{i k x}$. Then</p>
+
+\[e^{\frac {\sigma^2} 2 \nabla^2} f_k = e^{- \frac {\sigma^2 k^2} 2} f_k\]
+
+<p>and also, using the standard Gaussian integral, we find that</p>
+
+\[\mathbb{E}_{\delta \sim \mathcal{N}(0, \sigma^2)}[f_k(x + \delta)] = e^{- \frac {\sigma^2 k^2} 2} f_k.\]
+
+<p>Great! Actually, since the boxed relation holds for the complete Fourier basis, it’ll hold for all functions (or at least all functions that equal their Fourier series).</p>
+
+<h2 id="argument-from-taylor-series">Argument from Taylor series</h2>
+
+<p>Consider the function $f(x) = x^a$ for some $a \in \mathbb{Z}^+$. A standard Gaussian integral yields that</p>
+
+\[\mathbb{E}_{\delta \sim \mathcal{N}(0,\sigma^2)}[\delta^a] =
+\left\{\begin{array}{ll}        \frac{a!}{2^{a/2} (a/2)!} \sigma^a &amp; \text{for } a \text{ even}, \\        0 &amp; \text{for } a \text{ odd}.        \end{array}\right.\]
+
+<p>Similarly, the LHS of the boxed equation gives the same result — this is easiest to show starting by writing out</p>
+
+\[e^{\frac{\sigma^2}{2} \nabla^2} = \lim_{n \rightarrow \infty} \left[1 + \frac{\sigma^2}{2n} \nabla^2 f \right]^n\]
+
+<p>and then expanding the right hand side. Anyways, the fact that the boxed equation holds for any monomial around zero is sufficient to argue that any function that converges to its Taylor series (that is, any analytic function) satisfies the boxed equation. Neat!</p>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 314-15-9265
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>

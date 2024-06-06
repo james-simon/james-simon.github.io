@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Let's solve more learning rules"
-date: 2024-06-04
+date: 2024-06-05 01:00
 category: research
 ---
 
@@ -55,6 +55,6 @@ Learning rules like k-nearest-neighbors (kNN), kernel smoothing, spline interpol
 
 I suspect that omnisciently solving more learning rules would have a large impact — potentially a paradigm-altering impact, actually. Right now, all these learning rules are just a bag of disjoint algorithms: we don’t really understand any of them individually, and we sure don’t understand how they relate to each other. Any intuition I have about their relative performance is extremely ad-hoc — for example, kNN works best in low dimensions and at low noise, SVMs are often better in high dimensions, decision trees work well when different features have different notions of distance, and so on. **If we understood all these learning rules in the same way as we understand linear regression, we could compare them on the same footing!** Instead of a bunch of ad-hoc intuitions, we could start to think of all these learning rules in one unified way. This feels like a place that machine learning ought to eventually get to.
 
-In [part two](({{site.baseurl}}/blog/1nn-eigenframework)), I’ll give the solution for 1NN on the unit circle and 2-torus and discuss what it might look like to solve 1NN in general!
+In [part two]({{site.baseurl}}/blog/1nn-eigenframework), I’ll give the solution for 1NN on the unit circle and 2-torus and discuss what it might look like to solve 1NN in general!
 
 ***
