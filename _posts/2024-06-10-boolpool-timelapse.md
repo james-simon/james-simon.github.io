@@ -1,0 +1,32 @@
+---
+layout: post
+title: "The sixth lake"
+date: 2024-06-10
+category: random, personal
+---
+
+
+<p>
+<video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
+    <source src="{{site.baseurl}}/img/boolpool_timelapse/boolpool_timelapse.mp4" type="video/mp4">
+</video>
+</p>
+
+
+If you visit Tahoe's Five Lakes and wander off-trail in just the right direction, making your way over granite scree and thin alpine topsoil, past windworn pines and views to infinity, you will reach a sixth lake.
+It is perched in a high hollow, frozen and unreachable half the year, quite indifferent to the doings of man. Its shores are lined with evergreens, its face reflects the sky, and every day for thousands of years it has born witness to the drama of the High Sierra.
+
+We were just warm apes, fast and impatient creatures there for a thrill. We were interlopers, protected by our synthetic fabrics and eating our own processed foods. Wrapped in our human comforts, it is not so easy for us to see the lake.
+
+The lake is animated endlessly by forces too big and slow for most of us to see and understand in realtime. The snow sheets drift ploddingly around the pond like tectonic plates, colliding and melting. The wind dances on the water, rippling first one region, then another, the water revealing the streaming clouds each time it settles to placidity and scrambling them with the return of the waves, again and again. The pines, too, are duplicated in the surface, their reflections growing downwards, slowly, slowly. The sunlight blazes orange and fades.
+
+These forces act on this pond every day. This drama, or one similar, repeats every day. A single glance finds a battery of powerful natural processes that shape the scene, great and grand and far beyond our control. With a long and patient look, you can start to see them do their work. And the pond bears witness, day after day, year after year.
+
+It changes you to realize this, to see the processes of nature and know their vastness and unstoppability. A vast quiet settles over you. Perhaps you see too that you are also a phenomenon of this sort -- that a few warm apes appearing and disappearing from the side of the pond isn't so different from the play of the wind on its surface or a deer's stopping by.
+
+It is not easy to see this. I only truly feel this now, typing on my laptop in my warm Berkeley home, watching this timelapse loop, letting myself fade from the observer into part of the scene. As I do, I'm reminded of some wise words recently given to me by a friend: "we're all just here to look around."
+
+
+***
+
+*Thanks to Noah Sailer for suggesting a timelapse.*

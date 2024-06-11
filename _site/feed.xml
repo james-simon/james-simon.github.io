@@ -5,9 +5,43 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 06 Jun 2024 12:24:32 -0700</pubDate>
-    <lastBuildDate>Thu, 06 Jun 2024 12:24:32 -0700</lastBuildDate>
+    <pubDate>Tue, 11 Jun 2024 00:08:55 -0700</pubDate>
+    <lastBuildDate>Tue, 11 Jun 2024 00:08:55 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The sixth lake</title>
+        <description>&lt;p&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;/img/boolpool_timelapse/boolpool_timelapse.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you visit Tahoe’s Five Lakes and wander off-trail in just the right direction, making your way over granite scree and thin alpine topsoil, past windworn pines and views to infinity, you will reach a sixth lake.
+It is perched in a high hollow, frozen and unreachable half the year, quite indifferent to the doings of man. Its shores are lined with evergreens, its face reflects the sky, and every day for thousands of years it has born witness to the drama of the High Sierra.&lt;/p&gt;
+
+&lt;p&gt;We were just warm apes, fast and impatient creatures there for a thrill. We were interlopers, protected by our synthetic fabrics and eating our own processed foods. Wrapped in our human comforts, it is not so easy for us to see the lake.&lt;/p&gt;
+
+&lt;p&gt;The lake is animated endlessly by forces too big and slow for most of us to see and understand in realtime. The snow sheets drift ploddingly around the pond like tectonic plates, colliding and melting. The wind dances on the water, rippling first one region, then another, the water revealing the streaming clouds each time it settles to placidity and scrambling them with the return of the waves, again and again. The pines, too, are duplicated in the surface, their reflections growing downwards, slowly, slowly. The sunlight blazes orange and fades.&lt;/p&gt;
+
+&lt;p&gt;These forces act on this pond every day. This drama, or one similar, repeats every day. A single glance finds a battery of powerful natural processes that shape the scene, great and grand and far beyond our control. With a long and patient look, you can start to see them do their work. And the pond bears witness, day after day, year after year.&lt;/p&gt;
+
+&lt;p&gt;It changes you to realize this, to see the processes of nature and know their vastness and unstoppability. A vast quiet settles over you. Perhaps you see too that you are also a phenomenon of this sort – that a few warm apes appearing and disappearing from the side of the pond isn’t so different from the play of the wind on its surface or a deer’s stopping by.&lt;/p&gt;
+
+&lt;p&gt;It is not easy to see this. I only truly feel this now, typing on my laptop in my warm Berkeley home, watching this timelapse loop, letting myself fade from the observer into part of the scene. As I do, I’m reminded of some wise words recently given to me by a friend: “we’re all just here to look around.”&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 10 Jun 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/boolpool-timelapse/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
+        
+        
+        <category>random, personal</category>
+        
+      </item>
     
       <item>
         <title>Using the Laplacian to take a local average of a function</title>
@@ -73,6 +107,14 @@ e^{\frac {\sigma^2} 2 \nabla^2}.\]
 \[e^{\frac{\sigma^2}{2} \nabla^2} = \lim_{n \rightarrow \infty} \left[1 + \frac{\sigma^2}{2n} \nabla^2 f \right]^n\]
 
 &lt;p&gt;and then expanding the right hand side. Anyways, the fact that the boxed equation holds for any monomial around zero is sufficient to argue that any function that converges to its Taylor series (that is, any analytic function) satisfies the boxed equation. Neat!&lt;/p&gt;
+
+&lt;p&gt;As a closing thought, there’s a potential paradox raised by the boxed equation, which is: how can you take a &lt;em&gt;nonlocal&lt;/em&gt; average of a function with the Laplacian, which is a local operator?
+The answer is that the exponentiation actually means that we’re applying the Laplacian an infinite number of times – it’s rather more believable that this counteracts the locality of the operator, especially in light of our discretized model.&lt;/p&gt;
+
+&lt;p&gt;Actually, one more closing thought: so the boxed equation tells us how to study the local &lt;em&gt;Gaussian&lt;/em&gt; average… what if we wanted, say, the local &lt;em&gt;Laplacian&lt;/em&gt; average, or some other rotation-invariant distribution?
+Well, you could just represent that distribution in the basis of Gaussians of different widths, and then you’ve got it – you’ll just have some sum or integral over different values of \(\sigma^2\) on the LHS of the boxed equation.
+That seems useful because I actually needed a Laplacian average for the 1NN analysis.&lt;/p&gt;
+
 </description>
         <pubDate>Thu, 06 Jun 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/the-laplacian-and-diffusion/</link>
@@ -949,95 +991,6 @@ a glimpse of the whole&lt;/p&gt;
         
         
         <category>poetry, personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Creating and erasing AI watermarks</title>
-        <description>&lt;p&gt;I’ve been sitting in on many of the guest lectures for &lt;a href=&quot;https://rdi.berkeley.edu/understanding_llms/s24&quot;&gt;CS 294&lt;/a&gt;, “Understanding LLMs.” To my excitement, yesterday’s speaker was &lt;a href=&quot;https://www.boazbarak.org/&quot;&gt;Boaz Barak&lt;/a&gt;, a Harvard professor who studies theoretical CS and machine learning foundations and whose work and lectures I often enjoy. He spoke about LLM watermarking schemes, and in particular a scheme for breaking more or less arbitrary watermarks. In this post, I’ll give a brief overview of the problem and their solution and offer a synthesis that, to me, gives a succinct way to think about what’s going on here.&lt;/p&gt;
-
-&lt;h2 id=&quot;ai-watermarking&quot;&gt;AI “watermarking”&lt;/h2&gt;
-
-&lt;p&gt;There are many settings in which we might like to ensure that some artifact is &lt;em&gt;not&lt;/em&gt; generated by an AI model — for example, ensuring that photos came from cameras and not diffusion models or that a homework assignment was written by a student and not an LLM. As generative models get better, it’s going to continue to get harder to make this distinction. The problem statement here is basically: “how can we modify generative AI systems so that essentially all generated content can later be identified as AI-generated, in a way that (a) doesn’t make the model’s outputs significantly worse and (b) can’t be removed by a simple transformation of the output?”&lt;/p&gt;
-
-&lt;p&gt;To get a sense for what the landscape looks like here, it’s helpful to imagine some solutions. One naive solution for watermarking LLMs in particular might be: have the LLM only output paragraphs whose characters hash to strings ending in, say, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt;. This could be achieved by just regenerating each paragraph until it satisfies this condition. A page of text generated by this model is going to be easily identifiable as such — you just compute the hash of each paragraph and see only ending &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt;s, which would be unlikely for any text that wasn’t generated under that constraint — but it’s also very fragile: to break this condition, it’s enough to change one word in each paragraph.&lt;/p&gt;
-
-&lt;p&gt;Fortunately, there are better ideas: a handful of papers, including one by &lt;a href=&quot;https://arxiv.org/abs/2301.10226&quot;&gt;a team from UMD&lt;/a&gt;, propose that an LLM might instead write with a statistical bias that applies at every word, but which is randomized enough to be undetectable to a human — for example, using the most recent token to seed a RNG that splits the dictionary into a “good” and a “bad” half, and weakly biasing the model to sample the &lt;em&gt;next&lt;/em&gt; token from the “good” half. This results in human-readable text which can nonetheless be identified as AI-generated with high statistical power (by just running back the “good-list” algorithm), and this “watermark” can’t be removed without changing a &lt;em&gt;lot&lt;/em&gt; of the tokens.&lt;/p&gt;
-
-&lt;h2 id=&quot;a-generic-black-box-attack-on-ai-watermarks&quot;&gt;A generic black-box attack on AI watermarks&lt;/h2&gt;
-
-&lt;p&gt;A watermark on AI text is only good if it is hard to remove. In particular, there shouldn’t exist an “attack” process which (1) is easy to compute and (2) transforms “watermarked” text $T$ into “unwatermarked” text $T’$, where $T$ and $T’$ are equally good answers to the original prompt.&lt;/p&gt;
-
-&lt;p&gt;Remarkably, Boaz + coauthors &lt;a href=&quot;https://arxiv.org/abs/2311.04378&quot;&gt;propose a generic attack satisfying (1,2)&lt;/a&gt;. I’ll quickly describe it before offering a synthesis.&lt;/p&gt;
-
-&lt;p&gt;Their strategy is pretty simple: &lt;em&gt;just make random small changes to the text, and eventually you’ll have changed enough that any watermark will be destroyed.&lt;/em&gt; For example, if you replace every other word with a random synonym, that would be enough to scramble a watermark planted by the UMD team.&lt;/p&gt;
-
-&lt;p&gt;…of course, swapping in &lt;em&gt;random synonyms&lt;/em&gt; would lead to terrible text, so the authors assume the attacker also has an “quality oracle” that can tell you whether you’ve made a swap that unintentionally made things worse. And of course swapping out single words is a bit limited, so sometimes you might want to rephrase bigger chunks of text, so the authors assume that instead of thesaurus, you’re using a “perturbation oracle” that gives random small modifications. In practice, both of these are language models: a powerful model to tell you if your text is worse, and a weak model to propose local modifications.&lt;/p&gt;
-
-&lt;p&gt;Their main result is that, given both a quality oracle and a perturbation oracle, you can remove the watermark by &lt;em&gt;rejection sampling:&lt;/em&gt; at every step, use the perturbation oracle to generate a random modification, and then accept the change only if the quality oracle confirms that the change hasn’t made the overall text worse. This provably results in a &lt;em&gt;random walk around the space of high-quality responses,&lt;/em&gt; and since only a small fraction of these high-quality responses are “watermarked,” after you follow this random walk for a while, you’re going to reach the promised land of watermark-free essays for your English class. Here’s a beautiful figure from their paper illustrating this scheme:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;https://james-simon.github.io/img/llm_watermarks/harvard_random_walk_attack.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-&lt;!-- &lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt;  &lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt; --&gt;
-
-&lt;p&gt;The authors test their attack against several proposed watermarking schemes and find that it consistently works with little degradation in text quality.&lt;/p&gt;
-
-&lt;p&gt;I really like this attack. The fact that such a naive search algorithm — a random walk with rejection sampling — works for this is beautiful (and appeals to me as a trained physicist!). The scheme does a great job of reminding you that watermarked samples are only a small fraction of all samples — indeed, they have to be to be a good watermark — and this very fact makes them fragile! Rarity and nonrobustness are two edges of the same sword.&lt;/p&gt;
-
-&lt;p&gt;The one weakness is that it requires a lot of calls to a quality oracle, which in practice will be a fairly powerful language model, so this isn’t a very cheap attack. But then, if you imagine a near-future world in which AI calls are easily available but all AIs are watermarked, this attack works perfectly well!&lt;/p&gt;
-
-&lt;p&gt;In all honesty, it doesn’t seem to me like breaking watermarking schemes would be particularly hard. For example, it seems like it’d fool the UMD watermarking scheme to just, say, ask the model to write the essay in Spanish and Google Translate it into English, or to generate the essay with a filler word between every content word. I really like this attack, though, not because it does something I thought was impossible, but because it works very generally and shines light on the landscape of attack and defense here.&lt;/p&gt;
-
-&lt;h2 id=&quot;synthesis-bootstrapping-a-discriminator-into-a-generator&quot;&gt;Synthesis: bootstrapping a discriminator into a generator&lt;/h2&gt;
-
-&lt;p&gt;To me, the deep idea behind this attack is that a “quality oracle” can be hooked up to a random process and used to generate high-quality samples — or, in the language of GANs, a “discriminator” can be bootstrapped into a “generator.” A system that merely &lt;em&gt;scores&lt;/em&gt; samples is in some sense almost as powerful as a system that generates them! An AI organization might &lt;em&gt;think&lt;/em&gt; it’s safe giving you only watermarked text and a powerful discriminator, but in fact that discriminator is enough to effectively regenerate the text.&lt;/p&gt;
-
-&lt;p&gt;When can a discriminator be cheaply bootstrapped into a generator? &lt;strong&gt;In some sense, this is what every local optimization algorithm is doing: iterated queries to a loss function (the oracle) are converted into a &lt;em&gt;point&lt;/em&gt; with a low loss value (the generated sample)!&lt;/strong&gt; This “iterated bootstrapping of discriminators” is a motif we should be on the lookout for in optimization and learning generally.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;thought-experiment-how-far-can-this-bootstrapping-idea-go&quot;&gt;Thought experiment: how far can this bootstrapping idea go?&lt;/h2&gt;
-
-&lt;p&gt;This de-watermarking attack effectively works on the principle that &lt;em&gt;a discriminator plus a source of random perturbations can be used as a generator.&lt;/em&gt; I wonder how far we can take this idea!&lt;/p&gt;
-
-&lt;p&gt;Here’s a thought experiment which this principle suggests, and which is sort of the de-watermarking attack taken to the extreme:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Choose a prompt from which we’d like to generate some high-quality text.&lt;/li&gt;
-  &lt;li&gt;Start with &lt;strong&gt;&lt;em&gt;totally random text&lt;/em&gt;&lt;/strong&gt; — just random tokens.&lt;/li&gt;
-  &lt;li&gt;Make random perturbations and run rejection sampling as in this attack for a long time.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Question: do you reach high-quality text after many iterations?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;In some idealized mathematical setting, the answer &lt;em&gt;has&lt;/em&gt; to be yes: quality is only increasing as per the oracle, so eventually it will either reach some local maximum or cross an arbitrary threshold. However, this is a real interesting question in practice thanks to the fact that every component is flawed! &lt;em&gt;Is the oracle reliable enough? Are the perturbations accepted at a good enough rate? Do we reach the promised land of high-quality text in a &lt;strong&gt;reasonable amount of time?&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;I don’t know the answer here, but it seems like it’d be a really cool result if it worked! In particular, I’m curious how dumb the source of perturbations can be in order for it to work. It’d also be really cool to see how the text changes as the process runs — what does it look like, say, 10% of the way through? 25%? 75%? Does it first form good English sentences, then gradually get on topic, then finally become high quality? If it gets stuck, at what point in this progression?&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;I’m pretty curious about this! It actually seems like an experiment that could be run by some entity with a lot of compute.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;In a meta sense, this is also fundamentally how reinforcement learning works: the learning algorithm converts task feedback scores (the oracle) into a system that can generate new good actions (generated samples). (This process is more expensive than schemes that generate only one sample, but once you’re done you have a system for cheaply generating lots of samples.) It’s not totally clear to me how to relate this meta-bootstrapping — aka learning — to the base-level bootstrapping that generates only one sample, as in this attack and optimization algorithms, but they sure feel suspiciously related to me. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;The main reason to doubt that this thought experiment would work is the lack of a gradient here — we’re taking random steps, most of which will be neutral or a little bit harmful. I’m guessing this is fine for the original attack scheme because we already start at a good point, and because the perturbation oracle is designed to generate samples that tend to neither help nor hurt quality. (Incidentally, this is similar to some physics-inspired sampling schemes, like &lt;a href=&quot;https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo&quot;&gt;Hamiltonian Monte Carlo&lt;/a&gt;, which use sampling strategies biased towards regions of similar loss to get faster exploration.) Can you improve text in this way instead of just paraphrasing it? I don’t know, but it’d sure be interesting if you could! &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 06 Mar 2024 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/llm-watermarking/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/llm-watermarking/</guid>
-        
-        
-        <category>deep learning, research</category>
         
       </item>
     
