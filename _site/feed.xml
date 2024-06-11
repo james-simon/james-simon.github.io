@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 11 Jun 2024 14:25:51 -0700</pubDate>
-    <lastBuildDate>Tue, 11 Jun 2024 14:25:51 -0700</lastBuildDate>
+    <pubDate>Tue, 11 Jun 2024 16:26:46 -0700</pubDate>
+    <lastBuildDate>Tue, 11 Jun 2024 16:26:46 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -54,7 +54,7 @@
 &lt;p&gt;I’ve been using a &lt;a href=&quot;https://www.amazon.com/Carson-MicroBrite-60x-120x-Lighted-Microscope/dp/B00LAX52IQ&quot;&gt;small handheld microscope&lt;/a&gt; around my house.
 For such a cheap instrument, the world it reveals is truly remarkable.
 I highly recommend getting one.
-As you look at each of the following images, first guess what it’s a photo of, the mouse over.&lt;/p&gt;
+As you look at each of the following images, first guess what it’s a photo of, then mouse over.&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
@@ -64,10 +64,21 @@ As you look at each of the following images, first guess what it’s a photo of,
         &lt;div class=&quot;col-6&quot;&gt;
             &lt;div class=&quot;hover-container&quot;&gt;
                 &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/feather_scoped.jpg&quot; style=&quot;position: absolute; top: -13%; left: -13%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
+                    &lt;img src=&quot;/img/household_microscopy/jacket_scoped.jpg&quot; style=&quot;position: absolute; top: -16%; left: -12%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
                 &lt;/div&gt;
                 &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/feather.jpg&quot; class=&quot;image&quot; /&gt;
+                    &lt;img src=&quot;/img/household_microscopy/jacket.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/screen_scoped.jpg&quot; style=&quot;position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/screen.jpg&quot; class=&quot;image&quot; /&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
             &lt;br /&gt;
@@ -85,20 +96,20 @@ As you look at each of the following images, first guess what it’s a photo of,
             &lt;br /&gt;
             &lt;br /&gt;
             &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/household_microscopy/whiteboard_scoped.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather_scoped.jpg&quot; style=&quot;position: absolute; top: -13%; left: -13%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
                 &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/whiteboard.png&quot; class=&quot;image&quot; /&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather.jpg&quot; class=&quot;image&quot; /&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
             &lt;br /&gt;
             &lt;br /&gt;
             &lt;br /&gt;
             &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/jacket_scoped.jpg&quot; style=&quot;position: absolute; top: -16%; left: -12%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
-                &lt;/div&gt;
+                &lt;img src=&quot;/img/household_microscopy/whiteboard_scoped.jpg&quot; class=&quot;image&quot; /&gt;
                 &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/jacket.jpg&quot; class=&quot;image&quot; /&gt;
+                    &lt;img src=&quot;/img/household_microscopy/whiteboard.png&quot; class=&quot;image&quot; /&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
             &lt;br /&gt;
@@ -110,17 +121,6 @@ As you look at each of the following images, first guess what it’s a photo of,
                 &lt;/div&gt;
                 &lt;div class=&quot;overlay&quot;&gt;
                     &lt;img src=&quot;/img/household_microscopy/table.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;br /&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/screen_scoped.jpg&quot; style=&quot;position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
-                &lt;/div&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;img src=&quot;/img/household_microscopy/screen.jpg&quot; class=&quot;image&quot; /&gt;
                 &lt;/div&gt;
             &lt;/div&gt;
             &lt;br /&gt;

@@ -142,7 +142,7 @@
       <br>
       A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing
       [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>, more in prep].
-      Some of these ideas came about from quick conversations! If you've got a curious empirical phenomenon you're trying to explain, feel free to reach out :)
+      Some of these ideas came about from quick initial conversations! If you've got a curious empirical phenomenon you're trying to explain, feel free to reach out :)
   	  </p>
     </div>
 
@@ -229,7 +229,9 @@
       <p class="blurb"> We give a simple picture of the generalization of kernel ridge regression in terms of task eigenstructure and use it to solve some theoretical problems. </p>
       <p class="paper-info">
         <strong>TMLR</strong>
-        <a href="https://tinyurl.com/eigenlearning">[arXiv]</a>
+        <a href="https://arxiv.org/abs/2110.03922">[arXiv]</a>
+        <a href="https://github.com/james-simon/eigenlearning">[code]</a>
+        <a href="https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/">[blog]</a>
       </p>
     </div>
   </div>
@@ -263,9 +265,8 @@
       <strong>How bad is neural network overfitting?</strong>
       <p class="blurb"> Classical wisdom holds that overparameterization is harmful. Neural nets defy this wisdom, generalizing well despite their overparameterization and interpolation of the training data. How can we understand this discrepancy? Recent landmark papers have explored the concept of <i>benign overfitting</i> -- a phenomenon in which certain models can interpolate noisy data without harming generalization -- suggesting that that neural nets may fit benignly. In this work with <a href="https://mallinar.xyz/">Neil Mallinar</a>, <a href="https://preetum.nakkiran.org/">Preetum Nakkiran</a>, and others, we put this idea to the empirical test, giving a new characterization of neural network overfitting and noise sensitivity. We find that neural networks trained to interpolation do <i>not</i> overfit benignly, but neither do they exhibit the catastrophic overfitting foretold by classical wisdom: instead, they usually lie in a third, intermediate regime we call <i>tempered overfitting</i>. I found that we can understand these three regimes of overfitting analytically for kernel regression (a toy model for neural networks), and I proved a simple "trichotomy theorem" relating a kernel's eigenspectrum to its overfitting behavior. </p>
       <p class="paper-info">
-        <strong>(2022)</strong>
         <strong>
-          <em>In Submission</em>
+          <em>NeurIPS '22</em>
         </strong>
         <a href="https://arxiv.org/abs/2207.06569">[arXiv]</a>
         <!-- <a href="https://github.com/james-simon/shallow-learning">[code]</a> -->
@@ -273,7 +274,7 @@
     </div>
   </div>
 
-  <hr class="hr-thick">
+<!--   <hr class="hr-thick">
   <div class="row">
     <div class="col-md-3">
       <br>
@@ -282,20 +283,20 @@
       </video>
     </div>
     <div class="col-md-9">
-      <h3>A theory of the inductive bias and generalization of kernel ridge regression and wide neural networks</h3>
-      <strong>A conservation law framework</strong>
+      <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
+      <strong>A simple theory of the generalization of kernel ridge regression</strong>
       <p class="blurb"> Of all the many mysteries of modern neural networks, perhaps the greatest is the question of generalization: why do the functions learned by neural networks generalize so well to new data? "Why" questions can be difficult to pin down, so in recent joint work with Maddie Dickens, we took up a more scientific question: <i>can we predict, from first principles, how well a given net will generalize on a given function?</i> It turns out that recent breakthroughs have essentially answered this question for kernel ridge regression, furnishing accurate approximations for several key metrics of neural network generalization. In this work, we give a simpler derivation of these important results, ascribe a new interpretation to the final theory, and discuss several new applications of the theory to shed light on various aspects of neural network generalization, including double descent and the hardness of the classic parity problem. Key to our formulation is a simple conservation law, latent in kernel regression, which limits the total "learnability" of any orthonormal basis of target functions. Our theory is transparent enough to give intuitive insights into when and why a neural network generalizes well.
       <p class="paper-info">
         <strong>(2021)</strong>
         <strong>
-          <em>In Submission</em>
+          <em>TMLR</em>
         </strong>
         <a href="https://arxiv.org/abs/2110.03922">[arXiv]</a>
         <a href="https://github.com/james-simon/eigenlearning">[code]</a>
         <a href="https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/">[blog]</a>
       </p>
     </div>
-  </div>
+  </div> -->
   <!--    <hr class="hr-thick"><div class="row"><div  class="col-md-3"><img class="mr-4" src="https://james-simon.github.io/img/GRFtest.gif" width="100%"></div><div class="col-md-9"><h3>A phenomenological theory of high-dimensional optimization</h3><p class="blurb">
             I'm currently working on a phenomenological field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>. This research direction was the subject of my proposal for the NSF-GRFP.
          </p></div></div> -->

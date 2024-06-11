@@ -49,7 +49,7 @@ category: fun-science
 I've been using a [small handheld microscope](https://www.amazon.com/Carson-MicroBrite-60x-120x-Lighted-Microscope/dp/B00LAX52IQ) around my house.
 For such a cheap instrument, the world it reveals is truly remarkable.
 I highly recommend getting one.
-As you look at each of the following images, first guess what it's a photo of, the mouse over.
+As you look at each of the following images, first guess what it's a photo of, then mouse over.
 
 <br>
 
@@ -59,10 +59,21 @@ As you look at each of the following images, first guess what it's a photo of, t
         <div class="col-6">
             <div class="hover-container">
                 <div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
-                    <img src="{{site.baseurl}}/img/household_microscopy/feather_scoped.jpg" style="position: absolute; top: -13%; left: -13%; width: 120%; height: 120%; object-fit: cover;">
+                    <img src="{{site.baseurl}}/img/household_microscopy/jacket_scoped.jpg" style="position: absolute; top: -16%; left: -12%; width: 130%; height: 130%; object-fit: cover;">
                 </div>
                 <div class="overlay">
-                    <img src="{{site.baseurl}}/img/household_microscopy/feather.jpg" class="image">
+                    <img src="{{site.baseurl}}/img/household_microscopy/jacket.jpg" class="image">
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div class="hover-container">
+                <div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
+                    <img src="{{site.baseurl}}/img/household_microscopy/screen_scoped.jpg" style="position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; object-fit: cover;">
+                </div>
+                <div class="overlay">
+                    <img src="{{site.baseurl}}/img/household_microscopy/screen.jpg" class="image">
                 </div>
             </div>
             <br>
@@ -80,20 +91,20 @@ As you look at each of the following images, first guess what it's a photo of, t
             <br>
             <br>
             <div class="hover-container">
-                <img src="{{site.baseurl}}/img/household_microscopy/whiteboard_scoped.jpg" class="image">
+                <div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
+                    <img src="{{site.baseurl}}/img/household_microscopy/feather_scoped.jpg" style="position: absolute; top: -13%; left: -13%; width: 120%; height: 120%; object-fit: cover;">
+                </div>
                 <div class="overlay">
-                    <img src="{{site.baseurl}}/img/household_microscopy/whiteboard.png" class="image">
+                    <img src="{{site.baseurl}}/img/household_microscopy/feather.jpg" class="image">
                 </div>
             </div>
             <br>
             <br>
             <br>
             <div class="hover-container">
-                <div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
-                    <img src="{{site.baseurl}}/img/household_microscopy/jacket_scoped.jpg" style="position: absolute; top: -16%; left: -12%; width: 130%; height: 130%; object-fit: cover;">
-                </div>
+                <img src="{{site.baseurl}}/img/household_microscopy/whiteboard_scoped.jpg" class="image">
                 <div class="overlay">
-                    <img src="{{site.baseurl}}/img/household_microscopy/jacket.jpg" class="image">
+                    <img src="{{site.baseurl}}/img/household_microscopy/whiteboard.png" class="image">
                 </div>
             </div>
             <br>
@@ -105,17 +116,6 @@ As you look at each of the following images, first guess what it's a photo of, t
                 </div>
                 <div class="overlay">
                     <img src="{{site.baseurl}}/img/household_microscopy/table.jpg" class="image">
-                </div>
-            </div>
-            <br>
-            <br>
-            <br>
-            <div class="hover-container">
-                <div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
-                    <img src="{{site.baseurl}}/img/household_microscopy/screen_scoped.jpg" style="position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; object-fit: cover;">
-                </div>
-                <div class="overlay">
-                    <img src="{{site.baseurl}}/img/household_microscopy/screen.jpg" class="image">
                 </div>
             </div>
             <br>
