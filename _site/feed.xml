@@ -5,9 +5,164 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 11 Jun 2024 11:31:02 -0700</pubDate>
-    <lastBuildDate>Tue, 11 Jun 2024 11:31:02 -0700</lastBuildDate>
+    <pubDate>Tue, 11 Jun 2024 14:22:42 -0700</pubDate>
+    <lastBuildDate>Tue, 11 Jun 2024 14:22:42 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Microscoping around the house</title>
+        <description>&lt;style&gt;
+.hover-container {
+  position: relative;
+  width: 100%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .1s ease;
+  background-color: #000000;
+}
+
+.hover-container:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 10%; /* Closer to the top edge */
+  left: 10%; /* Closer to the left edge */
+  transform: translate(-5%, -5%); /* Adjust these translate values to fine-tune the position */
+  text-align: center;
+}
+&lt;/style&gt;
+
+&lt;p&gt;I’ve been using a &lt;a href=&quot;https://www.amazon.com/Carson-MicroBrite-60x-120x-Lighted-Microscope/dp/B00LAX52IQ&quot;&gt;small handheld microscope&lt;/a&gt; around my house.
+For such a cheap instrument, the world it reveals is truly remarkable.
+I highly recommend getting one.
+As you look at each of the following images, first guess what it’s a phot of, the mouse over.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather_scoped.jpg&quot; style=&quot;position: absolute; top: -13%; left: -13%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/bread_scoped.jpg&quot; style=&quot;position: absolute; top: -28%; left: -13%; width: 140%; height: 140%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/bread.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;img src=&quot;/img/household_microscopy/whiteboard_scoped.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/whiteboard.png&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/jacket_scoped.jpg&quot; style=&quot;position: absolute; top: -16%; left: -12%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/jacket.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/table_scoped.jpg&quot; style=&quot;position: absolute; top: -19%; left: -19%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/table.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/screen_scoped.jpg&quot; style=&quot;position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/screen.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/magazine_scoped.jpg&quot; style=&quot;position: absolute; top: -19%; left: -15%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/magazine.jpg&quot; class=&quot;image&quot; /&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+&lt;!--         &lt;div class=&quot;col-4&quot;&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;img src=&quot;/img/household_microscopy/feather_scoped.jpg&quot; class=&quot;image&quot;&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather.jpg&quot; class=&quot;image&quot;&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;br&gt;
+            &lt;div class=&quot;hover-container&quot;&gt;
+                &lt;img src=&quot;/img/household_microscopy/feather_scoped.jpg&quot; class=&quot;image&quot;&gt;
+                &lt;div class=&quot;overlay&quot;&gt;
+                    &lt;img src=&quot;/img/household_microscopy/feather.jpg&quot; class=&quot;image&quot;&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt; --&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/household-microscopy/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
+        
+        
+        <category>fun-science</category>
+        
+      </item>
     
       <item>
         <title>The sixth lake</title>
@@ -916,81 +1071,6 @@ blockquote {
         
         
         <category>random, personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Why I talk to strangers</title>
-        <description>&lt;p&gt;i met someone today&lt;br /&gt;
-and in the course of conversation&lt;br /&gt;
-told her about you&lt;br /&gt;
-and your love of people&lt;br /&gt;
-and what I learned&lt;br /&gt;
-and how it changed me&lt;/p&gt;
-
-&lt;p&gt;and she said:&lt;br /&gt;
-that sounds good and all&lt;br /&gt;
-but i don’t see the point&lt;br /&gt;
-in connecting with someone&lt;br /&gt;
-i will never see again.&lt;/p&gt;
-
-&lt;p&gt;and so i thought for a moment&lt;br /&gt;
-and i said&lt;br /&gt;
-when you look at a flower&lt;br /&gt;
-do you fret&lt;br /&gt;
-that your examination is a waste of time&lt;br /&gt;
-because you will never see that flower again?&lt;/p&gt;
-
-&lt;p&gt;and in any case&lt;br /&gt;
-the things you see in that flower&lt;br /&gt;
-the details you notice in its petals, its leaves, its shape, its hue&lt;br /&gt;
-you will surely see in other flowers&lt;br /&gt;
-and to look at one is in some sense to look at them all&lt;br /&gt;
-and teaches you to better see&lt;br /&gt;
-each future flower.&lt;/p&gt;
-
-&lt;p&gt;returning to people&lt;br /&gt;
-all you see in a stranger&lt;br /&gt;
-you will surely see again in countless others –&lt;br /&gt;
-strangers, friends, and loved ones –&lt;br /&gt;
-and learning about a stranger&lt;br /&gt;
-is in fact learning about humanity,&lt;br /&gt;
-each individual a view of the whole&lt;br /&gt;
-and so infinitely more resplendent&lt;br /&gt;
-if you know that secret.&lt;/p&gt;
-
-&lt;p&gt;but it goes deeper&lt;br /&gt;
-because unlike with flowers,&lt;br /&gt;
-here you are that type of thing&lt;br /&gt;
-and you can learn about yourself&lt;br /&gt;
-in a subway chat with a stranger&lt;br /&gt;
-whose name you do not know&lt;br /&gt;
-and whose path you do not share.&lt;br /&gt;
-you may see yourself reflected in their eyes,&lt;br /&gt;
-see a life you might have lived,&lt;br /&gt;
-or a joy you have forgotten,&lt;br /&gt;
-or a struggle you have not known but will soon.&lt;br /&gt;
-humans are not so different&lt;br /&gt;
-and i see now that each gives a view of me&lt;br /&gt;
-and that, i said,&lt;br /&gt;
-is why i talk to strangers.&lt;/p&gt;
-
-&lt;p&gt;our conversation ran its course&lt;br /&gt;
-and we went our separate ways&lt;br /&gt;
-drifting back to our separate lives&lt;br /&gt;
-and i may well never see her again&lt;br /&gt;
-but that, of course, isn’t the point&lt;br /&gt;
-and i am glowing regardless&lt;br /&gt;
-with the feeling&lt;br /&gt;
-of having caught&lt;br /&gt;
-a glimpse of the whole&lt;/p&gt;
-</description>
-        <pubDate>Fri, 15 Mar 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/why-i-talk-to-strangers/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/why-i-talk-to-strangers/</guid>
-        
-        
-        <category>poetry, personal</category>
         
       </item>
     
