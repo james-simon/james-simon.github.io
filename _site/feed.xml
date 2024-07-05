@@ -5,9 +5,368 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 11 Jun 2024 20:41:47 -0700</pubDate>
-    <lastBuildDate>Tue, 11 Jun 2024 20:41:47 -0700</lastBuildDate>
+    <pubDate>Thu, 04 Jul 2024 23:54:02 -0800</pubDate>
+    <lastBuildDate>Thu, 04 Jul 2024 23:54:02 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Experiments in self-assembly</title>
+        <description>&lt;p&gt;In 2018, I designed and prototyped a series of self-assembling objects.
+I never published anything about it then, so I’m doing it now.
+I’ll give background and my motivation, show some cute demos, and conclude with some reflections.&lt;/p&gt;
+
+&lt;h3 id=&quot;background&quot;&gt;Background&lt;/h3&gt;
+
+&lt;p&gt;I’ve always liked cute interactive technical projects. This was particularly true in college, during which I made lots of mostly-useless-but-fun things, including&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;a laser-activated light switch&lt;/li&gt;
+  &lt;li&gt;a robotic articulated necktie&lt;/li&gt;
+  &lt;li&gt;various 3D printed ball mazes&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://james-simon.github.io/blog/gravitrees/&quot;&gt;lots of balancing sculptures&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;and &lt;a href=&quot;vthunt.com&quot;&gt;a campus-wide puzzlehunt&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included &lt;a href=&quot;https://www.youtube.com/watch?v=Bnj1sPfo4Ek&quot;&gt;this self-assembling “chair,”&lt;/a&gt; &lt;a href=&quot;https://www.youtube.com/watch?v=6aZbJS6LZbs&quot;&gt;this swarm of cubic robots&lt;/a&gt;, and this &lt;a href=&quot;https://www.youtube.com/watch?v=ZVYz7g-qLjs&quot;&gt;robot origami&lt;/a&gt;, all from MIT. As a senior, I got a small grant from the 3D printing service &lt;a href=&quot;https://www.notion.so/Self-assembly-blogpost-ba25260acc7948a3b9c7343548521687?pvs=21&quot;&gt;Shapeways&lt;/a&gt; to explore 3D printed self-assembling systems.&lt;/p&gt;
+
+&lt;p&gt;I spent a semester on the project and came up with some cool prototypes. None of them are particularly scalable or practical, but they are cute.&lt;/p&gt;
+
+&lt;h3 id=&quot;self-assembling-circuit&quot;&gt;Self-assembling circuit&lt;/h3&gt;
+
+&lt;p&gt;I designed a self-assembling circuit. It consists of four pieces, each of which has two magnetic surfaces to link up to its two neighbors. The four pieces are hollow and contain circuit components: a battery, a resistor, an LED, and a blank wire, respectively. When all four pieces are joined in a loop, the LED lights up. As far as I know, this is the first self-assembling circuit ever made (as long as you don’t count naturally-occurring circuits in biochemistry!).&lt;/p&gt;
+
+&lt;p&gt;The four pieces will link up after being shaken together for a minute or two. Here’s a demo video:&lt;/p&gt;
+
+&lt;!-- youtube embed. pretty cursed -- no idea how this is working --&gt;
+&lt;style&gt;
+    .video-container {
+        position: relative;
+        width: 60%; /* Set the width to 60% */
+        padding-bottom: 33.75%; /* Aspect ratio for 16:9 videos, calculated as (9/16)*60 */
+        height: 0;
+        overflow: hidden;
+        margin: 0 auto; /* Center the container */
+    }
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+&lt;/style&gt;
+
+&lt;div class=&quot;video-container&quot;&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;iframe width=&quot;600px&quot; src=&quot;https://www.youtube.com/embed/VN1XIlCqdOU?si=ldut7K_l5Qoa6S2W&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share&quot; referrerpolicy=&quot;strict-origin-when-cross-origin&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Some technical facts:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The magnetic pattern on each connecting surface is addressed uniquely to its counterpart. These pieces will always assemble the same way.&lt;/li&gt;
+  &lt;li&gt;The internal wires are soldered to the little magnets on the connecting surfaces. This was harder than it sounds because a soldering iron will &lt;a href=&quot;https://en.wikipedia.org/wiki/Curie_temperature&quot;&gt;heat up a magnet enough to demagnetize it!&lt;/a&gt; I ended up attaching each demagnetized magnet to a working magnet to get around this.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;magnacubes&quot;&gt;“Magnacubes”&lt;/h3&gt;
+
+&lt;p&gt;Before the self-assembling circuit, I tried the same concept with ordinary cubic blocks. Here are two pictures (before and after assembly, respectively) and a video.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-1&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-5&quot;&gt;
+        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/self_assembly/magnacubes.JPG&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-5&quot;&gt;
+        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/self_assembly/magnacubes_assembled.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-1&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;/img/self_assembly/magnacube_video.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&quot;instacube&quot;&gt;“Instacube”&lt;/h3&gt;
+
+&lt;p&gt;These linked rods take on a cubic shape under the influence of gravity.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;/img/self_assembly/instacube.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&quot;self-healing-magnetic-material&quot;&gt;“Self-healing” magnetic material&lt;/h3&gt;
+
+&lt;p&gt;I designed a repeating unit with four embedded magnets on springs pointing out in cardinal directions.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; These units can be linked up in big sheets or closed 3D structures. Individual magnetic bonds will reform if they’re broken, so you can pass a thin object through the material without any lasting damage. Here are a picture of some assembled units and a video showing the “self-healing” property.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+        	&lt;p&gt;
+				&lt;img src=&quot;/img/self_assembly/magnetic_material.JPG&quot; class=&quot;image&quot; width=&quot;100%&quot; /&gt;
+			&lt;/p&gt;
+			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+			    &lt;source src=&quot;/img/self_assembly/magnetic_material.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+			&lt;/video&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;other-ideas-and-failures&quot;&gt;Other ideas and failures&lt;/h3&gt;
+
+&lt;p&gt;I spent a lot of time exploring “self-assembly by pulled string,” in which you could pull a string taut and a 3D object would pop up. This was motivated by a desire for an instantly-assemblable tent. I got some promising initial results, but ultimately it was too hard to get the tension to transmit through the whole chain with the materials and geometry I was using. I’m sure something like this would work enough make a cool demo.&lt;/p&gt;
+
+&lt;p&gt;I tried making something that’d assemble with buoyant forces when submerged in water, but didn’t get far. I’m sure that could be made to work in some capacity, too.&lt;/p&gt;
+
+&lt;h3 id=&quot;reflections&quot;&gt;Reflections&lt;/h3&gt;
+
+&lt;p&gt;It’s been six years since this series of projects. In that span, I’ve matured into a proper scientist. Looking back, they’re clearly immature work, but I still find most of these demos cool. I appreciate my past self’s ingenuity and initiative.&lt;/p&gt;
+
+&lt;p&gt;Given the opportunity, I’d offer my college self the following advice on this project:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Find mentorship. Try hard to work with a professor. You’ll learn much more that way, and the small sacrifice of freedom is worth it.&lt;/li&gt;
+  &lt;li&gt;Choose projects that will teach you skills you want to learn, not projects that’ll lead to the cutest demos.&lt;/li&gt;
+  &lt;li&gt;Document finished projects better. You’ll want nice videos when you write a blog post in six years.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Most significantly, I am no longer enamored with flashy demos of the type that inspired me in college. They have undeniable aesthetic appeal, and they can certainly be technically impressive, but it’s not clear that they’re &lt;em&gt;leading&lt;/em&gt; anywhere research-wise. In that respect, they seem more like art than engineering research. I still appreciate flashy demos as art, but I’m now quite wary when they’re presented as technical progress towards some important problem.&lt;/p&gt;
+
+&lt;!-- [^b]: See [this related xkcd](https://xkcd.com/2128/). --&gt;
+
+&lt;!-- I think macroscopic self-assembly research (like I did here) is much more flashy than useful. This kind of work often cites the creation of nanomachines as a main motivation [^b] — as the big problem they’re trying to solve — but it’s totally unclear to me that designing macroscopic objects that magnetically assemble is really going to help get us there. It’s certainly cool and inspiring, and if we had a plausible related avenue to making nanomachines, it could be a good way to draw attention to that, but as far as I know, the nanoscience is so far from working that this motivation seems a little blustery. The same thing happens in lots of other fields — [this xkcd](https://xkcd.com/2128/) gives the classic justification for flashy robots! --&gt;
+
+&lt;p&gt;These days, I generally want technical research to feel like it’s going to be useful in the future — that it’s providing a useful tool, or that it’s revealing some piece of a larger puzzle, or that it suggests some new path forwards. I tend to feel that research is building an enormous tree of human knowledge, and that the best new pieces have lots of open joints to connect to yet more pieces that we could imagine discovering! One of my main reflections on my college research is that, when you’re brutally honest about it, it’s unclear that it’s actually leading anywhere!&lt;/p&gt;
+
+&lt;p&gt;I did not have this desire for utility at the start of graduate school: at that time, novelty and aesthetic appeal were probably my primary considerations, and I frankly resented the notion of doing something more like what everyone else was doing in order to have more of an impact.
+I suppose I ultimately landed somewhere in the middle: ML theory has proven important enough to do impactful stuff, but also wide open enough to do creative and beautiful work.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;The north-facing and south-facing magnets are “south-pole-outwards,” and the east-facing and west-facing magnets are “north-pole-outwards.” This choice is nice for making big sheets from many units. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 03 Jul 2024 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/blog/self-assembly/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
+        
+        
+        <category>research</category>
+        
+      </item>
+    
+      <item>
+        <title>Gravitree update: June 2024</title>
+        <description>&lt;p&gt;&lt;em&gt;This is an update to my &lt;a href=&quot;https://james-simon.github.io/blog/gravitrees/&quot;&gt;previous post&lt;/a&gt; introducing gravitrees.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;For almost ten years, I’ve been making kinetic balancing sculptures I now call &lt;em&gt;gravitrees.&lt;/em&gt; They’re all designed around the same basic principle — pieces balance in an ascending stack with (usually) only one point of contact between each piece and the one below it — but there are many geometric ways to realize this principle, some of which are quite striking.&lt;/p&gt;
+
+&lt;p&gt;This post is a gallery of new designs I’ve come up with in the past year or so. I’ll conclude with some reflections and current outlook.&lt;/p&gt;
+
+&lt;h2 id=&quot;poplar&quot;&gt;&lt;em&gt;Poplar&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;This design’s a classic, but it’s been perfected in the last year. I’ve made both regular-sized and mini versions.&lt;/p&gt;
+
+&lt;p&gt;[PICTURES]&lt;/p&gt;
+
+&lt;h2 id=&quot;manzanita&quot;&gt;&lt;em&gt;Manzanita&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;This is now my go-to asymmetric design. The mini version’s quite cute!&lt;/p&gt;
+
+&lt;p&gt;[PICTURES]&lt;/p&gt;
+
+&lt;h2 id=&quot;pocket-gravitree&quot;&gt;&lt;em&gt;Pocket gravitree&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;I carry one of these around in my wallet.&lt;/p&gt;
+
+&lt;p&gt;[PICTURE] [VIDEO]&lt;/p&gt;
+
+&lt;h2 id=&quot;tyrannosaur&quot;&gt;&lt;em&gt;Tyrannosaur&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;This was my first attempt to make one that extends sideways instead of up. Most gravitrees feel like plants to most people, but this one’s more animal.&lt;/p&gt;
+
+&lt;p&gt;[PICTURE]&lt;/p&gt;
+
+&lt;p&gt;I also made a version that tilts up slightly. Not sure what its name is. It fills space very satisfyingly.&lt;/p&gt;
+
+&lt;p&gt;[PICTURE]&lt;/p&gt;
+
+&lt;h2 id=&quot;chordata&quot;&gt;&lt;em&gt;Chordata&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;It’s fun to try to make one with as many pieces as possible. This one held the record at 13…&lt;/p&gt;
+
+&lt;p&gt;[PICTURE]&lt;/p&gt;
+
+&lt;h2 id=&quot;autogravitree&quot;&gt;&lt;em&gt;Autogravitree&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;…until this one, which has 20 pieces and was generated programmatically!&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/gravitree_update/autogravitree_2.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;[BACKGROUND TOGGLE INFO]&lt;/p&gt;
+
+&lt;h2 id=&quot;monstera&quot;&gt;&lt;em&gt;Monstera&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;With a five-foot span, it’s the biggest gravitree I’ve ever made. It’s lasercut wood that I woodstained.&lt;/p&gt;
+
+&lt;p&gt;[PICTURE]&lt;/p&gt;
+
+&lt;h2 id=&quot;gravitree-20&quot;&gt;&lt;em&gt;Gravitree 2.0&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;This one might be the best I’ve ever made.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 110%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/gravitree_update/gravitree_two.jpg&quot; style=&quot;position: absolute; top: -10%; left: -16%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;background-toggleout&quot;&gt;Background toggleout&lt;/h3&gt;
+
+&lt;p&gt;When designing a gravitree, a lot of the CAD time’s spent manually tweaking different part dimensions so everything balances. It’s a pretty mechanical process, though, so I’d wanted to do it automatically for a while.&lt;/p&gt;
+
+&lt;p&gt;To get there, I scripted a single piece with variable dimensions in &lt;a href=&quot;https://cadquery.readthedocs.io/en/latest/index.html&quot;&gt;CadQuery&lt;/a&gt;, then ran a Python script to generate a 20-piece gravitree with each piece made from that same template.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-pagoda-gravitree&quot;&gt;The pagoda gravitree&lt;/h2&gt;
+
+&lt;p&gt;I visited Japan last December and loved the architecture. This gravitree is inspired by &lt;a href=&quot;https://web-japan.org/nipponia/nipponia33/images/topic/22_1.jpg&quot;&gt;pagodas&lt;/a&gt; and &lt;a href=&quot;https://savvytokyo.scdn3.secure.raxcdn.com/app/uploads/2019/08/Meiji-Jingu-Torii-Top-9-Shrines-to-Visit-in-Tokyo.jpg&quot;&gt;torii gates&lt;/a&gt;. This one was technically challenging: the pieces are so similar in size that, in order to get it all to balance, I needed to make the pieces very light but hide heavy weights inside. The structure here is balsa wood (the lightest wood), but inside hold tungsten (close to the heaviest material found on Earth). The upturned flare at the end of each member both gives space to hide the tungsten shot and mimic similar convex flares I liked in the Japanese architecture.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
+				&lt;img src=&quot;/img/gravitree_update/pagoda_gravitree.jpg&quot; style=&quot;position: absolute; top: -7%; left: -10%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;gravitree-earrings&quot;&gt;Gravitree earrings&lt;/h2&gt;
+
+&lt;h2 id=&quot;failed-attempts&quot;&gt;Failed attempts&lt;/h2&gt;
+
+&lt;h2 id=&quot;reflections&quot;&gt;Reflections&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;these are really creative&lt;/li&gt;
+  &lt;li&gt;the best changes were totally new forms and shapes. getting away from the weights-on-sticks look was nice.&lt;/li&gt;
+  &lt;li&gt;the 2.0s really look far better. I wonder why.&lt;/li&gt;
+  &lt;li&gt;ideas take a long time to simmer in the background.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;prospects-for-selling-gravitrees&quot;&gt;Prospects for selling gravitrees&lt;/h2&gt;
+
+&lt;p&gt;People have been telling me for a few years now that I should sell gravitrees.
+There’s been a real uptick in this sort of comment lately, and with these new designs, I’m starting to believe it.
+I’d love for gravitrees to be cheaply buyable (and it’d certainly be nice to make some profit off them).
+A few obstacles here include that&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high – about $30 for a small gravitree and $50 for a large one &lt;em&gt;without my making any profit!&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;I’m not sure how much people are willing to pay for these.&lt;/li&gt;
+  &lt;li&gt;Another manufacturing technique like injection molding would be cheaper, but then you’re running a whole business, with inventory and everything. I’d be curious to know how that works, but I don’t want to run something like that long-term.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;A decent plan here seems to be to try to sell at a few local art fairs, gauge interest, and perhaps build an online presence.
+If demand seems high enough, it could be worth looking for a business partner to handle productization.
+(That seems to be what the artist behind the &lt;a href=&quot;https://kinetrika.com/&quot;&gt;Square Wave&lt;/a&gt; did.)
+I’d also be happy to sell the idea to an existing company.
+It seems worth getting a patent for gravitrees if they seem likely to be marketable.
+Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.&lt;/p&gt;
+
+&lt;h4 class=&quot;toggle-header&quot; onclick=&quot;toggleContent()&quot;&gt;Click for technical details&lt;/h4&gt;
+&lt;div class=&quot;toggle-content&quot;&gt;
+    &lt;p&gt;This is the content that gets revealed or hidden when you click the header above.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    function toggleContent() {
+        var content = document.querySelector('.toggle-content');
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    }
+&lt;/script&gt;
+
+&lt;style&gt;
+    .toggle-header {
+        cursor: pointer;
+        background-color: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .toggle-content {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+&lt;/style&gt;
+
+</description>
+        <pubDate>Sun, 23 Jun 2024 02:00:00 -0800</pubDate>
+        <link>http://localhost:4000/blog/gravitree-update-2024/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
+        
+        
+        <category>random</category>
+        
+      </item>
     
       <item>
         <title>Household microscopy</title>
@@ -155,7 +514,7 @@ As you look at each of the following images, first guess what it’s a photo of,
 &lt;/div&gt;
 
 </description>
-        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/household-microscopy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
         
@@ -189,7 +548,7 @@ It is perched in a high hollow, frozen and unreachable half the year, quite indi
 
 &lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Mon, 10 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Mon, 10 Jun 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/boolpool-timelapse/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
         
@@ -271,7 +630,7 @@ Well, you could just represent that distribution in the basis of Gaussians of di
 That seems useful because I actually needed a Laplacian average for the 1NN analysis.&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 06 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Thu, 06 Jun 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/the-laplacian-and-diffusion/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/the-laplacian-and-diffusion/</guid>
         
@@ -380,7 +739,7 @@ Here are some experiments that show that we’ve got the 2D case right, too.&lt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 05 Jun 2024 02:00:00 -0700</pubDate>
+        <pubDate>Wed, 05 Jun 2024 02:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/1nn-eigenframework/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/1nn-eigenframework/</guid>
         
@@ -448,7 +807,7 @@ This post is motivation for &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;p
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 05 Jun 2024 01:00:00 -0700</pubDate>
+        <pubDate>Wed, 05 Jun 2024 01:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/lets-solve-learning-rules/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/lets-solve-learning-rules/</guid>
         
@@ -509,7 +868,7 @@ I wonder if learning some basic biochemistry would make things seem more mechani
 
 &lt;p&gt;&lt;em&gt;The molecules are 1) naproxen, 2) aspirin, 3) ibuprofen, and 4) acetaminophen. I have no idea how you could guess this, so congratulations if you did.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sat, 01 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Sat, 01 Jun 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/otc-pain-relievers/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/otc-pain-relievers/</guid>
         
@@ -689,7 +1048,7 @@ Thanks to Vincent Huang for pointing me to Farey sequences.&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 21 Apr 2024 00:00:00 -0700</pubDate>
+        <pubDate>Sun, 21 Apr 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/cropland-crystallography/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/cropland-crystallography/</guid>
         
@@ -749,328 +1108,12 @@ blockquote {
   &lt;p&gt;And if this should be affirmative, if you may meet this earnest question with a strong and simple, “I must,” then build your life according to this necessity; your life even into its most indifferent and slightest hour must be a sign of this urge and a testimony to it.&lt;/p&gt;
 &lt;/blockquote&gt;
 </description>
-        <pubDate>Wed, 17 Apr 2024 00:00:00 -0700</pubDate>
+        <pubDate>Wed, 17 Apr 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/quotes-from-l-t-a-y-p/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/quotes-from-l-t-a-y-p/</guid>
         
         
         <category>random</category>
-        
-      </item>
-    
-      <item>
-        <title>How many babies were born during the 2024 eclipse?</title>
-        <description>&lt;p&gt;I was privileged enough to see the 2024 total eclipse. I watched it in a clearing in dry west Texas, surrounded by awed humans, most of whom, like me, had roadtripped from far away for the glorious event. The trip deserves its own post, but for the meantime, here’s a short little calculational anecdote.&lt;/p&gt;
-
-&lt;p&gt;Some time after totality, while discussing the number of marriages during the eclipse, someone wondered: how many babies were born during totality? It’s an interesting question because, unlike weddings, you mostly can’t control it, but any baby born during totality will have an amazing story for their entire life. Another guy and I decided to try to estimate it.&lt;/p&gt;
-
-&lt;p&gt;We’ll restrict our focus to babies born in the US. I’ll give two solutions: first, the rough estimate we did in the field without looking up any numbers, and second, a more refined estimate using real numbers.&lt;/p&gt;
-
-&lt;h2 id=&quot;rough-estimate&quot;&gt;Rough estimate&lt;/h2&gt;
-
-&lt;p&gt;We essentially want two numbers for the US: $\text{[births per unit (area} \times \text{time)]}$ and $\text{[total eclipse (area} \times \text{time)]}$. We can then multiply these numbers to get an expected total number of births.&lt;/p&gt;
-
-&lt;p&gt;First we estimate the area of the US by approximating it as a giant rectangle:&lt;/p&gt;
-
-\[\text{[contiguous US area]} \approx 3000 \times 1000 \ \text{mi}^2 = 3 \times 10^6 \ \text{mi}^2\]
-
-&lt;p&gt;Then we the estimate the US birth rate by imagining that its entire population refreshes every 100 years:&lt;/p&gt;
-
-\[\text{[US birth rate]} \approx \frac{\text{[US population]}}{\text{[human lifespan]}} \approx \frac{3 \times 10^8 \ \text{people}}{100 \ \text{years}} = 3 \times 10^6 \ \frac{\text{people}}{\text{year}}\]
-
-&lt;p&gt;We estimate the eclipse path size as a long thin rectangle whose dimensions we’re guessing from memory:&lt;/p&gt;
-
-\[\text{[eclipse path size]} \approx 1000 \times 50 \ \text{mi}^2 = 5 \times 10^4 \ \text{mi}^2\]
-
-&lt;p&gt;And we use a number for the duration of totality:&lt;/p&gt;
-
-\[\text{[eclipse duration]} \approx 10 \ \text{min}\]
-
-&lt;p&gt;Finally, combining everything and approximating $\text{1 year} \approx 5 \times 10^5 \ \text{min}$, we find that&lt;/p&gt;
-
-\[\begin{aligned}
-\text{[number of eclipse births]} &amp;amp;\approx \frac{\text{[US birth rate]}}{\text{[contiguous US area]}} \times \text{[eclipse path size]} \times \text{[eclipse duration]} \\
-&amp;amp;\approx \frac{3 \times 10^6 \ \text{people / year} \times 5 \times 10^4 \ \text{mi}^2 \times 10 \ \text{min}}{3 \times 10^6 \ \text{mi}^2} \\
-&amp;amp;\approx 1 \ \text{person} \ (!!)
-\end{aligned}\]
-
-&lt;p&gt;Astonishingly, everything cancels, and we’re left with a prediction of, on average, &lt;em&gt;one baby born during totality in the United States!&lt;/em&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;refined-estimate&quot;&gt;Refined estimate&lt;/h2&gt;
-
-&lt;p&gt;Alright, let’s see how close our feeder quantities were to the real numbers. Standard references (Wikipedia, the CDC, etc.) tell us that, in reality,&lt;/p&gt;
-
-\[\text{[contiguous US area]} \approx 3.1 \times 10^6 \ \text{mi}^2\]
-
-\[\text{[US birth rate]} \approx  3.7 \times 10^6 \ \frac{\text{people}}{\text{year}}\]
-
-&lt;p&gt;Looking an actual eclipse map, a better estimate for the size of the path of totality seems like&lt;/p&gt;
-
-\[\text{[eclipse path size]} \approx 2100 \times 110 \ \text{mi}^2 = 2.31 \times 10^5 \ \text{mi}^2\]
-
-&lt;p&gt;While it’s all over the internet that the duration of totality on the centerline of the path was about four minutes, I didn’t readily find any maps that show how that duration falls off as you get closer to the edge of the path. However, the fact that nobody seemed to worry much about being near the centerline suggests that the duration doesn’t fall off too fast — probably slower than linear! Working through the geometry of one circle translating and occluding a second, slightly smaller circle, it seems to me like a plot of duration vs. position traces a semicircle — that is, $\text{[duration]} \propto \sqrt{\text{[path half-width]}^2 - \text{[distance from centerline]}^2}$:&lt;sup id=&quot;fnref:q&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:q&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/eclipse_baby/eclipse_duration_plot.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-&lt;p style=&quot;margin-left:20%; margin-right:20%;&quot;&gt;
-&lt;small&gt;
-&lt;i&gt; Since the plot here has a steep slope near its edges, you'll get close to maximum duration even if you're close to the edge of the path. &lt;/i&gt;
-&lt;/small&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Anyways, the upshot is that, actually, we can just take four minutes as the eclipse duration across the whole path and be mostly correct, and if we want to be more precise, we can average over the path width, which amounts to multiplying by a factor of $\frac{\pi}{4}$.&lt;/p&gt;
-
-&lt;p&gt;Putting it all together, we get&lt;/p&gt;
-
-\[\begin{aligned}
-\text{[number of eclipse births]} &amp;amp;\approx \frac{3.7 \times 10^6 \ \text{people / year} \times 2.31 \times 10^5 \ \text{mi}^2 \times 4 \times \frac{\pi}{4} \ \text{min}}{3.1 \times 10^6 \ \text{mi}^2} \\
-&amp;amp;\approx 1.6 \ \text{person}
-\end{aligned}\]
-
-&lt;p&gt;So, in light of this better calculation, how’d the rough estimate turn out? Surprisingly, our field estimates of the area and birth rate of the US were really good, and we underestimated the area of the eclipse but overestimated its duration in ways that came close to cancelling, so our refined estimate is just a bit bigger than our original estimate! It always surprises me how often these rough Fermi estimates are quite close to better calculations… I’d be really interested in a paper studying how errors usually accumulate in Fermi calculations to get some intuition for when to expect an accurate result.&lt;/p&gt;
-
-&lt;h2 id=&quot;so-was-there-actually-an-eclipse-baby&quot;&gt;So was there actually an eclipse baby?&lt;/h2&gt;
-
-&lt;p&gt;Googling thing related to “eclipse baby” returns &lt;a href=&quot;https://abcnews.go.com/GMA/Family/mom-welcomes-baby-named-sol-total-solar-eclipse/story?id=109038075&quot;&gt;this story&lt;/a&gt; of a Texas family whose baby was born on the eclipse day. This article says that it was born during the total eclipse, but the birth time they give is about half an hour before totality, and in &lt;a href=&quot;https://www.foxweather.com/watch/play-710fe6a0f001782&quot;&gt;this interview&lt;/a&gt; the parents say they saw the total eclipse after the birth, so it seems this is just a near miss.&lt;/p&gt;
-
-&lt;p&gt;The question’s still out, then — was there a baby born during totality in 2024? I If you meet this baby, please introduce us.&lt;/p&gt;
-
-&lt;!-- divider above footnotes --&gt;
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:q&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;You get this functional form regardless of the relative sizes of the circles! It reduces to the question of whether the center of one circle is within a certain distance of the center of the second circle. &lt;a href=&quot;#fnref:q&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Mon, 15 Apr 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/eclipse-baby/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/eclipse-baby/</guid>
-        
-        
-        <category>random</category>
-        
-      </item>
-    
-      <item>
-        <title>Roadtripping to North Dakota</title>
-        <description>&lt;link rel=&quot;stylesheet&quot; href=&quot;/css/hover_effects.css&quot; /&gt;
-
-&lt;p&gt;A few weeks ago, I did a solo roadtrip, spending two weeks driving a curving path from Nashville, TN to Bismarck, ND to go to every state I’d never been to. This was a deeply satisfying and rewarding experience – I got to drink deeply of solitude and nature and freedom, got to practice living on the road, and hit 50 states just before my father and brother, who were at 48 and 49 respectively and didn’t know I was doing this. Here I’ll sketch my journey and conclude with a few things I’m taking away from this journey.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-route&quot;&gt;The route&lt;/h2&gt;
-
-&lt;p&gt;I had eight states to knock off: Georgia, Kentucky, Arkansas, Oklahoma, Kansas, Missouri, Nebraska, and North Dakota. I’d been picking off stragglers for years, leaving myself a big mostly-contiguous chunk in the midwest ripe for a high-value roadtrip. I viewed this as a more extreme version of how, when playing Tetris, one tends to carefully preserve a vertical gap for a long piece and then knocks out four rows at once.&lt;/p&gt;
-
-&lt;p&gt;The one fixed pin of this trip – and the reason I did it when I did – was an engagement party one weekend in Nashville, so I decided to plan a long layover in Atlanta on my way there and then drive everywhere else. The final route looks like a path you’d only travel if you were trying to drive through a very specific sequence of states:&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/states_roadtrip/route_map.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h2 id=&quot;some-logistics&quot;&gt;Some logistics&lt;/h2&gt;
-
-&lt;p&gt;I lived out of a 2024 Hyundai Elantra for these two weeks. I’d actually rented the cheapest car available, but when I got to the lot, the rental agent told me he “wouldn’t do me dirty like that” and instead gave me a stupidly nice brand new car that, thanks to automated lanekeeping, basically drives itself on the highway.&lt;/p&gt;
-
-&lt;p&gt;I stayed in a few Airbnbs and a motel, but I greatly preferred my nights in the woods. As it turns out, dispersed camping is allowed in national forests (which are nicely visualized on &lt;a href=&quot;https://www.fs.usda.gov/ivm/&quot;&gt;this wonderful map&lt;/a&gt;), and it’s somehow quite freeing to drive into a big wild forest and get to camp basically anywhere, picking an arbitrary dirt road and pitching camp too deep in the woods to be likely to see another soul.&lt;/p&gt;
-
-&lt;p&gt;I set out from Nashville on the morning of March 17th. I’ll flash some scenes from the trip. Mouse over the photos for vignettes!&lt;/p&gt;
-
-&lt;style&gt;
-.hover-container {
-  position: relative;
-  width: 100%;
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 0;
-  transition: .1s ease;
-  background-color: #000000;
-}
-
-.hover-container:hover .overlay {
-  opacity: .8;
-}
-
-.text {
-  color: white;
-  font-size: 12px;
-  position: absolute;
-  top: 10%; /* Closer to the top edge */
-  left: 10%; /* Closer to the left edge */
-  transform: translate(-5%, -5%); /* Adjust these translate values to fine-tune the position */
-  text-align: center;
-}
-&lt;/style&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/atlanta.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;In Atlanta, I took public transit into the city and rested in Centennial Park. The air was warm. I chatted briefly with a few homeless folks but mostly kept to myself.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/mammoth_caves.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;To check off Kentucky, I went to Mammoth Caves with a friend of friends from the engagement party. He turned out to be a mathematician, and we knocked some math puzzles back and forth as we walked around the largest cave in the world.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/memphis_pyramid.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;This ridiculous Bass Pro Shops pyramid stands in Memphis. Like the greater pyramids of Egypt, this structure sports four triangular sides, various anti-robbery mechanisms, and an assortment of dead animals, and is similarly anthropologically fascinating. Instead of mummies, however, this modern pyramid only contains old people.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/arkansas_2.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;Ironically, I found myself unintentionally on the path of totality of the 2024 solar eclipse just a few weeks too early, and I’d drive far away and then do a whole second roadtrip back to the path from California.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/kansas_3.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;Kansas was expansive, calm, and flat. As I drove north from Arkanasas, I could see the land change, quickly turning from rocky forested hills to flat Southern forest to open plains, all in the span of an hour or two.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/kansas_1.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;This Kansas town had a classic middle-America look that'd seem at home in the 1950's to me. I slept in Kansas City, Missouri that evening.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/sioux_falls.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;I stayed a few days with Matthew Schallenkamp, a friend and coworker, in Sioux Falls, SD, working on a coding project and seeing the town. Remarkably for a city of a quarter million people, Sioux Falls has a huge set of rapids rolling through the middle of town.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/devils_tower.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;Matthew joined me on a trip west to Devils Tower. What a weird formation.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/nashville.gif&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;In Nashville, I athletically somersaulted onto a mechanical bull.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/arkansas_1.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;I spent two nights in the Arkansas Ozarks. It’s beautiful hill country.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/oklahoma.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;To me, Oklahoma consists of Tiger King, some associations with panhandles, and this hybrid gas station/casino.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/kansas_2.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;I stopped for lunch by a pond.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/nebraska.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;Nebraska allegedly has some cool buttes and bluffs off on its western side (actually, all the plains states seem to get cooler as you go west), but I skirted its eastern border, following the Missouri River and camping on the shore.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/badlands.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;I love the Badlands. They’re so cool. I hadn’t been since I was a child, and I hadn’t remembered that these wonderful formations are just dirt, not rock. They’re so fragile — one determined person with a shovel could probably really change the view! In line with this, it’s a pretty geologically young place, with erosion starting only some 500k years ago.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;br /&gt;
-            &lt;div class=&quot;hover-container&quot;&gt;
-                &lt;img src=&quot;/img/states_roadtrip/north_dakota.jpg&quot; class=&quot;image&quot; /&gt;
-                &lt;div class=&quot;overlay&quot;&gt;
-                    &lt;div class=&quot;text&quot;&gt;I sent this picture to my brother and father after I told them I had some news. Yes, they were mad, and it was great.&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;some-lessons&quot;&gt;Some lessons&lt;/h2&gt;
-
-&lt;p&gt;This trip afforded me ample time for reflection and coincided with a more extended personal journey I’ve been on for the past year in which I’ve been figuring out how to live as an adult in ways feel good. I learned a number of things about roadtripping, including that&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;it’s very useful to run a tight ship logistically, taking care of problems as soon as they arise and keeping gear quite organized. I never had any major logistical problems, which is unusual for me, and it’s because I gave problems my attention when they were still small.&lt;/li&gt;
-  &lt;li&gt;Talking to strangers is a great joy of travel, and a good way to quickly get the feel of a place. Unplanned conversations were highlights of the trip. (See &lt;a href=&quot;/blog/why-i-talk-to-strangers/&quot;&gt;Why I Talk To Strangers&lt;/a&gt;.)&lt;/li&gt;
-  &lt;li&gt;Driving on snow is way harder than I expected.&lt;/li&gt;
-  &lt;li&gt;The land is big, but it’s fathomably big. Taking a plane from coast to coast gives little sense of how much land there is since you really have no physical feeling of how fast you’re traveling. Driving across the heartlands gave me a real sense of how big the land is: if I drive for an hour or two or three, the character of the land will differ – hills turn to forest, forest turns to grassland, grassland to plains, to prairie, to badlands – and if I go for ten or twenty of these changes I’ll go from one side of the country to the other. America feels like a much more tangible thing to me now.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;And, even more valuable, some broader life lessons and realizations:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;A career has to be fun to be fulfilling. No matter how important I feel science is, and how convinced I am that I could make a valuable contribution, it’s not worth doing if it’s not fun.&lt;/li&gt;
-  &lt;li&gt;Various realizations about software engineering thanks to Matthew, including that it’s a skill I simply don’t have but could develop.&lt;/li&gt;
-  &lt;li&gt;I’m kinda lonely! This particularly solitary endeavor clarified for me that &lt;em&gt;most&lt;/em&gt; of my endeavors are actually solitary, and I want more collaboration and closeness with the people around me.&lt;/li&gt;
-  &lt;li&gt;Nature is good medicine, and I need more of it in my life.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;!-- divider above footnotes --&gt;
-&lt;hr /&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This is the route I actually followed, not the route I’d planned, which was more stripped down, going north from Sioux Falls to Fargo to finish. I added on the big excursion to go see nature in the western Dakotas halfway through, which turned out to be a great idea. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sun, 14 Apr 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/fifty-states-roadtrip/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/fifty-states-roadtrip/</guid>
-        
-        
-        <category>random, personal</category>
         
       </item>
     
