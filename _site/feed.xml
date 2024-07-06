@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 04 Jul 2024 23:54:02 -0800</pubDate>
-    <lastBuildDate>Thu, 04 Jul 2024 23:54:02 -0800</lastBuildDate>
+    <pubDate>Sat, 06 Jul 2024 00:02:38 -0800</pubDate>
+    <lastBuildDate>Sat, 06 Jul 2024 00:02:38 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -84,7 +84,7 @@ I’ll give background and my motivation, show some cute demos, and conclude wit
         &lt;/div&gt;
         &lt;div class=&quot;col-5&quot;&gt;
         	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/self_assembly/magnacubes_assembled.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
+				&lt;img src=&quot;/img/self_assembly/magnacubes_assembled.JPG&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
 			&lt;/div&gt;
         &lt;/div&gt;
         &lt;div class=&quot;col-1&quot;&gt;&lt;/div&gt;
@@ -296,6 +296,12 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
 
 &lt;h2 id=&quot;failed-attempts&quot;&gt;Failed attempts&lt;/h2&gt;
 
+&lt;ul&gt;
+  &lt;li&gt;windwheel gravitree&lt;/li&gt;
+  &lt;li&gt;ones that were more 2D&lt;/li&gt;
+  &lt;li&gt;mostly lots of failed tweaks to the sizes of things where like the top piece was too small ya know&lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h2 id=&quot;reflections&quot;&gt;Reflections&lt;/h2&gt;
 
 &lt;ul&gt;
@@ -322,7 +328,8 @@ If demand seems high enough, it could be worth looking for a business partner to
 (That seems to be what the artist behind the &lt;a href=&quot;https://kinetrika.com/&quot;&gt;Square Wave&lt;/a&gt; did.)
 I’d also be happy to sell the idea to an existing company.
 It seems worth getting a patent for gravitrees if they seem likely to be marketable.
-Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.&lt;/p&gt;
+Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.
+If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
 
 &lt;h4 class=&quot;toggle-header&quot; onclick=&quot;toggleContent()&quot;&gt;Click for technical details&lt;/h4&gt;
 &lt;div class=&quot;toggle-content&quot;&gt;

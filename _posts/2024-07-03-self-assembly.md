@@ -76,7 +76,7 @@ Before the self-assembling circuit, I tried the same concept with ordinary cubic
         </div>
         <div class="col-5">
         	<div style="width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;">
-				<img src="{{site.baseurl}}/img/self_assembly/magnacubes_assembled.jpg" style="position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;">
+				<img src="{{site.baseurl}}/img/self_assembly/magnacubes_assembled.JPG" style="position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;">
 			</div>
         </div>
         <div class="col-1"></div>
