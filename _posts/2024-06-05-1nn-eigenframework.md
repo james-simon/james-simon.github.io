@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "A eigenframework for the generalization of 1NN"
+title: "An eigenframework for the generalization of 1NN"
 date: 2024-06-05 02:00
 category: research
 ---

@@ -127,9 +127,9 @@ I designed a repeating unit with four embedded magnets on springs pointing out i
 
 ### Other ideas and failures
 
-I spent a lot of time exploring “self-assembly by pulled string,” in which you could pull a string taut and a 3D object would pop up. This was motivated by a desire for an instantly-assemblable tent. I got some promising initial results, but ultimately it was too hard to get the tension to transmit through the whole chain with the materials and geometry I was using. I’m sure something like this would work enough make a cool demo.
+I spent a lot of time exploring “self-assembly by pulled string" in which you could pull a string taut and a 3D object would pop up. This was motivated by a desire for an instantly-assemblable tent. I got some promising initial results, but ultimately it was too hard to get the tension to transmit through the whole chain with the materials and geometry I was using. I’m sure something like this could work well enough to make a cool demo.
 
-I tried making something that’d assemble with buoyant forces when submerged in water, but didn’t get far. I’m sure that could be made to work in some capacity, too.
+I also tried making something that’d assemble with buoyant forces when submerged in water, but didn’t get far. I’m sure that could be made to work in some capacity, too.
 
 ### Reflections
 
