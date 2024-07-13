@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 12 Jul 2024 19:51:53 -0700</pubDate>
-    <lastBuildDate>Fri, 12 Jul 2024 19:51:53 -0700</lastBuildDate>
+    <pubDate>Fri, 12 Jul 2024 22:24:26 -0700</pubDate>
+    <lastBuildDate>Fri, 12 Jul 2024 22:24:26 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -186,7 +186,7 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
 
 &lt;p&gt;This post is a gallery of new designs I’ve come up with in the past year or so. I’ll conclude with some reflections and current outlook.&lt;/p&gt;
 
-&lt;h2 id=&quot;poplar&quot;&gt;&lt;em&gt;Poplar&lt;/em&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;aspen&quot;&gt;&lt;em&gt;Aspen&lt;/em&gt;&lt;/h2&gt;
 
 &lt;p&gt;A classic design, recently perfected.
 Now comes in both regular and mini.&lt;/p&gt;
@@ -214,9 +214,7 @@ The mini version’s quite cute!&lt;/p&gt;
     &lt;div class=&quot;row&quot;&gt;
         &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
         &lt;div class=&quot;col-4&quot;&gt;
-        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/manzanitas.jpeg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
+			&lt;img src=&quot;/img/gravitree_update/manzanitas.jpeg&quot; style=&quot;width: 100%&quot; /&gt;
 			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
         &lt;/div&gt;
         &lt;div class=&quot;col-4&quot;&gt;
@@ -405,7 +403,25 @@ To get there, I scripted a single piece with variable dimensions in &lt;a href=&
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;the-pagoda-gravitree&quot;&gt;The pagoda gravitree&lt;/h2&gt;
+&lt;h2 id=&quot;maple&quot;&gt;&lt;em&gt;Maple&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;This one’s a true binary tree!&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+			    &lt;source src=&quot;/img/gravitree_update/irian_cropped.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+			&lt;/video&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;pagoda&quot;&gt;&lt;em&gt;Pagoda&lt;/em&gt;&lt;/h2&gt;
 
 &lt;p&gt;I visited Japan last December and loved the architecture. This gravitree is inspired by &lt;a href=&quot;https://web-japan.org/nipponia/nipponia33/images/topic/22_1.jpg&quot;&gt;pagodas&lt;/a&gt; and &lt;a href=&quot;https://savvytokyo.scdn3.secure.raxcdn.com/app/uploads/2019/08/Meiji-Jingu-Torii-Top-9-Shrines-to-Visit-in-Tokyo.jpg&quot;&gt;torii gates&lt;/a&gt;. This one was technically challenging: the pieces are so similar in size that, in order to get it all to balance, I needed to make the pieces very light but hide heavy weights inside. The structure here is balsa wood (the lightest wood), but inside hold tungsten (close to the heaviest material found on Earth). The upturned flare at the end of each member both gives space to hide the tungsten shot and mimic similar convex flares I liked in the Japanese architecture.&lt;/p&gt;
 
@@ -425,7 +441,7 @@ To get there, I scripted a single piece with variable dimensions in &lt;a href=&
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;gravitree-earrings&quot;&gt;Gravitree earrings&lt;/h2&gt;
+&lt;h2 id=&quot;gravitree-rings&quot;&gt;Gravitree-rings&lt;/h2&gt;
 
 &lt;p&gt;These silver kinetic earrings make me seriously consider getting my ears pierced.&lt;/p&gt;
 

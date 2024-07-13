@@ -11,11 +11,10 @@ For almost ten years, I’ve been making kinetic balancing sculptures I now call
 
 This post is a gallery of new designs I’ve come up with in the past year or so. I’ll conclude with some reflections and current outlook.
 
-## *Poplar*
+## *Aspen*
 
 A classic design, recently perfected.
 Now comes in both regular and mini.
-
 
 <div class="container">
     <div class="row">
@@ -40,9 +39,7 @@ The mini version’s quite cute!
     <div class="row">
         <div class="col-2"></div>
         <div class="col-4">
-        	<div style="width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;">
-				<img src="{{site.baseurl}}/img/gravitree_update/manzanitas.jpeg" style="position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;">
-			</div>
+			<img src="{{site.baseurl}}/img/gravitree_update/manzanitas.jpeg" style="width: 100%">
 			<!-- <img src="{{site.baseurl}}/img/gravitree_update/autogravitree_1.jpg" width="100%"> -->
         </div>
         <div class="col-4">
@@ -228,10 +225,28 @@ This one might be the best I’ve ever made.
     </div>
 </div>
 
+<br>
+
+## *Maple*
+
+This one's a true binary tree!
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
+			    <source src="{{site.baseurl}}/img/gravitree_update/irian_cropped.mp4" type="video/mp4">
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
 
 <br>
 
-## The pagoda gravitree
+## *Pagoda*
 
 I visited Japan last December and loved the architecture. This gravitree is inspired by [pagodas](https://web-japan.org/nipponia/nipponia33/images/topic/22_1.jpg) and [torii gates](https://savvytokyo.scdn3.secure.raxcdn.com/app/uploads/2019/08/Meiji-Jingu-Torii-Top-9-Shrines-to-Visit-in-Tokyo.jpg). This one was technically challenging: the pieces are so similar in size that, in order to get it all to balance, I needed to make the pieces very light but hide heavy weights inside. The structure here is balsa wood (the lightest wood), but inside hold tungsten (close to the heaviest material found on Earth). The upturned flare at the end of each member both gives space to hide the tungsten shot and mimic similar convex flares I liked in the Japanese architecture.
 
@@ -251,7 +266,7 @@ I visited Japan last December and loved the architecture. This gravitree is insp
 
 <br>
 
-## Gravitree earrings
+## Gravitree-rings
 
 These silver kinetic earrings make me seriously consider getting my ears pierced.
 
