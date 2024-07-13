@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 12 Jul 2024 17:49:08 -0700</pubDate>
-    <lastBuildDate>Fri, 12 Jul 2024 17:49:08 -0700</lastBuildDate>
+    <pubDate>Fri, 12 Jul 2024 19:51:53 -0700</pubDate>
+    <lastBuildDate>Fri, 12 Jul 2024 19:51:53 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -188,7 +188,8 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
 
 &lt;h2 id=&quot;poplar&quot;&gt;&lt;em&gt;Poplar&lt;/em&gt;&lt;/h2&gt;
 
-&lt;p&gt;This design’s a classic, but it’s been perfected in the last year. I’ve made both regular-sized and mini versions.&lt;/p&gt;
+&lt;p&gt;A classic design, recently perfected.
+Now comes in both regular and mini.&lt;/p&gt;
 
 &lt;div class=&quot;container&quot;&gt;
     &lt;div class=&quot;row&quot;&gt;
@@ -206,7 +207,8 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
 
 &lt;h2 id=&quot;manzanita&quot;&gt;&lt;em&gt;Manzanita&lt;/em&gt;&lt;/h2&gt;
 
-&lt;p&gt;This is now my go-to asymmetric design. The mini version’s quite cute!&lt;/p&gt;
+&lt;p&gt;This is now my go-to asymmetric design.
+The mini version’s quite cute!&lt;/p&gt;
 
 &lt;div class=&quot;container&quot;&gt;
     &lt;div class=&quot;row&quot;&gt;
@@ -433,7 +435,7 @@ To get there, I scripted a single piece with variable dimensions in &lt;a href=&
         &lt;div class=&quot;col-4&quot;&gt;
 			&lt;p style=&quot;text-align:center;&quot;&gt;
 			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/irian_earring.jpeg&quot; style=&quot;position: absolute; top: 10%; left: 10%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
+				&lt;img src=&quot;/img/gravitree_update/irian_earring.jpeg&quot; style=&quot;position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
 			&lt;/div&gt;
 			&lt;/p&gt;
         &lt;/div&gt;
@@ -443,7 +445,7 @@ To get there, I scripted a single piece with variable dimensions in &lt;a href=&
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;tao&quot;&gt;Tao&lt;/h2&gt;
+&lt;h2 id=&quot;tao&quot;&gt;&lt;em&gt;Tao&lt;/em&gt;&lt;/h2&gt;
 
 &lt;p&gt;This isn’t technically a gravitree, but it’s a near cousin.
 The sculpture consists of a series of concentric circles, each locked into the next and free to spin within it.
@@ -466,18 +468,18 @@ As a result of this weight imbalance, the sculpture tends to spin to form a yin-
 
 &lt;h2 id=&quot;reflections&quot;&gt;Reflections&lt;/h2&gt;
 
-&lt;p&gt;I’m pleased with the creativity of the designs I’ve come up with in the past two years.
-With the earrings, pocket gravitree, and the wooden &lt;em&gt;Monstera,&lt;/em&gt; I’ve pushed the boundaries of size and material, and with the &lt;em&gt;Triangulum&lt;/em&gt; and &lt;em&gt;Autogravitree&lt;/em&gt; I’ve pushed the previous boundaries of gravitree aesthetics and design methodology.
-I’m most pleased with the designs that look different from the traditional weights-on-sticks appearance – the &lt;em&gt;Triangulum&lt;/em&gt; is undoubtably my most aesthetically appealing design yet – and it seems exciting to explore how different I can make the structure look and still have it balance.&lt;/p&gt;
+&lt;p&gt;Upon reflection, I’m pleased with the progress I’ve made in the past two years developing new gravitrees.
+With the earrings, pocket gravitree, and the wooden &lt;em&gt;Monstera,&lt;/em&gt; I pushed the boundaries of size and material, and with the &lt;em&gt;Triangulum&lt;/em&gt; and &lt;em&gt;Autogravitree&lt;/em&gt; I pushed the previous boundaries of gravitree aesthetics and design methodology.
+I’m most pleased with the designs that look most different from my “traditional” balls-on-sticks appearance – really like the aesthetic of the &lt;em&gt;Triangulum&lt;/em&gt; – and it seems exciting to explore how different I can make the structure look and still have it balance.&lt;/p&gt;
 
-&lt;p&gt;Another reflection here is that these ideas often take a long time to simmer in the background.
-I regularly went many months without designing a gravitree, but I’d sometimes find that questions, hopes, designs, and problems were swimming around in the back of my head.
-I’d occasionally have a moment of realization where I suddenly knew the answer to a problem I’d gotten stuck on some months prior and could thereby go quickly make a new design.
-More often than that, though, I’d have moments of inspiration where I found myself with free time and suddenly excited to make some new designs.
-This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little, but a small amount of time every so often, given only when inspired, can move them forward at a slow but steady pace.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Another reflection here is that these ideas often take a long time to simmer in the back of my mind.
+I regularly went many months without designing a gravitree, but I’d sometimes find that questions, hopes, designs, and problems were swimming around in the background anyways, stewing and ripening.
+It’s interesting that this is the case.
+Relatedly, I’d periodically have moments of inspiration where I found myself with free time and sudden excitement to make some new designs.
+This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little total time, but a small amount of effort every so often, given only when inspired, can move them forward at a slow but steady pace.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;p&gt;I had a pretty high batting average with these models – most of them ultimately worked, and many worked on the first try!
-That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.
+&lt;p&gt;I had a pretty high batting average with new concepts during this period – most of them ultimately worked, and many worked on the first try!
+That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
 Despite the occasional failures, the exploratory ideas are the best part of this hobby.&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
@@ -489,7 +491,7 @@ There’s been a real uptick in this sort of comment lately, and with these new 
 I’d love for gravitrees to be cheaply buyable (and it’d certainly be nice to make some profit off them).
 A few obstacles here include that&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high – about $30 for a small gravitree and $50 for a large one &lt;em&gt;without my making any profit!&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high – including shipping, about 30 bucks for a small gravitree and 50 bucks for a large one &lt;em&gt;without my making any profit!&lt;/em&gt;&lt;/li&gt;
   &lt;li&gt;I’m not sure how much people are willing to pay for these.&lt;/li&gt;
   &lt;li&gt;Another manufacturing technique like injection molding would be cheaper, but then you’re running a whole business, with inventory and everything. I’d be curious to know how that works, but I don’t want to run something like that long-term.&lt;/li&gt;
 &lt;/ul&gt;
@@ -501,10 +503,15 @@ I’d also be happy to sell the idea to an existing company.
 It seems worth getting a patent for gravitrees if they seem likely to be marketable.
 Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.
 If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
+
+&lt;hr /&gt;
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;While I do feel my bang-per-unit-time for gravitrees has been fairly high, I do actually wonder whether the costs are greater than I’m making them out to be. I think about gravitrees a little every day, usually while idle or doing other things, and presumably I’d be thinking about something else for much of that span, which could add up to a lot. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;The pieces rubbed against each other and didn’t spin freely, plus I put too much faith in the chirality of the pinwheel fans to force the fan to spin in a specific direction in wind. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;

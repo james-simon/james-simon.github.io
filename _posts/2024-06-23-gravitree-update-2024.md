@@ -13,7 +13,8 @@ This post is a gallery of new designs I’ve come up with in the past year or so
 
 ## *Poplar*
 
-This design’s a classic, but it’s been perfected in the last year. I’ve made both regular-sized and mini versions.
+A classic design, recently perfected.
+Now comes in both regular and mini.
 
 
 <div class="container">
@@ -32,7 +33,8 @@ This design’s a classic, but it’s been perfected in the last year. I’ve ma
 
 ## *Manzanita*
 
-This is now my go-to asymmetric design. The mini version’s quite cute!
+This is now my go-to asymmetric design.
+The mini version’s quite cute!
 
 <div class="container">
     <div class="row">
@@ -259,7 +261,7 @@ These silver kinetic earrings make me seriously consider getting my ears pierced
         <div class="col-4">
 			<p style="text-align:center;">
 			<div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
-				<img src="{{site.baseurl}}/img/gravitree_update/irian_earring.jpeg" style="position: absolute; top: 10%; left: 10%; width: 120%; height: 120%; object-fit: cover;">
+				<img src="{{site.baseurl}}/img/gravitree_update/irian_earring.jpeg" style="position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; object-fit: cover;">
 			</div>
 			</p>
         </div>
@@ -270,7 +272,7 @@ These silver kinetic earrings make me seriously consider getting my ears pierced
 
 <br>
 
-## Tao
+## *Tao*
 
 
 This isn't technically a gravitree, but it's a near cousin.
@@ -295,22 +297,23 @@ As a result of this weight imbalance, the sculpture tends to spin to form a yin-
 ## Reflections
 
 
-I'm pleased with the creativity of the designs I've come up with in the past two years.
-With the earrings, pocket gravitree, and the wooden *Monstera,* I've pushed the boundaries of size and material, and with the *Triangulum* and *Autogravitree* I've pushed the previous boundaries of gravitree aesthetics and design methodology.
-I'm most pleased with the designs that look different from the traditional weights-on-sticks appearance -- the *Triangulum* is undoubtably my most aesthetically appealing design yet -- and it seems exciting to explore how different I can make the structure look and still have it balance.
+Upon reflection, I'm pleased with the progress I've made in the past two years developing new gravitrees.
+With the earrings, pocket gravitree, and the wooden *Monstera,* I pushed the boundaries of size and material, and with the *Triangulum* and *Autogravitree* I pushed the previous boundaries of gravitree aesthetics and design methodology.
+I'm most pleased with the designs that look most different from my "traditional" balls-on-sticks appearance -- really like the aesthetic of the *Triangulum* -- and it seems exciting to explore how different I can make the structure look and still have it balance.
 
-Another reflection here is that these ideas often take a long time to simmer in the background.
-I regularly went many months without designing a gravitree, but I'd sometimes find that questions, hopes, designs, and problems were swimming around in the back of my head.
-I'd occasionally have a moment of realization where I suddenly knew the answer to a problem I'd gotten stuck on some months prior and could thereby go quickly make a new design.
-More often than that, though, I'd have moments of inspiration where I found myself with free time and suddenly excited to make some new designs.
-This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little, but a small amount of time every so often, given only when inspired, can move them forward at a slow but steady pace.[^b]
+Another reflection here is that these ideas often take a long time to simmer in the back of my mind.
+I regularly went many months without designing a gravitree, but I'd sometimes find that questions, hopes, designs, and problems were swimming around in the background anyways, stewing and ripening.
+It's interesting that this is the case.
+Relatedly, I'd periodically have moments of inspiration where I found myself with free time and sudden excitement to make some new designs.
+This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little total time, but a small amount of effort every so often, given only when inspired, can move them forward at a slow but steady pace.[^b]
 
 [^b]: While I do feel my bang-per-unit-time for gravitrees has been fairly high, I do actually wonder whether the costs are greater than I'm making them out to be. I think about gravitrees a little every day, usually while idle or doing other things, and presumably I'd be thinking about something else for much of that span, which could add up to a lot.
 
-I had a pretty high batting average with these models -- most of them ultimately worked, and many worked on the first try!
-That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.
+I had a pretty high batting average with new concepts during this period -- most of them ultimately worked, and many worked on the first try!
+That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.[^c]
 Despite the occasional failures, the exploratory ideas are the best part of this hobby.
 
+[^c]: The pieces rubbed against each other and didn't spin freely, plus I put too much faith in the chirality of the pinwheel fans to force the fan to spin in a specific direction in wind.
 
 <br>
 
@@ -320,7 +323,7 @@ People have been telling me for a few years now that I should sell gravitrees.
 There's been a real uptick in this sort of comment lately, and with these new designs, I'm starting to believe it.
 I'd love for gravitrees to be cheaply buyable (and it'd certainly be nice to make some profit off them).
 A few obstacles here include that
-- 3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high -- about $30 for a small gravitree and $50 for a large one *without my making any profit!*
+- 3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high -- including shipping, about 30 bucks for a small gravitree and 50 bucks for a large one *without my making any profit!*
 - I'm not sure how much people are willing to pay for these.
 - Another manufacturing technique like injection molding would be cheaper, but then you're running a whole business, with inventory and everything. I'd be curious to know how that works, but I don't want to run something like that long-term.
 
@@ -331,3 +334,5 @@ I'd also be happy to sell the idea to an existing company.
 It seems worth getting a patent for gravitrees if they seem likely to be marketable.
 Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.
 If you have any suggestions or leads here, drop me a line!
+
+***
