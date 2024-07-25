@@ -5,9 +5,41 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 12 Jul 2024 22:24:26 -0700</pubDate>
-    <lastBuildDate>Fri, 12 Jul 2024 22:24:26 -0700</lastBuildDate>
+    <pubDate>Thu, 25 Jul 2024 01:29:41 -0700</pubDate>
+    <lastBuildDate>Thu, 25 Jul 2024 01:29:41 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The time I caught an egg in my mouth</title>
+        <description>&lt;!-- This one is exactly what it sounds like. --&gt;
+&lt;p&gt;Of all my recent years’ varied adventures, the most memorable ten seconds might well have been when my roommate tossed me an egg and I caught it in my mouth.
+The hour was 9am.
+The egg was raw.
+The music was high.
+It was our first try.
+It looked a little like this.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;80%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+    &lt;source src=&quot;/img/eggman/EGGMAN.MP4&quot; type=&quot;video/mp4&quot; /&gt;
+&lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I suppose one could look for a deeper meaning here, some lesson on spontanaeity or the pursuit of the comic absurd or the value of attempting things that seem impossible, but no: this one’s just an egg, and it was awesome.
+The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth and lodging unbroken in my mouth like a heavy-duty mechanism locking into place stayed with me all day.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Thanks to Irian D’Andrea for the grade-A toss and to Olive Eilbott for both issuing the challenge and capturing it on video.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 05 Jul 2024 01:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/egg/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/egg/</guid>
+        
+        
+        <category>random</category>
+        
+      </item>
     
       <item>
         <title>Experiments in self-assembly</title>
@@ -228,25 +260,6 @@ The mini version’s quite cute!&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;pocket-gravitree&quot;&gt;&lt;em&gt;Pocket gravitree&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
-I carry one in my wallet.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/pocket_gravitree.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
 &lt;h2 id=&quot;tyrannosaur&quot;&gt;&lt;em&gt;Tyrannosaur&lt;/em&gt;&lt;/h2&gt;
 
 &lt;p&gt;This was my first attempt to make one that extends sideways instead of up.
@@ -378,6 +391,25 @@ To get there, I scripted a single piece with variable dimensions in &lt;a href=&
 			&lt;/p&gt;
         &lt;/div&gt;
         &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;pocket-gravitree&quot;&gt;&lt;em&gt;Pocket gravitree&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
+I carry one in my wallet.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
+			    &lt;source src=&quot;/img/gravitree_update/pocket_gravitree.mp4&quot; type=&quot;video/mp4&quot; /&gt;
+			&lt;/video&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1227,66 +1259,6 @@ Thanks to Vincent Huang for pointing me to Farey sequences.&lt;/p&gt;
         
         
         <category>fun-math, random</category>
-        
-      </item>
-    
-      <item>
-        <title>Favorite quotes from &lt;em&gt;Letters to a Young Poet&lt;/em&gt;</title>
-        <description>&lt;style&gt;
-blockquote {
-    border-left: 4px solid #ccc;  /* Adds a left border to the block quote */
-    margin: 1em 10px;             /* Adds margin for better spacing */
-    padding-left: 15px;           /* Adds padding to the left for text indent */
-    font-style: italic;           /* Makes the text italic */
-    color: #333;                  /* Sets the text color */
-    background-color: #f9f9f9;    /* Sets a light background for visibility */
-}
-&lt;/style&gt;
-
-&lt;p&gt;Rainier Maria Rilke’s &lt;em&gt;Letters to a Young Poet&lt;/em&gt; is a short and singular book, consisting of a sequence of ten letters written by the famous poet and novelist to an aspiring young poet who initiated their correspondence in search of advice in poetry. Rilke’s letters are remarkable for their candor and sincerity and depth of feeling: Rilke’s advice extends beyond the question of how to compose literature to the question of how to live.&lt;/p&gt;
-
-&lt;p&gt;I read this collection at a time in which I’m trying to work out how best to express some artistic tendencies of mine, and it was useful to hear Rilke’s thoughts on authentic living and artistic authenticity. Here are some of my favorite quotes.&lt;/p&gt;
-
-&lt;p&gt;On living questions without knowing the answers:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;You are so young, so before all beginning, and I want to beg you, as much as I can. dear sir, to be patient toward all that is unsolved in your heart and to try to love the questions themselves like locked rooms and like books that are written in a very foreign tongue. Do not now seek the answers, which cannot be given you because you would not be able to live them. And the point is, to live everything. Live the questions now. Perhaps you will then gradually, without noticing it, live along some distant day into the answer.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;On solitude:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;The necessary thing is after all but this: solitude, great inner solitude. Going into oneself and for hours meeting no one – this one must be able to attain. To be solitary, the way one was solitary as a child, when the grownups went around involved with things that seemed important and big because they themselves looked so busy and because one comprehended nothing of their doings.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;On Rilke’s own inner sadness:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;And if there is one thing more that I must say to you, it is this: Do not believe that he who seeks to comfort you lives untroubled among the simple and quiet words that sometimes do you good. His life has much difficulty and sadness and remains far behind yours. Were it otherwise he would never have been able to find those words.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;On working in traditional genres:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Avoid at first those forms that are too facile and commonplace: they are the most difficult, for it takes a great, fully matured power to give something of your own where good and even excellent traditions come to mind in quantity.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;On one’s relationship with one’s skeptical parents:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Ask no advice from them and count upon no understanding; but believe in a love that is being stored up for you like an inheritance and trust that in this love there is a strength and a blessing, out beyond which you do not have to step in order to go very far!&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;On whether one should write:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;You ask whether your verses are good. You ask me. You have asked others before. You send them to magazines. You compare them with other poems, and you are disturbed when certain editors reject your efforts. Now (since you have allowed me to advise you) I beg you to give up all that. You are looking outward, and that above all you should not do now.&lt;/p&gt;
-
-  &lt;p&gt;Nobody can counsel and help you, nobody. Search for the reason that bids you write; find out whether it is spreading out its roots in the deepest places of your heart, acknowledge to yourself whether you would have to die if it were denied you to write. This above all—ask yourself in the stillest hour of your night: must I write? Delve into yourself for a deep answer.&lt;/p&gt;
-
-  &lt;p&gt;And if this should be affirmative, if you may meet this earnest question with a strong and simple, “I must,” then build your life according to this necessity; your life even into its most indifferent and slightest hour must be a sign of this urge and a testimony to it.&lt;/p&gt;
-&lt;/blockquote&gt;
-</description>
-        <pubDate>Wed, 17 Apr 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/quotes-from-l-t-a-y-p/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/quotes-from-l-t-a-y-p/</guid>
-        
-        
-        <category>random</category>
         
       </item>
     

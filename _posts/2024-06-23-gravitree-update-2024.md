@@ -51,24 +51,6 @@ The mini version’s quite cute!
     </div>
 </div>
 
-<br>
-
-## *Pocket gravitree*
-
-These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
-I carry one in my wallet.
-
-<div class="container">
-    <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4">
-			<video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
-			    <source src="{{site.baseurl}}/img/gravitree_update/pocket_gravitree.mp4" type="video/mp4">
-			</video>
-        </div>
-        <div class="col-4"></div>
-    </div>
-</div>
 
 <br>
 
@@ -202,6 +184,25 @@ With a five-foot span, it’s the biggest gravitree I’ve ever made. It’s las
 			</p>
         </div>
         <div class="col-3"></div>
+    </div>
+</div>
+
+<br>
+
+## *Pocket gravitree*
+
+These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
+I carry one in my wallet.
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
+			    <source src="{{site.baseurl}}/img/gravitree_update/pocket_gravitree.mp4" type="video/mp4">
+			</video>
+        </div>
+        <div class="col-4"></div>
     </div>
 </div>
 
