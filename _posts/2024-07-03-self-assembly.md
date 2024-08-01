@@ -16,12 +16,12 @@ I'll give background and my motivation, show some cute demos, and conclude with 
 I’ve always liked cute interactive technical projects. This was particularly true in college, during which I made lots of mostly-useless-but-fun things, including
 
 - a laser-activated light switch
-- a robotic articulated necktie
+- a robotic articulated necktie which could grab food and bring it to the wearer's mouth
 - various 3D printed ball mazes
 - [lots of balancing sculptures](https://james-simon.github.io/blog/gravitrees/)
 - and [a campus-wide puzzlehunt](vthunt.com).
 
-I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included [this self-assembling “chair,”](https://www.youtube.com/watch?v=Bnj1sPfo4Ek) [this swarm of cubic robots](https://www.youtube.com/watch?v=6aZbJS6LZbs), and this [robot origami](https://www.youtube.com/watch?v=ZVYz7g-qLjs), all from MIT. As a senior, I got a small grant from the 3D printing service [Shapeways](https://www.notion.so/Self-assembly-blogpost-ba25260acc7948a3b9c7343548521687?pvs=21) to explore 3D printed self-assembling systems.
+I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included [this self-assembling “chair,”](https://www.youtube.com/watch?v=Bnj1sPfo4Ek) [this swarm of cubic robots](https://www.youtube.com/watch?v=6aZbJS6LZbs), and this [robot origami](https://www.youtube.com/watch?v=ZVYz7g-qLjs), all from MIT. As a senior, I got a small grant from the 3D printing service Shapeways to explore 3D printed self-assembling systems.
 
 I spent a semester on the project and came up with some cool prototypes. None of them are particularly scalable or practical, but they are cute.
 

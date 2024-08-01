@@ -5,9 +5,274 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 25 Jul 2024 10:42:41 -0700</pubDate>
-    <lastBuildDate>Thu, 25 Jul 2024 10:42:41 -0700</lastBuildDate>
+    <pubDate>Thu, 01 Aug 2024 16:41:25 -0700</pubDate>
+    <lastBuildDate>Thu, 01 Aug 2024 16:41:25 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Understanding fractals from iterated maps</title>
+        <description>&lt;p&gt;&lt;em&gt;In this post, I give some mechanistic intuition for why and how the basins of iterated maps form fractals which I feel is usually missing from academic treatments of the subject.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;It is a remarkable fact of mathematics that simple dynamical systems can display immensely complex behavior.
+The poster children of this notion are fractals generated from iterated maps.
+You have likely seen the &lt;a href=&quot;https://math.hws.edu/eck/js/mandelbrot/MB.html&quot;&gt;Mandelbrot set&lt;/a&gt;, the most famous such fractal.
+Here is a related &lt;em&gt;Julia set&lt;/em&gt; which is slightly simpler to define:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/julia_set.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The rule by which this stunning image is generated is remarkably simple.
+This plot represents the complex plane, and each point \((x, y)\) in the image represents the complex number $z_0 = x + y i$.
+For each such point $z_0$, we compute $z_1$, $z_2$, and so on using the iterated map&lt;/p&gt;
+
+\[z_{t + 1} = f(z_{t+1}) = z_t^2 + c,\]
+
+&lt;p&gt;where \(c \approx 0.2883 + 0.5383 i\) is a parameter I have tuned.
+This either eventually blows up (with \(|z|\) getting very big) or doesn’t.
+If $|z|$ blows up, the pixel at $z_0$ is colored white, and if it remains bounded, it is colored black.[^a]
+The result is the stunning fractal above.
+You can explore different values of $c$ — which generate surprisingly varied and wondrous Julia sets[^b] — &lt;a href=&quot;https://www.marksmath.org/visualization/julia_sets/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;where-does-all-this-detail-come-from&quot;&gt;Where does all this detail come from?&lt;/h2&gt;
+
+&lt;p&gt;Part of the amazement of images like the above is that our dynamical process was extremely simple to define, but the resulting visualization is quite complicated — infinitely complicated, in fact, or at least infinitely detailed!
+It gives me (and others, I suspect) the feeling of having somehow “gotten more out than we put in”.
+It simply does not feel like this dynamical map should be complex enough to generate this fractal!&lt;/p&gt;
+
+&lt;p&gt;The answer to this seeming paradox is that we are iterating the dynamical map many times: the level of detail results not from the complexity of the map but rather from the amount of computation we expend repeatedly applying it.
+This can be beautifully illustrated by visualizing the result of applying only finitely many iterations, using shades of grey to indicate how may iterations a point takes to blow up:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/julia_set.gif&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The complexity of these fractals is built up over many iterations.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-do-you-get-a-fractal&quot;&gt;Why do you get a fractal?&lt;/h2&gt;
+
+&lt;p&gt;There is a very basic question one can ask here that is virtually never addressed in introductory treatments of chaotic maps:&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; why do we get a fractal?
+This question is so obvious that, if you’ve already seen this stuff, it’s kind of hard to even see as legitimate: why does the “escape region” of \(f\) take the shape of a fractal?
+Like, why not some other, non-self-similar shape?
+Where does the fractal come from?
+What property of the map $f$ is responsible for the fractal?&lt;/p&gt;
+
+&lt;p&gt;The usual fact that &lt;em&gt;is&lt;/em&gt; given is that these dynamical maps are chaotic.
+For example, students in a college course might compute the system’s &lt;a href=&quot;https://en.wikipedia.org/wiki/Lyapunov_exponent&quot;&gt;Lyapunov exponent&lt;/a&gt; and see that it is positive around the boundary of the fractal, implying the system displays the sensitivity to initial conditions characteristic of chaotic dynamics.
+Okay, great, it’s believable that these maps are chaotic, but where does this &lt;em&gt;fractal&lt;/em&gt; come from?
+The two concepts are certainly related, but how exactly?&lt;/p&gt;
+
+&lt;p&gt;I gnawed on this question sporadically for many years, and I finally have what feels like an intuitive understanding.
+The main purpose of this blogpost is to convey that (high-level, nonrigorous) intuition.
+The reason is basically that, if you run the dynamical map forwards, you will find that…&lt;/p&gt;
+
+&lt;h3 id=&quot;distinctive-regions-of-the-fractal-get-mapped-to-larger-versions-of-themselves&quot;&gt;Distinctive regions of the fractal get mapped to larger versions of themselves&lt;/h3&gt;
+
+&lt;p&gt;This property is easier to show than to tell.
+I have here zoomed into the bottom limb of the above Julia set and colored a small lobe of the fractal red.
+Call this set of points $\mathcal{Z}_0$.
+I then colored the set of points that this set maps to — call it $f(\mathcal{Z}_0)$ — orange.
+The set of points that these points maps to is yellow, and so on: an initial point in the red region will be mapped into the orange region, then the yellow region, then the green, etc.&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/lobe_map.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Note that, up until the largest one, the sets here all have close to the same shape!
+Here’s the same thing with a different starting lobe:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/lobe_map.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And to underscore the first example, here’s an actual computer-generated plot in which the region enclosed by each circle is mapped to the region enclosed by the next one:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-6&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/circle_map.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Note how each successive circle here is larger than the one before it, showing that the map is expansive.&lt;/p&gt;
+
+&lt;p&gt;The main idea here is that if our starting point $z_0$ starts in a little fractally lobe, and gets mapped to a point $z_1$ that lies in basically the same point in a slightly larger version of the same lobe, and then this continues!
+This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
+This follows from basically an inductive argument.
+I will give the argument first and then follow it up with some graphical illustration.&lt;/p&gt;
+
+&lt;p&gt;Note first that &lt;em&gt;any point that is mapped to a black point will also be a black point&lt;/em&gt; – the two points lie on the same trajectory, so they have the same fate (to diverge or not to diverge).
+As the base case, assume there is some black region with an interesting shape.
+As the inductive step, now, suppose that some other, smaller volume of space gets mapped to a volume of space including this black region.
+There will be a shrunken copy of the black region in this other volume — the black region has been duplicated!
+Now we can run this process again and again, positing a &lt;em&gt;third,&lt;/em&gt; even smaller volume of space that maps to the second, and so on and so on.
+(Fairly simple mapping functions $f(z)$ can give you an infinite sequence of volumes mapping to each other like this; note that the volumes can overlap.
+We will give a toy example illustrating this soon.)
+We now have an infinite number of copies of the original black region, getting ever smaller and more delicate — a fractal!&lt;/p&gt;
+
+&lt;p&gt;This really becomes much more tangible when you play around with yourself with an eye to this behavior.
+You can explore this fractal in-browser at (this nice website)[https://www.marksmath.org/visualization/julia_sets/].&lt;/p&gt;
+
+&lt;p&gt;As a final speculation before we use this notion to make some fractals, I wonder if there’s some sense in which getting a fractal is inevitable in the Julia set of a chaotic iterated map.
+Surely the set will be some chaotic, extremely complicated shape… and it vaguely seems to me like, because the generating function is some fixed function with some finite amount of information required to specify it, it couldn’t possibly result in a chaotic shape which &lt;em&gt;isn’t&lt;/em&gt; a fractal — that is, for which each lower level of detail is unlike the higher levels — because that would entail an infinite amount of information to specify.
+Perhaps there are connections to computational complexity in here, where the function is fixed and has $O(1)$ complexity, but the fractal naively has “geometric complexity” $O(T)$, where $T$ is the number of iterations the map is run for, and somehow the self-similarity of the fractal lets one come up with a new notion of geometric complexity for which these Julia sets only have $O(1)$ complexity.
+This would feel like a satisfying resolution to the motivating “paradox” that it felt like we were getting more out of these systems than we put in.&lt;/p&gt;
+
+&lt;h2 id=&quot;hand-designing-some-fractals&quot;&gt;Hand-designing some fractals&lt;/h2&gt;
+
+&lt;p&gt;If you really understand how something works, you should be able to make one yourself.
+I’m claiming that the ingredients for self-similar basins of attraction from an iterated map are basically (a) expansive behavior and (b) an infinite sequence of volumes that map into each other, leading ultimately to some interesting basin boundary.
+The easiest way to satisfy both (a) and (b) is perhaps to have some region $\mathcal{R}$ that maps to a larger region $\mathcal{R}’$ that contains both some basin boundary &lt;em&gt;and the original region $\mathcal{R}$ itself.&lt;/em&gt;
+This pretty easily gives an infinite sequence of volumes (and a resulting fractal) because, well, the basin structure within $\mathcal{R}’$ has to contain a complete copy of itself, so self-similar structure is inevitable!&lt;/p&gt;
+
+&lt;h3 id=&quot;first-example-circles-in-2d&quot;&gt;First example: circles in 2D&lt;/h3&gt;
+
+&lt;p&gt;Here’s an example.
+We will continue to work in the complex plane and use the map&lt;/p&gt;
+
+\[z_{t+1} = c z_t,\]
+
+&lt;p&gt;where $c = 2$ for now.
+I will then draw a circle somewhere in the plane.
+If a point $z_0$ ever lands inside the circle after some number of iterations, we decree that it may never leave, and we color the pixel at $z_0$ black.
+If it never lands in the circle, the pixel at $z_0$ is white.&lt;/p&gt;
+
+&lt;p&gt;Here’s what you get:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/circles_1.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here I have chosen the “sticky circle” (the largest circle) to have radius $0.4$, centered at $z_c = 1 + i$.
+The red crosshair shows the origin.
+Note that we get a fractal!&lt;/p&gt;
+
+&lt;p&gt;We can make it more interesting if we instead add some rotation with, say, $c = 1 + 0.1 i$:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/circles_2.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;second-example-chaotic-map-in-1d&quot;&gt;Second example: chaotic map in 1D&lt;/h3&gt;
+
+&lt;p&gt;Let’s design another one.
+This one will be only 1D.
+Consider the following map $z_t \mapsto z_{t+1}$:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/1d_map_one_iteration.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Try to guess what this map will do when iterated many times.
+It’s not too hard to see that the points on the far left and far right will continue to flow all the way to the edges, so we have $0$ and $1$ as basins of attraction…
+and I have designed the middle region so that parts of it map into these two basins (the peak and trough), and other parts &lt;em&gt;map back into the whole middle region,&lt;/em&gt; guaranteeing that any basin structure is repeated and making the basins structure self-similar.
+Here’s what this map looks like after being applied seven times:&lt;/p&gt;
+
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;
+			&lt;p style=&quot;text-align:center;&quot;&gt;
+				&lt;img src=&quot;/img/fractals/1d_map_iterated.png&quot; style=&quot;width: 100%&quot; /&gt;
+			&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This structure is self-similar (which I verified by zooming in).&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;In this post, I’ve aimed to give some mechanistic insight into why and how the basins of attraction of iterated maps give fractals.
+There’s a huge raft of technical content I could have brought in here but didn’t — if you’re interested, I’d encourage you to check out Lyapunov exponents, the logstic map, the Mandelbrot set, and perhaps Steven Strogatz’ &lt;em&gt;Nonlinear Dynamics and Chaos.&lt;/em&gt;
+I had never really felt I could see the genesis of this class of fractals before, but now I can, so I hope this sheds some light for some other folks, too!&lt;/p&gt;
+
+&lt;p&gt;A major takeaway I have here, which I didn’t fully appreciate before, is that in systems like these, chaos is usually studied as a &lt;em&gt;local&lt;/em&gt; property — e.g., the Lyapunov exponent is positive, and it’s locally defined — but these fractals are &lt;em&gt;global.&lt;/em&gt;
+I think this probably explains why I hadn’t encountered a good explanation like this before: it seems hard to reduce the global property of fractal-formation to a property of the return map that’s simple enough to prove a theorem about.
+I wonder if there’s some analytical condition on the return map that one could define that’d be necessary and sufficient for it to give you fractals.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This has never been addressed in the maybe five times I’ve seen this material, that is – but tell me if you know a good treatment somewhere! &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/fractals-in-iterated-maps/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterated-maps/</guid>
+        
+        
+        <category>fun-science</category>
+        
+      </item>
     
       <item>
         <title>The time I caught an egg in my mouth</title>
@@ -53,13 +318,13 @@ I’ll give background and my motivation, show some cute demos, and conclude wit
 
 &lt;ul&gt;
   &lt;li&gt;a laser-activated light switch&lt;/li&gt;
-  &lt;li&gt;a robotic articulated necktie&lt;/li&gt;
+  &lt;li&gt;a robotic articulated necktie which could grab food and bring it to the wearer’s mouth&lt;/li&gt;
   &lt;li&gt;various 3D printed ball mazes&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://james-simon.github.io/blog/gravitrees/&quot;&gt;lots of balancing sculptures&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;and &lt;a href=&quot;vthunt.com&quot;&gt;a campus-wide puzzlehunt&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included &lt;a href=&quot;https://www.youtube.com/watch?v=Bnj1sPfo4Ek&quot;&gt;this self-assembling “chair,”&lt;/a&gt; &lt;a href=&quot;https://www.youtube.com/watch?v=6aZbJS6LZbs&quot;&gt;this swarm of cubic robots&lt;/a&gt;, and this &lt;a href=&quot;https://www.youtube.com/watch?v=ZVYz7g-qLjs&quot;&gt;robot origami&lt;/a&gt;, all from MIT. As a senior, I got a small grant from the 3D printing service &lt;a href=&quot;https://www.notion.so/Self-assembly-blogpost-ba25260acc7948a3b9c7343548521687?pvs=21&quot;&gt;Shapeways&lt;/a&gt; to explore 3D printed self-assembling systems.&lt;/p&gt;
+&lt;p&gt;I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included &lt;a href=&quot;https://www.youtube.com/watch?v=Bnj1sPfo4Ek&quot;&gt;this self-assembling “chair,”&lt;/a&gt; &lt;a href=&quot;https://www.youtube.com/watch?v=6aZbJS6LZbs&quot;&gt;this swarm of cubic robots&lt;/a&gt;, and this &lt;a href=&quot;https://www.youtube.com/watch?v=ZVYz7g-qLjs&quot;&gt;robot origami&lt;/a&gt;, all from MIT. As a senior, I got a small grant from the 3D printing service Shapeways to explore 3D printed self-assembling systems.&lt;/p&gt;
 
 &lt;p&gt;I spent a semester on the project and came up with some cool prototypes. None of them are particularly scalable or practical, but they are cute.&lt;/p&gt;
 
@@ -1079,186 +1344,6 @@ I wonder if learning some basic biochemistry would make things seem more mechani
         
         
         <category>unlisted</category>
-        
-      </item>
-    
-      <item>
-        <title>Geometric patterns in croplands</title>
-        <description>&lt;p&gt;I’ve lived in California for five years now and have had the good fortune to roam up and down the state and see its mountains, valleys, and deserts.
-As any outdoorsy Californian will know, these treks often featured long drives through the Central Valley, past wide fields of California crops: fruits, nuts, grain.
-As a frequent passenger in these drives, I’ve come to look forward to gazing out a changing windowful of cropland, particularly when it makes a certain sort of geometric pattern.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;a href=&quot;https://www.google.com/maps/@35.8815158,-119.858065,3a,75y,51.88h,81.48t/data=!3m6!1e1!3m4!1sXlBlznQpA42OVCiQcwKAEg!2e0!7i16384!8i8192?entry=ttu&quot;&gt;
-		&lt;img src=&quot;/img/croprows/croprow_pic_2.jpg&quot; width=&quot;100%&quot; /&gt;
-	&lt;/a&gt;
-&lt;/p&gt;
-
-&lt;p&gt;If you’re not familiar with this effect, take a minute to really examine the strip of field planted with the baby trees.
-As you scan across the strip, you’ll notice places where the saplings form lines leading off into the distance.
-The lines have different degrees of definition, and the gaps between the lines have different sizes in different places.
-The “regions” of lines seem to have a curious fractal pattern: if you look between two neighboring line-regions, you’ll find another, smaller set of more closely spaced lines, and so on recursively.
-I find it mysterious and beautiful.
-For fun, you can click on the above image to be taken to the corresponding spot in Google Streetview if you want to explore it for yourself.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/cropland_with_regions.jpg&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;The regions pop out to the eye even more when you’re moving! Here’s a gif of the view out my window as I drove by the same place.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/croprow_gif.gif&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;What’s going on? In this post, I’ll explain why we see these “open” directions and try to explain why the overall visual effect is so fractally.
-The basic explanation of the open regions will need only some simple math used in the physics of crystals.
-When we try to understand the fractally effect, we’ll encounter some cool number theory.
-I’ll end with a neat numerical experiment and an open question.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;the-open-directions-of-an-infinite-lattice&quot;&gt;The open directions of an infinite lattice&lt;/h2&gt;
-
-&lt;p&gt;The nature of the special directions is easily understood starting from the observation that these saplings are planted in a near-perfect rectangular grid.&lt;sup id=&quot;fnref:f&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:f&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;
-In such a grid, one expects the plants to leave “aisles” along the grid directions, and if one plays around with a drawing of a grid, one soon observes that the points also form narrower isles in other, off-axis directions.
-See the colored “aisles” in the illustration below.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/grid_gap_illustration.png&quot; width=&quot;70%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;The three examples in the above illustration correspond to particular “lattice vector” – that is, vectors \((a, b)\) with integer components, with \(a, b\) “irreducible” – that is, sharing no factors greater than \(1\).&lt;sup id=&quot;fnref:q&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:q&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
-It turns out that all “open directions” – that is, directions one can look without hitting (or passing arbitrarily close to) a tree – correspond to such lattice vector!&lt;/p&gt;
-
-&lt;p&gt;The above illustration highlights the gaps between the rows of trees, but we might similarly talk about the rows of trees lying &lt;em&gt;between&lt;/em&gt; the colored rectangles.
-This is the perspective taken in crystallography.
-The atoms in a crystal form a regular lattice by definition, and this lattice can be decomposed into many parallel rows (or &lt;em&gt;sheets&lt;/em&gt; in 3D), and light of the appropriate frequency will scatter off these surfaces as if they were partially reflective mirrors.
-This is a common experimental technique for &lt;a href=&quot;https://en.wikipedia.org/wiki/X-ray_crystallography&quot;&gt;identifying different crystals&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;which-open-directions-will-you-see&quot;&gt;Which open directions will you see?&lt;/h2&gt;
-
-&lt;p&gt;Great – we now have a rule describing our open directions: every direction in which one can gaze unblocked off to infinity is parallel to a lattice vector \((a, b)\), where \(a, b\) are an irreducible pair of integers.
-When we look out at a big field, we should thus see a total number of… *&lt;em&gt;furiously counting on fingers&lt;/em&gt;* &lt;strong&gt;infinitely many&lt;/strong&gt; open directions, one for every \((a, b)\).
-Well, that doesn’t seem right, looking at our photograph above – what’s gone wrong?&lt;/p&gt;
-
-&lt;p&gt;Three things.
-First, the field in the photo above is finite, and there are some directions we don’t see that would emerge if the field were extended.
-Second, our camera has finite resolution.
-Third, the trees have &lt;em&gt;nonzero width&lt;/em&gt; – some lattice directions give wider “aisles” than others, and if an aisle’s narrower than the size of a tree, we won’t see it even provided an infinite field and perfect camera.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;All three of these effects point to a general conclusion: &lt;strong&gt;wider “aisles” are more visually salient.&lt;/strong&gt;
-It’d thus be useful to know the “aisle width” (or equivalent the “lattice row spacing”) corresponding to a particular lattice direction.
-Some quick geometry tells us that, with pointlike trees on a unit lattice, the aisle width in direction \((a, b)\) is \(w_{a,b} = \frac{1}{\sqrt{a^2 + b^2}}.\)
-This gives us a satisfying ordering of lattice directions: a lattice direction \((a, b)\) is more visually salient the smaller \(\sqrt{a^2 + b^2}\) is – that is, the closer it is to the origin!
-We should thus expect the directions \((0, \pm 1)\) and \((\pm 1, 0)\) to appear most visually striking, followed by \((\pm 1, \pm 1)\), then \((\pm 1, \pm 2)\) and \((\pm 2, \pm 1)\), and so on and so forth.&lt;/p&gt;
-
-&lt;p&gt;I’ve annotated our original image with the actual lattice directions.
-This is precisely what we see:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/cropland_with_regions_labeled.jpg&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Note that the different lattice directions look like they’re parallel in this image, but they actually point radially outwards from the camera at different angles.
-If we had an infinite field and a camera of good enough precision, we’d expect to see open directions corresponding to all irreducible \((a, b)\) such that \(w_{a, b}\) is less than the width of one sapling.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;fancy-math-farey-sequences-and-recursive-structure&quot;&gt;Fancy math: Farey sequences and recursive structure&lt;/h2&gt;
-
-&lt;p&gt;The math so far is pretty familiar to physicists – we’re used to thinking about lattices and lattice vectors, having seen them a hundred times in quantum courses.
-As I’ve looked out at scenes like this, the thing I really wanted to understand is: &lt;em&gt;why does it look so fractal?&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Let me try to be more precise: the little triangles of open “aisles” in our field photograph sure give the impression of a sort of recursive structure – given two big triangles, one usually finds a medium triangle between them, and there are never two big triangles too close to each other, sort of like a compass rose:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/compass_rose.jpeg&quot; width=&quot;20%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;It very much looks to me like, if you started adding triangular regions in order of decreasing size, you’d tend to insert each new triangle closer than chance to the midpoint of its neighbors.
-I actually simulated this and it’s not true – to my surprise the distribution appears to be uniform – but in my trying to understand this I did come across some cool math.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Farey_sequence&quot;&gt;Farey sequences&lt;/a&gt; are sequences of rational fractions defined in the following manner:
-the Farey sequence of order \(n\) consists of all unique rational numbers in \([0,1]\) with denominator less than or equal to \(n\).
-This actually maps nicely onto our problem restricted such that \(b \ge a \ge 0\), in which case the valid \(\frac{a}{b}\) are exactly the rational numbers in \([0, 1]\).
-The Farey sequences have many weird properties, one of which is the following: if \(\frac{a}{b}\) and \(\frac{c}{d}\) are neighbors in a Farey sequence, then as you increase \(n\), the first element to appear between them is always \(\frac{a + c}{b + d}\).
-In our problem, that means that if there are open directions at \((a, b)\) and \((c, d)\) and no bigger open direction between them, then the &lt;em&gt;biggest&lt;/em&gt; open direction between them will lie at \((a + c, b + d)\)!
-For example, the biggest open direction between \((0,1)\) and \((1,0)\) is \((1,1)\), and the biggest open direction between Farey-neighbors \((3,5)\) and \((2,3)\) is \((5, 8)\).
-The wiki page for the Farey sequences has all sorts of interesting recursive diagrams that fall out of this recursive structure.
-(Sidebar: as of writing, I don’t understand why this property is true. I’d be happy to have someone explain it to me!)&lt;/p&gt;
-
-&lt;p&gt;What does this tell us about the visual effect one sees when looking out at a regularly-planted field?
-Well, it means that, when adding the next-biggest open region between two existing regions, it’ll tend to be placed closer to the &lt;em&gt;smaller&lt;/em&gt; of the two existing regions.
-Looking back at our field photograph (esp the version annotated with arrows), this is certainly the case!&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;can-apparent-openness-vs-angle-be-described-by-a-smooth-function&quot;&gt;Can “apparent openness” vs. angle be described by a smooth function?&lt;/h2&gt;
-
-&lt;p&gt;Number theory is very beautiful, but essentially discrete in nature.
-The special directions we find are pointlike: look in one &lt;em&gt;particular direction&lt;/em&gt; and you’ll see forever, but a little bit to either side and you won’t.
-However, when I look out at a cropfield like this – particularly at the gif – my eye isn’t just drawn to certain points: a bigger region leading up to the point at infinity pops out to me visually.
-This makes sense – in the idealized setting, if I look slightly off an infinite-sight direction, I’ll still see pretty far!
-This makes me want some kind of &lt;em&gt;continuous&lt;/em&gt; function of angle that tells me, say, how far I’ll typically see when looking in that direction.
-Perhaps this function is parameterized by some notion of tree diameter \(d\), and has peaks that appear at the rational angles as \(d\) decreases.&lt;/p&gt;
-
-&lt;p&gt;I’ll say upfront that I tried for a while and didn’t come up with anything nice.
-This is the open question: can one write down a nice analytical function of angle that in some sense captures “how far” one can see along angle \(\theta\) through a forest of regularly-spaced trees of diameter \(d\)?&lt;/p&gt;
-
-&lt;p&gt;What I do have is a hacky numerical experiment and some cool plots.
-I’ll use a proxy metric I can compute in Python: with trees of diameter \(d\), what’s the farthest one could possibly see in direction \(\theta\) if one stood in the optimal place?
-Well, actually, I’ll use a metric that’s almost the same (in particular being infinite in the same places) but easier to compute: with pointlike trees, what’s the longest rectangle of width \(d\) that one can fit anywhere in the lattice with long side at angle \(\theta\) from an axis?&lt;/p&gt;
-
-&lt;p&gt;Here’s a gif of the result.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-	&lt;img src=&quot;/img/croprows/openness_plots.gif&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;There’s a lot of cool stuff to see in this!
-Most obviously, you can see the lattice directions opening up in the predicted sequence: the cardinal directions (\((1,0)\) etc.) are open at the start, and then the \((1,1)\) direction and friends open up when \(d = \frac{1}{\sqrt{2}}\), and then the \((1,2)\) directions and friends open up, and so on.
-Interestingly, a direction is always a local minimum just before it opens up – when \(d\) is just larger than \(w_{a,b}\), changing angle just a little bit in either direction will let you “see” one tree further.
-This is a neat one to try to understand by playing with a diagram yourself.
-There also seem to be no local maxima that aren’t vertical asymptotes.
-These properties give the process a sort of fractally feel: concave-up regions between vertical asymptotes get recursively split in two by new asymptotes.&lt;/p&gt;
-
-&lt;p&gt;This is cool and all – it’s a parameterized function which gains vertical asymptotes corresponding to all the rational numbers as the parameter decreases! – but I still want a nice analytical version of this.
-If you have any ideas, let me know!&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;code-and-acknowledgements&quot;&gt;Code and acknowledgements&lt;/h4&gt;
-
-&lt;p&gt;You can find my code for generating these plots &lt;a href=&quot;https://github.com/james-simon/lattice-math&quot;&gt;here&lt;/a&gt;.
-Thanks to Vincent Huang for pointing me to Farey sequences.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:f&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;I’m actually quite impressed that these plants are spaced regularly enough over such a large area to give such regular patterns! &lt;a href=&quot;#fnref:f&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:q&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;By this, we mean to disallow vectors like \((4, 6)\) and \((2, 0)\) where either (a) the elements are not coprime or (b) zero is paired with an integer not equal to one. &lt;a href=&quot;#fnref:q&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Noise in the placement of trees has essentially the same effect as nonzero tree width. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Note that I’m changing the size of the trees in this animation here even though it’s really the width of an imaginary rectangle that’s changing. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sun, 21 Apr 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/cropland-crystallography/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/cropland-crystallography/</guid>
-        
-        
-        <category>fun-math, random</category>
         
       </item>
     
