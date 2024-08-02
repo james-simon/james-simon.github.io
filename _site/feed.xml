@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 01 Aug 2024 16:52:10 -0700</pubDate>
-    <lastBuildDate>Thu, 01 Aug 2024 16:52:10 -0700</lastBuildDate>
+    <pubDate>Thu, 01 Aug 2024 18:49:49 -0700</pubDate>
+    <lastBuildDate>Thu, 01 Aug 2024 18:49:49 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -73,7 +73,7 @@ This can be beautifully illustrated by visualizing the result of applying only f
 This question is so obvious that, if you’ve already seen this stuff, it’s kind of hard to even see as legitimate: why does the “escape region” of \(f\) take the shape of a fractal?
 Like, why not some other, non-self-similar shape?
 Where does the fractal come from?
-What property of the map $f$ is responsible for the fractal?&lt;/p&gt;
+What property of the map $f$ is responsible for the self-similarity?&lt;/p&gt;
 
 &lt;p&gt;The usual fact that &lt;em&gt;is&lt;/em&gt; given is that these dynamical maps are chaotic.
 For example, students in a college course might compute the system’s &lt;a href=&quot;https://en.wikipedia.org/wiki/Lyapunov_exponent&quot;&gt;Lyapunov exponent&lt;/a&gt; and see that it is positive around the boundary of the fractal, implying the system displays the sensitivity to initial conditions characteristic of chaotic dynamics.
@@ -87,10 +87,11 @@ The reason is basically that, if you run the dynamical map forwards, you will fi
 &lt;h3 id=&quot;distinctive-regions-of-the-fractal-get-mapped-to-larger-versions-of-themselves&quot;&gt;Distinctive regions of the fractal get mapped to larger versions of themselves&lt;/h3&gt;
 
 &lt;p&gt;This property is easier to show than to tell.
-I have here zoomed into the bottom limb of the above Julia set and colored a small lobe of the fractal red.
-Call this set of points $\mathcal{Z}_0$.
-I then colored the set of points that this set maps to — call it $f(\mathcal{Z}_0)$ — orange.
-The set of points that these points maps to is yellow, and so on: an initial point in the red region will be mapped into the orange region, then the yellow region, then the green, etc.&lt;/p&gt;
+Pick a small lobe in the above fractal — say, the little red lobe in the graphic below.
+If you look around the fractal, you will be able to find lots and lots of little lobes, both bigger and smaller, that have the same shape.
+Now pick your favorite point in the red lobe.
+Upon the action of the map $f$, this point will generally be mapped to another point at the same position in a larger version of the same lobe!
+In the diagram below, an initial point in the red lobe gets mapped to a point in the orange lobe, then the yellow lobe, then the green, and so on.&lt;/p&gt;
 
 &lt;div class=&quot;container&quot;&gt;
     &lt;div class=&quot;row&quot;&gt;
@@ -104,15 +105,14 @@ The set of points that these points maps to is yellow, and so on: an initial poi
     &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Note that, up until the largest one, the sets here all have close to the same shape!
-Here’s the same thing with a different starting lobe:&lt;/p&gt;
+&lt;p&gt;Here’s the same thing with a different starting lobe:&lt;/p&gt;
 
 &lt;div class=&quot;container&quot;&gt;
     &lt;div class=&quot;row&quot;&gt;
         &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
         &lt;div class=&quot;col-6&quot;&gt;
 			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/lobe_map.png&quot; style=&quot;width: 100%&quot; /&gt;
+				&lt;img src=&quot;/img/fractals/lobe_map_2.png&quot; style=&quot;width: 100%&quot; /&gt;
 			&lt;/p&gt;
         &lt;/div&gt;
         &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
@@ -133,10 +133,9 @@ Here’s the same thing with a different starting lobe:&lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Note how each successive circle here is larger than the one before it, showing that the map is expansive.&lt;/p&gt;
+&lt;p&gt;Note how each successive circle here is larger than the one before it, showing that the map is expansive, and the Lyapunov exponents here are positive.&lt;/p&gt;
 
-&lt;p&gt;The main idea here is that if our starting point $z_0$ starts in a little fractally lobe, and gets mapped to a point $z_1$ that lies in basically the same point in a slightly larger version of the same lobe, and then this continues!
-This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
+&lt;p&gt;This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
 This follows from basically an inductive argument.
 I will give the argument first and then follow it up with some graphical illustration.&lt;/p&gt;
 
