@@ -91,7 +91,7 @@ We’ve shown that GPT-2’s positional encodings and token embeddings lie in ro
 This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?
 
 It turns out we can: the `query`, `key`, `value`, and `proj`[^c] weights are far more aligned to the top subspaces of both $$\mathbf{P}$$ and $$\mathbf{E}$$ than one would expect from chance.
-The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices and both of these two embedding matrices.
+The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices (taken from the first attention layer) and both of these two embedding matrices.
 
 [^c]: By this I refer to the "projection matrix" from the output of the attention operation back into the residual stream. This isn't really a projection in any conventional sense, since it's square -- seems better thought of as simply a linear transformation -- but that's what people call it, so we'll do so here.
 
@@ -111,16 +111,15 @@ One could come up with various just-so stories here --- for example, that the `p
 
 Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be *sensitive* to the top directions of the token embeddings and *insensitive* to the top directions of the positional encodings.
 
-This can be basically captured in one graph:
+The plot below shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}$$ and the token embedding and positional encoding matrices.
+We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
+This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/mlp_overlap_heatmaps.png" width="70%">
 </p>
 
-This plot shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}$$ and the token embedding and positional encoding matrices.
 
-The MLP is strongly attuned to the top token embedding directions (the first heatmap here has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
-This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.mlp
 
 ## Claim: the positional encoding subspace is sparse!
 

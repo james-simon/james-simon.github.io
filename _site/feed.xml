@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 20 Aug 2024 21:29:50 -0700</pubDate>
-    <lastBuildDate>Tue, 20 Aug 2024 21:29:50 -0700</lastBuildDate>
+    <pubDate>Wed, 21 Aug 2024 14:21:48 -0700</pubDate>
+    <lastBuildDate>Wed, 21 Aug 2024 14:21:48 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -90,7 +90,7 @@ Here I simply plot the squared overlaps of the right singular vectors of $\mathb
 This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?&lt;/p&gt;
 
 &lt;p&gt;It turns out we can: the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt;&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; weights are far more aligned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\) than one would expect from chance.
-The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices and both of these two embedding matrices.&lt;/p&gt;
+The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices (taken from the first attention layer) and both of these two embedding matrices.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/gpt2_pos_encs/eight_panel_plot.png&quot; width=&quot;40%&quot; /&gt;
@@ -109,16 +109,13 @@ The following big eight-panel plot which shows the squared singular value overla
 
 &lt;p&gt;Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be &lt;em&gt;sensitive&lt;/em&gt; to the top directions of the token embeddings and &lt;em&gt;insensitive&lt;/em&gt; to the top directions of the positional encodings.&lt;/p&gt;
 
-&lt;p&gt;This can be basically captured in one graph:&lt;/p&gt;
+&lt;p&gt;The plot below shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}\) and the token embedding and positional encoding matrices.
+We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
+This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/gpt2_pos_encs/mlp_overlap_heatmaps.png&quot; width=&quot;70%&quot; /&gt;
 &lt;/p&gt;
-
-&lt;p&gt;This plot shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}\) and the token embedding and positional encoding matrices.&lt;/p&gt;
-
-&lt;p&gt;The MLP is strongly attuned to the top token embedding directions (the first heatmap here has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
-This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.mlp&lt;/p&gt;
 
 &lt;h2 id=&quot;claim-the-positional-encoding-subspace-is-sparse&quot;&gt;Claim: the positional encoding subspace is sparse!&lt;/h2&gt;
 
