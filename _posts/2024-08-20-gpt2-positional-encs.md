@@ -146,5 +146,5 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
 
 ***
 
-*Thanks to Chandan Singh for the discussion that led to this post. A Colab notebook reproducing all experiments may be found [here](https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing)*
+*Thanks to Chandan Singh for proofreading this post and for the discussion that led to it. A Colab notebook reproducing all experiments may be found [here](https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing)*
 
