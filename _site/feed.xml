@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 20 Aug 2024 21:25:43 -0700</pubDate>
-    <lastBuildDate>Tue, 20 Aug 2024 21:25:43 -0700</lastBuildDate>
+    <pubDate>Tue, 20 Aug 2024 21:29:50 -0700</pubDate>
+    <lastBuildDate>Tue, 20 Aug 2024 21:29:50 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -61,7 +61,7 @@ Here are the singular values of these two matrices:&lt;/p&gt;
 The embeddings, by contrast, have fairly high rank: the mass of $\mathbf{E}$ is spread over many singular directions.&lt;/p&gt;
 
 &lt;p&gt;We will now show that the top directions of the right singular subspace of $\mathbf{P}$ (which capture most of its mass) align well with the &lt;em&gt;bottom&lt;/em&gt; directions of the right singular subspace of $\mathbf{E}$, which permits them to not interfere with each other.
-Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let $\Pi^{(30)}&lt;em&gt;\mathbf{P}$ be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows $v_j^\top \Pi^{(30)}&lt;/em&gt;\mathbf{P} v_j$.
+Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let \(\Pi^{(30)}_\mathbf{P}\) be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows \(v_j^\top \Pi^{(30)}_\mathbf{P} v_j\).
 This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to which each &lt;em&gt;embedding&lt;/em&gt; singular direction is captured by the top singular directions of the &lt;em&gt;positional encoding&lt;/em&gt; matrix.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
@@ -71,7 +71,7 @@ This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to whic
 &lt;p&gt;The large mass towards the right of the above plot shows that the top subspace of the positional encodings is well-aligned with the bottom subspace of the token embeddings.
 Phrased differently, the positional encodings and token embeddings lie in roughly orthogonal subspaces, and so they won’t interfere!&lt;/p&gt;
 
-&lt;p&gt;Curiously, above plot also shows a small mass at the low indices.
+&lt;p&gt;Curiously, the above plot also shows a small mass at the low indices.
 This is strange to me, and I don’t know what to make of it.
 Feel free to send me hypotheses!&lt;/p&gt;
 
@@ -82,14 +82,14 @@ Here I simply plot the squared overlaps of the right singular vectors of $\mathb
 &lt;img src=&quot;/img/gpt2_pos_encs/tokemb_posenc_overlap_heatmap.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that &lt;strong&gt;the&lt;/strong&gt; &lt;strong&gt;top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.&lt;/strong&gt;[FOOTNOTE: I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future.]&lt;/p&gt;
+&lt;p&gt;I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that &lt;strong&gt;the&lt;/strong&gt; &lt;strong&gt;top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.&lt;/strong&gt;&lt;sup id=&quot;fnref:q&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:q&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;claim-query-key-value-and-post-value-projection-weights-are-attuned-to-the-top-subspaces-of-both-mathbfp-and-mathbfe&quot;&gt;Claim: query, key, value, and “post-value projection” weights are attuned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\)&lt;/h2&gt;
 
 &lt;p&gt;We’ve shown that GPT-2’s positional encodings and token embeddings lie in roughly orthogonal subspaces.
 This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?&lt;/p&gt;
 
-&lt;p&gt;It turns out we can: the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt;&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; weights are far more aligned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\) than one would expect from chance.
+&lt;p&gt;It turns out we can: the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt;&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; weights are far more aligned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\) than one would expect from chance.
 The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices and both of these two embedding matrices.&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
@@ -115,7 +115,7 @@ The following big eight-panel plot which shows the squared singular value overla
 &lt;img src=&quot;/img/gpt2_pos_encs/mlp_overlap_heatmaps.png&quot; width=&quot;70%&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;This plot shows the squared overlaps between the right singular vectors of the MLP weights $\mathbf{W}&lt;em&gt;1 \in \mathbb{R}^{4 d&lt;/em&gt;\text{model} \times d_\text{model}}$ and the token embedding and positional encoding matrices.&lt;/p&gt;
+&lt;p&gt;This plot shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}\) and the token embedding and positional encoding matrices.&lt;/p&gt;
 
 &lt;p&gt;The MLP is strongly attuned to the top token embedding directions (the first heatmap here has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
 This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.mlp&lt;/p&gt;
@@ -152,6 +152,9 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
     &lt;/li&gt;
     &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;For example, if you don’t choose the vectors carefully, you might find that the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CAT&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt; is embedded similarly to the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APPLE&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6&lt;/code&gt; — or, mathematically, that $E(\text{CAT}) + p_3 \approx E(\text{APPLE}) + p_6$ — making them hard to distinguish. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:q&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future. &lt;a href=&quot;#fnref:q&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;By this I refer to the “projection matrix” from the output of the attention operation back into the residual stream. This isn’t really a projection in any conventional sense, since it’s square – seems better thought of as simply a linear transformation – but that’s what people call it, so we’ll do so here. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;

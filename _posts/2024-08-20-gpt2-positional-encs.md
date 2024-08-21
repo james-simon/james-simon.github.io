@@ -60,7 +60,7 @@ The most important observation here is that $\mathbf{P}$ has fairly low rank: it
 The embeddings, by contrast, have fairly high rank: the mass of $\mathbf{E}$ is spread over many singular directions.
 
 We will now show that the top directions of the right singular subspace of $\mathbf{P}$ (which capture most of its mass) align well with the *bottom* directions of the right singular subspace of $\mathbf{E}$, which permits them to not interfere with each other.
-Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let $\Pi^{(30)}_\mathbf{P}$ be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows $v_j^\top \Pi^{(30)}_\mathbf{P} v_j$.
+Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let $$\Pi^{(30)}_\mathbf{P}$$ be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows $$v_j^\top \Pi^{(30)}_\mathbf{P} v_j$$.
 This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to which each *embedding* singular direction is captured by the top singular directions of the *positional encoding* matrix.
 
 <p style="text-align:center;">
@@ -70,7 +70,7 @@ This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to whic
 The large mass towards the right of the above plot shows that the top subspace of the positional encodings is well-aligned with the bottom subspace of the token embeddings.
 Phrased differently, the positional encodings and token embeddings lie in roughly orthogonal subspaces, and so they won’t interfere!
 
-Curiously, above plot also shows a small mass at the low indices.
+Curiously, the above plot also shows a small mass at the low indices.
 This is strange to me, and I don’t know what to make of it.
 Feel free to send me hypotheses!
 
@@ -81,7 +81,9 @@ Here I simply plot the squared overlaps of the right singular vectors of $\mathb
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/tokemb_posenc_overlap_heatmap.png" width="50%">
 </p>
 
-I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that **the** **top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.**[FOOTNOTE: I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future.]
+I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that **the** **top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.**[^q]
+
+[^q]: I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future.
 
 ## Claim: query, key, value, and "post-value projection" weights are attuned to the top subspaces of both $$\mathbf{P}$$ and $$\mathbf{E}$$
 
@@ -115,7 +117,7 @@ This can be basically captured in one graph:
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/mlp_overlap_heatmaps.png" width="70%">
 </p>
 
-This plot shows the squared overlaps between the right singular vectors of the MLP weights $\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}$ and the token embedding and positional encoding matrices.
+This plot shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}$$ and the token embedding and positional encoding matrices.
 
 The MLP is strongly attuned to the top token embedding directions (the first heatmap here has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
 This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.mlp
