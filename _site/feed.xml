@@ -5,9 +5,168 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 01 Aug 2024 22:37:05 -0700</pubDate>
-    <lastBuildDate>Thu, 01 Aug 2024 22:37:05 -0700</lastBuildDate>
+    <pubDate>Tue, 20 Aug 2024 19:37:59 -0700</pubDate>
+    <lastBuildDate>Tue, 20 Aug 2024 19:37:59 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Exploring GPT-2's positional encodings</title>
+        <description>&lt;p&gt;&lt;em&gt;In this blogpost, I show that GPT-2’s positional encodings lie in a roughly orthogonal subspace to its token embeddings. I then show that the subsequent attention layer and MLP are sensitized to these subspaces in intuitive fashions.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I’m finally learning about transformers, and I intend to both learn the factual basics and also build up some intuition for how they work and how to think about them.
+In doing so, I found I got a bit stuck when reading about &lt;a href=&quot;https://machinelearningmastery.com/a-gentle-introduction-to-positional-encoding-in-transformer-models-part-1/&quot;&gt;positional encoding&lt;/a&gt;, the original scheme used to provide transformers with token position information.
+In particular, I was confused as to how the positional encodings wouldn’t interfere with the token embeddings.
+Messing around with GPT-2, I found the answer’s basically that they’re learned to be orthogonal, and the consequences of this can be seen in downstream weight tensors, too!
+I’ll begin by framing the puzzle here, then show numerical evidence that these two types of embedding are approximately orthogonal, and finally show how this is reflected in some model weight tensors.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction-why-dont-positional-encodings-interfere-with-token-embeddings&quot;&gt;Introduction: why don’t positional encodings interfere with token embeddings?&lt;/h2&gt;
+
+&lt;p&gt;The attention operation at the core of modern transformer models is blind to the order of the embedding sequence it takes as input.
+The operation cares only about the similarity (as computed via the attention mechanism) between two token embeddings in the sequence and is blind to their absolute and relative positions in the sequence (except for the causal mask, which we’ll ignore).
+This positional information is important, though, so it’s typically given to the model via &lt;em&gt;positional encodings.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Under this scheme, after the input sequence is tokenized and mapped to initial token embeddings, a unique vector representing a token’s index in the sequence is added to each embedding.
+This provides token position information to the downstream model.
+Mathematically, if our input is a sequence of tokens ${x_0, x_1, x_2, \ldots }$, we first apply a token embedding map $E$ to get a sequence of vectors ${E(x_0), E(x_1), E(x_2), \ldots}$ and then add positional encoding vectors ${p_i}$ to each embedding vector to get
+${E(x_0) + p_0, E(x_1) + p_1, E(x_2) + p_2, \ldots}$.
+The result is a sequence of embedding vectors such that each vector $e_i = E(x_i) + p_i$ is aware of both its input token $x_i$ and its index $i$.
+This sequence is then passed on to the rest of the transformer.&lt;/p&gt;
+
+&lt;p&gt;Thinking through the vector math here, the choice to simply add positional encodings to the token embeddings seems surprising.
+I’d naively expect these vectors to interfere with each other!
+We’d ideally like to be able to easily resolve both the token embedding and its position, but by adding the corresponding vectors, we get some superposition that sort of muddies them together.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
+This is weird because you’d imagine the downstream circuitry will want to be able to resolve the two.&lt;/p&gt;
+
+&lt;p&gt;This wouldn’t be a problem if the operation were vector concatenation instead of addition.
+Equivalently, this wouldn’t be a problem if we were knew that the token embeddings and positional encodings lie in roughly orthogonal subspaces, so they won’t interfere.
+This seemed like a reasonable enough hypothesis that I looked at GPT-2’s encoding to check, and it turns out that this is basically what’s happened — the embeddings and encodings learn to lie in roughly orthogonal subspaces!&lt;/p&gt;
+
+&lt;h2 id=&quot;claim-positional-encodings-perp-token-embeddings&quot;&gt;Claim: [positional encodings] $\perp$ [token embeddings]&lt;/h2&gt;
+
+&lt;p&gt;Here I will present numerical evidence that the positional encodings and token embeddings lie in roughly orthogonal subspaces.
+I’ll first plot the singular values of both embedding matrices, which will show that the positional encodings concentrate in a pretty low-dim subspace, then show that this subspace is roughly orthogonal to the space of the token embeddings.&lt;/p&gt;
+
+&lt;p&gt;Let’s fix some notation.
+GPT-2 has an embedding dimension of $d_\text{model} = 768$, a vocabulary size of $d_\text{vocab} \approx 50 \times 10^3$, and a max context window of size $d_\text{context} = 1024$.
+We’ll denote the token embedding matrix by $\mathbf{E} \in \mathbb{R}^{d_\text{vocab} \times d_\text{model}}$ and the positional encoding matrix by $\mathbf{P} \in \mathbb{R}^{d_\text{context} \times d_\text{model}}$.
+Here are the singular values of these two matrices:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/P_and_E_svals.png&quot; width=&quot;75%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The most important observation here is that $\mathbf{P}$ has fairly low rank: it’s very well captured by its top, say, 30 singular directions.
+The embeddings, by contrast, have fairly high rank: the mass of $\mathbf{E}$ is spread over many singular directions.&lt;/p&gt;
+
+&lt;p&gt;We will now show that the top directions of the right singular subspace of $\mathbf{P}$ (which capture most of its mass) align well with the &lt;em&gt;bottom&lt;/em&gt; directions of the right singular subspace of $\mathbf{E}$, which permits them to not interfere with each other.
+Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let $\Pi^{(30)}&lt;em&gt;\mathbf{P}$ be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows $v_j^\top \Pi^{(30)}&lt;/em&gt;\mathbf{P} v_j$.
+This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to which each &lt;em&gt;embedding&lt;/em&gt; singular direction is captured by the top singular directions of the &lt;em&gt;positional encoding&lt;/em&gt; matrix.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/tokemb_posenc_capture_plot.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The large mass towards the right of the above plot shows that the top subspace of the positional encodings is well-aligned with the bottom subspace of the token embeddings.
+Phrased differently, the positional encodings and token embeddings lie in roughly orthogonal subspaces, and so they won’t interfere!&lt;/p&gt;
+
+&lt;p&gt;Curiously, above plot also shows a small mass at the low indices.
+This is strange to me, and I don’t know what to make of it.
+Feel free to send me hypotheses!&lt;/p&gt;
+
+&lt;p&gt;Here’s another, more detailed viz of the same phenomenon.
+Here I simply plot the squared overlaps of the right singular vectors of $\mathbf{P}$ and $\mathbf{E}$:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/tokemb_posenc_overlap_heatmap.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that &lt;strong&gt;the&lt;/strong&gt; &lt;strong&gt;top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.&lt;/strong&gt;[FOOTNOTE: I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future.]&lt;/p&gt;
+
+&lt;h2 id=&quot;claim-query-key-value-and-post-value-projection-weights-are-attuned-to-the-top-subspaces-of-both-mathbfp-and-mathbfe&quot;&gt;Claim: query, key, value, and “post-value projection” weights are attuned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\)&lt;/h2&gt;
+
+&lt;p&gt;We’ve shown that GPT-2’s positional encodings and token embeddings lie in roughly orthogonal subspaces.
+This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?&lt;/p&gt;
+
+&lt;p&gt;It turns out we can: the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt;&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; weights are far more aligned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\) than one would expect from chance.
+The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices and both of these two embedding matrices.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/eight_panel_plot.png&quot; width=&quot;40%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This plot shows that:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt; matrices is well-aligned to the very top subspace of \(\mathbf{P}\) (note the dark dot in the very top left of the top left two plots – you might have to zoom in).&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt; matrices are well-aligned to the top subspaces of \(\mathbf{E}\). The corresponding plots have large mass in the top left.&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt; matrix is well-aligned with \(\mathbf{P}\) and apparently anti-aligned to \(\mathbf{P}\)!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One could come up with various just-so stories here — for example, that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt; matrix is spreading around positional information — but I’ll refrain. The important takeaways are that these matrices are clearly aware of these two important subspaces and that the top few positional encoding directions are used quite a lot in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt; similary computation, which makes sense. These seem like useful things to keep in mind when, for example, trying to reverse-engineer transformer circuitry.&lt;/p&gt;
+
+&lt;h2 id=&quot;claim-mlp-weights-perp-positional-encodings&quot;&gt;Claim: [MLP weights] $\perp$ [positional encodings]&lt;/h2&gt;
+
+&lt;p&gt;Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be &lt;em&gt;sensitive&lt;/em&gt; to the top directions of the token embeddings and &lt;em&gt;insensitive&lt;/em&gt; to the top directions of the positional encodings.&lt;/p&gt;
+
+&lt;p&gt;This can be basically captured in one graph:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/mlp_overlap_heatmaps.png&quot; width=&quot;70%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This plot shows the squared overlaps between the right singular vectors of the MLP weights $\mathbf{W}&lt;em&gt;1 \in \mathbb{R}^{4 d&lt;/em&gt;\text{model} \times d_\text{model}}$ and the token embedding and positional encoding matrices.&lt;/p&gt;
+
+&lt;p&gt;The MLP is strongly attuned to the top token embedding directions (the first heatmap here has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
+This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.mlp&lt;/p&gt;
+
+&lt;h2 id=&quot;claim-the-positional-encoding-subspace-is-sparse&quot;&gt;Claim: the positional encoding subspace is sparse!&lt;/h2&gt;
+
+&lt;p&gt;Since the top singular subspace of \(\mathbf{P}\) seems to be important, I decided to visualize it.
+To my surprise, it’s sparse in the embedding space!&lt;/p&gt;
+
+&lt;p&gt;Recall that \(\mathbf{P}\) has dimensions \(d_\text{context} \times d_\text{model}\), with \(d_\text{context} = 1024\) and \(d_\text{model} = 784\). Let us visualize its top five singular vectors in these two spaces:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/gpt2_pos_encs/pos_enc_top_vecs.png&quot; width=&quot;90%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;As we might guess, the top singular vectors in the context (i.e. token) space are basically sinusoids of different frequencies… but the top singular vectors in the embedding space are sparse, concentrating strongly on maybe 40 indices. No idea why this happens, but it’s a strong enough effect that I’d bet there’s a simple explanation.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;This blogpost describes some purposeful poking around the singular value structure of GPT-2’s positional encoding and token embedding matrices.
+The main observation – that the these two types of information lie in basically orthogonal subspaces, and this is reflected in intuitive ways in downstream weight matrices – seems pretty solid!
+There are a bunch of auxiliary observations, including the sparsity of the positional encodings, that seem pretty clear but which I don’t have a good explanation for.
+In any case, it seems useful to compile heuristic, broad-strokes observations like this when trying to build intuition for how transformers work.
+Observations like this feel to me like puzzle pieces, and if we get enough on the table, maybe we can start fitting them together.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Thanks to Chandan Singh for the discussion that led to this post.&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Two disclaimers here: first, this was written rather fast and some parts might be unclear, and second, I imagine someone out there already knows this! In either case, feel free to drop me a line. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;For example, if you don’t choose the vectors carefully, you might find that the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CAT&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt; is embedded similarly to the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APPLE&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6&lt;/code&gt; — or, mathematically, that $E(\text{CAT}) + p_3 \approx E(\text{APPLE}) + p_6$ — making them hard to distinguish. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;By this I refer to the “projection matrix” from the output of the attention operation back into the residual stream. This isn’t really a projection in any conventional sense, since it’s square – seems better thought of as simply a linear transformation – but that’s what people call it, so we’ll do so here. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>Understanding fractals from iterated maps</title>
@@ -136,271 +295,6 @@ In the diagram below, an initial point in the red lobe gets mapped to a point in
 &lt;p&gt;Note how each successive circle here is larger than the one before it, showing that the map is expansive, and the Lyapunov exponents here are positive.&lt;/p&gt;
 
 &lt;p&gt;This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
-This follows from basically an inductive argument.
-I will give the argument first and then follow it up with some graphical illustration.&lt;/p&gt;
-
-&lt;p&gt;Note first that &lt;em&gt;any point that is mapped to a black point will also be a black point&lt;/em&gt; – the two points lie on the same trajectory, so they have the same fate (to diverge or not to diverge).
-As the base case, assume there is some black region with an interesting shape.
-As the inductive step, now, suppose that some other, smaller volume of space gets mapped to a volume of space including this black region.
-There will be a shrunken copy of the black region in this other volume — the black region has been duplicated!
-Now we can run this process again and again, positing a &lt;em&gt;third,&lt;/em&gt; even smaller volume of space that maps to the second, and so on and so on.
-(Fairly simple mapping functions $f(z)$ can give you an infinite sequence of volumes mapping to each other like this; note that the volumes can overlap.
-We will give a toy example illustrating this soon.)
-We now have an infinite number of copies of the original black region, getting ever smaller and more delicate — a fractal!&lt;/p&gt;
-
-&lt;p&gt;This really becomes much more tangible when you play around with yourself with an eye to this behavior.
-You can explore this fractal in-browser at (this nice website)[https://www.marksmath.org/visualization/julia_sets/].&lt;/p&gt;
-
-&lt;p&gt;As a final speculation before we use this notion to make some fractals, I wonder if there’s some sense in which getting a fractal is inevitable in the Julia set of a chaotic iterated map.
-Surely the set will be some chaotic, extremely complicated shape… and it vaguely seems to me like, because the generating function is some fixed function with some finite amount of information required to specify it, it couldn’t possibly result in a chaotic shape which &lt;em&gt;isn’t&lt;/em&gt; a fractal — that is, for which each lower level of detail is unlike the higher levels — because that would entail an infinite amount of information to specify.
-Perhaps there are connections to computational complexity in here, where the function is fixed and has $O(1)$ complexity, but the fractal naively has “geometric complexity” $O(T)$, where $T$ is the number of iterations the map is run for, and somehow the self-similarity of the fractal lets one come up with a new notion of geometric complexity for which these Julia sets only have $O(1)$ complexity.
-This would feel like a satisfying resolution to the motivating “paradox” that it felt like we were getting more out of these systems than we put in.&lt;/p&gt;
-
-&lt;h2 id=&quot;hand-designing-some-fractals&quot;&gt;Hand-designing some fractals&lt;/h2&gt;
-
-&lt;p&gt;If you really understand how something works, you should be able to make one yourself.
-I’m claiming that the ingredients for self-similar basins of attraction from an iterated map are basically (a) expansive behavior and (b) an infinite sequence of volumes that map into each other, leading ultimately to some interesting basin boundary.
-The easiest way to satisfy both (a) and (b) is perhaps to have some region $\mathcal{R}$ that maps to a larger region $\mathcal{R}’$ that contains both some basin boundary &lt;em&gt;and the original region $\mathcal{R}$ itself.&lt;/em&gt;
-This pretty easily gives an infinite sequence of volumes (and a resulting fractal) because, well, the basin structure within $\mathcal{R}’$ has to contain a complete copy of itself, so self-similar structure is inevitable!&lt;/p&gt;
-
-&lt;h3 id=&quot;first-example-circles-in-2d&quot;&gt;First example: circles in 2D&lt;/h3&gt;
-
-&lt;p&gt;Here’s an example.
-We will continue to work in the complex plane and use the map&lt;/p&gt;
-
-\[z_{t+1} = c z_t,\]
-
-&lt;p&gt;where $c = 2$ for now.
-I will then draw a circle somewhere in the plane.
-If a point $z_0$ ever lands inside the circle after some number of iterations, we decree that it may never leave, and we color the pixel at $z_0$ black.
-If it never lands in the circle, the pixel at $z_0$ is white.&lt;/p&gt;
-
-&lt;p&gt;Here’s what you get:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/circles_1.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Here I have chosen the “sticky circle” (the largest circle) to have radius $0.4$, centered at $z_c = 1 + i$.
-The red crosshair shows the origin.
-Note that we get a fractal!&lt;/p&gt;
-
-&lt;p&gt;We can make it more interesting if we instead add some rotation with, say, $c = 1 + 0.1 i$:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/circles_2.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;second-example-chaotic-map-in-1d&quot;&gt;Second example: chaotic map in 1D&lt;/h3&gt;
-
-&lt;p&gt;Let’s design another one.
-This one will be only 1D.
-Consider the following map $z_t \mapsto z_{t+1}$:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/1d_map_one_iteration.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Try to guess what this map will do when iterated many times.
-It’s not too hard to see that the points on the far left and far right will continue to flow all the way to the edges, so we have $0$ and $1$ as basins of attraction…
-and I have designed the middle region so that parts of it map into these two basins (the peak and trough), and other parts &lt;em&gt;map back into the whole middle region,&lt;/em&gt; guaranteeing that any basin structure is repeated and making the basins structure self-similar.
-Here’s what this map looks like after being applied seven times:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/1d_map_iterated.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This structure is self-similar (which I verified by zooming in).&lt;/p&gt;
-
-&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
-
-&lt;p&gt;In this post, I’ve aimed to give some mechanistic insight into why and how the basins of attraction of iterated maps give fractals.
-There’s a huge raft of technical content I could have brought in here but didn’t — if you’re interested, I’d encourage you to check out Lyapunov exponents, the logstic map, the Mandelbrot set, and perhaps Steven Strogatz’ &lt;em&gt;Nonlinear Dynamics and Chaos.&lt;/em&gt;
-I had never really felt I could see the genesis of this class of fractals before, but now I can, so I hope this sheds some light for some other folks, too!&lt;/p&gt;
-
-&lt;p&gt;A major takeaway I have here, which I didn’t fully appreciate before, is that in systems like these, chaos is usually studied as a &lt;em&gt;local&lt;/em&gt; property — e.g., the Lyapunov exponent is positive, and it’s locally defined — but these fractals are &lt;em&gt;global.&lt;/em&gt;
-I think this probably explains why I hadn’t encountered a good explanation like this before: it seems hard to reduce the global property of fractal-formation to a property of the return map that’s simple enough to prove a theorem about.
-I wonder if there’s some analytical condition on the return map that one could define that’d be necessary and sufficient for it to give you fractals.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This has never been addressed in the maybe five times I’ve seen this material, that is – but tell me if you know a good treatment somewhere! &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/fractals-in-iterative-maps/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterative-maps/</guid>
-        
-        
-        <category>fun-science</category>
-        
-      </item>
-    
-      <item>
-        <title>Understanding fractals from iterated maps</title>
-        <description>&lt;p&gt;&lt;em&gt;In this post, I give some mechanistic intuition for why and how the basins of iterated maps form fractals which I feel is usually missing from academic treatments of the subject.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;It is a remarkable fact of mathematics that simple dynamical systems can display immensely complex behavior.
-The poster children of this notion are fractals generated from iterated maps.
-You have likely seen the &lt;a href=&quot;https://math.hws.edu/eck/js/mandelbrot/MB.html&quot;&gt;Mandelbrot set&lt;/a&gt;, the most famous such fractal.
-Here is a related &lt;em&gt;Julia set&lt;/em&gt; which is slightly simpler to define:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/julia_set.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The rule by which this stunning image is generated is remarkably simple.
-This plot represents the complex plane, and each point \((x, y)\) in the image represents the complex number $z_0 = x + y i$.
-For each such point $z_0$, we compute $z_1$, $z_2$, and so on using the iterated map&lt;/p&gt;
-
-\[z_{t + 1} = f(z_{t+1}) = z_t^2 + c,\]
-
-&lt;p&gt;where \(c \approx 0.2883 + 0.5383 i\) is a parameter I have tuned.
-This either eventually blows up (with \(|z|\) getting very big) or doesn’t.
-If $|z|$ blows up, the pixel at $z_0$ is colored white, and if it remains bounded, it is colored black.[^a]
-The result is the stunning fractal above.
-You can explore different values of $c$ — which generate surprisingly varied and wondrous Julia sets[^b] — &lt;a href=&quot;https://www.marksmath.org/visualization/julia_sets/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;where-does-all-this-detail-come-from&quot;&gt;Where does all this detail come from?&lt;/h2&gt;
-
-&lt;p&gt;Part of the amazement of images like the above is that our dynamical process was extremely simple to define, but the resulting visualization is quite complicated — infinitely complicated, in fact, or at least infinitely detailed!
-It gives me (and others, I suspect) the feeling of having somehow “gotten more out than we put in”.
-It simply does not feel like this dynamical map should be complex enough to generate this fractal!&lt;/p&gt;
-
-&lt;p&gt;The answer to this seeming paradox is that we are iterating the dynamical map many times: the level of detail results not from the complexity of the map but rather from the amount of computation we expend repeatedly applying it.
-This can be beautifully illustrated by visualizing the result of applying only finitely many iterations, using shades of grey to indicate how may iterations a point takes to blow up:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/julia_set.gif&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The complexity of these fractals is built up over many iterations.&lt;/p&gt;
-
-&lt;h2 id=&quot;why-do-you-get-a-fractal&quot;&gt;Why do you get a fractal?&lt;/h2&gt;
-
-&lt;p&gt;There is a very basic question one can ask here that is virtually never addressed in introductory treatments of chaotic maps:&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; why do we get a fractal?
-This question is so obvious that, if you’ve already seen this stuff, it’s kind of hard to even see as legitimate: why does the “escape region” of \(f\) take the shape of a fractal?
-Like, why not some other, non-self-similar shape?
-Where does the fractal come from?
-What property of the map $f$ is responsible for the fractal?&lt;/p&gt;
-
-&lt;p&gt;The usual fact that &lt;em&gt;is&lt;/em&gt; given is that these dynamical maps are chaotic.
-For example, students in a college course might compute the system’s &lt;a href=&quot;https://en.wikipedia.org/wiki/Lyapunov_exponent&quot;&gt;Lyapunov exponent&lt;/a&gt; and see that it is positive around the boundary of the fractal, implying the system displays the sensitivity to initial conditions characteristic of chaotic dynamics.
-Okay, great, it’s believable that these maps are chaotic, but where does this &lt;em&gt;fractal&lt;/em&gt; come from?
-The two concepts are certainly related, but how exactly?&lt;/p&gt;
-
-&lt;p&gt;I gnawed on this question sporadically for many years, and I finally have what feels like an intuitive understanding.
-The main purpose of this blogpost is to convey that (high-level, nonrigorous) intuition.
-The reason is basically that, if you run the dynamical map forwards, you will find that…&lt;/p&gt;
-
-&lt;h3 id=&quot;distinctive-regions-of-the-fractal-get-mapped-to-larger-versions-of-themselves&quot;&gt;Distinctive regions of the fractal get mapped to larger versions of themselves&lt;/h3&gt;
-
-&lt;p&gt;This property is easier to show than to tell.
-I have here zoomed into the bottom limb of the above Julia set and colored a small lobe of the fractal red.
-Call this set of points $\mathcal{Z}_0$.
-I then colored the set of points that this set maps to — call it $f(\mathcal{Z}_0)$ — orange.
-The set of points that these points maps to is yellow, and so on: an initial point in the red region will be mapped into the orange region, then the yellow region, then the green, etc.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/lobe_map.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Note that, up until the largest one, the sets here all have close to the same shape!
-Here’s the same thing with a different starting lobe:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/lobe_map.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And to underscore the first example, here’s an actual computer-generated plot in which the region enclosed by each circle is mapped to the region enclosed by the next one:&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/fractals/circle_map.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Note how each successive circle here is larger than the one before it, showing that the map is expansive.&lt;/p&gt;
-
-&lt;p&gt;The main idea here is that if our starting point $z_0$ starts in a little fractally lobe, and gets mapped to a point $z_1$ that lies in basically the same point in a slightly larger version of the same lobe, and then this continues!
-This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
 This follows from basically an inductive argument.
 I will give the argument first and then follow it up with some graphical illustration.&lt;/p&gt;
 

@@ -113,9 +113,9 @@ For each such point $z_0$, we compute $z_1$, $z_2$, and so on using the iterated
 
 <p>where \(c \approx 0.2883 + 0.5383 i\) is a parameter I have tuned.
 This either eventually blows up (with \(|z|\) getting very big) or doesn’t.
-If $|z|$ blows up, the pixel at $z_0$ is colored white, and if it remains bounded, it is colored black.[^a]
+If $|z|$ blows up, the pixel at $z_0$ is colored white, and if it remains bounded, it is colored black.
 The result is the stunning fractal above.
-You can explore different values of $c$ — which generate surprisingly varied and wondrous Julia sets[^b] — <a href="https://www.marksmath.org/visualization/julia_sets/">here</a>.</p>
+You can explore different values of $c$ — which generate surprisingly varied and wondrous Julia sets — <a href="https://www.marksmath.org/visualization/julia_sets/">here</a>.</p>
 
 <h2 id="where-does-all-this-detail-come-from">Where does all this detail come from?</h2>
 
@@ -146,7 +146,7 @@ This can be beautifully illustrated by visualizing the result of applying only f
 This question is so obvious that, if you’ve already seen this stuff, it’s kind of hard to even see as legitimate: why does the “escape region” of \(f\) take the shape of a fractal?
 Like, why not some other, non-self-similar shape?
 Where does the fractal come from?
-What property of the map $f$ is responsible for the fractal?</p>
+What property of the map $f$ is responsible for the self-similarity?</p>
 
 <p>The usual fact that <em>is</em> given is that these dynamical maps are chaotic.
 For example, students in a college course might compute the system’s <a href="https://en.wikipedia.org/wiki/Lyapunov_exponent">Lyapunov exponent</a> and see that it is positive around the boundary of the fractal, implying the system displays the sensitivity to initial conditions characteristic of chaotic dynamics.
@@ -160,10 +160,11 @@ The reason is basically that, if you run the dynamical map forwards, you will fi
 <h3 id="distinctive-regions-of-the-fractal-get-mapped-to-larger-versions-of-themselves">Distinctive regions of the fractal get mapped to larger versions of themselves</h3>
 
 <p>This property is easier to show than to tell.
-I have here zoomed into the bottom limb of the above Julia set and colored a small lobe of the fractal red.
-Call this set of points $\mathcal{Z}_0$.
-I then colored the set of points that this set maps to — call it $f(\mathcal{Z}_0)$ — orange.
-The set of points that these points maps to is yellow, and so on: an initial point in the red region will be mapped into the orange region, then the yellow region, then the green, etc.</p>
+Pick a small lobe in the above fractal — say, the little red lobe in the graphic below.
+If you look around the fractal, you will be able to find lots and lots of little lobes, both bigger and smaller, that have the same shape.
+Now pick your favorite point in the red lobe.
+Upon the action of the map $f$, this point will generally be mapped to another point at the same position in a larger version of the same lobe!
+In the diagram below, an initial point in the red lobe gets mapped to a point in the orange lobe, then the yellow lobe, then the green, and so on.</p>
 
 <div class="container">
     <div class="row">
@@ -177,22 +178,21 @@ The set of points that these points maps to is yellow, and so on: an initial poi
     </div>
 </div>
 
-<p>Note that, up until the largest one, the sets here all have close to the same shape!
-Here’s the same thing with a different starting lobe:</p>
+<p>Here’s the same thing with a different starting lobe:</p>
 
 <div class="container">
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6">
 			<p style="text-align:center;">
-				<img src="/img/fractals/lobe_map.png" style="width: 100%" />
+				<img src="/img/fractals/lobe_map_2.png" style="width: 100%" />
 			</p>
         </div>
         <div class="col-3"></div>
     </div>
 </div>
 
-<p>And to underscore the first example, here’s an actual computer-generated plot in which the region enclosed by each circle is mapped to the region enclosed by the next one:</p>
+<p>To underscore the first example, here’s an actual computer-generated plot in which the region enclosed by each colored circle is mapped to the region enclosed by the subsequent one:</p>
 
 <div class="container">
     <div class="row">
@@ -206,10 +206,9 @@ Here’s the same thing with a different starting lobe:</p>
     </div>
 </div>
 
-<p>Note how each successive circle here is larger than the one before it, showing that the map is expansive.</p>
+<p>Note how each successive circle here is larger than the one before it, showing that the map is expansive, and the Lyapunov exponents here are positive.</p>
 
-<p>The main idea here is that if our starting point $z_0$ starts in a little fractally lobe, and gets mapped to a point $z_1$ that lies in basically the same point in a slightly larger version of the same lobe, and then this continues!
-This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
+<p>This behavior is enough to explain why the final Julia set contains so many versions of the same lobe.
 This follows from basically an inductive argument.
 I will give the argument first and then follow it up with some graphical illustration.</p>
 
