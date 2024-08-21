@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 21 Aug 2024 14:27:02 -0700</pubDate>
-    <lastBuildDate>Wed, 21 Aug 2024 14:27:02 -0700</lastBuildDate>
+    <pubDate>Wed, 21 Aug 2024 14:32:30 -0700</pubDate>
+    <lastBuildDate>Wed, 21 Aug 2024 14:32:30 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -122,7 +122,7 @@ This makes sense: the MLP basically acts the same on each token embedding, indep
 &lt;p&gt;Since the top singular subspace of \(\mathbf{P}\) seems to be important, I decided to visualize it.
 To my surprise, it’s sparse in the embedding space!&lt;/p&gt;
 
-&lt;p&gt;Recall that \(\mathbf{P}\) has dimensions \(d_\text{context} \times d_\text{model}\), with \(d_\text{context} = 1024\) and \(d_\text{model} = 784\). Let us visualize its top five singular vectors in these two spaces:&lt;/p&gt;
+&lt;p&gt;Recall that \(\mathbf{P}\) has shape \([d_\text{context} \times d_\text{model}]\), with \(d_\text{context} = 1024\) and \(d_\text{model} = 784\). Let us visualize its top five singular vectors in these two spaces:&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;
 &lt;img src=&quot;/img/gpt2_pos_encs/pos_enc_top_vecs.png&quot; width=&quot;90%&quot; /&gt;

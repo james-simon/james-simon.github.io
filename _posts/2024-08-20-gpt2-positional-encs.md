@@ -126,7 +126,7 @@ This makes sense: the MLP basically acts the same on each token embedding, indep
 Since the top singular subspace of $$\mathbf{P}$$ seems to be important, I decided to visualize it.
 To my surprise, it's sparse in the embedding space!
 
-Recall that $$\mathbf{P}$$ has dimensions $$d_\text{context} \times d_\text{model}$$, with $$d_\text{context} = 1024$$ and $$d_\text{model} = 784$$. Let us visualize its top five singular vectors in these two spaces:
+Recall that $$\mathbf{P}$$ has shape $$[d_\text{context} \times d_\text{model}]$$, with $$d_\text{context} = 1024$$ and $$d_\text{model} = 784$$. Let us visualize its top five singular vectors in these two spaces:
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/pos_enc_top_vecs.png" width="90%">
