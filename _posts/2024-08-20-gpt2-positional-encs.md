@@ -100,7 +100,7 @@ The following big eight-panel plot which shows the squared singular value overla
 </p>
 
 This plot shows that:
-* The `query` and `key` matrices is well-aligned to the very top subspace of $$\mathbf{P}$$ (note the dark dot in the very top left of the top left two plots -- you might have to zoom in).
+* The `query` and `key` matrices are well-aligned to the very top subspace of $$\mathbf{P}$$ (note the dark dot in the very top left of the top left two plots -- you might have to zoom in).
 * The `query`, `key`, and `value` matrices are well-aligned to the top subspaces of $$\mathbf{E}$$. The corresponding plots have large mass in the top left.
 * The `proj` matrix is well-aligned with $$\mathbf{P}$$ and apparently anti-aligned to $$\mathbf{P}$$!
 
@@ -132,7 +132,13 @@ Recall that $$\mathbf{P}$$ has shape $$[d_\text{context} \times d_\text{model}]$
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/pos_enc_top_vecs.png" width="90%">
 </p>
 
-As we might guess, the top singular vectors in the context (i.e. token) space are basically sinusoids of different frequencies... but the top singular vectors in the embedding space are sparse, concentrating strongly on maybe 40 indices. No idea why this happens, but it's a strong enough effect that I'd bet there's a simple explanation.
+As we might guess, the top singular vectors in the context (i.e. token) space are basically sinusoids of different frequencies... but the top singular vectors in the embedding space are sparse, concentrating strongly on maybe 40 indices.
+Returning to our original motivation of understanding how the positional encodings don't interfere with the token embeddings, it seems that not only do they lie in orthogonal subspaces, they actually make use of (roughly) *disjoint sets of embedding indices!* This is just a permutation away from the positional encodings being *appended* to the token embeddings rather than added, which makes a lot of sense.
+
+That said, I have no idea why we get sparsification here.
+I don't know what induces it; I don't know why the model prefers this over merely orthogonal subspaces.
+Odd!
+It's a strong enough effect that I'd bet there's a simple explanation.
 
 
 ## Summary
