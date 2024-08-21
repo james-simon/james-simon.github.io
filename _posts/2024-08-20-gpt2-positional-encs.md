@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Exploring GPT-2's positional encodings"
+title: "Insights into GPT-2's positional encodings"
 date: 2024-08-20
 category: deep learning, research
 ---
@@ -145,5 +145,5 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
 
 ***
 
-*Thanks to Chandan Singh for the discussion that led to this post.*
+*Thanks to Chandan Singh for the discussion that led to this post. A Colab notebook reproducing all experiments may be found [here](https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing)*
 

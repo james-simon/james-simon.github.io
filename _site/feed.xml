@@ -5,12 +5,12 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 20 Aug 2024 19:37:59 -0700</pubDate>
-    <lastBuildDate>Tue, 20 Aug 2024 19:37:59 -0700</lastBuildDate>
+    <pubDate>Tue, 20 Aug 2024 21:25:43 -0700</pubDate>
+    <lastBuildDate>Tue, 20 Aug 2024 21:25:43 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title>Exploring GPT-2's positional encodings</title>
+        <title>Insights into GPT-2's positional encodings</title>
         <description>&lt;p&gt;&lt;em&gt;In this blogpost, I show that GPT-2’s positional encodings lie in a roughly orthogonal subspace to its token embeddings. I then show that the subsequent attention layer and MLP are sensitized to these subspaces in intuitive fashions.&lt;/em&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -143,7 +143,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;em&gt;Thanks to Chandan Singh for the discussion that led to this post.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Thanks to Chandan Singh for the discussion that led to this post. A Colab notebook reproducing all experiments may be found &lt;a href=&quot;https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing&quot;&gt;here&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
