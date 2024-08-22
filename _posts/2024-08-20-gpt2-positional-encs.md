@@ -90,7 +90,7 @@ I’ve applied a small Gaussian blur to the image in order to denoise a bit and 
 We’ve shown that GPT-2’s positional encodings and token embeddings lie in roughly orthogonal subspaces.
 This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?
 
-It turns out we can: the `query`, `key`, `value`, and `proj`[^c] weights are far more aligned to the top subspaces of both $$\mathbf{P}$$ and $$\mathbf{E}$$ than one would expect from chance.
+It turns out we can: the first-layer `query`, `key`, `value`, and `proj`[^c] weights are far more aligned to the top subspaces of both $$\mathbf{P}$$ and $$\mathbf{E}$$ than one would expect from chance.
 The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices (taken from the first attention layer) and both of these two embedding matrices.
 
 [^c]: By this I refer to the "projection matrix" from the output of the attention operation back into the residual stream. This isn't really a projection in any conventional sense, since it's square -- seems better thought of as simply a linear transformation -- but that's what people call it, so we'll do so here.
@@ -111,7 +111,7 @@ One could come up with various just-so stories here --- for example, that the `p
 
 Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be *sensitive* to the top directions of the token embeddings and *insensitive* to the top directions of the positional encodings.
 
-The plot below shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{4 d_\text{model} \times d_\text{model}}$$ and the token embedding and positional encoding matrices.
+The plot below shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}$$ with $$d_\text{hid} = 4 d_\text{model}$$ and the token embedding and positional encoding matrices.
 We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
 This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.
 
@@ -126,7 +126,8 @@ This makes sense: the MLP basically acts the same on each token embedding, indep
 Since the top singular subspace of $$\mathbf{P}$$ seems to be important, I decided to visualize it.
 To my surprise, it's sparse in the embedding space!
 
-Recall that $$\mathbf{P}$$ has shape $$[d_\text{context} \times d_\text{model}]$$, with $$d_\text{context} = 1024$$ and $$d_\text{model} = 784$$. Let us visualize its top five singular vectors in these two spaces:
+Recall that $$\mathbf{P}$$ has shape $$[d_\text{context} \times d_\text{model}]$$, with $$d_\text{context} = 1024$$ and $$d_\text{model} = 784$$. Let us visualize its top five singular vectors of $$\mathbf{P}$$ in these two spaces.
+The left singular vectors live in the context space, and the right singular vectors live in the embedding space.
 
 <p style="text-align:center;">
 <img src="{{site.baseurl}}/img/gpt2_pos_encs/pos_enc_top_vecs.png" width="90%">
@@ -152,5 +153,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
 
 ***
 
-*Thanks to Chandan Singh for proofreading this post and for the discussion that led to it. A Colab notebook reproducing all experiments may be found [here](https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing)*
+*Thanks to Chandan Singh for proofreading this post and for the discussion that led to it. A Colab notebook reproducing all experiments is [here](https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing)*.
+
+***
 
