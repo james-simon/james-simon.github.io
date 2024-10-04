@@ -7,7 +7,7 @@ category: random, personal
 
 <link rel="stylesheet" href="{{site.baseurl}}/css/hover_effects.css">
 
-A few weeks ago, I did a solo roadtrip, spending two weeks driving a curving path from Nashville, TN to Bismarck, ND to go to every state I'd never been to. This was a deeply satisfying and rewarding experience -- I got to drink deeply of solitude and nature and freedom, got to practice living on the road, and hit 50 states just before my father and brother, who were at 48 and 49 respectively and didn't know I was doing this. Here I'll sketch my journey and conclude with a few things I'm taking away from this journey.
+A few weeks ago, I did a solo roadtrip, spending two weeks driving a curving path from Nashville, TN to Bismarck, ND to go to every state I'd never been to. This was a deeply satisfying and rewarding experience -- I got to drink deeply of solitude and nature and freedom, got to practice living on the road, and hit 50 states just before my father and brother, who were at 48 and 49 respectively and didn't know I was doing this. Here I'll sketch my journey and conclude with a few things I'm taking away from the endeavor.
 
 ## The route
 

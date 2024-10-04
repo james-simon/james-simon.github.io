@@ -111,7 +111,7 @@ One could come up with various just-so stories here --- for example, that the `p
 
 Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be *sensitive* to the top directions of the token embeddings and *insensitive* to the top directions of the positional encodings.
 
-The plot below shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}$$ with $$d_\text{hid} = 4 d_\text{model}$$ and the token embedding and positional encoding matrices.
+The plot below shows the squared overlaps between the right singular vectors of the MLP weights $$\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}$$ (with $$d_\text{hid} = 4 d_\text{model}$$) and the positional encoding and token embedding matrices $$\mathbf{P}$$ and $$\mathbf{E}$$.
 We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
 This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.
 

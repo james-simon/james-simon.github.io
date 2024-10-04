@@ -5,9 +5,108 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 21 Aug 2024 17:43:12 -0700</pubDate>
-    <lastBuildDate>Wed, 21 Aug 2024 17:43:12 -0700</lastBuildDate>
+    <pubDate>Fri, 04 Oct 2024 12:39:43 -0400</pubDate>
+    <lastBuildDate>Fri, 04 Oct 2024 12:39:43 -0400</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>It's hard to turn a low-rank matrix into a high-rank matrix</title>
+        <description>&lt;p&gt;&lt;strong&gt;&lt;em&gt;In this blogpost, I point out that applying a nonlinear function to a low-rank random matrix cannot make it into a high-rank matrix.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Large random matrices can often be profitably understood in terms of their singular value spectrum. One useful distinction is between &lt;em&gt;high (effective) rank&lt;/em&gt; and &lt;em&gt;low (effective) rank&lt;/em&gt; matrices. Low-rank matrix effects are important in deep learning, and if you listen to the whispers of deep learning theorists, they’re cropping up on the margins everywhere. My money’s on their assuming a central role in our understanding of deep learning in the coming years.&lt;/p&gt;
+
+&lt;p&gt;This blogpost conveys a particular idea about low-rank matrices: it’s really hard to deterministically transform them into high-rank matrices. It’s written mostly for myself, but hopefully it’s useful to others.&lt;/p&gt;
+
+&lt;h2 id=&quot;trying-and-failing-to-turn-a-low-rank-matrix-high-rank&quot;&gt;Trying and failing to turn a low-rank matrix high-rank&lt;/h2&gt;
+
+&lt;p&gt;Suppose we independently sample two random vectors $\mathbf{x}, \mathbf{y} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$ with dimension $n$ and standard Gaussian entries. From these vectors, we can construct the rank-one matrix $\mathbf{A} = \frac{1}{n} \mathbf{x}\mathbf{y}^\top$. The matrix $\mathbf{A}$ will have one nonzero singular value with value approaching $\sigma_1 = 1$ as $n$ grows.&lt;/p&gt;
+
+&lt;p&gt;Suppose we want to turn this low-rank matrix into a high-rank matrix, with many singular values of the same order as the largest. Suppose we must accomplish this via some simple transformation, but we have no access to additional randomness, so it’s got to be a deterministic function. The most basic thing we might try is to choose some nonlinear function $\phi: \mathbb{R} \rightarrow \mathbb{R}$ and apply it elementwise to each matrix entry to get $\mathbf{A}_\phi = \frac{1}{n} \phi \circ (\mathbf{x}\mathbf{y}^\top)$.&lt;/p&gt;
+
+&lt;p&gt;This seems promising! Having rank one is a very fragile condition, and so we expect that almost any such nonlinearity would break that condition and give us a matrix with a singular spectrum more like that of a full-rank matrix.&lt;/p&gt;
+
+&lt;p&gt;Well, let’s try it. Here are some examples:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/low_rank_matrices/low_rank_exps_a.png&quot; width=&quot;80%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In the top left plot, I’ve shown the singular spectrum of a rank-one matrix for three values of $n$. In the next four plots, I show the singular spectrum of matrices $\mathbf{A}_\phi$ for various $\phi$. In the final plot, I show the spectrum of a full-rank random matrix with i.i.d. entries, again for various $n$.&lt;/p&gt;
+
+&lt;p&gt;What’s happened? None of the matrices $\mathbf{A}_\phi$ are still rank-one (well, except for $\phi: z \mapsto z^2$), but they seem to only have a handful of singular values of order unity. (They’re actually all nonzero, but they decay really fast.) Their spectra don’t look anything like the singular spectra of the full-rank matrix, which for large $n$ have many eigenvalues close to $\sigma_1$.&lt;/p&gt;
+
+&lt;p&gt;One way to characterize this difference is through the &lt;em&gt;effective rank&lt;/em&gt; of the matrix, defined for a matrix $\mathbf{M}$ as $\text{erank}(\mathbf{M}) = \frac{(\sum_i \sigma_i(\mathbf{M}))^2}{\sum_i \sigma_i^2(\mathbf{M})}$. Here I will plot the effective rank of these same matrices as $n$ increases:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/low_rank_matrices/low_rank_exps_b.png&quot; width=&quot;80%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;We see clearly that the effective rank quickly stabilizes at an order-unity value in each case, while the effective rank of a dense random matrix grows proportionally to $n$. What’s going on?&lt;/p&gt;
+
+&lt;h2 id=&quot;the-explanation-constructing-the-singular-spectrum&quot;&gt;The explanation: constructing the singular spectrum&lt;/h2&gt;
+
+&lt;p&gt;We will now explain what’s going on. Remarkably, we can understand this by explicitly constructing the singular vectors for large $n$.&lt;/p&gt;
+
+&lt;h3 id=&quot;warmup-the-square-function&quot;&gt;Warmup: the square function&lt;/h3&gt;
+
+&lt;p&gt;We’ll start with the case of the square function, which seems like the easiest. For ease of explanation, let’s give it the notation $\xi: z \mapsto z^2$.&lt;/p&gt;
+
+&lt;p&gt;The left- and right- singular vectors of $\mathbf{A} = \frac{1}{n} \mathbf{x}\mathbf{y}^\top$ are (proportional to) $\mathbf{x}$ and $\mathbf{y}$, respectively. What about the matrix  $\mathbf{A}_\xi = \frac{1}{n} \xi \circ \mathbf{x}\mathbf{y}^\top$? Well, this matrix has entries $A_{\xi;i,j} = \frac{1}{n} x_i^2 y_j^2$, from which we can see that&lt;/p&gt;
+
+\[\mathbf{A}_\xi = \frac{1}{n} \left( \xi \circ \mathbf{x} \right)\left( \xi \circ \mathbf{y} \right)^\top.\]
+
+&lt;p&gt;That is, because $\xi$ has the special property that $\xi(ab) = \xi(a) \cdot \xi(b)$, the resulting matrix $\mathbf{A}_\xi$ is actually still rank-one, and its singular vectors are pointwise-nonlinearly transformed versions of the originals. This is also true for many other common functions, including $\phi \in {\mathrm{sign}, \mathrm{abs}}$ and indeed any monomial. It’s worth noting that the condition for preserving rank-one-ness is actually just that $\xi(ab) = f(a) \cdot g(b)$ for some functions $f, g$; these functions need not equal $\xi$.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-general-case&quot;&gt;The general case&lt;/h3&gt;
+
+&lt;p&gt;To get the case of general $\phi$, we’ll actually consider an even &lt;em&gt;larger&lt;/em&gt; set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$, it can be an arbitrary bivariate function.&lt;/p&gt;
+
+&lt;p&gt;We now have a function $h(x, y)$ and probability measures $\mu_x, \mu_y$ from which $x, y$ can each be sampled (namely, both $\mu_x, \mu_y$ are unit Gaussian). This means that we can define what I think of as the “operator SVD” of the function $h$, which means writing it in the form&lt;/p&gt;
+
+\[h(x, y) = \sum_i \sigma_i f_i(x) g_i(y),\]
+
+&lt;p&gt;where ${ \sigma_i }$ are nonnegative singular values indexed in nonincreasing order and the functions ${f_i}, {g_i}$ are orthonormal bases in the sense that $\mathbb{E}_{x \sim \mu_x} [f_i(x) f_j(x)] = \delta_{ij}$ and $\mathbb{E}_{y \sim \mu_y} [g_i(x) g_j(x)] = \delta_{ij}$.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;The upshot is that the first singular value of $\mathbf{A}_\phi$ will be approximately the value $\sigma_1$ obtained from the operator SVD of $h(x, y) = \phi(xy)$, and the first singular vectors are going to be approximately $f_1(\mathbf{x})$ and $g_1(\mathbf{y})$. Ditto with the second and third and so on. These generally decay fairly fast (faster than a powerlaw if $h$ is analytic, I believe), so in the examples above, you usually end up with only a handful of singular values appreciably above zero. Because this spectrum is asympotically independent of the matrix size $n$ (which merely determines the error to which one approximates it), we have order-unity effective rank. Deterministic nonlinear functions applied elementwise can’t bring a matrix from rank one to full rank!&lt;/p&gt;
+
+&lt;p&gt;As an aside, I don’t actually know how to compute the operator SVD of a generic $h$ analytically. I’d guess there’s no general form, even for Gaussian $\mu_x, \mu_y$. However, we could approximate it numerically by taking some finite-size sample of $x, y$ and working from that, and in fact, computing the singular values of $\mathbf{A}_\phi$ is precisely computing a Monte Carlo estimate of the operator singular spectrum of $h$, and ditto for the singular vectors.&lt;/p&gt;
+
+&lt;h3 id=&quot;an-even-more-general-case-rank-k-inputs&quot;&gt;An even more general case: rank-$k$ inputs&lt;/h3&gt;
+
+&lt;p&gt;Well, what if instead of our original matrix isn’t the rank-one matrix $\frac{1}{n} \mathbf{x} \mathbf{y}^\top$ but instead the rank-$k$ matrix $\frac{1}{n} \mathbf{X} \mathbf{Y}^\top$, with $\mathbf{X}, \mathbf{Y} \in \mathbb{R}^{n \times k}$ having standard Gaussian entries and $k = O_n(1)$? Well, turns out that’s fine — you can do the same argument as above, but instead of a scalar bivariate function $h(x, y)$, you end up having to consider a function of two $k$-dimensional vectors $h(\mathbf{\bar{x}}, \mathbf{\bar{y}})$, where $\mathbf{\bar{x}}, \mathbf{\bar{y}}$ represent rows of $\mathbf{X}, \mathbf{Y}$, respectively. (To see this, note that the matrix entries look like $\phi(\mathbf{\bar{x}}^\top \mathbf{\bar{y}})$, and then we’re taking a generalization like we did before.) You can then compute the operator SVD in the same way, where now e.g. $f_i : \mathbb{R}^{k} \rightarrow \mathbb{R}$ are functions of vectors, not scalars. The rest of the argument goes through the same way. This can also be extended to different types of nonlinear functions: for example, if instead of acting elementwise, $\phi$ acts jointly on $k \times k$ submatrices, this still carries through. I’d guess that basically any matrix transformation which acts locally, is blind to the global index of a local region, and is smooth will admit basically the same argument.&lt;/p&gt;
+
+&lt;h2 id=&quot;relevance-to-deep-learning&quot;&gt;Relevance to deep learning&lt;/h2&gt;
+
+&lt;p&gt;One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer.&lt;/p&gt;
+
+&lt;h3 id=&quot;some-questions-i-still-have&quot;&gt;Some questions I still have&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Can this be understood via some kind of “entropy” argument? It’d be very cool if something like the following could be made rigorous: &lt;em&gt;we only had a $\Theta(n)$ “amount of randomness” to begin with, but a full-rank random matrix has an “amount of randomness” scaling as $\Theta(n^2)$, so we couldn’t possibly close that gap with a deterministic function, and we need another source of randomness to do so.&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;What if the rank $k$ isn’t order-unity, but it’s also not order-$n$, but instead scales like say $k \sim n^{1/2}$? Does the effective rank remain $O(k)$? Seems likely.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Thanks to Greg Yang for pointing this out to me during the development of &lt;a href=&quot;tinyurl.com/https://arxiv.org/pdf/2310.17813&quot;&gt;this paper&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This is a super powerful and underutilized decomposition of bivariate functions! My coauthors and I used it as the basis of understanding Gaussian universality for random feature models in our paper &lt;a href=&quot;http://tinyurl.com/more-is-better&quot;&gt;More Is Better&lt;/a&gt;. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 04 Oct 2024 00:00:00 -0400</pubDate>
+        <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
+        
+        
+        <category>research</category>
+        
+      </item>
     
       <item>
         <title>Insights into GPT-2's positional encodings</title>
@@ -109,7 +208,7 @@ The following big eight-panel plot which shows the squared singular value overla
 
 &lt;p&gt;Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be &lt;em&gt;sensitive&lt;/em&gt; to the top directions of the token embeddings and &lt;em&gt;insensitive&lt;/em&gt; to the top directions of the positional encodings.&lt;/p&gt;
 
-&lt;p&gt;The plot below shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}\) with \(d_\text{hid} = 4 d_\text{model}\) and the token embedding and positional encoding matrices.
+&lt;p&gt;The plot below shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}\) (with \(d_\text{hid} = 4 d_\text{model}\)) and the positional encoding and token embedding matrices \(\mathbf{P}\) and \(\mathbf{E}\).
 We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
 This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.&lt;/p&gt;
 
@@ -168,7 +267,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 20 Aug 2024 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
         
@@ -432,7 +531,7 @@ I wonder if there’s some analytical condition on the return map that one could
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
+        <pubDate>Wed, 31 Jul 2024 12:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/fractals-in-iterated-maps/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterated-maps/</guid>
         
@@ -464,7 +563,7 @@ The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth an
 
 &lt;p&gt;&lt;em&gt;Thanks to Irian D’Andrea for the grade-A toss and to Olive Eilbott for both issuing the challenge and capturing it on video.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Fri, 05 Jul 2024 01:00:00 -0700</pubDate>
+        <pubDate>Fri, 05 Jul 2024 01:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/egg/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/egg/</guid>
         
@@ -633,7 +732,7 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 03 Jul 2024 00:00:00 -0700</pubDate>
+        <pubDate>Wed, 03 Jul 2024 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/self-assembly/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
         
@@ -996,7 +1095,7 @@ If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 23 Jun 2024 02:00:00 -0700</pubDate>
+        <pubDate>Sun, 23 Jun 2024 02:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/gravitree-update-2024/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
         
@@ -1151,7 +1250,7 @@ As you look at each of the following images, first guess what it’s a photo of,
 &lt;/div&gt;
 
 </description>
-        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/household-microscopy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
         
@@ -1185,7 +1284,7 @@ It is perched in a high hollow, frozen and unreachable half the year, quite indi
 
 &lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Mon, 10 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Mon, 10 Jun 2024 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/boolpool-timelapse/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
         
@@ -1267,7 +1366,7 @@ Well, you could just represent that distribution in the basis of Gaussians of di
 That seems useful because I actually needed a Laplacian average for the 1NN analysis.&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 06 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Thu, 06 Jun 2024 00:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/the-laplacian-and-diffusion/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/the-laplacian-and-diffusion/</guid>
         
@@ -1376,77 +1475,9 @@ Here are some experiments that show that we’ve got the 2D case right, too.&lt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 05 Jun 2024 02:00:00 -0700</pubDate>
+        <pubDate>Wed, 05 Jun 2024 02:00:00 -0400</pubDate>
         <link>http://localhost:4000/blog/1nn-eigenframework/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/1nn-eigenframework/</guid>
-        
-        
-        <category>research</category>
-        
-      </item>
-    
-      <item>
-        <title>Let's solve more learning rules</title>
-        <description>&lt;p&gt;&lt;em&gt;TLDR: the field now has an “omniscient solution” for the generalization of linear regression. We should try to find comparable solutions for other simple learning rules, like k-nearest-neighbors and kernel smoothing!
-This post is motivation for &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;part two&lt;/a&gt;, where I give a partial omniscient solution to the nearest-neighbor algorithm.&lt;/em&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;intro-what-does-it-mean-to-solve-a-learning-rule&quot;&gt;Intro: what does it mean to “solve” a learning rule?&lt;/h2&gt;
-
-&lt;p&gt;Essentially all of machine learning theory aims to understand the performance and behavior of different schemes for making predictions on unseen data. This is often very difficult. Given the amount of effort expended in this direction, it’s worth stepping back and asking what we’re ultimately trying to do here — that is, how will we know when we’re done?&lt;/p&gt;
-
-&lt;p&gt;To me, one gold-standard answer is the following: &lt;strong&gt;for each learning rule under study, we want a simple set of equations that tells us how well the learning rule will perform&lt;/strong&gt; in terms of the task eigenstructure and number of samples $n$&lt;strong&gt;.&lt;/strong&gt; This isn’t the only thing we might want, but it’s clearly a powerful milestone: you could use such a theory to work out when the algorithm will perform well or poorly, and in order to derive the theory you’d have to understand a lot about the behavior of the learning rule. Viewing each learning rule as presenting a puzzle for theorists, I’d consider the development of such a theory as tantamount to “solving” the learning rule.&lt;/p&gt;
-
-&lt;p&gt;An important clarification is that this is an “omniscient” solution in the sense that you assume complete and exact knowledge of the training task. This isn’t very useful by itself as a practical tool, but it is very useful for conceptual understanding of the learning rule (e.g. for characterizing its inductive bias). In light of this, to be more precise, we’ll say that this sort of theory is an “omniscient solution” for a learning rule.&lt;/p&gt;
-
-&lt;p&gt;In my view, one of the most significant recent developments in machine learning theory is that &lt;em&gt;we have an omniscient solution for linear regression!&lt;/em&gt; That is, thanks to &lt;a href=&quot;https://papers.nips.cc/paper_files/paper/2001/hash/d68a18275455ae3eaa2c291eebb46e6d-Abstract.html&quot;&gt;lots&lt;/a&gt; &lt;a href=&quot;https://www.arxiv.org/abs/2002.02561&quot;&gt;and&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2006.09796&quot;&gt;lots&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2210.08571&quot;&gt;of&lt;/a&gt; &lt;a href=&quot;https://proceedings.neurips.cc/paper/2021/file/9704a4fc48ae88598dcbdcdf57f3fdef-Paper.pdf&quot;&gt;recent&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/1903.08560&quot;&gt;papers&lt;/a&gt;, we now have a simple set of closed-form equations that accurately predict the test performance of linear regression in terms of the task eigenstructure.&lt;/p&gt;
-
-&lt;p&gt;Here’s some flavor for how this theory looks. First, we define an orthonormal basis of functions ${ \phi_k }$ over the input space. (In the case of linear regression, these are linear functions and are the principal directions of the feature covariance matrix.) We then decompose the target function $f$ into this basis as&lt;/p&gt;
-
-\[f(x) = \sum_k v_k \phi_k(x)\]
-
-&lt;p&gt;where ${ v_k }$ are the eigencoefficients. (Noise may also be included, but I omit it here for simplicity.) The eigenframework then takes the form&lt;/p&gt;
-
-\[\text{test MSE} = \sum_k g(n, k)  \, v_k^2,\]
-
-&lt;p&gt;where $g(n,k)$ tells you what fraction of the signal in mode $k$ contributes to test error at $n$ samples. (The function $g(n,k)$ typically decreases to zero as $n$ grows.)&lt;/p&gt;
-
-&lt;p&gt;Here are some remarkable facts about this eigenframework:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;It gives accurate predictions of test MSE even on real data!&lt;/li&gt;
-  &lt;li&gt;The eigenmodes don’t interact! That is, there are no crossterms $v_j v_k$ in the final expression.&lt;/li&gt;
-  &lt;li&gt;It’s very mathematically simple! In particular, the function $g$ isn’t too complicated, I just didn’t want to get into the details here. It’s simple enough that you can study it in various limits to really get intuition for how linear regression generalizes.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;I’m a big fan of results of this type.&lt;/strong&gt; They feel like the way to make progress in this field: rather than showing every new result from square one, first we derive this simple and general eigenframework &lt;em&gt;once,&lt;/em&gt; and then can use it as a starting point to compute other quantities — error bounds, convergence rates, effects of dimensionality, effects of regularization, and more.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;This is how physics (and specifically statistical mechanics) works — when studying a complex system, you first seek a simple effective theory for the system, and then can easily ask lots of downstream questions about the &lt;em&gt;effective&lt;/em&gt; theory.&lt;/p&gt;
-
-&lt;h2 id=&quot;call-to-action-lets-solve-more-learning-rules&quot;&gt;Call to action: &lt;em&gt;let’s solve more learning rules!&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;The above omniscient solution for linear regression has been very impactful. We should try to do this for more learning rules.&lt;/p&gt;
-
-&lt;p&gt;Learning rules like k-nearest-neighbors (kNN), kernel smoothing, spline interpolation, decision trees, clustering, SVMs, and generalized additive models are widely used in practice, but we do not understand any of them as well as we now understand linear regression. It would be very impactful to solve any of them. Furthermore, the first three — kNN, kernel smoothing, and spline interpolation — are &lt;em&gt;linear&lt;/em&gt; learning rules in the sense that the predicted function depends linearly on the training targets (i.e., the training $y$’s), which suggests that an eigenframework of the &lt;em&gt;same&lt;/em&gt; type as that for linear regression might be possible. These last three seem simple enough that you might be able to solve them in one paper!&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;I suspect that omnisciently solving more learning rules would have a large impact — potentially a paradigm-altering impact, actually. Right now, all these learning rules are just a bag of disjoint algorithms: we don’t really understand any of them individually, and we sure don’t understand how they relate to each other. Any intuition I have about their relative performance is extremely ad-hoc — for example, kNN works best in low dimensions and at low noise, SVMs are often better in high dimensions, decision trees work well when different features have different notions of distance, and so on. &lt;strong&gt;If we understood all these learning rules in the same way as we understand linear regression, we could compare them on the same footing!&lt;/strong&gt; Instead of a bunch of ad-hoc intuitions, we could start to think of all these learning rules in one unified way. This feels like a place that machine learning ought to eventually get to.&lt;/p&gt;
-
-&lt;p&gt;In &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;part two&lt;/a&gt;, I’ll give the solution for 1NN on the unit circle and 2-torus and discuss what it might look like to solve 1NN in general!&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;To illustrate this point, &lt;a href=&quot;https://arxiv.org/abs/2207.06569&quot;&gt;here&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/pdf/2306.13185&quot;&gt;are&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;four&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;papers&lt;/a&gt; in which I’ve used this eigenframework as a starting point to easily derive other results. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Two other learning rules: obviously we’d all love to understand neural networks, but they’re still too poorly understood for a theory of generalization, I think — we need to understand more about their dynamics first. Second, random feature (RF) regression is a nice generalization of linear regression — and I derived an eigenframework for RF regression for &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;a recent paper&lt;/a&gt; ;) &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 05 Jun 2024 01:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/lets-solve-learning-rules/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/lets-solve-learning-rules/</guid>
         
         
         <category>research</category>
