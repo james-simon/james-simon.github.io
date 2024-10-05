@@ -78,7 +78,7 @@ Well, what if instead of our original matrix isn’t the rank-one matrix $\frac{
 
 ## Relevance to deep learning
 
-One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer.
+One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer. This is basically why conclusions about the scaling behavior for SGD at infinite width continue to apply (with appropriate modification) for Adam and other optimizers even though their updates aren't gradient-aligned.
 
 ### Some questions I still have
 

@@ -150,7 +150,7 @@
 
 <h2 id="relevance-to-deep-learning">Relevance to deep learning</h2>
 
-<p>One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer.</p>
+<p>One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer. This is basically why conclusions about the scaling behavior for SGD at infinite width continue to apply (with appropriate modification) for Adam and other optimizers even though their updates aren’t gradient-aligned.</p>
 
 <h3 id="some-questions-i-still-have">Some questions I still have</h3>
 
