@@ -16,7 +16,7 @@ category: deep learning, research
 
 ***
 
-# How do you width-scale an autoencoder?
+## How do you width-scale an autoencoder?
 
 Autoencoders are neural networks designed to extract (comparatively) low-dimensional representations from high-dimensional data. They’re widely-used tools for dimensionality reduction, and in the form of [VAEs](https://en.wikipedia.org/wiki/Variational_autoencoder), data *generation*. The classic autoencoder design looks like an hourglass: the input layer is the widest, subsequent layers have fewer and fewer layers until they reach a narrowest “bottleneck” layer, and then the sequence is repeated in reverse.
 
@@ -35,7 +35,7 @@ In this blogpost, I will show that the answer is that, with the standard notion 
 
 ## Example: a width-one bottleneck
 
-Consider a deep network which has hidden width $n_k = N$ at most layers but one bottleneck layer $\ell$ with width $n_\ell = 1$. Suppose there is no nonlinearity at the bottleneck layer. For the weights before and after the bottleneck, let us adopt the shorthand $\mathbf{u}^\top = \mathbf{W}\_{\ell-1}$ and $\mathbf{v} = \mathbf{W}\_\ell$, with $\mathbf{u}, \mathbf{v} \in \mathbb{R}^N$. Let us write $\mathbf{M} = \mathbf{v}\mathbf{u}^\top \in \mathbb{R}^{N \times N}$ for the full rank-one parameter block comprised of these two weight matrices.
+Consider a deep network which has hidden width $n_k = N$ at most layers but one bottleneck layer $\ell$ with width $n_\ell = 1$. Suppose there is no nonlinearity at the bottleneck layer or adjacent layers. For the weights before and after the bottleneck, let us adopt the shorthand $\mathbf{u}^\top = \mathbf{W}\_{\ell-1}$ and $\mathbf{v} = \mathbf{W}\_\ell$, with $\mathbf{u}, \mathbf{v} \in \mathbb{R}^N$. Let us write $\mathbf{M} = \mathbf{v}\mathbf{u}^\top \in \mathbb{R}^{N \times N}$ for the full rank-one parameter block comprised of these two weight matrices.
 
 We will consider training these two weight matrices through several steps of SGD on a single example $x$. Let us denote the hidden vector passed into this bottleneck block by $\mathbf{h} = \mathbf{h}(x) \in \mathbb{R}^N$, denote the output of the block by $\tilde{\mathbf{h}} = \tilde{\mathbf{h}}(x) \in \mathbb{R}^N$, and denote the gradient backpropagated into this block by $\mathbf{g} = -\nabla_{\tilde{\mathbf{h}}} \mathcal{L}$, where $\mathcal{L}$ is our global loss. We will assume for simplicity that $\mathbf{h}$ and $\mathbf{g}$ do not change for these steps. Note that the parameter gradient applied to the whole matrix is $\nabla_\mathbf{M} \mathcal{L} = \mathbf{g} \mathbf{h}^\top$. The following figure illustrates our notation:
 
