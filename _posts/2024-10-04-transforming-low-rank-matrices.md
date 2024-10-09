@@ -88,6 +88,6 @@ One reason this stuff matters is that gradient updates to matrices are low-rank,
 
 ***
 
-Thanks to Greg Yang for pointing this out to me during the development of [this paper](tinyurl.com/https://arxiv.org/pdf/2310.17813).
+Thanks to Greg Yang for pointing this out to me during the development of [this paper](https://arxiv.org/pdf/2310.17813).
 
 ***

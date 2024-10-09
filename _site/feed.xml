@@ -5,9 +5,200 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 05 Oct 2024 12:39:43 -0400</pubDate>
-    <lastBuildDate>Sat, 05 Oct 2024 12:39:43 -0400</lastBuildDate>
+    <pubDate>Wed, 09 Oct 2024 09:59:17 -0700</pubDate>
+    <lastBuildDate>Wed, 09 Oct 2024 09:59:17 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Infinite-width autoencoders are cursed</title>
+        <description>&lt;p&gt;&lt;strong&gt;In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Autoencoder? I hardly know her!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;~ Traditional San Francisco saying&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&quot;how-do-you-width-scale-an-autoencoder&quot;&gt;How do you width-scale an autoencoder?&lt;/h1&gt;
+
+&lt;p&gt;Autoencoders are neural networks designed to extract (comparatively) low-dimensional representations from high-dimensional data. They’re widely-used tools for dimensionality reduction, and in the form of &lt;a href=&quot;https://en.wikipedia.org/wiki/Variational_autoencoder&quot;&gt;VAEs&lt;/a&gt;, data &lt;em&gt;generation&lt;/em&gt;. The classic autoencoder design looks like an hourglass: the input layer is the widest, subsequent layers have fewer and fewer layers until they reach a narrowest “bottleneck” layer, and then the sequence is repeated in reverse.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_diagram.png&quot; width=&quot;60%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;An autoencoder is usually trained with a reconstruction objective — that is, with the goal of learning the identity function $f: x \mapsto x$ on the data.&lt;/p&gt;
+
+&lt;p&gt;Autoencoders are interesting from a scaling perspective because they represent a case where finite width is desirable, at least in one layer. They won’t learn interesting representations if every hidden layer is wide. That said, a predominant lesson from the last few years of deep learning is that, insofar as network architecture is concerned, &lt;a href=&quot;https://proceedings.mlr.press/v139/yang21c.html&quot;&gt;wider&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2203.15556&quot;&gt;is&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2303.08774&quot;&gt;always&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;better&lt;/a&gt; so long as your hyperparameters are properly tuned. In what sense will this also be true of autoencoders?&lt;/p&gt;
+
+&lt;p&gt;Asked from another direction: &lt;em&gt;how should you take the large-width limit of an autoencoder?&lt;/em&gt; Which layers in the hourglass above do you take to be infinite width? All of them &lt;em&gt;except&lt;/em&gt; the input, bottleneck, and output? Do you preserve the hourglass taper, jumping up to a large width $N$ at the second layer but then gradually &lt;em&gt;decreasing&lt;/em&gt; width down to a constant-width bottleneck? If so, do you taper width down by a constant factor $C$ per layer so the width at layer $\ell$ is $C^{-\ell}N$? Do you take widths $N^{-\alpha(\ell)}$ with $\alpha(\ell)$ interpolating from $1 \rightarrow 0$? It’s unclear!&lt;/p&gt;
+
+&lt;p&gt;In this blogpost, I will show that the answer is that, with the standard notion of neural network parameterization, &lt;strong&gt;you cannot.&lt;/strong&gt; There is no consistent way to take an infinite-width limit such that the net satisfies typical notions of layer alignment and feature learning. I’ll demonstrate this by examining a two-layer slice of a deep net, aiming to convey the general problem by means of this example. I’ll then give some solutions.&lt;/p&gt;
+
+&lt;h2 id=&quot;example-a-width-one-bottleneck&quot;&gt;Example: a width-one bottleneck&lt;/h2&gt;
+
+&lt;p&gt;Consider a deep network which has hidden width $n_k = N$ at most layers but one bottleneck layer $\ell$ with width $n_\ell = 1$. Suppose there is no nonlinearity at the bottleneck layer. For the weights before and after the bottleneck, let us adopt the shorthand $\mathbf{u}^\top = \mathbf{W}_{\ell-1}$ and $\mathbf{v} = \mathbf{W}_\ell$, with $\mathbf{u}, \mathbf{v} \in \mathbb{R}^N$. Let us write $\mathbf{M} = \mathbf{v}\mathbf{u}^\top \in \mathbb{R}^{N \times N}$ for the full rank-one parameter block comprised of these two weight matrices.&lt;/p&gt;
+
+&lt;p&gt;We will consider training these two weight matrices through several steps of SGD on a single example $x$. Let us denote the hidden vector passed into this bottleneck block by $\mathbf{h} = \mathbf{h}(x) \in \mathbb{R}^N$, denote the output of the block by $\tilde{\mathbf{h}} = \tilde{\mathbf{h}}(x) \in \mathbb{R}^N$, and denote the gradient backpropagated into this block by $\mathbf{g} = -\nabla_{\tilde{\mathbf{h}}} \mathcal{L}$, where $\mathcal{L}$ is our global loss. We will assume for simplicity that $\mathbf{h}$ and $\mathbf{g}$ do not change for these steps. Note that the parameter gradient applied to the whole matrix is $\nabla_\mathbf{M} \mathcal{L} = \mathbf{g} \mathbf{h}^\top$. The following figure illustrates our notation:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_slice.png&quot; width=&quot;60%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&quot;key-feature-learning-desideratum-weight-alignment&quot;&gt;Key feature learning desideratum: weight alignment&lt;/h3&gt;
+
+&lt;p&gt;Suppose that we have just randomly initialized the parameters $\mathbf{u}, \mathbf{v}$ and will proceed to train for several steps with fixed learning rates. Let us denote the &lt;em&gt;alignment&lt;/em&gt; between the weight vectors and their corresponding signal vectors by&lt;/p&gt;
+
+\[\mathcal{A}_{\text{in}} = \frac{\mathbf{u}^\top \mathbf{h}}{|\!| \mathbf{u} |\!| |\!| \mathbf{h} |\!|},
+\quad
+\mathcal{A}_{\text{out}} = \frac{\mathbf{v}^\top \mathbf{g}}{|\!| \mathbf{v} |\!| |\!| \mathbf{g} |\!|}.\]
+
+&lt;p&gt;At initialization, when $\mathbf{u}, \mathbf{v}$ are random vectors, we have that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(N^{-1/2})$.&lt;/p&gt;
+
+&lt;p&gt;Under the precepts of $\mu$P, we desire the following two natural conditions of feature learning:&lt;/p&gt;
+
+&lt;p style=&quot;padding: 10px; border: 2px solid black;&quot;&gt;
+&lt;strong&gt;Weight alignment desideratum.&lt;/strong&gt; After $O(1)$ steps of training, we desire that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(1)$.
+&lt;br /&gt;&lt;br /&gt;
+&lt;strong&gt;No-blowup desideratum.&lt;/strong&gt; After a handful of steps of training, the norms of each weight matrix should have reached their final size, scaling wise. That is, $\frac{|\!| \mathbf{u}_{t+1} |\!|}{|\!| \mathbf{u}_t |\!|} = \Theta(1)$ and likewise for $\mathbf{v}$.
+&lt;/p&gt;
+
+&lt;p&gt;The first desideratum captures the intuitive notion that weight matrices should align to (the top singular directions of) their gradients upon proper feature learning. In conventional parlance, feature evolution is about leading-order change in the &lt;em&gt;activations&lt;/em&gt;, not the &lt;em&gt;weight tensors,&lt;/em&gt; but these are in fact two sides of the same coin, as one finds upon a &lt;a href=&quot;https://arxiv.org/abs/2310.17813&quot;&gt;spectral-norm analysis&lt;/a&gt; of deep learning. The second desideratum basically says that we don’t want things to blow up. Obviously, if we take infinite learning rates, these matrices will align just fine, but their norms won’t stabilize. It’s fine to initialize one of them to be very close to zero, but its norm should stabilize after a few steps.&lt;/p&gt;
+
+&lt;p&gt;We’ll now see that these intuitive desiderata are &lt;em&gt;incompatible&lt;/em&gt; for training under SGD.&lt;/p&gt;
+
+&lt;h3 id=&quot;evolution-under-sgd&quot;&gt;Evolution under SGD&lt;/h3&gt;
+
+&lt;p&gt;Suppose we have learning rates $\eta_u$ and $\eta_v$ for $\mathbf{u},\mathbf{v}$, respectively. These vectors then see gradient updates&lt;/p&gt;
+
+\[\delta \mathbf{u} = \eta_u \cdot \mathcal{A}_\text{out} \cdot |\!|\mathbf{h}|\!|
+|\!|\mathbf{g}|\!|
+|\!|\mathbf{v}|\!|
+\cdot
+\hat{\mathbf{h}},\]
+
+\[\delta \mathbf{v} = \eta_v \cdot \mathcal{A}_\text{in} \cdot |\!|\mathbf{h}|\!|
+|\!|\mathbf{g}|\!|
+|\!|\mathbf{u}|\!|
+\cdot
+\hat{\mathbf{g}},\]
+
+&lt;p&gt;where $\hat{\mathbf{h}}, \hat{\mathbf{g}}$ are unit vectors in the directions of $\mathbf{h}, \mathbf{g}$. We are free to absorb $|\!| \mathbf{h} |\!|$ and $|\!| \mathbf{g} |\!|$ into the definitions of $\eta_u, \eta_v$. More subtly, we are free to absorb the initial scales of $|\!| \mathbf{u}_0 |\!|$ and $|\!| \mathbf{v}_0 |\!|$ into the learning rates, too, and so will henceforth assume that these vectors are of the same size up to a constant factor.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+\[\delta \mathbf{u} = \tilde \eta_u \cdot \mathcal{A}_\text{out} \cdot 
+|\!|\mathbf{v}|\!|
+\cdot
+\hat{\mathbf{h}},\]
+
+\[\delta \mathbf{v} = \tilde \eta_v \cdot \mathcal{A}_\text{in} \cdot 
+|\!|\mathbf{u}|\!|
+\cdot
+\hat{\mathbf{g}}.\]
+
+&lt;p&gt;From this, we may assess the update norms as&lt;/p&gt;
+
+\[\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \tilde \eta_u \cdot \mathcal{A}_\text{out} \cdot 
+\frac{|\!|  \mathbf{v} |\!|}{|\!| \mathbf{u} |\!|} \sim \tilde \eta_u \cdot \mathcal{A}_\text{out},\]
+
+\[\frac{|\!| \delta \mathbf{v} |\!|}{|\!| \mathbf{v} |\!|} = \tilde \eta_v \cdot \mathcal{A}_\text{in} \cdot 
+\frac{|\!|  \mathbf{u} |\!|}{|\!| \mathbf{v} |\!|} \sim \tilde \eta_v \cdot \mathcal{A}_\text{in},\]
+
+&lt;p&gt;where we have made use of the fact that $\frac{|\!|  \mathbf{v} |\!|}{|\!| \mathbf{u} |\!|} = \Theta(1)$. We now return to our boxed desiderata. To satisfy the weight alignment desideratum, we require $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \Omega(1)$ and likewise for $\mathbf{v}$. To satisfy the no-blowup desideratum, we require $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = O(1)$ and likewise for $\mathbf{v}$. Combining both, we find that $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \Theta(1)$ and likewise for $\mathbf{v}$.&lt;/p&gt;
+
+&lt;p&gt;We may now observe a contradiction. After a few steps we will have that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(1)$, from which we may conclude that $\tilde \eta_u, \tilde \eta_v = \Theta(1)$. However, these learning rates are too small to cause alignment to begin with! At early times when the alignments are near zero, we have&lt;/p&gt;
+
+\[\frac{d}{dt} \mathcal{A}_\text{in}
+\sim \tilde{\eta}_u \cdot \mathcal{A}_\text{out} \sim \mathcal{A}_\text{out},\]
+
+\[\frac{d}{dt} \mathcal{A}_\text{out}
+\sim \tilde{\eta}_u \cdot \mathcal{A}_\text{in} \sim \mathcal{A}_\text{in}.\]
+
+&lt;p&gt;Treating “$\sim$” as “$=$,” the solution to this coupled ODE from small initial value is&lt;/p&gt;
+
+\[\begin{bmatrix} \mathcal{A}_\text{in} \\ \mathcal{A}_\text{out} \end{bmatrix}
+\approx
+e^t
+\begin{bmatrix} \mathcal{A}_0 \\ \mathcal{A}_0 \end{bmatrix},\]
+
+&lt;p&gt;where $\mathcal{A}_0 = \frac{1}{2} [\mathcal{A}_\text{in} + \mathcal{A}_\text{out} ]_{t=0}$ is the average of the initial alignments. We can now observe that, in order to grow to order unity from an initial size of $\Theta(N^{-1/2})$ requires a number of steps $T$ such that $e^T N^{-1/2} = \Theta(1)$, which implies that $T \sim \log N$! As $N$ grows, it takes longer and more and more steps to reach alignment.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-intuitively-is-going-on&quot;&gt;What, intuitively, is going on?&lt;/h3&gt;
+
+&lt;p&gt;The crux of the problem here is that &lt;em&gt;each weight tensor’s gradient is mediated by the other weight tensor’s alignment.&lt;/em&gt; The more aligned one tensor is, the bigger an update the other one will see. The problem is that since both alignments start small, the dynamics are a classic case of two small variables suppressing each other’s gradients!&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; We’re stuck with a Catch-22: we could jack up the learning rates to have huge updates at the start that overcome the tiny init, but then our dynamics at late times blow up! However, if the learning rate is small enough so the dynamics at late time don’t blow up, then the dynamics take a long time to get going.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;a-simulation&quot;&gt;A simulation&lt;/h3&gt;
+
+&lt;p&gt;Below is a sweep of SGD trajectories for the loss $\mathcal{L} = (\mathbf{h}^\top \mathbf{u} \mathbf{v}^\top \mathbf{g} - 1)^2$. I have taken $|\!| \mathbf{h} |\!| = |\!| \mathbf{g} |\!| = 1$ and initialized with $u_i, v_i \sim N^{-1/2}$, because any larger init will not have aligned at convergence, and any smaller init will still suffer from the core problem but worse. I train both vectors with a learning rate $\eta$ and vary $N$. I train for a fixed number of steps $T = 10$.&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_sweep.png&quot; width=&quot;60%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;One can clearly see that the region of optimizability is shrinking, albeit slowly, with $\eta_\text{min} \sim \log N$ and $\eta_\text{max} \sim 1$ bound to converge at sufficiently large $N.$ A Colab notebook reproducing this experiment may be found &lt;a href=&quot;https://colab.research.google.com/drive/1zt6qRlnDKgxzbc95\_bE8e3ptJq4A6LZs?usp=sharing&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;so-what-requiring-log-n-time-isnt-so-bad&quot;&gt;So what? Requiring $\log N$ time isn’t so bad.&lt;/h3&gt;
+
+&lt;p&gt;That’s true. The two reasons to care are that:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;In our theoretical models, we want to work at truly infinite width, and the logarithmic factor still blows up.&lt;/li&gt;
+  &lt;li&gt;Hyperparameter transfer ($\mu$Transfer) probably won’t work because the infinite-width process isn’t well-defined.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;So there you have it. Infinite-width networks with finite-width bottlenecks are cursed and can’t be  trained in a traditional fashion so all layers align to their gradients. The above argument can be extended to bottlenecks with finite width $k &amp;gt; 1$, and even to those with any width $k = o(N)$, though that’d require some random matrix theory to see.&lt;/p&gt;
+
+&lt;p&gt;This was actually an awkward point that came up during the writing of “&lt;a href=&quot;https://arxiv.org/abs/2310.17813&quot;&gt;A Spectral Condition for Feature Learning&lt;/a&gt;.” We never resolved it, we just didn’t discuss it! It’s fine for most architectures, but it does feel like a lingering problem with $\mu$P. What is to be done?&lt;/p&gt;
+
+&lt;h2 id=&quot;two-possible-solutions-rank-regularization-and-cascading-init&quot;&gt;Two possible solutions: rank regularization and cascading init&lt;/h2&gt;
+
+&lt;p&gt;Here I’ll pitch two solutions that I think can be used to width-scale autoencoders.&lt;/p&gt;
+
+&lt;p&gt;The first is to ditch the variation in width between layers — just keep everything width-$N$ — and instead enforce the rank constraints implicitly with regularization. For example, if a layer is intended to have fan-out dimension $k$, one could gradually turn on an $\ell_1$ regularization on all but the top $k$ singular vectors of the weight matrix until the regularization is so high that it becomes sparse. I believe this is consistent even at infinite width, though it does unfortunately require computing the SVD lots of times.&lt;/p&gt;
+
+&lt;p&gt;The second idea is to do a “cascading init” in the following fashion. First, initialize all weight tensors to zero. Next, choose a random batch of perhaps $P = 10^3$ inputs. Then, starting from the start of the network and working forwards, initialize each weight tensor so that its “input” singular subspace aligns with the top PCA directions of this input batch. I believe that this, too, makes sense even at infinite width, it doesn’t require computing lots of SVDs throughout training, and it gives you a nice network with aligned vectors right from the get-go. Having everything aligned like this makes the theory really nice, and $\mu$P can be very simply expressed in spectral language.&lt;/p&gt;
+
+&lt;h2 id=&quot;discussion-what-now&quot;&gt;Discussion: what now?&lt;/h2&gt;
+
+&lt;p&gt;Based on the above argument, I’m of the opinion that&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$\mu$P for networks of greatly-varying width (like autoencoders) is broken: there’s no way to parameterize to get proper feature learning.&lt;/li&gt;
+  &lt;li&gt;There should be a unifying solution, and it’s likely to simplify $\mu$P in the process.&lt;/li&gt;
+  &lt;li&gt;“Cascading init” in particular seems like it might work.&lt;/li&gt;
+  &lt;li&gt;A good metric of success would be achieving hyperparameter transfer when width-scaling an autoencoder.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Seems like a good project for an ambitious grad student :)&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;The ideas in this blogpost were born from research discussions with Greg Yang and Jeremy Bernstein. Thanks to Blake Bordelon for recent helpful discussion.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta_u \rightarrow \alpha \eta_u, \ \eta_v \rightarrow \alpha^{-1} \eta_v)$ is an exact symmetry of the dynamics. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;For example, consider optimizing $\mathcal{L}(x, y) = (1 - xy)^2$ for scalars $x, y$. When $x, y$ are initialized very close to zero, these dynamics will take a logarithmically-long time to get going, because each parameter suppresses the other’s gradient. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This is also the story with neural network dynamics in the ultra-rich regime as we describe &lt;a href=&quot;https://arxiv.org/abs/2410.04642&quot;&gt;here&lt;/a&gt;. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Tue, 08 Oct 2024 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/autoencoders-are-cursed/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/autoencoders-are-cursed/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>It's hard to turn a low-rank matrix into a high-rank matrix</title>
@@ -88,7 +279,7 @@
 
 &lt;hr /&gt;
 
-&lt;p&gt;Thanks to Greg Yang for pointing this out to me during the development of &lt;a href=&quot;tinyurl.com/https://arxiv.org/pdf/2310.17813&quot;&gt;this paper&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Thanks to Greg Yang for pointing this out to me during the development of &lt;a href=&quot;https://arxiv.org/pdf/2310.17813&quot;&gt;this paper&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
@@ -99,7 +290,7 @@
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Fri, 04 Oct 2024 00:00:00 -0400</pubDate>
+        <pubDate>Fri, 04 Oct 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
         
@@ -267,7 +458,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 20 Aug 2024 00:00:00 -0400</pubDate>
+        <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
         
@@ -531,7 +722,7 @@ I wonder if there’s some analytical condition on the return map that one could
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 31 Jul 2024 12:00:00 -0400</pubDate>
+        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/fractals-in-iterated-maps/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterated-maps/</guid>
         
@@ -563,7 +754,7 @@ The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth an
 
 &lt;p&gt;&lt;em&gt;Thanks to Irian D’Andrea for the grade-A toss and to Olive Eilbott for both issuing the challenge and capturing it on video.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Fri, 05 Jul 2024 01:00:00 -0400</pubDate>
+        <pubDate>Fri, 05 Jul 2024 01:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/egg/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/egg/</guid>
         
@@ -732,7 +923,7 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 03 Jul 2024 00:00:00 -0400</pubDate>
+        <pubDate>Wed, 03 Jul 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/self-assembly/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
         
@@ -1095,7 +1286,7 @@ If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 23 Jun 2024 02:00:00 -0400</pubDate>
+        <pubDate>Sun, 23 Jun 2024 02:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gravitree-update-2024/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
         
@@ -1250,7 +1441,7 @@ As you look at each of the following images, first guess what it’s a photo of,
 &lt;/div&gt;
 
 </description>
-        <pubDate>Tue, 11 Jun 2024 00:00:00 -0400</pubDate>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/household-microscopy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
         
@@ -1284,7 +1475,7 @@ It is perched in a high hollow, frozen and unreachable half the year, quite indi
 
 &lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Mon, 10 Jun 2024 00:00:00 -0400</pubDate>
+        <pubDate>Mon, 10 Jun 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/boolpool-timelapse/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
         
@@ -1366,118 +1557,9 @@ Well, you could just represent that distribution in the basis of Gaussians of di
 That seems useful because I actually needed a Laplacian average for the 1NN analysis.&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 06 Jun 2024 00:00:00 -0400</pubDate>
+        <pubDate>Thu, 06 Jun 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/the-laplacian-and-diffusion/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/the-laplacian-and-diffusion/</guid>
-        
-        
-        <category>research</category>
-        
-      </item>
-    
-      <item>
-        <title>An eigenframework for the generalization of 1NN</title>
-        <description>&lt;p&gt;In this blogpost, I’ll present an eigenframework giving the generalization of the nearest-neighbor algorithm (1NN) on two simple domains — the unit circle and the 2-torus — and discuss the prospects for a general theory.&lt;/p&gt;
-
-&lt;h2 id=&quot;why-1nn&quot;&gt;Why 1NN?&lt;/h2&gt;
-
-&lt;p&gt;I think 1NN is a good candidate for &lt;a href=&quot;/blog/lets-solve-learning-rules&quot;&gt;“solving” in the omniscient sense&lt;/a&gt; because it’s relatively simple, and it’s also a &lt;em&gt;linear learning rule&lt;/em&gt; in the sense that, condition on a dataset, the predicted function $\hat{f}$ is a linear function of the true function $f$. This means that we might expect a nice eigenframework to work for MSE.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;1nn-on-the-unit-circle-aka-the-1-torus&quot;&gt;1NN on the unit circle (aka the 1-torus)&lt;/h2&gt;
-
-&lt;p&gt;The setting here will be pretty natural: we have some target function $f: [0,1) \rightarrow \mathbb{R}$ we wish to learn, we draw $n$ samples \(\{x_i\}_{i=1}^n\) from $U[0,1)$ and obtain noisy function evaluations $y_i = f(x_i) + \mathcal{N}(0, \epsilon^2)$, and then on each test point $x$ predict $y_{i(x)}$ where $i(x)$ is the index of the closest point to $x$, with circular boundary conditions on the domain. Here’s what it looks like to learn, say, a triangle wave with 20 points:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/1nn_eigenframework/sawtooth_realspace_1nn_plot.png&quot; width=&quot;55%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;We will describe generalization in terms of the &lt;em&gt;Fourier decomposition&lt;/em&gt; of the target function $f(x) = \sum_{k=-\infty}^{\infty} e^{2 \pi i k x} v_k,$ where ${ v_k }$ are the Fourier coefficients. In terms of the Fourier decomposition, we have that&lt;/p&gt;
-
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;div style=&quot;border: 1px solid black; padding: 10px; display: inline-block;&quot;&gt;
-$$
-[\text{test MSE}]_\text{1D} = \sum_k \frac{2 \pi^2 k^2}{\pi^2 k^2 + n^2} \, v_k^2 + 2 \epsilon^2. 
-$$
-&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;This is the eigenframework for 1NN in 1D! The generalization of 1NN on &lt;em&gt;any&lt;/em&gt; target function in 1D is described by this equation.&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;Here are some experiments that show we’ve got it right. The function $\phi_k(x)$ here is the $k$th eigenmode, and we’re using the &lt;a href=&quot;https://mathworld.wolfram.com/FourierSeriesTriangleWave.html&quot;&gt;known Fourier decomposition of the triangle wave&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/1nn_eigenframework/1nn_1d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;This equation can be found a few ways, but most simply you (a) argue by symmetry that the eigenmodes contribute independently to MSE and then (b) find the test MSE for a particular eigenmode, which isn’t too hard to do. I made two approximations: (1) instead of having exactly $n$ samples, I let the samples be distributed as a Poisson process (i.e., each point has an i.i.d. chance of containing a sample), and (2) I assume the domain is infinite when computing a certain integral. Neither of these matters when $n$ is moderately large.&lt;/p&gt;
-
-&lt;p&gt;Before moving on to the 2D case, I want to pause to highlight a few cool features of this framework:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The Fourier modes do not interact — no crossterms $v_j v_k$ appear in the framework. Because 1NN is a linear learning rule, it’s inevitably possible to “diagonalize” the theory in this way for a particular $n$, but the fact that it’s simultaneously diagonalizable for all $n$ is pretty cool!&lt;/li&gt;
-  &lt;li&gt;Ignoring the factors of $\pi$, we see that mode $k$ is unlearned when $n \ll k$ and fully learned when $n \gg k$. This makes a lot of sense — it’s sort of a soft version of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Nyquist_frequency&quot;&gt;Nyquist frequency&lt;/a&gt; cutoff.&lt;/li&gt;
-  &lt;li&gt;Things simplify a bit if, instead of using the index $k$, we write in terms of the Laplacian eigenvalues $\lambda_k = 4 \pi^2 k^2$.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;1nn-on-the-2-torus&quot;&gt;1NN on the 2-Torus&lt;/h2&gt;
-
-&lt;p&gt;We now undertake the same problem, but we’re in 2D: our data is i.i.d. from $[0,1)^2$, again with circular boundary conditions. Our Fourier decomposition now looks like&lt;/p&gt;
-
-\[f(\mathbf{x}) = \sum_{\mathbf{k} \in \mathbb{Z}^2} e^{2 \pi i \, \mathbf{k} \cdot \mathbf{x}}.\]
-
-&lt;p&gt;The same procedure as in the 1D case yields that&lt;/p&gt;
-
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;div style=&quot;border: 1px solid black; padding: 10px; display: inline-block;&quot;&gt;
-$$
-[\text{test MSE}]_\text{2D} = \sum_\mathbf{k} \left( 2 - 2 e^{- \pi \mathbf{k}^2 / n} \right) \, v_\mathbf{k}^2 + 2 \epsilon^2. 
-$$
-&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;
-Here are some experiments that show that we’ve got the 2D case right, too.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/1nn_eigenframework/1nn_2d_learning_curves.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h4 id=&quot;can-you-extend-these-to-k-nearest-neighbors-instead-of-just-one&quot;&gt;Can you extend these to k nearest neighbors instead of just one?&lt;/h4&gt;
-
-&lt;p&gt;Probably! I haven’t tried, though.&lt;/p&gt;
-
-&lt;h2 id=&quot;can-we-find-a-general-theory&quot;&gt;Can we find a general theory?&lt;/h2&gt;
-
-&lt;p&gt;The most remarkable feature of the eigenframework for linear regression is that one set of equations works for every distribution. Can we find that here?&lt;/p&gt;
-
-&lt;p&gt;I’m not sure. At first blush, the 1D and 2D equations look pretty different — if we were in search of some master equation, we’d almost certainly want it to unify those two cases, but the functional forms look pretty different! I suspect it might be possible, though — the linear regression eigenframework requires solving an implicit equation that depends on all the eigenvalues and can yield pretty different-looking final expressions for different spectra, so it’s believable to me that there’s some common thread here.&lt;/p&gt;
-
-&lt;p&gt;A big question in the search for a general eigenframework is: what’s the right notion of &lt;em&gt;eigenfunction?&lt;/em&gt; In these highly symmetric domains, it’s easy — the Fourier modes are the eigenfunctions of any translation-invariant operator we might choose. In general, though, I don’t know what operator we want to diagonalize, or how to use its eigenvalues. This puzzles me. I don’t know the answer! So strange.&lt;/p&gt;
-
-&lt;p&gt;Even without a general theory, though, I think it’d be really interesting just to continue this chain of special cases up to the arbitrary $d$-torus! I got stuck at $d=2,$ but I’d bet it can be done. Then we could think about how 1NN differs from kernel regression in high dimensions!&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt; My understanding is that 1NN is worse, but I don’t actually know any quantification of this. (If you know one, drop me a line!)&lt;/p&gt;
-
-&lt;p&gt;So that’s where things stand: these two special cases serve as proof of principle that there &lt;em&gt;might&lt;/em&gt; be a general eigenframework for 1NN… and if that exists, it’d be a cool proof of principle that more learning rules than linear regression can be “solved.” Seems like a neat problem! If I make much more progress on it, maybe I’ll write up a little paper. Let me know if you have thoughts or want to collaborate.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Intriguingly, the fact that it’s linear also means that 1NN exactly satisfies the &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;“conservation of learnability” condition&lt;/a&gt; obeyed by linear and kernel regression, which means that you can ask questions about how these two different algorithms allocate their budget of learnability differently. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Our Fourier decomposition is easily adapted to nonuniform data distros on our domain.] In order to understand the generalization of 1NN on a target function, it suffices to compute its Fourier transform and stick the result into this equation. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This is particularly interesting because it could let us get at a puzzle posed by Misha Belkin &lt;a href=&quot;https://arxiv.org/abs/2105.14368&quot;&gt;here&lt;/a&gt; of why &lt;em&gt;inverse&lt;/em&gt; methods like KRR outperform &lt;em&gt;direct&lt;/em&gt; methods like kNN and kernel smoothing in high dimensions. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 05 Jun 2024 02:00:00 -0400</pubDate>
-        <link>http://localhost:4000/blog/1nn-eigenframework/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/1nn-eigenframework/</guid>
         
         
         <category>research</category>
