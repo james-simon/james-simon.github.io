@@ -5,9 +5,38 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 12 Oct 2024 11:27:51 -0700</pubDate>
-    <lastBuildDate>Sat, 12 Oct 2024 11:27:51 -0700</lastBuildDate>
+    <pubDate>Wed, 06 Nov 2024 23:09:55 -0800</pubDate>
+    <lastBuildDate>Wed, 06 Nov 2024 23:09:55 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The optimal low-rank solution for linear regression</title>
+        <description>&lt;p&gt;Consider linear regression with squared error in which we wish to choose a matrix $\mathbf{W}$ to minimize&lt;/p&gt;
+
+\[\mathcal{E} \equiv \mathbb{E}_{(x, y) \sim \mu}\left[ |\!| \mathbf{W}x - y |\!|^2 \right] = \text{Tr}\left[ \mathbf{W} \boldsymbol{\Sigma}_{xx} \mathbf{W}^T - 2 \mathbf{W} \boldsymbol{\Sigma}_{xy} + \boldsymbol{\Sigma_{yy}} \right],\]
+
+&lt;p&gt;where $\boldsymbol{\Sigma}_{xx} = \mathbb{E}[x x^T]$ and so on, under the constraint that $\mathbf{W}$ may be at most rank $k$. Assume that $\boldsymbol{\Sigma}_{xx}$ is full rank (i.e., we are underparameterized). We may rewrite this loss as&lt;/p&gt;
+
+\[\mathcal{E} = |\!| \tilde{\mathbf{W}} - \boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1/2} |\!|_F^2,\]
+
+&lt;p&gt;where $\tilde{\mathbf{W}} \equiv \mathbf{W} \boldsymbol{\Sigma}^{1/2}$. It is then clear that the optimal rank-$k$ choice for $\tilde{\mathbf{W}}$ is&lt;/p&gt;
+
+\[\tilde{\mathbf{W}}_*^{(k)} = \text{topsvd}_k(\boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1/2} ),\]
+
+&lt;p&gt;where the operator $\text{topsvd}_k(\cdot)$ returns the matrix comprised of the top $k$ singular directions of its argument. We thus conclude that the optimal rank-$k$ model matrix is&lt;/p&gt;
+
+\[\mathbf{W}_*^{(k)} = \text{topsvd}_k(\boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1/2} ) \boldsymbol{\Sigma_{xx}}^{-1/2}.\]
+
+&lt;p&gt;When the rank is unconstrained and $k$ is maximal, we find that $\mathbf{W}_* = \boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1}$ as expected.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 06 Nov 2024 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/blog/low-rank-linear-regression-sol/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/low-rank-linear-regression-sol/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>Infinite-width autoencoders are cursed</title>
@@ -1485,88 +1514,6 @@ It is perched in a high hollow, frozen and unreachable half the year, quite indi
         
         
         <category>random, personal</category>
-        
-      </item>
-    
-      <item>
-        <title>Using the Laplacian to take a local average of a function</title>
-        <description>&lt;p&gt;The Laplacian operator in $d$ dimensions is defined as $\nabla^2 \equiv \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2}$. It’s widely used to model diffusion processes in physics — for example, the &lt;a href=&quot;https://en.wikipedia.org/wiki/Heat_equation&quot;&gt;heat equation&lt;/a&gt;, which describes the diffusion of heat through a material, is given by $\frac{\partial f(\mathbf{x},t)}{\partial t} = \nabla^2 f(\mathbf{x}, t)$. This operator’s come up in &lt;a href=&quot;/blog/1nn-eigenframework&quot;&gt;my recent thinking about the 1NN algorithm&lt;/a&gt;: in particular, I’ve been trying to write down a linear operator that replaces a function with its local average, and I had a sense that you could probably do this with the Laplacian somehow. In thinking this through, I encountered something neat I hadn’t appreciated before: for any analytic function $f$, it holds that&lt;/p&gt;
-
-&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;div style=&quot;border: 1px solid black; padding: 10px; display: inline-block;&quot;&gt;
-$$
-\left( e^{\frac{\sigma^2}{2} \nabla^2} f \right)(\mathbf x) = \mathbb{E}_{\mathbf{\boldsymbol{\delta}} \sim \mathcal{N}(0, \sigma^2 \mathbf{I}_d)}[f(\mathbf{x} + \boldsymbol{\delta})].
-$$
-&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;That is, the (exponentiated) Laplacian of a function (LHS) is equal to its local average w.r.t. a Gaussian measure (RHS). The RHS is nonlocal, but the LHS is entirely local, so this has some spooky-action-at-a-distance vibes.&lt;/p&gt;
-
-&lt;p&gt;Why is this the case? I’ll give two explanations in 1D, and it’ll be relatively clear how to extend it to higher dimension.&lt;/p&gt;
-
-&lt;h2 id=&quot;argument-from-discretization-of-space&quot;&gt;Argument from discretization of space&lt;/h2&gt;
-
-&lt;p&gt;The Laplacian can be understood intuitively as the limit of its definition on a discretized lattice as the lattice spacing goes to zero. Suppose that instead of a function over the reals, the function $f$ only takes values on the points $\epsilon \mathbb{Z}$ — that is, ${\ldots, -2\epsilon, -\epsilon, 0, \epsilon, 2\epsilon, \ldots }$ — for some small value of $\epsilon$. We could represent the &lt;em&gt;derivative&lt;/em&gt; of $f$ as&lt;/p&gt;
-
-\[(Df)(x) = \frac{f(x + \epsilon) - f(x)}{\epsilon},\]
-
-&lt;p&gt;where $x \in \epsilon \mathbb{Z}$. Similarly, we can define the Laplacian as&lt;/p&gt;
-
-\[\left( \nabla^2 f \right)(x) = \frac{f(x - \epsilon) - 2 f(x) + f(x + \epsilon)}{\epsilon^2}.\]
-
-&lt;p&gt;If we add the identity to the Laplacian operator, we see that&lt;/p&gt;
-
-\[\left( \left[1 + \frac{\epsilon^2}{4} \nabla^2 \right] f \right)(x) = \frac{f(x - \epsilon) + 2 f(x) + f(x + \epsilon)}{4}.\]
-
-&lt;p&gt;(The choice of $\frac{1}{4}$ as the prefactor here is arbitrary, but will make things simpler.) We see then that the operator $1 + \frac{\epsilon^2}{4} \nabla^2$ takes a weighted average of the function value at a point and its two neighbors (with weights $\frac 14, \frac 12, \frac 14$ respectively).&lt;/p&gt;
-
-&lt;p&gt;We can see this as a single step of a random walk. Taking a dual view where instead of staying fixed at the point $x$, we follow the diffusion of the function mass that &lt;em&gt;started&lt;/em&gt; at $x$, we see that $\frac 14$ of the mass has gone one point to the left, $\frac 12$ of the mass has remained in place, and $\frac 14$ of the mass has moved one point to the right.&lt;/p&gt;
-
-&lt;p&gt;After many steps, a random walk on an infinite lattice approaches a (discretized) Gaussian distribution by the central limit theorem. In particular, if we take $n \gg 1$ steps, the corresponding Gaussian will have a variance of $\frac {\epsilon^2 n}{2}$. If we choose $n = \frac{2 \sigma^2}{\epsilon^2}$, we get a Gaussian with variance $\sigma^2$, which gives us the RHS of the boxed equation above!&lt;/p&gt;
-
-&lt;p&gt;As for the LHS, since we’ve iterated this operator $n$ times, it corresponds to&lt;/p&gt;
-
-\[\left[1 + \frac{\epsilon^2}{4} \nabla^2 \right]^n = \left[1 + \frac{\epsilon^2}{4} \nabla^2 \right]^{\frac{2 \sigma^2}{\epsilon^2}}
-\xrightarrow{\epsilon \rightarrow 0}
-e^{\frac {\sigma^2} 2 \nabla^2}.\]
-
-&lt;p&gt;Great! Let’s test this conclusion on the eigenfunctions of the Laplacian. Let $f_k(x) = e^{i k x}$. Then&lt;/p&gt;
-
-\[e^{\frac {\sigma^2} 2 \nabla^2} f_k = e^{- \frac {\sigma^2 k^2} 2} f_k\]
-
-&lt;p&gt;and also, using the standard Gaussian integral, we find that&lt;/p&gt;
-
-\[\mathbb{E}_{\delta \sim \mathcal{N}(0, \sigma^2)}[f_k(x + \delta)] = e^{- \frac {\sigma^2 k^2} 2} f_k.\]
-
-&lt;p&gt;Great! Actually, since the boxed relation holds for the complete Fourier basis, it’ll hold for all functions (or at least all functions that equal their Fourier series).&lt;/p&gt;
-
-&lt;h2 id=&quot;argument-from-taylor-series&quot;&gt;Argument from Taylor series&lt;/h2&gt;
-
-&lt;p&gt;Consider the function $f(x) = x^a$ for some $a \in \mathbb{Z}^+$. A standard Gaussian integral yields that&lt;/p&gt;
-
-\[\mathbb{E}_{\delta \sim \mathcal{N}(0,\sigma^2)}[\delta^a] =
-\left\{\begin{array}{ll}        \frac{a!}{2^{a/2} (a/2)!} \sigma^a &amp;amp; \text{for } a \text{ even}, \\        0 &amp;amp; \text{for } a \text{ odd}.        \end{array}\right.\]
-
-&lt;p&gt;Similarly, the LHS of the boxed equation gives the same result — this is easiest to show starting by writing out&lt;/p&gt;
-
-\[e^{\frac{\sigma^2}{2} \nabla^2} = \lim_{n \rightarrow \infty} \left[1 + \frac{\sigma^2}{2n} \nabla^2 f \right]^n\]
-
-&lt;p&gt;and then expanding the right hand side. Anyways, the fact that the boxed equation holds for any monomial around zero is sufficient to argue that any function that converges to its Taylor series (that is, any analytic function) satisfies the boxed equation. Neat!&lt;/p&gt;
-
-&lt;p&gt;As a closing thought, there’s a potential paradox raised by the boxed equation, which is: how can you take a &lt;em&gt;nonlocal&lt;/em&gt; average of a function with the Laplacian, which is a local operator?
-The answer is that the exponentiation actually means that we’re applying the Laplacian an infinite number of times – it’s rather more believable that this counteracts the locality of the operator, especially in light of our discretized model.&lt;/p&gt;
-
-&lt;p&gt;Actually, one more closing thought: so the boxed equation tells us how to study the local &lt;em&gt;Gaussian&lt;/em&gt; average… what if we wanted, say, the local &lt;em&gt;Laplacian&lt;/em&gt; average, or some other rotation-invariant distribution?
-Well, you could just represent that distribution in the basis of Gaussians of different widths, and then you’ve got it – you’ll just have some sum or integral over different values of \(\sigma^2\) on the LHS of the boxed equation.
-That seems useful because I actually needed a Laplacian average for the 1NN analysis.&lt;/p&gt;
-
-</description>
-        <pubDate>Thu, 06 Jun 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/the-laplacian-and-diffusion/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/the-laplacian-and-diffusion/</guid>
-        
-        
-        <category>research</category>
         
       </item>
     
