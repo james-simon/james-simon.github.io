@@ -90,7 +90,7 @@ $$
 
 where $\hat{\mathbf{h}}, \hat{\mathbf{g}}$ are unit vectors in the directions of $\mathbf{h}, \mathbf{g}$. We are free to absorb $\|\\!\| \mathbf{h} \|\\!\|$ and $\|\\!\| \mathbf{g} \|\\!\|$ into the definitions of $\eta\_u, \eta\_v$. More subtly, we are free to absorb the initial scales of $\|\\!\| \mathbf{u}\_0 \|\\!\|$ and $\|\\!\| \mathbf{v}\_0 \|\\!\|$ into the learning rates, too, and so will henceforth assume that these vectors are of the same size up to a constant factor.[^a]
 
-[^a]: To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta\_u \rightarrow \alpha \eta\_u, \ \eta\_v \rightarrow \alpha^{-1} \eta\_v)$ is an exact symmetry of the dynamics.
+[^a]: To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta\_u \rightarrow \alpha \eta\_u, \ \eta\_v \rightarrow \alpha^{-1} \eta\_v)$ is an exact symmetry of the dynamics, with a similar symmetry for $$\mathbf{v}$$.
 
 $$
 \delta \mathbf{u} = \tilde \eta_u \cdot \mathcal{A}_\text{out} \cdot 
@@ -179,6 +179,10 @@ Here I’ll pitch two solutions that I think can be used to width-scale autoenco
 The first is to ditch the variation in width between layers — just keep everything width-$N$ — and instead enforce the rank constraints implicitly with regularization. For example, if a layer is intended to have fan-out dimension $k$, one could gradually turn on an $\ell\_1$ regularization on all but the top $k$ singular vectors of the weight matrix until the regularization is so high that it becomes sparse. I believe this is consistent even at infinite width, though it does unfortunately require computing the SVD lots of times.
 
 The second idea is to do a “cascading init” in the following fashion. First, initialize all weight tensors to zero. Next, choose a random batch of perhaps $P = 10^3$ inputs. Then, starting from the start of the network and working forwards, initialize each weight tensor so that its “input” singular subspace aligns with the top PCA directions of this input batch. I believe that this, too, makes sense even at infinite width, it doesn’t require computing lots of SVDs throughout training, and it gives you a nice network with aligned vectors right from the get-go. Having everything aligned like this makes the theory really nice, and $\mu$P can be very simply expressed in spectral language.
+
+A third possibility is that batchnorm or layernorm somehow fix this. My intuition's that they won't, though I don't have a solid argument.
+
+A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works, but it still seems like things ought to be possible with SGD.
 
 ## Discussion: what now?
 

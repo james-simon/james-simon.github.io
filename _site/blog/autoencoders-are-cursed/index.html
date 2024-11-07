@@ -232,6 +232,10 @@ e^t
 
 <p>The second idea is to do a “cascading init” in the following fashion. First, initialize all weight tensors to zero. Next, choose a random batch of perhaps $P = 10^3$ inputs. Then, starting from the start of the network and working forwards, initialize each weight tensor so that its “input” singular subspace aligns with the top PCA directions of this input batch. I believe that this, too, makes sense even at infinite width, it doesn’t require computing lots of SVDs throughout training, and it gives you a nice network with aligned vectors right from the get-go. Having everything aligned like this makes the theory really nice, and $\mu$P can be very simply expressed in spectral language.</p>
 
+<p>A third possibility is that batchnorm or layernorm somehow fix this. My intuition’s that they won’t, though I don’t have a solid argument.</p>
+
+<p>A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works, but it still seems like things ought to be possible with SGD.</p>
+
 <h2 id="discussion-what-now">Discussion: what now?</h2>
 
 <p>Based on the above argument, I’m of the opinion that</p>
@@ -253,7 +257,7 @@ e^t
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:a" role="doc-endnote">
-      <p>To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta_u \rightarrow \alpha \eta_u, \ \eta_v \rightarrow \alpha^{-1} \eta_v)$ is an exact symmetry of the dynamics. <a href="#fnref:a" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta_u \rightarrow \alpha \eta_u, \ \eta_v \rightarrow \alpha^{-1} \eta_v)$ is an exact symmetry of the dynamics, with a similar symmetry for \(\mathbf{v}\). <a href="#fnref:a" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:c" role="doc-endnote">
       <p>For example, consider optimizing $\mathcal{L}(x, y) = (1 - xy)^2$ for scalars $x, y$. When $x, y$ are initialized very close to zero, these dynamics will take a logarithmically-long time to get going, because each parameter suppresses the other’s gradient. <a href="#fnref:c" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
