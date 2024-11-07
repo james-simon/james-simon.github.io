@@ -30,3 +30,4 @@ $$
 $$
 
 When the rank is unconstrained and $k$ is maximal, we find that $\mathbf{W}\_* = \boldsymbol{\Sigma}\_{yx} \boldsymbol{\Sigma}\_{xx}^{-1}$ as expected.
+
