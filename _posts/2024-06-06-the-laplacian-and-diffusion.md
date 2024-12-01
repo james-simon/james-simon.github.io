@@ -85,11 +85,11 @@ $$
 and then expanding the right hand side. Anyways, the fact that the boxed equation holds for any monomial around zero is sufficient to argue that any function that converges to its Taylor series (that is, any analytic function) satisfies the boxed equation. Neat!
 
 As a closing thought, there's a potential paradox raised by the boxed equation, which is: how can you take a *nonlocal* average of a function with the Laplacian, which is a local operator?
-The answer is that the exponentiation actually means that we're applying the Laplacian an infinite number of times -- it's rather more believable that this counteracts the locality of the operator, especially in light of our discretized model.
+The answer is that the exponentiation actually means that we're applying the Laplacian an infinite number of times -- it's rather believable that this counteracts the locality of the operator, especially in light of our discretized model.
 
 Actually, one more closing thought: so the boxed equation tells us how to study the local *Gaussian* average... what if we wanted, say, the local *Laplacian* average, or some other rotation-invariant distribution?
 Well, you could just represent that distribution in the basis of Gaussians of different widths, and then you've got it -- you'll just have some sum or integral over different values of $$\sigma^2$$ on the LHS of the boxed equation.
-That seems useful because I actually needed a Laplacian average for the 1NN analysis.
+That seems useful in some cases -- for example, I actually needed a Laplacian average for the aforementioned 1NN analysis.
 
 
 

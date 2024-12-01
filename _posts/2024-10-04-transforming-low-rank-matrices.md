@@ -56,7 +56,7 @@ That is, because $\xi$ has the special property that $\xi(ab) = \xi(a) \cdot \xi
 
 ### The general case
 
-To get the case of general $\phi$, we’ll actually consider an even *larger* set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$, it can be an arbitrary bivariate function.
+To get the case of general $\phi$, we’ll actually consider an even *larger* set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$; it can be an arbitrary bivariate function.
 
 We now have a function $h(x, y)$ and probability measures $\mu_x, \mu_y$ from which $x, y$ can each be sampled (namely, both $\mu_x, \mu_y$ are unit Gaussian). This means that we can define what I think of as the “operator SVD” of the function $h$, which means writing it in the form
 
