@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 06 Nov 2024 23:09:55 -0800</pubDate>
-    <lastBuildDate>Wed, 06 Nov 2024 23:09:55 -0800</lastBuildDate>
+    <pubDate>Mon, 02 Dec 2024 09:27:59 -1000</pubDate>
+    <lastBuildDate>Mon, 02 Dec 2024 09:27:59 -1000</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -28,8 +28,9 @@
 \[\mathbf{W}_*^{(k)} = \text{topsvd}_k(\boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1/2} ) \boldsymbol{\Sigma_{xx}}^{-1/2}.\]
 
 &lt;p&gt;When the rank is unconstrained and $k$ is maximal, we find that $\mathbf{W}_* = \boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1}$ as expected.&lt;/p&gt;
+
 </description>
-        <pubDate>Wed, 06 Nov 2024 00:00:00 -0800</pubDate>
+        <pubDate>Wed, 06 Nov 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/low-rank-linear-regression-sol/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/low-rank-linear-regression-sol/</guid>
         
@@ -224,7 +225,7 @@ e^t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 08 Oct 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 08 Oct 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/autoencoders-are-cursed/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/autoencoders-are-cursed/</guid>
         
@@ -283,7 +284,7 @@ e^t
 
 &lt;h3 id=&quot;the-general-case&quot;&gt;The general case&lt;/h3&gt;
 
-&lt;p&gt;To get the case of general $\phi$, we’ll actually consider an even &lt;em&gt;larger&lt;/em&gt; set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$, it can be an arbitrary bivariate function.&lt;/p&gt;
+&lt;p&gt;To get the case of general $\phi$, we’ll actually consider an even &lt;em&gt;larger&lt;/em&gt; set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$; it can be an arbitrary bivariate function.&lt;/p&gt;
 
 &lt;p&gt;We now have a function $h(x, y)$ and probability measures $\mu_x, \mu_y$ from which $x, y$ can each be sampled (namely, both $\mu_x, \mu_y$ are unit Gaussian). This means that we can define what I think of as the “operator SVD” of the function $h$, which means writing it in the form&lt;/p&gt;
 
@@ -323,7 +324,7 @@ e^t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Fri, 04 Oct 2024 00:00:00 -0700</pubDate>
+        <pubDate>Fri, 04 Oct 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
         
@@ -491,7 +492,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 20 Aug 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
         
@@ -755,7 +756,7 @@ I wonder if there’s some analytical condition on the return map that one could
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
+        <pubDate>Wed, 31 Jul 2024 12:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/fractals-in-iterated-maps/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterated-maps/</guid>
         
@@ -787,7 +788,7 @@ The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth an
 
 &lt;p&gt;&lt;em&gt;Thanks to Irian D’Andrea for the grade-A toss and to Olive Eilbott for both issuing the challenge and capturing it on video.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Fri, 05 Jul 2024 01:00:00 -0700</pubDate>
+        <pubDate>Fri, 05 Jul 2024 01:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/egg/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/egg/</guid>
         
@@ -956,7 +957,7 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 03 Jul 2024 00:00:00 -0700</pubDate>
+        <pubDate>Wed, 03 Jul 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/self-assembly/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
         
@@ -1319,7 +1320,7 @@ If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 23 Jun 2024 02:00:00 -0700</pubDate>
+        <pubDate>Sun, 23 Jun 2024 02:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/gravitree-update-2024/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
         
@@ -1474,7 +1475,7 @@ As you look at each of the following images, first guess what it’s a photo of,
 &lt;/div&gt;
 
 </description>
-        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/household-microscopy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
         
@@ -1508,7 +1509,7 @@ It is perched in a high hollow, frozen and unreachable half the year, quite indi
 
 &lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Mon, 10 Jun 2024 00:00:00 -0700</pubDate>
+        <pubDate>Mon, 10 Jun 2024 00:00:00 -1000</pubDate>
         <link>http://localhost:4000/blog/boolpool-timelapse/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
         
