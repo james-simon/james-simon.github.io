@@ -182,7 +182,7 @@ The second idea is to do a “cascading init” in the following fashion. First,
 
 A third possibility is that batchnorm or layernorm somehow fix this. My intuition's that they won't, though I don't have a solid argument.
 
-A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works, but it still seems like things ought to be possible with SGD.
+A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works (I suspect the LoRA analysis of [this paper](https://arxiv.org/abs/2402.12354) shows this!), but it still seems like things ought to be possible with SGD.
 
 ## Discussion: what now?
 
