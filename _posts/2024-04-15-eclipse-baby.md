@@ -98,9 +98,9 @@ So, in light of this better calculation, how’d the rough estimate turn out? Su
 
 ## So was there actually an eclipse baby?
 
-Googling thing related to “eclipse baby” returns [this story](https://abcnews.go.com/GMA/Family/mom-welcomes-baby-named-sol-total-solar-eclipse/story?id=109038075) of a Texas family whose baby was born on the eclipse day. This article says that it was born during the total eclipse, but the birth time they give is about half an hour before totality, and in [this interview](https://www.foxweather.com/watch/play-710fe6a0f001782) the parents say they saw the total eclipse after the birth, so it seems this is just a near miss.
+Googling things related to “eclipse baby” returns [this story](https://abcnews.go.com/GMA/Family/mom-welcomes-baby-named-sol-total-solar-eclipse/story?id=109038075) of a Texas family whose baby was born on the eclipse day. This article says that it was born during the total eclipse, but the birth time they give is about half an hour before totality, and in [this interview](https://www.foxweather.com/watch/play-710fe6a0f001782) the parents say they saw the total eclipse after the birth, so it seems this is just a near miss.
 
-The question’s still out, then — was there a baby born during totality in 2024? I If you meet this baby, please introduce us.
+The question’s still out, then — was there a baby born during totality in 2024? If you meet this baby, please introduce us.
 
 <!-- divider above footnotes -->
 ***
