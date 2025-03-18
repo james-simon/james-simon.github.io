@@ -5,7 +5,7 @@ date: 2025-03-18
 category: deep learning, research
 ---
 
-*This blogpost composed in collaboration with [Yuxi Liu](https://yuxi-liu-wired.github.io/), who did most of the analytical legwork.*
+*This blogpost composed in collaboration with [Yuxi Liu](https://yuxi-liu-wired.github.io/), who did much of the analytical legwork.*
 
 ***
 
