@@ -1,0 +1,131 @@
+<p><em>This blogpost composed in collaboration with <a href="https://yuxi-liu-wired.github.io/">Yuxi Liu</a>.</em></p>
+
+<hr />
+
+<p>A <a href="https://arxiv.org/abs/2002.02561">large</a> <a href="https://arxiv.org/abs/2006.09796">number</a> of <a href="https://arxiv.org/abs/2110.03922">recent</a> <a href="https://arxiv.org/abs/2203.06176">works</a> have converged on the conclusion that the behavior and performance of kernel methods (and kernel regression in particular) can be simply described in terms of the eigenstructure of the task with respect to the kernel. To restate: <em>we can understand kernel regression to the degree we understand the eigenstructure of the task.</em></p>
+
+<p>It is generally not too hard to diagonalize the kernel and obtain the task eigenstructure numerically, and this has lead to a great deal of insight into the learning behavior of kernel regression. However, it’s generally quite difficult to find task eigenstructure analytically, even in simple toy cases, as it usually requires computing some complicated integrals. As every physicist knows, there are major advantages to analytical solutions: insight and intuition are often more easily extracted from symbolic solutions, and by taking limits a single analytical solution can give a system’s phenomenology in several different regimes. It thus behooves us to collect analytically solvable cases and sit with them to extract generalizing intuition. <strong>To that end, in this blogpost, we will give the analytical eigenstructure for the Gaussian kernel on a 1D Gaussian distribution.</strong></p>
+
+<h1 id="what-analytically-solvable-cases-are-known">What analytically solvable cases are known?</h1>
+
+<ul>
+  <li>symmetry-invariant kernel on a domain with that symmetry, in which case the answer is the FT</li>
+  <li>high-dimensional cases</li>
+  <li>other than that, this is the only case I know</li>
+  <li>why this case? well, it feels more realistic than symmetric data, it has nontrivial eigenfns but still admits a nice solution, it’s motivated by our current research</li>
+</ul>
+
+<h1 id="problem-setup-gaussian-kernel-on-a-1d-gaussian-distribution">Problem setup: Gaussian kernel on a 1D Gaussian distribution</h1>
+
+<p>Consider a scalar normal random variable $x \sim \mathcal{N}(0,\sigma^2)$, where $\sigma^2$ is the variance of the distribution. Consider learning on this distribution with a <em>Gaussian kernel</em></p>
+
+\[K(x,y)=e^{-\frac{(x-y)^2}{w^2}}\]
+
+<p>where $w$ is the width of the kernel. We seek an <em>eigendecomposition</em></p>
+
+\[K(x,y) = \sum_k \lambda_k \, \phi_k(x) \, \phi_k(y),\]
+
+<p>where ${\lambda_k}$ are nonnegative eigenvalues and ${\phi_k}$ are eigenfunctions satisfying the orthonormality relation</p>
+
+\[\mathbb{E}_x[\phi_k(x) \phi_\ell(x)] = \delta_{k\ell}.\]
+
+<p>We refer to ${\lambda_k}$ and ${\phi_k}$ together as the kernel <em>eigensystem</em> or <em>eigenstructure.</em></p>
+
+<h1 id="main-result-analytical-form-of-the-eigenstructure">Main result: analytical form of the eigenstructure</h1>
+
+<h3 id="hermite-polynomials">Hermite polynomials</h3>
+
+<p>Let $h_k(x) \equiv \frac{1}{\sqrt{k!}} \text{He}<em>k(x)$ denote the (rescaled) <a href="https://en.wikipedia.org/wiki/Hermite_polynomials">probabilist’s Hermite polynomials</a>. The normalization prefactor $\frac{1}{\sqrt{k!}}$ is chosen so that $\mathbb{E}</em>{x \sim \mathcal{N}(0,1)}[h_k^2(x)] = 1$.</p>
+
+<h3 id="the-answer"><strong>The answer</strong></h3>
+
+<p>[START BOX]</p>
+
+<p>The eigenfunctions and eigenvalues take the form</p>
+
+\[\begin{align}
+\phi_k(x) &amp;= c \cdot e^{-\frac{x^2}{2 \alpha^2}} \cdot h_k\left( \frac x \beta \right), \\
+\lambda_k &amp;= (1 - r) \, r^k,
+\end{align}\]
+
+<p>where the scalars $\alpha, \beta, c, r$ are given by</p>
+
+\[\begin{align}
+\alpha &amp;= \frac{1}{\sqrt 2} \left( w^2 + w \sqrt{w^2 + 4 \sigma^2} \right)^{1/2}, \\
+\beta &amp;= \frac{\sigma \sqrt{w}}{(w^2 + 4 \sigma^2)^{1/4}}, \\
+c &amp;= \left[ 1 + \frac{4 \sigma^2}{w^2} \right]^{1/8}, \\
+r &amp;= \frac{\sigma^2}{\sigma^2 + \alpha^2}.
+\end{align}\]
+
+<p>[END BOX]</p>
+
+<p>Note that the eigenfunctions resemble the eigenfunctions of the <a href="https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator">quantum harmonic oscillator</a> but  with different scale factors $\alpha \neq\beta$ on the exponential and hermite components. The eigenvalues are a geometric series with ratio $r &lt; 1$.</p>
+
+<h3 id="obtaining-the-answer">Obtaining the answer</h3>
+
+<p>We obtained these eigenfunctions treating equations 1,2 as an ansatz and solving for $\alpha, \beta, c, r$. This is doable with <a href="https://en.m.wikipedia.org/wiki/Mehler_kernel">Mehler’s formula</a> and algebraic manipulation. See [here] for a detailed derivation.</p>
+
+<h1 id="visualizing-the-eigenstructure">Visualizing the eigenstructure</h1>
+
+<p>We can plot the eigenfunctions and eigenvalues and compare analytical formulae with numerics to make sure we’re right. <a href="https://colab.research.google.com/drive/1Vz0RZuMxrgGGz9aq9e4l4PH8p9jIIBXG?usp=sharing">Here’s</a> a colab notebook that does so, and here’s the resulting plot:</p>
+
+<p>[FIGURE]</p>
+
+<p>Each row shows the eigenstructure for a different ratio $\frac{w^2}{\sigma^2}$. The leftmost plot in each row is a simple visualization of the Gaussian PDF (which here always has $\sigma^2 = 1$) and the Gaussian kernel. The middle plot in each row shows the first five kernel eigenfunctions with theoretical curves overlaid for comparison. The rightmost plot in each row shows the kernel eigenvalues. We find that the experimental eigenvalues indeed follow the predicted geometric descent (with small deflections due to numerical error).</p>
+
+<h1 id="eigenstructure-in-two-limits">Eigenstructure in two limits</h1>
+
+<p>Looking at the top and bottow rows in the above figure, we get the feeling it might be informative to examine the $\sigma^2 \gg w^2$ and $\sigma^2 \ll w^2$ limits of our analytical expressions. Here’s what you get:</p>
+
+<h3 id="narrow-kernel-sigma2-gg-w2">Narrow kernel: $\sigma^2 \gg w^2$</h3>
+
+\[\begin{align}
+\alpha &amp;\approx \sqrt{\sigma w}, \\
+\beta &amp;\approx \sqrt{\frac{\sigma w}{2}}, \\
+c &amp;\approx \left( \frac{2 \sigma}{w} \right)^{1/4}, \\
+r &amp;\approx 1.
+\end{align}\]
+
+<p>In this regime, the scale factors $\alpha, \beta$ are the same up to a factor of $\sqrt{2}$, and the resulting eigenfunctions $\phi_k$ are exactly the eigenfunctions of the quantum harmonic oscillator (note that we’re using probabilist’s instead of physicist’s Hermite polynomials). This makes sense, as we’d expect the eigenfunctions of a sufficiently narrow Gaussian kernel to converge to the eigenfunctions of the Laplacian. The ratio $r = \frac{\lambda_{k+1}}{\lambda_k}$ approaches $1$, which tells us that the top eigenfunctions have practically identical eigenvalues.</p>
+
+<h3 id="wide-kernel-sigma2-ll-w2">Wide kernel: $\sigma^2 \ll w^2$</h3>
+
+\[\begin{align}
+\alpha &amp;\approx w, \\
+\beta &amp;\approx \sigma, \\
+c &amp;\approx 1, \\
+r &amp;\approx \frac{\sigma^2}{w^2}.
+\end{align}\]
+
+<p>This is the more interesting regime. In this case, $\alpha$ and $\beta$ decouple, and in fact $\alpha \approx w \gg \sigma$ is so wide that the exponential factor in the functional form of $\phi_k(x)$ becomes irrelevant, and we’re left with just a Hermite polynomial. You can see this in the bottom row of the figure above: the eigenfunctions start to just look like polynomials of increasing order. The eigenvalue ratio $r \approx \frac{\sigma^2}{w^2}$ approaches <em>the ratio of the distribution variance to the kernel variance.</em> These two facts are the main things I wanted to get out of this calculation.</p>
+
+<h3 id="how-hermite-are-the-eigenfunctions-for-varying-values-of-sigma2--w2">How “Hermite” are the eigenfunctions for varying values of $\sigma^2 / w^2$?</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Let us perform a numerical experiment: we shall compute the true kernel eigenfunctions ${\phi_k}$, compute the Hermite polynomials ${h_k}$, and for each $k$, find the cosine similarity $\frac{\langle \phi_k, h_k \rangle}{</td>
+      <td>!</td>
+      <td>h_k</td>
+      <td>!</td>
+      <td>}$, where the inner product here $\langle f, g \rangle = \mathbb{E}_x[f(x) g(x)]$ is the $L^2$ inner product w.r.t. the measure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The results are plotted below:</p>
+
+<p>[FIGURE]</p>
+
+<p>A few observations:</p>
+
+<ul>
+  <li>at larger $k$, we require smaller $\gamma \equiv \frac{\sigma^2}{w^2}$ to approach Hermiteness, and</li>
+  <li>$\gamma &lt; 0.1$ is generally small enough, at least up to $k = 4$.</li>
+</ul>
+
+<h1 id="implications-and-next-steps">Implications and next steps</h1>
+
+<p>The main takeaway here is that so long as $\sigma^2$ is sufficiently smaller than $w^2$ — <em>and we don’t care exactly how small</em> — the kernel’s “eigenfeatures” are simply the “Hermite features” of the data. In this regime, the kernel eigenvalues are simply powers of $\frac{\sigma^2}{w^2}$. Nice!</p>
+
+<p>What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentailly realistic) high-dimensional data.</p>

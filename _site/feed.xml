@@ -5,9 +5,182 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 02 Dec 2024 09:27:59 -1000</pubDate>
-    <lastBuildDate>Mon, 02 Dec 2024 09:27:59 -1000</lastBuildDate>
+    <pubDate>Tue, 18 Mar 2025 15:55:26 -0700</pubDate>
+    <lastBuildDate>Tue, 18 Mar 2025 15:55:26 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure</title>
+        <description>&lt;p&gt;&lt;em&gt;This blogpost composed in collaboration with &lt;a href=&quot;https://yuxi-liu-wired.github.io/&quot;&gt;Yuxi Liu&lt;/a&gt;, who did most of the analytical legwork.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;A &lt;a href=&quot;https://arxiv.org/abs/2002.02561&quot;&gt;large&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2006.09796&quot;&gt;number&lt;/a&gt; of &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;recent&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2203.06176&quot;&gt;works&lt;/a&gt; have converged on the conclusion that the behavior and performance of kernel methods (and kernel regression in particular) can be simply described in terms of the eigenstructure of the task with respect to the kernel. To restate: &lt;em&gt;we can understand kernel regression to the degree we understand the eigenstructure of the task.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;It is generally not too hard to diagonalize the kernel and obtain the task eigenstructure numerically, and this has lead to a great deal of insight into the learning behavior of kernel regression. However, it’s generally quite difficult to find task eigenstructure analytically, even in simple toy cases, as it usually requires computing some complicated integrals. As every physicist knows, there are major advantages to analytical solutions: insight and intuition are often more easily extracted from symbolic solutions, and by taking limits a single analytical solution can give a system’s phenomenology in several different regimes. It thus behooves us to collect analytically solvable cases and sit with them to extract generalizing intuition. &lt;strong&gt;To that end, in this blogpost, we will give the analytical eigenstructure for the Gaussian kernel on a 1D Gaussian distribution.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-exactly-diagonalizable-cases-are-known&quot;&gt;What exactly diagonalizable cases are known?&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;The first cases one turns to when one wants an exact analytical eigensystem are settings where the kernel and the domain share a &lt;em&gt;symmetry.&lt;/em&gt;
+For example, with a translation-invariant kernel on a translation-invariant domain (e.g. the $d$-torus) or a rotation-invariant kernel on a rotation-invariant-domain (e.g. the $d$-sphere), the eigenfunctions are simply the harmonic functions on the domain (plane waves or spherical harmonics in the two named cases), and the eigenvalues are given by the Fourier transform of the kernel.
+Some high-dimensional problems resemble these cases when the number of dimensions goes to infinity (e.g. &lt;a href=&quot;https://arxiv.org/abs/1908.05355&quot;&gt;Mei + Montanari (2019)&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Solvable finite-dimensional cases without exact symmetry are rare.
+It seems worth considering such cases, since real data rarely has such symmetry, and the eigenfunctions are only nontrivial if there’s no exact symmetry.
+&lt;a href=&quot;https://citeseerx.ist.psu.edu/document?repid=rep1&amp;amp;type=pdf&amp;amp;doi=b2d5fff7600abe81da7b1e5af749ed9511867aed&quot;&gt;Zhu et al. (1997)&lt;/a&gt; treat a very similar case to the one we develop here.
+I don’t really know any other examples of exactly solvable cases.
+If you know any more, let me know.
+It seems worth compiling a list!&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;problem-setup-gaussian-kernel-on-a-1d-gaussian-distribution&quot;&gt;Problem setup: Gaussian kernel on a 1D Gaussian distribution&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Consider a scalar normal random variable $x \sim \mathcal{N}(0,\sigma^2)$, where $\sigma^2$ is the variance of the distribution. Consider learning on this distribution with a &lt;em&gt;Gaussian kernel&lt;/em&gt;&lt;/p&gt;
+
+\[K(x,y)=e^{-\frac{(x-y)^2}{w^2}}\]
+
+&lt;p&gt;where $w$ is the width of the kernel. We seek an &lt;em&gt;eigendecomposition&lt;/em&gt;&lt;/p&gt;
+
+\[K(x,y) = \sum_k \lambda_k \, \phi_k(x) \, \phi_k(y),\]
+
+&lt;p&gt;where ${\lambda_k}$ are nonnegative eigenvalues and ${\phi_k}$ are eigenfunctions satisfying the orthonormality relation&lt;/p&gt;
+
+\[\mathbb{E}_x[\phi_k(x) \phi_\ell(x)] = \delta_{k\ell}.\]
+
+&lt;p&gt;We refer to ${\lambda_k}$ and ${\phi_k}$ together as the kernel &lt;em&gt;eigensystem&lt;/em&gt; or &lt;em&gt;eigenstructure.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;main-result-analytical-form-of-the-eigenstructure&quot;&gt;Main result: analytical form of the eigenstructure&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;hermite-polynomials&quot;&gt;Hermite polynomials&lt;/h3&gt;
+
+&lt;p&gt;Let $h_k(x) \equiv \frac{1}{\sqrt{k!}} \text{He}_k(x)$ denote the (rescaled) &lt;a href=&quot;https://en.wikipedia.org/wiki/Hermite_polynomials&quot;&gt;probabilist’s Hermite polynomials&lt;/a&gt;. The normalization prefactor $\frac{1}{\sqrt{k!}}$ is chosen so that $\mathbb{E}_{x \sim \mathcal{N}(0,1)}[h_k^2(x)] = 1$.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-eigenstructure-in-closed-form&quot;&gt;The eigenstructure in closed form&lt;/h3&gt;
+
+&lt;div style=&quot;border: 2px solid black; padding: 15px; width: 100%; text-align: left;&quot;&gt;
+
+The eigenfunctions and eigenvalues are given by:
+
+$$
+\begin{aligned}
+    \phi_k(x) &amp;amp;= c \cdot e^{-\frac{x^2}{2 \alpha^2}} \cdot h_k\!\left(\frac{x}{\beta}\right) \qquad &amp;amp;&amp;amp;(1) \\[8pt]
+    \lambda_k &amp;amp;= (1 - r)\,r^k \qquad &amp;amp;&amp;amp;(2)
+\end{aligned}
+$$
+
+where the scalars $\alpha, \beta, c, r &amp;gt; 0$ are given by:
+
+$$
+\begin{aligned}
+    \alpha &amp;amp;= \frac{1}{\sqrt{2}}\Bigl(w^2 + w\,\sqrt{w^2 + 4\,\sigma^2}\Bigr)^{\!1/2}, \\[8pt]
+    \beta &amp;amp;= \frac{\sigma \,\sqrt{w}}{\bigl(w^2 + 4\,\sigma^2\bigr)^{1/4}}, \\[8pt]
+    c &amp;amp;= \Bigl[1 + \frac{4\,\sigma^2}{w^2}\Bigr]^{\!1/8}, \\[8pt]
+    r &amp;amp;= \frac{\sigma^2}{\sigma^2 + \alpha^2}.
+\end{aligned}
+$$
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that the eigenfunctions resemble the eigenfunctions of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator&quot;&gt;quantum harmonic oscillator&lt;/a&gt; but  with different scale factors $\alpha \neq\beta$ on the exponential and hermite components. The eigenvalues are a geometric series with ratio $r &amp;lt; 1$.&lt;/p&gt;
+
+&lt;h3 id=&quot;obtaining-the-answer&quot;&gt;Obtaining the answer&lt;/h3&gt;
+
+&lt;p&gt;We obtained these eigenfunctions treating Equations 1,2 as an ansatz and solving for $\alpha, \beta, c, r$. This is doable with &lt;a href=&quot;https://en.m.wikipedia.org/wiki/Mehler_kernel&quot;&gt;Mehler’s formula&lt;/a&gt; and algebraic manipulation. &lt;a href=&quot;/assets/gaussian_kernel_eigendecomp_derivation.pdf&quot;&gt;Here&lt;/a&gt; is a step-by-step derivation.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;visualizing-the-eigenstructure&quot;&gt;Visualizing the eigenstructure&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can plot the eigenfunctions and eigenvalues and compare analytical formulae with numerics to make sure we’re right. &lt;a href=&quot;https://colab.research.google.com/drive/1Vz0RZuMxrgGGz9aq9e4l4PH8p9jIIBXG?usp=sharing&quot;&gt;Here’s&lt;/a&gt; a colab notebook that does so, and here’s the resulting plot:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/analytical_gaussian_eigendecompositions/1d_eigenfn_viz.png&quot; width=&quot;100%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Each row shows the eigenstructure for a different ratio $\frac{w^2}{\sigma^2}$. The leftmost plot in each row is a simple visualization of the Gaussian PDF (which here always has $\sigma^2 = 1$) and the Gaussian kernel. The middle plot in each row shows the first five kernel eigenfunctions with theoretical curves overlaid for comparison. The rightmost plot in each row shows the kernel eigenvalues. We find that the experimental eigenvalues indeed follow the predicted geometric descent (with small deflections due to numerical error).&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;eigenstructure-in-two-limits&quot;&gt;Eigenstructure in two limits&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking at the top and bottow rows in the above figure, we get the feeling it might be informative to examine the $\sigma^2 \gg w^2$ and $\sigma^2 \ll w^2$ limits of our analytical expressions. Here’s what you get:&lt;/p&gt;
+
+&lt;h3 id=&quot;narrow-kernel-sigma2-gg-w2&quot;&gt;Narrow kernel: $\sigma^2 \gg w^2$&lt;/h3&gt;
+
+\[\begin{aligned}
+    \alpha &amp;amp;\approx \sqrt{\sigma w}, \\[6pt]
+    \beta &amp;amp;\approx \sqrt{\frac{\sigma w}{2}}, \\[6pt]
+    c &amp;amp;\approx \left( \frac{2 \sigma}{w} \right)^{1/4}, \\[6pt]
+    r &amp;amp;\approx 1.
+\end{aligned}\]
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this regime, the scale factors $\alpha, \beta$ are the same up to a factor of $\sqrt{2}$, and the resulting eigenfunctions $\phi_k$ are exactly the eigenfunctions of the quantum harmonic oscillator (note that we’re using probabilist’s instead of physicist’s Hermite polynomials). This makes sense, as we’d expect the eigenfunctions of a sufficiently narrow Gaussian kernel to converge to the eigenfunctions of the Laplacian. The ratio $r = \frac{\lambda_{k+1}}{\lambda_k}$ approaches $1$, which tells us that the top eigenfunctions have practically identical eigenvalues.&lt;/p&gt;
+
+&lt;h3 id=&quot;wide-kernel-sigma2-ll-w2&quot;&gt;Wide kernel: $\sigma^2 \ll w^2$&lt;/h3&gt;
+
+\[\begin{aligned}
+    \alpha &amp;amp;\approx w, \\[6pt]
+    \beta &amp;amp;\approx \sigma, \\[6pt]
+    c &amp;amp;\approx 1, \\[6pt]
+    r &amp;amp;\approx \frac{\sigma^2}{w^2}.
+\end{aligned}\]
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the more interesting regime. In this case, $\alpha$ and $\beta$ decouple, and in fact $\alpha \approx w \gg \sigma$ is so wide that the exponential factor in the functional form of $\phi_k(x)$ becomes irrelevant, and we’re left with just a Hermite polynomial. You can see this in the bottom row of the figure above: the eigenfunctions start to just look like polynomials of increasing order. The eigenvalue ratio $r \approx \frac{\sigma^2}{w^2}$ approaches &lt;em&gt;the ratio of the distribution variance to the kernel variance.&lt;/em&gt; These two facts are the main things I wanted to get out of this calculation.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-hermite-are-the-eigenfunctions-for-varying-values-of-sigma2--w2&quot;&gt;How “Hermite” are the eigenfunctions for varying values of $\sigma^2 / w^2$?&lt;/h3&gt;
+
+&lt;p&gt;Let us perform a numerical experiment: we shall compute the true kernel eigenfunctions ${\phi_k}$, compute the Hermite polynomials ${h_k}$, and for each $k$, find the cosine similarity 
+\(\frac{\langle \phi_k, h_k \rangle}{\| h_k \|}\)
+where the inner product 
+\(\langle f, g \rangle = \mathbb{E}_x[f(x) g(x)]\)
+is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
+
+&lt;p&gt;The results are plotted below:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;/img/analytical_gaussian_eigendecompositions/eigenfn_hermite_similarity.png&quot; width=&quot;50%&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;A few observations:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;at larger $k$, we require smaller $\gamma \equiv \frac{\sigma^2}{w^2}$ to approach Hermiteness, and&lt;/li&gt;
+  &lt;li&gt;$\gamma &amp;lt; 0.1$ is generally small enough, at least up to $k = 3$ or $4$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;implications-and-next-steps&quot;&gt;Implications and next steps&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;The main takeaway here is that so long as $\sigma^2$ is sufficiently smaller than $w^2$ — &lt;em&gt;and we don’t care exactly how small&lt;/em&gt; — the kernel’s “eigenfeatures” are simply the “Hermite features” of the data. In this regime, the kernel eigenvalues are simply powers of $\frac{\sigma^2}{w^2}$. Nice!&lt;/p&gt;
+
+&lt;p&gt;What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentailly realistic) high-dimensional data.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 18 Mar 2025 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>The optimal low-rank solution for linear regression</title>
@@ -30,7 +203,7 @@
 &lt;p&gt;When the rank is unconstrained and $k$ is maximal, we find that $\mathbf{W}_* = \boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1}$ as expected.&lt;/p&gt;
 
 </description>
-        <pubDate>Wed, 06 Nov 2024 00:00:00 -1000</pubDate>
+        <pubDate>Wed, 06 Nov 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/low-rank-linear-regression-sol/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/low-rank-linear-regression-sol/</guid>
         
@@ -41,7 +214,7 @@
     
       <item>
         <title>Infinite-width autoencoders are cursed</title>
-        <description>&lt;p&gt;&lt;strong&gt;In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.&lt;/strong&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;strong&gt;In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that, when trained with gradient descent, they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -191,7 +364,7 @@ e^t
 
 &lt;p&gt;A third possibility is that batchnorm or layernorm somehow fix this. My intuition’s that they won’t, though I don’t have a solid argument.&lt;/p&gt;
 
-&lt;p&gt;A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works, but it still seems like things ought to be possible with SGD.&lt;/p&gt;
+&lt;p&gt;A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works (I suspect the LoRA analysis of &lt;a href=&quot;https://arxiv.org/abs/2402.12354&quot;&gt;this paper&lt;/a&gt; shows this!), but it still seems like things ought to be possible with SGD.&lt;/p&gt;
 
 &lt;h2 id=&quot;discussion-what-now&quot;&gt;Discussion: what now?&lt;/h2&gt;
 
@@ -225,7 +398,7 @@ e^t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 08 Oct 2024 00:00:00 -1000</pubDate>
+        <pubDate>Tue, 08 Oct 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/autoencoders-are-cursed/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/autoencoders-are-cursed/</guid>
         
@@ -324,7 +497,7 @@ e^t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Fri, 04 Oct 2024 00:00:00 -1000</pubDate>
+        <pubDate>Fri, 04 Oct 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
         
@@ -492,7 +665,7 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Tue, 20 Aug 2024 00:00:00 -1000</pubDate>
+        <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
         
@@ -756,7 +929,7 @@ I wonder if there’s some analytical condition on the return map that one could
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 31 Jul 2024 12:00:00 -1000</pubDate>
+        <pubDate>Wed, 31 Jul 2024 12:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/fractals-in-iterated-maps/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/fractals-in-iterated-maps/</guid>
         
@@ -788,7 +961,7 @@ The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth an
 
 &lt;p&gt;&lt;em&gt;Thanks to Irian D’Andrea for the grade-A toss and to Olive Eilbott for both issuing the challenge and capturing it on video.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Fri, 05 Jul 2024 01:00:00 -1000</pubDate>
+        <pubDate>Fri, 05 Jul 2024 01:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/egg/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/egg/</guid>
         
@@ -957,7 +1130,7 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 03 Jul 2024 00:00:00 -1000</pubDate>
+        <pubDate>Wed, 03 Jul 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/self-assembly/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
         
@@ -1320,7 +1493,7 @@ If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 23 Jun 2024 02:00:00 -1000</pubDate>
+        <pubDate>Sun, 23 Jun 2024 02:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gravitree-update-2024/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
         
@@ -1475,46 +1648,12 @@ As you look at each of the following images, first guess what it’s a photo of,
 &lt;/div&gt;
 
 </description>
-        <pubDate>Tue, 11 Jun 2024 00:00:00 -1000</pubDate>
+        <pubDate>Tue, 11 Jun 2024 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/household-microscopy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/household-microscopy/</guid>
         
         
         <category>fun-science</category>
-        
-      </item>
-    
-      <item>
-        <title>The sixth lake</title>
-        <description>&lt;p&gt;
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;/img/boolpool_timelapse/boolpool_timelapse.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-&lt;/p&gt;
-
-&lt;p&gt;If you visit Tahoe’s Five Lakes and wander off-trail in just the right direction, making your way over granite scree and thin alpine topsoil, past windworn pines and views to infinity, you will reach a sixth lake.
-It is perched in a high hollow, frozen and unreachable half the year, quite indifferent to the doings of man. Its shores are lined with evergreens, its face reflects the sky, and every day for thousands of years it has born witness to the drama of the High Sierra.&lt;/p&gt;
-
-&lt;p&gt;We were just warm apes, fast and impatient creatures there for a thrill. We were interlopers, protected by our synthetic fabrics and eating our processed foods. Wrapped all around in our human comforts, it wasn’t so easy for us to really see what was there.&lt;/p&gt;
-
-&lt;p&gt;The lake is animated endlessly by forces too big and slow for most of us to see and understand in realtime. The snow sheets drift ploddingly around the pond like tectonic plates, colliding and melting. The wind dances on the water, rippling first one region, then another, the surface revealing the streaming clouds each time it settles to placidity and scrambling them with the return of the waves, again and again. The pines, too, are duplicated in the pond, their reflections growing downwards, slowly, slowly. The sunlight glows long and white, then blazes orange and begins to fade.&lt;/p&gt;
-
-&lt;p&gt;This drama, or one similar, repeats every day. A single glance finds an armada of powerful natural processes that shape the scene, great and grand and far beyond our control. With a long and patient look, you can start to see them do their work. And the pond bears witness, day after day, year after year.&lt;/p&gt;
-
-&lt;p&gt;It changes you to realize this, to see the processes of nature and know their vastness and unstoppability. A deep quiet settles over you. Perhaps you see that you, too, are a phenomenon of this sort – that a few warm apes appearing and disappearing from the side of the pond isn’t so different from the play of the wind on its surface or a deer’s stopping by.&lt;/p&gt;
-
-&lt;p&gt;It is not easy to see this. I only truly feel this now, typing on my laptop in my comfortable Berkeley home, watching this looping timelapse, letting myself fade from the observer into part of the scene. As I do, I’m reminded of some wise words recently given to me by a friend: “we’re all just here to look around.”&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;em&gt;Thanks to Noah Sailer for suggesting a timelapse.&lt;/em&gt;&lt;/p&gt;
-</description>
-        <pubDate>Mon, 10 Jun 2024 00:00:00 -1000</pubDate>
-        <link>http://localhost:4000/blog/boolpool-timelapse/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/boolpool-timelapse/</guid>
-        
-        
-        <category>random, personal</category>
         
       </item>
     

@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Infinite-width autoencoders are cursed</title>
-  <meta name="description" content="In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that they (a)...">
+  <meta name="description" content="In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that, when tr...">
 
   <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
   <script src="/boostrap/js/bootstrap.js"></script> -->
@@ -80,11 +80,11 @@
 
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">Infinite-width autoencoders are cursed</h1>
-      <p class="post-meta"><time datetime="2024-10-08T00:00:00-10:00" itemprop="datePublished">Oct 8, 2024</time></p>
+      <p class="post-meta"><time datetime="2024-10-08T00:00:00-07:00" itemprop="datePublished">Oct 8, 2024</time></p>
     </header>
 
     <div class="post-content" itemprop="articleBody">
-      <p><strong>In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.</strong></p>
+      <p><strong>In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that, when trained with gradient descent, they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.</strong></p>
 
 <hr />
 
@@ -234,7 +234,7 @@ e^t
 
 <p>A third possibility is that batchnorm or layernorm somehow fix this. My intuition’s that they won’t, though I don’t have a solid argument.</p>
 
-<p>A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works, but it still seems like things ought to be possible with SGD.</p>
+<p>A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works (I suspect the LoRA analysis of <a href="https://arxiv.org/abs/2402.12354">this paper</a> shows this!), but it still seems like things ought to be possible with SGD.</p>
 
 <h2 id="discussion-what-now">Discussion: what now?</h2>
 

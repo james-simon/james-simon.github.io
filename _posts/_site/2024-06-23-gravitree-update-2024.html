@@ -1,0 +1,351 @@
+<p><em>This is an update to my <a href="https://james-simon.github.io/blog/gravitrees/">previous post</a> introducing gravitrees.</em></p>
+
+<p>For almost ten years, I’ve been making kinetic balancing sculptures I now call <em>gravitrees.</em> They’re all designed around the same basic principle — pieces balance in an ascending stack with (usually) only one point of contact between each piece and the one below it — but there are many geometric ways to realize this principle, some of which are quite striking.</p>
+
+<p>This post is a gallery of new designs I’ve come up with in the past year or so. I’ll conclude with some reflections and current outlook.</p>
+
+<h2 id="aspen"><em>Aspen</em></h2>
+
+<p>A classic design, recently perfected.
+Now comes in both regular and mini.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<p style="text-align:center;">
+				<img src="/img/gravitree_update/gravitree_classics.jpeg" style="width: 100%" />
+			</p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="manzanita"><em>Manzanita</em></h2>
+
+<p>This is now my go-to asymmetric design.
+The mini version’s quite cute!</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-4">
+			<img src="/img/gravitree_update/manzanitas.jpeg" style="width: 100%" />
+			<!-- <img src="/img/gravitree_update/autogravitree_1.jpg" width="100%"> -->
+        </div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/manzanita_mini_blue.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-2"></div>	
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="tyrannosaur"><em>Tyrannosaur</em></h2>
+
+<p>This was my first attempt to make one that extends sideways instead of up.
+Most gravitrees feel like plants to most people, but this one’s more animal.
+Especially when it’s on its stand, it had an overbalanced look reminiscent of a T-Rex.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/tyrannosaur.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<p>I also made a version that climbs upwards slightly. Not sure what its name is yet. It fills space very satisfyingly.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/stegosaur.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="chordata"><em>Chordata</em></h2>
+
+<p>It’s fun to try to make one with as many pieces as possible. This one held the record at 13…</p>
+
+<!-- [^a] If you count carefully, you'll only find 12 in this picture. I need to reprint the last piece! -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<p style="text-align:center;">
+				<img src="/img/gravitree_update/chordatus.jpeg" style="width: 100%" />
+			</p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="autogravitree"><em>Autogravitree</em></h2>
+
+<p>…until this one, which has 20 pieces and was generated programmatically!</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-4">
+        	<div style="width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;">
+				<img src="/img/gravitree_update/autogravitree_1.jpg" style="position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;" />
+			</div>
+			<!-- <img src="/img/gravitree_update/autogravitree_1.jpg" width="100%"> -->
+        </div>
+        <div class="col-4">
+        	<div style="width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;">
+	        	<div style="width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;">
+					<img src="/img/gravitree_update/autogravitree_2.jpg" style="position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;" />
+				</div>
+			</div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+
+<p><br /></p>
+<h4 class="toggle-header" onclick="toggleContent()">Click for technical details</h4>
+<div class="toggle-content">
+<p>When designing a gravitree, a lot of the CAD time’s spent manually tweaking different part dimensions so everything balances. It’s a pretty mechanical process, though, so I’d wanted to do it automatically for a while.
+
+To get there, I scripted a single piece with variable dimensions in <a href="https://cadquery.readthedocs.io/en/latest/index.html">CadQuery</a>, then ran a Python script to generate a 20-piece gravitree with each piece made from that same template.</p>
+</div>
+<script>
+    function toggleContent() {
+        var content = document.querySelector('.toggle-content');
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .toggle-header {
+        cursor: pointer;
+        background-color: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .toggle-content {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<p><br /></p>
+
+<h2 id="monstera"><em>Monstera</em></h2>
+
+<p>With a five-foot span, it’s the biggest gravitree I’ve ever made. It’s lasercut wood that I woodstained.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+			<p style="text-align:center;">
+				<img src="/img/gravitree_update/monstera_2.png" style="width: 100%" />
+			</p>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="pocket-gravitree"><em>Pocket gravitree</em></h2>
+
+<p>These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
+I carry one in my wallet.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/pocket_gravitree.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="gravitree-20-or-triangulum"><em>Gravitree 2.0</em> or <em>Triangulum</em></h2>
+
+<p>This one might be the best I’ve ever made.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<p style="text-align:center;">
+			<div style="width: 100%; height: 0; padding-bottom: 110%; overflow: hidden; position: relative;">
+				<img src="/img/gravitree_update/gravitree_two.jpg" style="position: absolute; top: -10%; left: -16%; width: 130%; height: 130%; object-fit: cover;" />
+			</div>
+			</p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="maple"><em>Maple</em></h2>
+
+<p>This one’s a true binary tree!</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/irian_cropped.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="pagoda"><em>Pagoda</em></h2>
+
+<p>I visited Japan last December and loved the architecture. This gravitree is inspired by <a href="https://web-japan.org/nipponia/nipponia33/images/topic/22_1.jpg">pagodas</a> and <a href="https://savvytokyo.scdn3.secure.raxcdn.com/app/uploads/2019/08/Meiji-Jingu-Torii-Top-9-Shrines-to-Visit-in-Tokyo.jpg">torii gates</a>. This one was technically challenging: the pieces are so similar in size that, in order to get it all to balance, I needed to make the pieces very light but hide heavy weights inside. The structure here is balsa wood (the lightest wood), but inside hold tungsten (close to the heaviest material found on Earth). The upturned flare at the end of each member both gives space to hide the tungsten shot and mimic similar convex flares I liked in the Japanese architecture.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<p style="text-align:center;">
+			<div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
+				<img src="/img/gravitree_update/pagoda_gravitree.jpeg" style="width: 100%" />
+			</div>
+			</p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="gravitree-rings">Gravitree-rings</h2>
+
+<p>These silver kinetic earrings make me seriously consider getting my ears pierced.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<p style="text-align:center;">
+			<div style="width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;">
+				<img src="/img/gravitree_update/irian_earring.jpeg" style="position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; object-fit: cover;" />
+			</div>
+			</p>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="tao"><em>Tao</em></h2>
+
+<p>This isn’t technically a gravitree, but it’s a near cousin.
+The sculpture consists of a series of concentric circles, each locked into the next and free to spin within it.
+The black half of each concentric circle is slightly thicker than the white half.
+As a result of this weight imbalance, the sculpture tends to spin to form a yin-yang symbol: balance emerges randomly from chaos :)</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+			<video autoplay="" loop="" muted="" playsinline="" width="100%" style="display:block; margin: 0 auto;">
+			    <source src="/img/gravitree_update/tao.mp4" type="video/mp4" />
+			</video>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+<p><br /></p>
+
+<h2 id="reflections">Reflections</h2>
+
+<p>Upon reflection, I’m pleased with the progress I’ve made in the past two years developing new gravitrees.
+With the earrings, pocket gravitree, and the wooden <em>Monstera,</em> I pushed the boundaries of size and material, and with the <em>Triangulum</em> and <em>Autogravitree</em> I pushed the previous boundaries of gravitree aesthetics and design methodology.
+I’m most pleased with the designs that look most different from my “traditional” balls-on-sticks appearance – really like the aesthetic of the <em>Triangulum</em> – and it seems exciting to explore how different I can make the structure look and still have it balance.</p>
+
+<p>Another reflection here is that these ideas often take a long time to simmer in the back of my mind.
+I regularly went many months without designing a gravitree, but I’d sometimes find that questions, hopes, designs, and problems were swimming around in the background anyways, stewing and ripening.
+It’s interesting that this is the case.
+Relatedly, I’d periodically have moments of inspiration where I found myself with free time and sudden excitement to make some new designs.
+This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little total time, but a small amount of effort every so often, given only when inspired, can move them forward at a slow but steady pace.<sup id="fnref:b" role="doc-noteref"><a href="#fn:b" class="footnote">1</a></sup></p>
+
+<p>I had a pretty high batting average with new concepts during this period – most of them ultimately worked, and many worked on the first try!
+That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.<sup id="fnref:c" role="doc-noteref"><a href="#fn:c" class="footnote">2</a></sup>
+Despite the occasional failures, the exploratory ideas are the best part of this hobby.</p>
+
+<p><br /></p>
+
+<h2 id="prospects-for-selling-gravitrees">Prospects for selling gravitrees</h2>
+
+<p>People have been telling me for a few years now that I should sell gravitrees.
+There’s been a real uptick in this sort of comment lately, and with these new designs, I’m starting to believe it.
+I’d love for gravitrees to be cheaply buyable (and it’d certainly be nice to make some profit off them).
+A few obstacles here include that</p>
+<ul>
+  <li>3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high – including shipping, about 30 bucks for a small gravitree and 50 bucks for a large one <em>without my making any profit!</em></li>
+  <li>I’m not sure how much people are willing to pay for these.</li>
+  <li>Another manufacturing technique like injection molding would be cheaper, but then you’re running a whole business, with inventory and everything. I’d be curious to know how that works, but I don’t want to run something like that long-term.</li>
+</ul>
+
+<p>A decent plan here seems to be to try to sell at a few local art fairs, gauge interest, and perhaps build an online presence.
+If demand seems high enough, it could be worth looking for a business partner to handle productization.
+(That seems to be what the artist behind the <a href="https://kinetrika.com/">Square Wave</a> did.)
+I’d also be happy to sell the idea to an existing company.
+It seems worth getting a patent for gravitrees if they seem likely to be marketable.
+Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.
+If you have any suggestions or leads here, drop me a line!</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:b" role="doc-endnote">
+      <p>While I do feel my bang-per-unit-time for gravitrees has been fairly high, I do actually wonder whether the costs are greater than I’m making them out to be. I think about gravitrees a little every day, usually while idle or doing other things, and presumably I’d be thinking about something else for much of that span, which could add up to a lot. <a href="#fnref:b" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:c" role="doc-endnote">
+      <p>The pieces rubbed against each other and didn’t spin freely, plus I put too much faith in the chirality of the pinwheel fans to force the fan to spin in a specific direction in wind. <a href="#fnref:c" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
