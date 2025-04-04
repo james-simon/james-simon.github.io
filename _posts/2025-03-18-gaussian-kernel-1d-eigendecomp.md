@@ -37,7 +37,7 @@ It seems worth compiling a list!
 Consider a scalar normal random variable $x \sim \mathcal{N}(0,\sigma^2)$, where $\sigma^2$ is the variance of the distribution. Consider learning on this distribution with a *Gaussian kernel*
 
 $$
-K(x,y)=e^{-\frac{(x-y)^2}{w^2}}
+K(x,y)=e^{-\frac{(x-y)^2}{2 w^2}}
 $$
 
 where $w$ is the width of the kernel. We seek an *eigendecomposition*
@@ -46,13 +46,13 @@ $$
 K(x,y) = \sum_k \lambda_k \, \phi_k(x) \, \phi_k(y),
 $$
 
-where $\{\lambda_k\}$ are nonnegative eigenvalues and $\{\phi_k\}$ are eigenfunctions satisfying the orthonormality relation
+where $\lbrace \lambda_k \rbrace$ are nonnegative eigenvalues and $\lbrace \phi_k \rbrace$ are eigenfunctions satisfying the orthonormality relation
 
 $$
 \mathbb{E}_x[\phi_k(x) \phi_\ell(x)] = \delta_{k\ell}.
 $$
 
-We refer to $\{\lambda_k\}$ and $\{\phi_k\}$ together as the kernel *eigensystem* or *eigenstructure.*
+We refer to $\lbrace \lambda_k \rbrace$ and $\lbrace \phi_k \rbrace$ together as the kernel *eigensystem* or *eigenstructure.*
 
 <br>
 
@@ -76,7 +76,7 @@ $$
 \end{aligned}
 $$
 
-where the scalars $\alpha, \beta, c, r > 0$ are given by:
+for $k \ge 0$, where the scalars $\alpha, \beta, c, r > 0$ are given by:
 
 $$
 \begin{aligned}
@@ -91,7 +91,7 @@ $$
 
 <br>
 
-Note that the eigenfunctions resemble the eigenfunctions of the [quantum harmonic oscillator](https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator) but  with different scale factors $\alpha \neq\beta$ on the exponential and hermite components. The eigenvalues are a geometric series with ratio $r < 1$.
+Note that the eigenfunctions resemble the eigenfunctions of the [quantum harmonic oscillator](https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator) but  with different scale factors $\alpha \neq\beta$ on the exponential and Hermite components. The eigenvalues are a geometric series with ratio $r < 1$.
 
 ### Obtaining the answer
 
@@ -178,4 +178,4 @@ A few observations:
 
 The main takeaway here is that so long as $\sigma^2$ is sufficiently smaller than $w^2$ — *and we don’t care exactly how small* — the kernel’s “eigenfeatures” are simply the “Hermite features” of the data. In this regime, the kernel eigenvalues are simply powers of $\frac{\sigma^2}{w^2}$. Nice!
 
-What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentailly realistic) high-dimensional data.
+What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentially realistic) high-dimensional data.

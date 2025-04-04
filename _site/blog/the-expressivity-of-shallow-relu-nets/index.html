@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>A complete characterization of the expressivity of shallow, bias-free ReLU networks</title>
+  <meta name="description" content="In the theoretical study of neural networks, one of the simplest questions one can ask is that of expressivity. A neural network $f_{\boldsymbol{\theta}}(\cd...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">A complete characterization of the expressivity of shallow, bias-free ReLU networks</h1>
+      <p class="post-meta"><time datetime="2025-04-03T00:00:00-07:00" itemprop="datePublished">Apr 3, 2025</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p>In the theoretical study of neural networks, one of the simplest questions one can ask is that of <em>expressivity.</em> A neural network $f_{\boldsymbol{\theta}}(\cdot)$ can represent (or “express”) many different functions, and which function is expressed is determined by the choice of the parameters $\boldsymbol{\theta}$. The study of expressivity simply asks: which class of functions may be represented?</p>
+
+<p>Among the pantheon of ML algorithms, neural networks are famous for their high expressivity. This fact is requisite to their power and versatility: practitioners find that a big enough neural network can represent functions complicated enough generate language and images.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup> You may have heard of the classic <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">universal approximation theorem</a> which roughly states that an infinitely-wide neural network can represent <em>any function at all.</em></p>
+
+<p>The fact that nets’ expressivity is so high means that the notion of expressivity alone is usually unhelpful: it’s good to know that your network can represent virtually all functions, but this information is vacuous if you want to know which function it’ll actually learn! The one place where I’ve found the notion frequently useful is in negative cases: if a neural network architecture <em>can’t</em> express some class of function, it cannot learn it — no need for further questions.</p>
+
+<p>This blogpost is about one of those cases. The most common activation function used today is $\mathrm{ReLU}$, and so one would be forgiven for thinking that any big enough $\mathrm{ReLU}$ network will be able to express any function. It turns out this reasonable intuition is wrong: there are lots of functions that a shallow $\mathrm{ReLU}$ network with no biases can’t represent, even if it has infinite width. To spoil the answer, such a net can trivially only represent homogeneous functions (i.e., those such that $f(\alpha x) = \alpha \cdot f(x)$ for $\alpha &gt; 0$), but less trivially, it also can’t represent <strong><em>odd polynomials of order greater than one.</em></strong> This fact’s independently showed up in my research no fewer than three times in the last month, which I take as a pretty strong sign that it’s worth articulating and sharing.</p>
+
+<p>The structure of this blogpost will be as follows. I’ll begin with a refresher on the universal approximation theorem. We’ll then state a theorem about the expressivity of shallow $\mathrm{ReLU}$ networks and list some cases where it applies. We’ll conclude with some experiments showing $\mathrm{ReLU}$ networks failing to learn simple cubic and quintic monomials.<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
+
+<h2 id="review-the-universal-approximation-theorem">Review: the universal approximation theorem</h2>
+
+<p>The UAT states that a shallow neural network with biases and a nonpolynomial nonlinearity can, given sufficiently large width, approximate any function to within any desired error. More precisely, suppose we have $d$-dimensional data $\mathbf{x} \in \mathbb{R}^d$ sampled from a distribution $p(\mathbf{x})$ and a feedforward function of the form</p>
+
+\[f_{\boldsymbol{\theta}}(\mathbf x) = \sum_{i=1}^n a_i \cdot \sigma( \mathbf{b}_i^\top \mathbf{x} + c_i),\]
+
+<p>where $a_i \in \mathbb{R},\ \mathbf{b}_i \in \mathbb{R}^d,\ c_i \in \mathbb{R}$ are free parameters, and we write $\boldsymbol{\theta} \equiv {(a_i,\, \mathbf{b}_i,\, c_i)}_{i=1}^n$ to denote the tuple of all free parameters. Suppose we wish to approximate some desired function $f_* : \mathbb{R}^d \rightarrow \mathbb{R}$ such that the error…</p>
+
+\[\mathcal{E}_{\boldsymbol{\theta}} := \mathbb{E}_{\mathbf{x} \sim p} \left[ (f_*(\mathbf{x}) - f_{\boldsymbol{\theta}}(\mathbf{x}))^2 \right]\]
+
+<p>is less than some threshold $\epsilon$. So long as $n$ is sufficiently large and the functions $\sigma, f_*, p$ satisfy some natural regularity conditions (see the <a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Wikipedia page</a>), we can always find a way to choose $\boldsymbol{\theta}$ so that $\mathcal{E}_{\boldsymbol{\theta}} &lt; \epsilon$.</p>
+
+<h2 id="the-limitations-of-shallow-mathrmrelu-networks">The limitations of shallow $\mathrm{ReLU}$ networks</h2>
+
+<p>The nonlinearity $\sigma(z) = \mathrm{ReLU}(z) := \max(z,0)$ is nonpolynomial, so the universal approximation theorem indeed applies to shallow $\mathrm{ReLU}$ networks. All guarantees are off, however, if we remove the biases (i.e. set $c_i = 0$). A $\mathrm{ReLU}$ network without biases has clear expressivity limitations: for example, it can only express homogeneous functions $f(\alpha \mathbf{x}) = \alpha f(\mathbf{x})$. (For this reason, when studying shallow $\mathrm{ReLU}$ nets, it is common to consider only functions on the sphere.) The point of this blogpost is to show that there’s an <em>additional</em> limitation which is often overlooked.</p>
+
+<p>We start with an observation about the functional form of a shallow $\mathrm{ReLU}$ net.</p>
+
+<div style="border: 2px solid black; padding: 15px; width: 100%; text-align: left;">
+<b>Proposition 1.</b> Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases. The network function has the linear-plus-even form
+
+$$
+f_{\boldsymbol{\theta}}(\mathbf{x}) = \boldsymbol{\beta}^\top \mathbf{x} + |\!| \mathbf{x} |\!| \cdot \mathrm{even}(\mathbf{x}),
+$$
+
+where $\mathrm{even}(\cdot)$ is a function satisfying $\mathrm{even}(\mathbf{x}) = \mathrm{even}(-\mathbf{x})$.
+</div>
+
+<p><br /></p>
+<h5 class="toggle-header2" onclick="toggleContent2()">Click for proof</h5>
+<div class="toggle-content2">
+The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert - \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
+</div>
+
+<script>
+    function toggleContent2() {
+        var content = document.querySelector('.toggle-content2');
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .toggle-header2 {
+        cursor: pointer;
+        background-color: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .toggle-content2 {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<p>Any function that doesn’t have this linear-plus-even form can’t be represented by a shallow ReLU net without biases. The following definition and proposition show that if a function has this form, it <em>can</em> be represented (or more precisely, approximated to arbitrary accuracy) by a shallow $\mathrm{ReLU}$ net.</p>
+
+<p><strong>Definition 1:</strong> Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f_<em>$ is *shallow</em> $\mathrm{ReLU}$ <em>approximable</em> if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon &gt; 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}_{\boldsymbol{\theta}} &lt; \epsilon$.</p>
+
+<div style="border: 2px solid black; padding: 15px; width: 100%; text-align: left;">
+
+<b>Proposition 2.</b> A continuous function $f_\star$ is shallow $\mathrm{ReLU}$ approximable <i>if and only if</i> it has the linear-plus-even form
+
+$$
+f_*(\mathbf{x}) = \boldsymbol{\beta}^\top \mathbf{x} + |\!| \mathbf{x} |\!| \cdot \mathrm{even} \left( \frac{\mathbf{x}}{|\!| \mathbf{x} |\!|} \right)
+$$
+
+where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
+
+</div>
+<p><br /></p>
+<h5 class="toggle-header" onclick="toggleContent()">Click for proof sketch</h5>
+<div class="toggle-content">
+<p>We can prove this by first using homogeneity to only have to consider functions on the sphere, then using Fourier analysis with spherical harmonics to show that the $\mathbf{ReLU}$ basis function is enough to represent all linear and even-order polynomials. Any continuous function on the sphere may be approximated by a polynomial by the Stone-Weierstrass theorem (I think I’m using that right). I’m not going to flesh out the details here, but ChatGPT can probably do it if you’re curious.</p>
+</div>
+<script>
+    function toggleContent() {
+        var content = document.querySelector('.toggle-content');
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .toggle-header {
+        cursor: pointer;
+        background-color: #f1f1f1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .toggle-content {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<p>Out of this we get a nice corollary that gives us a property to look for that tells us that no component of our function is representable:</p>
+
+<p><strong>Corollary 1:</strong> Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then when choosing $\boldsymbol{\theta}$ to minimize MSE $\mathcal{E}_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.</p>
+
+<p>(We can actually prove this corollary without going through the above machinery, just integrating directly against the measure and using properties of the $\mathrm{ReLU}$ function, but it’s illuminating to go through the above propositions because we get a complete picture of the representable functions.)</p>
+
+<h2 id="some-examples">Some examples</h2>
+
+<p>So what? Does this ever actually show up? Here are two cases where it’s shown up in my recent research. Notice how you could easily think shallow $\mathrm{ReLU}$ networks could do the job if you didn’t know better.</p>
+
+<p><strong>Sinusoids on the unit circle.</strong> If $\mathbf{x}$ is sampled from the unit circle, either uniformly over all angles or uniformly over evenly-spaced discrete points, then the network can’t achieve nonzero learning on functions like $\sin(k x_1)$ with $k = 3, 5, 7, \ldots$</p>
+
+<p><strong>Cubic monomials and higher-order friends.</strong> Suppose the coordinates of $\mathbf{x}$ are sampled independently (but not necessarily identically) from mearn-zero (say, Gaussian) distributions. The network can’t achieve nonzero learning on any monomial $x_i x_j x_k$ with nonrepeated indices. The same is true of monomials of order $5, 7,$ etc.</p>
+
+<p>This last one’s pretty surprising to me! To test it, I trained bias-free $\mathrm{ReLU}$ nets, both shallow (i.e. depth 2) and deep (depth 3), on monomial functions of Gaussian distributions. As you can see, the deep net can make progress on monomials of every order, but the shallow net can make no progress on odd monomials of order $\ge 3$. Weird!</p>
+
+<p style="text-align:center;">
+<img src="/img/shallow_relu_expressivity/monomial_training_expts.png" width="100%" />
+</p>
+
+<h2 id="concluding-thoughts">Concluding thoughts</h2>
+
+<p>This doesn’t matter at all for deep learning practitioners, but it’s useful to keep in mind for deep learning theorists. It’s useful to study the simplest model that can perform a learning task, and it’s good to know that the first thing you might try — a shallow, bias-free $\mathrm{ReLU}$ net — can’t even learn every function on the sphere.</p>
+
+<!-- *** -->
+<!-- *I must reluctantly acknowledge Joey Turnbull, whom this blogpost proves right.* -->
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Of course, the more remarkable fact is that neural networks not only <em>can represent</em> these functions but also <em>do learn</em> them when trained. This is beyond the power of expressivity to explain. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>As a disclaimer, I’ll say that I’m confident that none of the content in this blogpost is new: I’m sure many researchers over the years have realized all of this. I’m not sure where to find these results in the literature, and it’s easier for me to write this then to find a good reference, so I’m just going to develop it all from first principles, but if you know a reference, do send it my way. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 314-15-9265
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>
