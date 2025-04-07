@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>One kernel, many eigensystems</title>
+  <meta name="description" content="This is a technical note on a subtlety of kernel theory. Venture in at your own risk!Many problems in the theory of kernel methods begin with a positive semi...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/one-kernel-many-eigensystems/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">One kernel, many eigensystems</h1>
+      <p class="post-meta"><time datetime="2025-04-07T00:00:00-07:00" itemprop="datePublished">Apr 7, 2025</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p><em>This is a technical note on a subtlety of kernel theory. Venture in at your own risk!</em></p>
+
+<hr />
+
+<p>Many problems in the theory of kernel methods begin with a positive semi-definite kernel function $K(\cdot, \cdot)$ and a probability measure $\mu$ and are solved by first finding the kernel eigenfunctions ${\phi_i}$ and nonnegative eigenvalues ${\lambda_i}$ such that</p>
+
+\[\ \ \ \qquad\qquad \qquad\qquad K(x,x') = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x') \qquad\qquad \qquad\qquad (1)\]
+
+<p>and</p>
+
+\[\qquad\qquad \qquad\qquad\quad \ \ \ \mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x')] = \delta_{ij}. \qquad\qquad \qquad\qquad\quad (2)\]
+
+<p>Equation 1 gives the spectral decomposition of the kernel, and Equation 2 states that the eigenfunctions are orthonormal with respect to the measure $\mu$.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
+
+<p>By <a href="https://en.wikipedia.org/wiki/Mercer%27s_theorem">Mercer’s Theorem</a>, there always exists such a decomposition, though it will generally be different for different measures $\mu$. In fact, there are infinitely many unique decompositions of the form $K(x,x’) = \sum_i \psi_i(x) \, \psi_i(x’)$, but only one of them (up to relabeling and some other symmetries) is “eigen” for a particular measure $\mu$. It is somewhat intriguing to note that each such decomposition is still equally <em>correct</em> no matter the measure (the first equation having no dependence on $\mu$).</p>
+
+<p>Given that every measure $\mu$ corresponds to a unique eigendecomposition, it is worth asking the inverse question: which kernel decompositions are “eigen” for some measure? That is, given a “candidate” eigensystem ${(\lambda_i, \phi_i)}$ such that $K(x,x’) = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x’)$, when does there exist a measure $\mu$ such that $\mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x’)] = \delta_{ij}$, and can we find the measure?</p>
+
+<h2 id="functional-rightarrow-vector-language">Functional $\rightarrow$ vector language</h2>
+
+<p>To answer this question, we will find it helpful to first move from a continuous setting to a discrete setting, as we may then forgo functional analysis for the simpler language of linear algebra. Let us suppose our measure has support only over $n$ discrete points ${x_i}_{i=1}^n$, and let us construct the kernel matrix $[\mathbf{K}]_{ij} = K(x_i, x_j)$, measure matrix $\mathbf{M} = \mathrm{diag}(\mu(x_1), \ldots, \mu(x_n))$, and candidate eigenvectors $\mathbf{v}_i = (\phi_i(x_1), \ldots, \phi_i(x_n))$. In this linear algebraic language, we begin with the assurance that</p>
+
+\[\mathbf{K} = \sum_i \lambda_i \mathbf{v}_i \mathbf{v}_i^\top.\]
+
+<p>We would like to determine necessary and sufficient conditions on ${\lambda_i, \mathbf{v}_i}$ such that there exists a positive-definite[FOOTNOTE: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive <em>definite</em> instead of merely PSD.] diagonal $\mathbf{M}$ such that</p>
+
+\[\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}.\]
+
+<p>We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}_1, \ldots, \mathbf{v}_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Note that all the matrices we have defined are invertible. We now have that</p>
+
+\[\mathbf{K} = \mathbf{V \Lambda V^\top}, \qquad \mathbf{V^\top M V} = \mathbf{I}.\]
+
+<p>From the latter equation, we get that $\mathbf{M V V^\top} = \mathbf{I}$, and thus $\mathbf{K M V V^\top} = \mathbf{V \Lambda V^\top}$, and thus we obtain the eigenequation<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
+
+\[\mathbf{K M V} = \mathbf{V \Lambda}.\]
+
+<p>We now find that $\mathbf{M V} = \mathbf{K}^{-1}\mathbf{V \Lambda}$, and thus that $\mathbf{M v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i$ for each eigenindex $i$. We are now in a position to make several observations.</p>
+
+<p>First, since $\mathbf{v}^\top_i \mathbf{M v}_j = \lambda_i \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_j = \delta_{ij}$, we find the requirement on our candidate eigensystem that $\lambda_i = \left( \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_i \right)^{-1}$. This is best viewed as a normalization condition on the eigenvector: it is required that</p>
+
+\[\boxed{
+
+|\!| \mathbf{v}_i |\!| = \left( \lambda_i \hat{\mathbf{v}}_i^\top \mathbf{K}^{-1} \hat{\mathbf{v}}_i  \right)^{-1/2}
+
+}.\]
+
+<p>Second, since $\mathbf{M}$ is positive and diagonal, we find that</p>
+
+\[\mathbf{M v}_i = \mathbf{\mu} \circ \mathbf{v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i\]
+
+<p>where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda_1, \mathbf{v}_1)$ is potentially valid if and only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if</p>
+
+\[\boxed{
+m_{ik} := \frac{\lambda_i (\mathbf{K}^{-1} \mathbf{v}_i)[k]}{\mathbf{v}_i[k]} &gt; 0
+\qquad \text{if} \ \  \mathbf{v}_i[k] \neq 0,}\]
+
+<p>where we write $\mathbf{u}[k]$ denote the $k$-th element of a vector. We must additionally have that the different eigenvectors verify the same measure — that is,</p>
+
+\[\boxed{
+m_{ik} = m_{ik'}
+\qquad
+\forall
+\ \
+k, k'.
+}\]
+
+<p>Together, the boxed equations are necessary and sufficient conditions for the existence of a positive measure $\mathbf{\mu}$ such that ${(\lambda_i, \mathbf{v}_i)}$ indeed comprise an orthogonal eigenbasis with respect to $\mathbf{\mu}$. Interestingly, it follows from the above with no additional requirements that</p>
+
+\[\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0 \qquad \mathrm{if} \ i \neq j.\]
+
+<p>That is, orthogonality with respect to the measure implies orthogonality with respect to $\mathbf{K}^{-1}$.</p>
+
+<h2 id="back-to-functional-language">Back to functional language</h2>
+
+<p>To phrase these results in functional language, we need to define the <em>inverse kernel operator.</em> Define the kernel operator $T_K<a href="\cdot">g</a> = \int K(\cdot, x) g(x) dx$<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup>. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$. In functional language, we require that</p>
+
+\[\frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} &gt; 0
+\qquad \forall \ i, j, x,\]
+
+<p>except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which these are eigenfunctions.</p>
+
+<p>We also find the (somewhat more inscrutable to me) condition that</p>
+
+\[\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1}.\]
+
+<h2 id="connection-to-rkhs-inner-product">Connection to RKHS inner product</h2>
+
+<p>The usual reproducing kernel Hilbert space (RKHS) inner product is given by</p>
+
+\[\langle g, h \rangle_K := \int g(x) \, T_K^{-1}[h](x) dx.\]
+
+<p>In our vectorized setting we found that $\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0$ when $i \neq j$, and so we find in the functional setting that <em>for any kernel eigenfunctions w.r.t. any measure, it will hold that</em> $\langle \phi_i, \phi_j \rangle_K = 0$ when $i \neq j$. That is, no matter which measure you choose, the eigenfunctions which diagonalize the kernel operator will be orthogonal w.r.t. the RKHS. This is remarkable because the RKHS norm does not depend at all on the measure which was chosen! I tend to avoid using RKHSs whenever possible, but this is a nice property.</p>
+
+<hr />
+<p><em>Thanks to Dhruva Karkada for raising the question that led to this blogpost.</em></p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T_K$ performs Gaussian smoothing, while $T_K$ performs “unsmoothing.” <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 314-15-9265
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>

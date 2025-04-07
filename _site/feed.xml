@@ -5,9 +5,131 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 03 Apr 2025 22:33:16 -0700</pubDate>
-    <lastBuildDate>Thu, 03 Apr 2025 22:33:16 -0700</lastBuildDate>
+    <pubDate>Mon, 07 Apr 2025 15:21:56 -0700</pubDate>
+    <lastBuildDate>Mon, 07 Apr 2025 15:21:56 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>One kernel, many eigensystems</title>
+        <description>&lt;p&gt;&lt;em&gt;This is a technical note on a subtlety of kernel theory. Venture in at your own risk!&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Many problems in the theory of kernel methods begin with a positive semi-definite kernel function $K(\cdot, \cdot)$ and a probability measure $\mu$ and are solved by first finding the kernel eigenfunctions ${\phi_i}$ and nonnegative eigenvalues ${\lambda_i}$ such that&lt;/p&gt;
+
+\[\ \ \ \qquad\qquad \qquad\qquad K(x,x') = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x') \qquad\qquad \qquad\qquad (1)\]
+
+&lt;p&gt;and&lt;/p&gt;
+
+\[\qquad\qquad \qquad\qquad\quad \ \ \ \mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x')] = \delta_{ij}. \qquad\qquad \qquad\qquad\quad (2)\]
+
+&lt;p&gt;Equation 1 gives the spectral decomposition of the kernel, and Equation 2 states that the eigenfunctions are orthonormal with respect to the measure $\mu$.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;By &lt;a href=&quot;https://en.wikipedia.org/wiki/Mercer%27s_theorem&quot;&gt;Mercer’s Theorem&lt;/a&gt;, there always exists such a decomposition, though it will generally be different for different measures $\mu$. In fact, there are infinitely many unique decompositions of the form $K(x,x’) = \sum_i \psi_i(x) \, \psi_i(x’)$, but only one of them (up to relabeling and some other symmetries) is “eigen” for a particular measure $\mu$. It is somewhat intriguing to note that each such decomposition is still equally &lt;em&gt;correct&lt;/em&gt; no matter the measure (the first equation having no dependence on $\mu$).&lt;/p&gt;
+
+&lt;p&gt;Given that every measure $\mu$ corresponds to a unique eigendecomposition, it is worth asking the inverse question: which kernel decompositions are “eigen” for some measure? That is, given a “candidate” eigensystem ${(\lambda_i, \phi_i)}$ such that $K(x,x’) = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x’)$, when does there exist a measure $\mu$ such that $\mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x’)] = \delta_{ij}$, and can we find the measure?&lt;/p&gt;
+
+&lt;h2 id=&quot;functional-rightarrow-vector-language&quot;&gt;Functional $\rightarrow$ vector language&lt;/h2&gt;
+
+&lt;p&gt;To answer this question, we will find it helpful to first move from a continuous setting to a discrete setting, as we may then forgo functional analysis for the simpler language of linear algebra. Let us suppose our measure has support only over $n$ discrete points ${x_i}_{i=1}^n$, and let us construct the kernel matrix $[\mathbf{K}]_{ij} = K(x_i, x_j)$, measure matrix $\mathbf{M} = \mathrm{diag}(\mu(x_1), \ldots, \mu(x_n))$, and candidate eigenvectors $\mathbf{v}_i = (\phi_i(x_1), \ldots, \phi_i(x_n))$. In this linear algebraic language, we begin with the assurance that&lt;/p&gt;
+
+\[\mathbf{K} = \sum_i \lambda_i \mathbf{v}_i \mathbf{v}_i^\top.\]
+
+&lt;p&gt;We would like to determine necessary and sufficient conditions on ${\lambda_i, \mathbf{v}_i}$ such that there exists a positive-definite[FOOTNOTE: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive &lt;em&gt;definite&lt;/em&gt; instead of merely PSD.] diagonal $\mathbf{M}$ such that&lt;/p&gt;
+
+\[\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}.\]
+
+&lt;p&gt;We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}_1, \ldots, \mathbf{v}_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Note that all the matrices we have defined are invertible. We now have that&lt;/p&gt;
+
+\[\mathbf{K} = \mathbf{V \Lambda V^\top}, \qquad \mathbf{V^\top M V} = \mathbf{I}.\]
+
+&lt;p&gt;From the latter equation, we get that $\mathbf{M V V^\top} = \mathbf{I}$, and thus $\mathbf{K M V V^\top} = \mathbf{V \Lambda V^\top}$, and thus we obtain the eigenequation&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+\[\mathbf{K M V} = \mathbf{V \Lambda}.\]
+
+&lt;p&gt;We now find that $\mathbf{M V} = \mathbf{K}^{-1}\mathbf{V \Lambda}$, and thus that $\mathbf{M v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i$ for each eigenindex $i$. We are now in a position to make several observations.&lt;/p&gt;
+
+&lt;p&gt;First, since $\mathbf{v}^\top_i \mathbf{M v}_j = \lambda_i \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_j = \delta_{ij}$, we find the requirement on our candidate eigensystem that $\lambda_i = \left( \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_i \right)^{-1}$. This is best viewed as a normalization condition on the eigenvector: it is required that&lt;/p&gt;
+
+\[\boxed{
+
+|\!| \mathbf{v}_i |\!| = \left( \lambda_i \hat{\mathbf{v}}_i^\top \mathbf{K}^{-1} \hat{\mathbf{v}}_i  \right)^{-1/2}
+
+}.\]
+
+&lt;p&gt;Second, since $\mathbf{M}$ is positive and diagonal, we find that&lt;/p&gt;
+
+\[\mathbf{M v}_i = \mathbf{\mu} \circ \mathbf{v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i\]
+
+&lt;p&gt;where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda_1, \mathbf{v}_1)$ is potentially valid if and only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if&lt;/p&gt;
+
+\[\boxed{
+m_{ik} := \frac{\lambda_i (\mathbf{K}^{-1} \mathbf{v}_i)[k]}{\mathbf{v}_i[k]} &amp;gt; 0
+\qquad \text{if} \ \  \mathbf{v}_i[k] \neq 0,}\]
+
+&lt;p&gt;where we write $\mathbf{u}[k]$ denote the $k$-th element of a vector. We must additionally have that the different eigenvectors verify the same measure — that is,&lt;/p&gt;
+
+\[\boxed{
+m_{ik} = m_{ik'}
+\qquad
+\forall
+\ \
+k, k'.
+}\]
+
+&lt;p&gt;Together, the boxed equations are necessary and sufficient conditions for the existence of a positive measure $\mathbf{\mu}$ such that ${(\lambda_i, \mathbf{v}_i)}$ indeed comprise an orthogonal eigenbasis with respect to $\mathbf{\mu}$. Interestingly, it follows from the above with no additional requirements that&lt;/p&gt;
+
+\[\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0 \qquad \mathrm{if} \ i \neq j.\]
+
+&lt;p&gt;That is, orthogonality with respect to the measure implies orthogonality with respect to $\mathbf{K}^{-1}$.&lt;/p&gt;
+
+&lt;h2 id=&quot;back-to-functional-language&quot;&gt;Back to functional language&lt;/h2&gt;
+
+&lt;p&gt;To phrase these results in functional language, we need to define the &lt;em&gt;inverse kernel operator.&lt;/em&gt; Define the kernel operator $T_K&lt;a href=&quot;\cdot&quot;&gt;g&lt;/a&gt; = \int K(\cdot, x) g(x) dx$&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$. In functional language, we require that&lt;/p&gt;
+
+\[\frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} &amp;gt; 0
+\qquad \forall \ i, j, x,\]
+
+&lt;p&gt;except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which these are eigenfunctions.&lt;/p&gt;
+
+&lt;p&gt;We also find the (somewhat more inscrutable to me) condition that&lt;/p&gt;
+
+\[\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1}.\]
+
+&lt;h2 id=&quot;connection-to-rkhs-inner-product&quot;&gt;Connection to RKHS inner product&lt;/h2&gt;
+
+&lt;p&gt;The usual reproducing kernel Hilbert space (RKHS) inner product is given by&lt;/p&gt;
+
+\[\langle g, h \rangle_K := \int g(x) \, T_K^{-1}[h](x) dx.\]
+
+&lt;p&gt;In our vectorized setting we found that $\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0$ when $i \neq j$, and so we find in the functional setting that &lt;em&gt;for any kernel eigenfunctions w.r.t. any measure, it will hold that&lt;/em&gt; $\langle \phi_i, \phi_j \rangle_K = 0$ when $i \neq j$. That is, no matter which measure you choose, the eigenfunctions which diagonalize the kernel operator will be orthogonal w.r.t. the RKHS. This is remarkable because the RKHS norm does not depend at all on the measure which was chosen! I tend to avoid using RKHSs whenever possible, but this is a nice property.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Thanks to Dhruva Karkada for raising the question that led to this blogpost.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T_K$ performs Gaussian smoothing, while $T_K$ performs “unsmoothing.” &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>A complete characterization of the expressivity of shallow, bias-free ReLU networks</title>
@@ -135,7 +257,7 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
 
 &lt;p&gt;Out of this we get a nice corollary that gives us a property to look for that tells us that no component of our function is representable:&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Corollary 1:&lt;/strong&gt; Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then when choosing $\boldsymbol{\theta}$ to minimize MSE $\mathcal{E}_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Corollary 1:&lt;/strong&gt; Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) f_{\boldsymbol{\theta}}(\mathbf{x})] = 0$ for all ${\boldsymbol{\theta}}$, and when choosing $\boldsymbol{\theta}$ to minimize the MSE $\mathcal{E}_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.&lt;/p&gt;
 
 &lt;p&gt;(We can actually prove this corollary without going through the above machinery, just integrating directly against the measure and using properties of the $\mathrm{ReLU}$ function, but it’s illuminating to go through the above propositions because we get a complete picture of the representable functions.)&lt;/p&gt;
 
@@ -157,8 +279,8 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
 
 &lt;p&gt;This doesn’t matter at all for deep learning practitioners, but it’s useful to keep in mind for deep learning theorists. It’s useful to study the simplest model that can perform a learning task, and it’s good to know that the first thing you might try — a shallow, bias-free $\mathrm{ReLU}$ net — can’t even learn every function on the sphere.&lt;/p&gt;
 
-&lt;!-- *** --&gt;
-&lt;!-- *I must reluctantly acknowledge Joey Turnbull, whom this blogpost proves right.* --&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Thanks to Joey Turnbull, who first brought the experiment reported above to my attention.&lt;/em&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
@@ -1308,369 +1430,6 @@ I suppose I ultimately landed somewhere in the middle: ML theory has proven impo
         
         
         <category>research</category>
-        
-      </item>
-    
-      <item>
-        <title>Gravitree update: June 2024</title>
-        <description>&lt;p&gt;&lt;em&gt;This is an update to my &lt;a href=&quot;https://james-simon.github.io/blog/gravitrees/&quot;&gt;previous post&lt;/a&gt; introducing gravitrees.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;For almost ten years, I’ve been making kinetic balancing sculptures I now call &lt;em&gt;gravitrees.&lt;/em&gt; They’re all designed around the same basic principle — pieces balance in an ascending stack with (usually) only one point of contact between each piece and the one below it — but there are many geometric ways to realize this principle, some of which are quite striking.&lt;/p&gt;
-
-&lt;p&gt;This post is a gallery of new designs I’ve come up with in the past year or so. I’ll conclude with some reflections and current outlook.&lt;/p&gt;
-
-&lt;h2 id=&quot;aspen&quot;&gt;&lt;em&gt;Aspen&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;A classic design, recently perfected.
-Now comes in both regular and mini.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/gravitree_classics.jpeg&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;manzanita&quot;&gt;&lt;em&gt;Manzanita&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;This is now my go-to asymmetric design.
-The mini version’s quite cute!&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;img src=&quot;/img/gravitree_update/manzanitas.jpeg&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/manzanita_mini_blue.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;	
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;tyrannosaur&quot;&gt;&lt;em&gt;Tyrannosaur&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;This was my first attempt to make one that extends sideways instead of up.
-Most gravitrees feel like plants to most people, but this one’s more animal.
-Especially when it’s on its stand, it had an overbalanced look reminiscent of a T-Rex.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/tyrannosaur.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;I also made a version that climbs upwards slightly. Not sure what its name is yet. It fills space very satisfyingly.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/stegosaur.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;chordata&quot;&gt;&lt;em&gt;Chordata&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;It’s fun to try to make one with as many pieces as possible. This one held the record at 13…&lt;/p&gt;
-
-&lt;!-- [^a] If you count carefully, you'll only find 12 in this picture. I need to reprint the last piece! --&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/chordatus.jpeg&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;autogravitree&quot;&gt;&lt;em&gt;Autogravitree&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;…until this one, which has 20 pieces and was generated programmatically!&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
-			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
-	        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 130%; overflow: hidden; position: relative;&quot;&gt;
-					&lt;img src=&quot;/img/gravitree_update/autogravitree_2.jpg&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
-				&lt;/div&gt;
-			&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h4 class=&quot;toggle-header&quot; onclick=&quot;toggleContent()&quot;&gt;Click for technical details&lt;/h4&gt;
-&lt;div class=&quot;toggle-content&quot;&gt;
-&lt;p&gt;When designing a gravitree, a lot of the CAD time’s spent manually tweaking different part dimensions so everything balances. It’s a pretty mechanical process, though, so I’d wanted to do it automatically for a while.
-
-To get there, I scripted a single piece with variable dimensions in &lt;a href=&quot;https://cadquery.readthedocs.io/en/latest/index.html&quot;&gt;CadQuery&lt;/a&gt;, then ran a Python script to generate a 20-piece gravitree with each piece made from that same template.&lt;/p&gt;
-&lt;/div&gt;
-&lt;script&gt;
-    function toggleContent() {
-        var content = document.querySelector('.toggle-content');
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-        } else {
-            content.style.display = 'none';
-        }
-    }
-&lt;/script&gt;
-
-&lt;style&gt;
-    .toggle-header {
-        cursor: pointer;
-        background-color: #f1f1f1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-    .toggle-content {
-        display: none;
-        margin-top: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-&lt;/style&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;monstera&quot;&gt;&lt;em&gt;Monstera&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;With a five-foot span, it’s the biggest gravitree I’ve ever made. It’s lasercut wood that I woodstained.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-6&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/monstera_2.png&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-3&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;pocket-gravitree&quot;&gt;&lt;em&gt;Pocket gravitree&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;These miniature three-part gravitrees pack flat into a frame with the footprint of a credit card.
-I carry one in my wallet.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/pocket_gravitree.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;gravitree-20-or-triangulum&quot;&gt;&lt;em&gt;Gravitree 2.0&lt;/em&gt; or &lt;em&gt;Triangulum&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;This one might be the best I’ve ever made.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 110%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/gravitree_two.jpg&quot; style=&quot;position: absolute; top: -10%; left: -16%; width: 130%; height: 130%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;maple&quot;&gt;&lt;em&gt;Maple&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;This one’s a true binary tree!&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/irian_cropped.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;pagoda&quot;&gt;&lt;em&gt;Pagoda&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;I visited Japan last December and loved the architecture. This gravitree is inspired by &lt;a href=&quot;https://web-japan.org/nipponia/nipponia33/images/topic/22_1.jpg&quot;&gt;pagodas&lt;/a&gt; and &lt;a href=&quot;https://savvytokyo.scdn3.secure.raxcdn.com/app/uploads/2019/08/Meiji-Jingu-Torii-Top-9-Shrines-to-Visit-in-Tokyo.jpg&quot;&gt;torii gates&lt;/a&gt;. This one was technically challenging: the pieces are so similar in size that, in order to get it all to balance, I needed to make the pieces very light but hide heavy weights inside. The structure here is balsa wood (the lightest wood), but inside hold tungsten (close to the heaviest material found on Earth). The upturned flare at the end of each member both gives space to hide the tungsten shot and mimic similar convex flares I liked in the Japanese architecture.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/pagoda_gravitree.jpeg&quot; style=&quot;width: 100%&quot; /&gt;
-			&lt;/div&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;gravitree-rings&quot;&gt;Gravitree-rings&lt;/h2&gt;
-
-&lt;p&gt;These silver kinetic earrings make me seriously consider getting my ears pierced.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;p style=&quot;text-align:center;&quot;&gt;
-			&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 100%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/gravitree_update/irian_earring.jpeg&quot; style=&quot;position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
-			&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;tao&quot;&gt;&lt;em&gt;Tao&lt;/em&gt;&lt;/h2&gt;
-
-&lt;p&gt;This isn’t technically a gravitree, but it’s a near cousin.
-The sculpture consists of a series of concentric circles, each locked into the next and free to spin within it.
-The black half of each concentric circle is slightly thicker than the white half.
-As a result of this weight imbalance, the sculpture tends to spin to form a yin-yang symbol: balance emerges randomly from chaos :)&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/gravitree_update/tao.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;reflections&quot;&gt;Reflections&lt;/h2&gt;
-
-&lt;p&gt;Upon reflection, I’m pleased with the progress I’ve made in the past two years developing new gravitrees.
-With the earrings, pocket gravitree, and the wooden &lt;em&gt;Monstera,&lt;/em&gt; I pushed the boundaries of size and material, and with the &lt;em&gt;Triangulum&lt;/em&gt; and &lt;em&gt;Autogravitree&lt;/em&gt; I pushed the previous boundaries of gravitree aesthetics and design methodology.
-I’m most pleased with the designs that look most different from my “traditional” balls-on-sticks appearance – really like the aesthetic of the &lt;em&gt;Triangulum&lt;/em&gt; – and it seems exciting to explore how different I can make the structure look and still have it balance.&lt;/p&gt;
-
-&lt;p&gt;Another reflection here is that these ideas often take a long time to simmer in the back of my mind.
-I regularly went many months without designing a gravitree, but I’d sometimes find that questions, hopes, designs, and problems were swimming around in the background anyways, stewing and ripening.
-It’s interesting that this is the case.
-Relatedly, I’d periodically have moments of inspiration where I found myself with free time and sudden excitement to make some new designs.
-This is, for me, a point broadly in favor of having side goals or interests that are usually dormant or inactive: they seem to cost comparatively little total time, but a small amount of effort every so often, given only when inspired, can move them forward at a slow but steady pace.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;I had a pretty high batting average with new concepts during this period – most of them ultimately worked, and many worked on the first try!
-That said, a few of my more ambitious ideas did fail, including a gravitree that looked like a wedding cake where each layer was a pinwheel intended to spin in an opposite direction when placed in wind.&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
-Despite the occasional failures, the exploratory ideas are the best part of this hobby.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;prospects-for-selling-gravitrees&quot;&gt;Prospects for selling gravitrees&lt;/h2&gt;
-
-&lt;p&gt;People have been telling me for a few years now that I should sell gravitrees.
-There’s been a real uptick in this sort of comment lately, and with these new designs, I’m starting to believe it.
-I’d love for gravitrees to be cheaply buyable (and it’d certainly be nice to make some profit off them).
-A few obstacles here include that&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;3D printing is expensive. Shapeways has a marketplace I can sell through, but the prices are high – including shipping, about 30 bucks for a small gravitree and 50 bucks for a large one &lt;em&gt;without my making any profit!&lt;/em&gt;&lt;/li&gt;
-  &lt;li&gt;I’m not sure how much people are willing to pay for these.&lt;/li&gt;
-  &lt;li&gt;Another manufacturing technique like injection molding would be cheaper, but then you’re running a whole business, with inventory and everything. I’d be curious to know how that works, but I don’t want to run something like that long-term.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;A decent plan here seems to be to try to sell at a few local art fairs, gauge interest, and perhaps build an online presence.
-If demand seems high enough, it could be worth looking for a business partner to handle productization.
-(That seems to be what the artist behind the &lt;a href=&quot;https://kinetrika.com/&quot;&gt;Square Wave&lt;/a&gt; did.)
-I’d also be happy to sell the idea to an existing company.
-It seems worth getting a patent for gravitrees if they seem likely to be marketable.
-Most broadly, if I move forward, seems worth reaching out to other people who have made businesses around comparable toylike products to find out how they did it.
-If you have any suggestions or leads here, drop me a line!&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;While I do feel my bang-per-unit-time for gravitrees has been fairly high, I do actually wonder whether the costs are greater than I’m making them out to be. I think about gravitrees a little every day, usually while idle or doing other things, and presumably I’d be thinking about something else for much of that span, which could add up to a lot. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;The pieces rubbed against each other and didn’t spin freely, plus I put too much faith in the chirality of the pinwheel fans to force the fan to spin in a specific direction in wind. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sun, 23 Jun 2024 02:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/gravitree-update-2024/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/gravitree-update-2024/</guid>
-        
-        
-        <category>random</category>
         
       </item>
     

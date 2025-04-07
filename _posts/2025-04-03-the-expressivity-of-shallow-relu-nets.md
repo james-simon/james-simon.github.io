@@ -138,7 +138,7 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
 
 Out of this we get a nice corollary that gives us a property to look for that tells us that no component of our function is representable:
 
-**Corollary 1:** Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f\_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}\_{x \sim p}[f\_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then when choosing $\boldsymbol{\theta}$ to minimize MSE $\mathcal{E}\_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.
+**Corollary 1:** Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f\_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}\_{x \sim p}[f\_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then $\mathbb{E}\_{x \sim p}[f\_\ast(\mathbf{x}) f\_{\boldsymbol{\theta}}(\mathbf{x})] = 0$ for all ${\boldsymbol{\theta}}$, and when choosing $\boldsymbol{\theta}$ to minimize the MSE $\mathcal{E}\_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.
 
 (We can actually prove this corollary without going through the above machinery, just integrating directly against the measure and using properties of the $\mathrm{ReLU}$ function, but it’s illuminating to go through the above propositions because we get a complete picture of the representable functions.)
 
@@ -160,7 +160,7 @@ This last one’s pretty surprising to me! To test it, I trained bias-free $\mat
 
 This doesn’t matter at all for deep learning practitioners, but it’s useful to keep in mind for deep learning theorists. It’s useful to study the simplest model that can perform a learning task, and it’s good to know that the first thing you might try — a shallow, bias-free $\mathrm{ReLU}$ net — can’t even learn every function on the sphere.
 
-<!-- *** -->
-<!-- *I must reluctantly acknowledge Joey Turnbull, whom this blogpost proves right.* -->
+***
+*Thanks to Joey Turnbull, who first brought the experiment reported above to my attention.*
 
 ***
