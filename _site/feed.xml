@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 07 Apr 2025 20:21:55 -0700</pubDate>
-    <lastBuildDate>Mon, 07 Apr 2025 20:21:55 -0700</lastBuildDate>
+    <pubDate>Mon, 07 Apr 2025 22:21:12 -0700</pubDate>
+    <lastBuildDate>Mon, 07 Apr 2025 22:21:12 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -174,7 +174,7 @@ where $\mathrm{even}(\cdot)$ is a function satisfying $\mathrm{even}(\mathbf{x})
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;h5 class=&quot;toggle-header2&quot; onclick=&quot;toggleContent2()&quot;&gt;Click for proof&lt;/h5&gt;
 &lt;div class=&quot;toggle-content2&quot;&gt;
-The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert - \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
+The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert + \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
 &lt;/div&gt;
 
 &lt;script&gt;
@@ -208,7 +208,7 @@ The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the 
 
 &lt;p&gt;Any function that doesn’t have this linear-plus-even form can’t be represented by a shallow ReLU net without biases. The following definition and proposition show that if a function has this form, it &lt;em&gt;can&lt;/em&gt; be represented (or more precisely, approximated to arbitrary accuracy) by a shallow $\mathrm{ReLU}$ net.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Definition 1:&lt;/strong&gt; Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f_&lt;em&gt;$ is *shallow&lt;/em&gt; $\mathrm{ReLU}$ &lt;em&gt;approximable&lt;/em&gt; if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon &amp;gt; 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}_{\boldsymbol{\theta}} &amp;lt; \epsilon$.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Definition 1:&lt;/strong&gt; Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f_\ast$ is &lt;em&gt;shallow&lt;/em&gt; $\mathrm{ReLU}$ &lt;em&gt;approximable&lt;/em&gt; if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon &amp;gt; 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}_{\boldsymbol{\theta}} &amp;lt; \epsilon$.&lt;/p&gt;
 
 &lt;div style=&quot;border: 2px solid black; padding: 15px; width: 100%; text-align: left;&quot;&gt;
 

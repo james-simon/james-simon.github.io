@@ -56,7 +56,7 @@ where $\mathrm{even}(\cdot)$ is a function satisfying $\mathrm{even}(\mathbf{x})
 <br>
 <h5 class="toggle-header2" onclick="toggleContent2()">Click for proof</h5>
 <div class="toggle-content2">
-The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert - \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
+The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert + \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
 </div>
 
 <script>
@@ -90,7 +90,7 @@ The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the 
 Any function that doesn’t have this linear-plus-even form can’t be represented by a shallow ReLU net without biases. The following definition and proposition show that if a function has this form, it *can* be represented (or more precisely, approximated to arbitrary accuracy) by a shallow $\mathrm{ReLU}$ net.
 
 
-**Definition 1:** Let $f\_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f\_*$ is *shallow* $\mathrm{ReLU}$ *approximable* if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon > 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}\_{\boldsymbol{\theta}} < \epsilon$.
+**Definition 1:** Let $f\_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f\_\ast$ is *shallow* $\mathrm{ReLU}$ *approximable* if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon > 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}\_{\boldsymbol{\theta}} < \epsilon$.
 
 <div style="border: 2px solid black; padding: 15px; width: 100%; text-align: left;">
 
