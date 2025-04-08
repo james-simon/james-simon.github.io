@@ -105,7 +105,7 @@ That is, orthogonality with respect to the measure implies orthogonality with re
 
 ## Back to functional language
 
-To phrase these results in functional language, we need to define the *inverse kernel operator.* Define the kernel operator $T\_K[g](\cdot) = \int K(\cdot, x) g(x) dx$[^3]. Let us assume this operator is invertible and construct the inverse $T^{-1}\_K$. In functional language, we require that
+To phrase these results in functional language, we need to define the *inverse kernel operator.* Define the kernel operator $T\_K\[g\](\cdot) = \int K(\cdot, x) g(x) dx$[^3]. Let us assume this operator is invertible and construct the inverse $T^{-1}\_K$. In functional language, we require that
 
 [^3]: To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T\_K$ performs Gaussian smoothing, while $T\_K$ performs “unsmoothing.”
 

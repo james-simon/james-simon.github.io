@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 07 Apr 2025 15:21:56 -0700</pubDate>
-    <lastBuildDate>Mon, 07 Apr 2025 15:21:56 -0700</lastBuildDate>
+    <pubDate>Mon, 07 Apr 2025 20:21:55 -0700</pubDate>
+    <lastBuildDate>Mon, 07 Apr 2025 20:21:55 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -85,7 +85,7 @@ k, k'.
 
 &lt;h2 id=&quot;back-to-functional-language&quot;&gt;Back to functional language&lt;/h2&gt;
 
-&lt;p&gt;To phrase these results in functional language, we need to define the &lt;em&gt;inverse kernel operator.&lt;/em&gt; Define the kernel operator $T_K&lt;a href=&quot;\cdot&quot;&gt;g&lt;/a&gt; = \int K(\cdot, x) g(x) dx$&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$. In functional language, we require that&lt;/p&gt;
+&lt;p&gt;To phrase these results in functional language, we need to define the &lt;em&gt;inverse kernel operator.&lt;/em&gt; Define the kernel operator $T_K[g](\cdot) = \int K(\cdot, x) g(x) dx$&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$. In functional language, we require that&lt;/p&gt;
 
 \[\frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} &amp;gt; 0
 \qquad \forall \ i, j, x,\]
