@@ -108,15 +108,16 @@
 
 \[\mathbf{K} = \sum_i \lambda_i \mathbf{v}_i \mathbf{v}_i^\top.\]
 
-<p>We would like to determine necessary and sufficient conditions on ${\lambda_i, \mathbf{v}_i}$ such that there exists a positive-definite[FOOTNOTE: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive <em>definite</em> instead of merely PSD.] diagonal $\mathbf{M}$ such that</p>
+<p>We would like to determine necessary and sufficient conditions on ${\lambda_i, \mathbf{v}_i}$ such that there exists a positive-definite<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote">2</a></sup> diagonal $\mathbf{M}$ such that</p>
 
-\[\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}.\]
+\[\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}\]
 
-<p>We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}_1, \ldots, \mathbf{v}_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Note that all the matrices we have defined are invertible. We now have that</p>
+<p>and $\mathrm{Tr}[\mathbf{M}] = 1$.
+We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}_1, \ldots, \mathbf{v}_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Note that all the matrices we have defined are invertible. We now have that</p>
 
 \[\mathbf{K} = \mathbf{V \Lambda V^\top}, \qquad \mathbf{V^\top M V} = \mathbf{I}.\]
 
-<p>From the latter equation, we get that $\mathbf{M V V^\top} = \mathbf{I}$, and thus $\mathbf{K M V V^\top} = \mathbf{V \Lambda V^\top}$, and thus we obtain the eigenequation<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
+<p>From the latter equation, we get that $\mathbf{M V V^\top} = \mathbf{I}$, and thus $\mathbf{K M V V^\top} = \mathbf{V \Lambda V^\top}$, and thus we obtain the eigenequation<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">3</a></sup></p>
 
 \[\mathbf{K M V} = \mathbf{V \Lambda}.\]
 
@@ -134,7 +135,7 @@
 
 \[\mathbf{M v}_i = \mathbf{\mu} \circ \mathbf{v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i\]
 
-<p>where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda_1, \mathbf{v}_1)$ is potentially valid if and only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if</p>
+<p>where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda_1, \mathbf{v}_1)$ is potentially valid only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if</p>
 
 \[\boxed{
 m_{ik} := \frac{\lambda_i (\mathbf{K}^{-1} \mathbf{v}_i)[k]}{\mathbf{v}_i[k]} &gt; 0
@@ -143,11 +144,18 @@ m_{ik} := \frac{\lambda_i (\mathbf{K}^{-1} \mathbf{v}_i)[k]}{\mathbf{v}_i[k]} &g
 <p>where we write $\mathbf{u}[k]$ denote the $k$-th element of a vector. We must additionally have that the different eigenvectors verify the same measure — that is,</p>
 
 \[\boxed{
-m_{ik} = m_{ik'}
+m_{ik} = m_{ik'} := \mu_i
 \qquad
 \forall
 \ \
-k, k'.
+k, k'
+}\]
+
+<p>except where one of the two is undefined, and of course that the measure is normalized:</p>
+
+\[\boxed{
+\sum_i
+\mu_i = 1.
 }\]
 
 <p>Together, the boxed equations are necessary and sufficient conditions for the existence of a positive measure $\mathbf{\mu}$ such that ${(\lambda_i, \mathbf{v}_i)}$ indeed comprise an orthogonal eigenbasis with respect to $\mathbf{\mu}$. Interestingly, it follows from the above with no additional requirements that</p>
@@ -158,16 +166,20 @@ k, k'.
 
 <h2 id="back-to-functional-language">Back to functional language</h2>
 
-<p>To phrase these results in functional language, we need to define the <em>inverse kernel operator.</em> Define the kernel operator $T_K[g](\cdot) = \int K(\cdot, x) g(x) dx$<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup>. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$. In functional language, we require that</p>
+<p>To phrase these results in functional language, we need to define the <em>inverse kernel operator.</em> Define the kernel operator $T_K[g](\cdot) = \int K(\cdot, x) g(x) dx$. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$.<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">4</a></sup> In functional language, we require that</p>
 
 \[\frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} &gt; 0
 \qquad \forall \ i, j, x,\]
 
-<p>except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which these are eigenfunctions.</p>
+<p>except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which ${\phi_i}$ are orthogonal.
+Again, a single candidate eigenfunction $\phi_i$ determines the whole measure $\mu$ except where $\phi_i(x) = 0$.
+We also of course require that the measure we find from the above is normalized when integrated over the full domain.</p>
 
 <p>We also find the (somewhat more inscrutable to me) condition that</p>
 
-\[\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1}.\]
+\[\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1},\]
+
+<p>which again may be treated as a normalization condition on the eigenfunctions \(\phi_i\).</p>
 
 <h2 id="connection-to-rkhs-inner-product">Connection to RKHS inner product</h2>
 
@@ -186,11 +198,14 @@ k, k'.
     <li id="fn:1" role="doc-endnote">
       <p>Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive <em>definite</em> instead of merely PSD. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
     <li id="fn:2" role="doc-endnote">
       <p>This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:3" role="doc-endnote">
-      <p>To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T_K$ performs Gaussian smoothing, while $T_K$ performs “unsmoothing.” <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T_K$ performs Gaussian smoothing, while $T_K^{-1}$ performs “unsmoothing.” <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

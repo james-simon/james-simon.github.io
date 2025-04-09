@@ -37,12 +37,15 @@ $$
 \mathbf{K} = \sum_i \lambda_i \mathbf{v}_i \mathbf{v}_i^\top.
 $$
 
-We would like to determine necessary and sufficient conditions on $\{\lambda\_i, \mathbf{v}\_i\}$ such that there exists a positive-definite[FOOTNOTE: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive *definite* instead of merely PSD.] diagonal $\mathbf{M}$ such that
+We would like to determine necessary and sufficient conditions on $\{\lambda\_i, \mathbf{v}\_i\}$ such that there exists a positive-definite[^4] diagonal $\mathbf{M}$ such that
+
+[^4]: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive *definite* instead of merely PSD.
 
 $$
-\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}.
+\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}
 $$
 
+and $\mathrm{Tr}[\mathbf{M}] = 1$.
 We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}\_1, \ldots, \mathbf{v}\_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda\_1, \ldots, \lambda\_n)$. Note that all the matrices we have defined are invertible. We now have that
 
 $$
@@ -75,7 +78,7 @@ $$
 \mathbf{M v}_i = \mathbf{\mu} \circ \mathbf{v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i
 $$
 
-where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda\_1, \mathbf{v}\_1)$ is potentially valid if and only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if
+where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda\_1, \mathbf{v}\_1)$ is potentially valid only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if
 
 $$
 \boxed{
@@ -87,11 +90,20 @@ where we write $\mathbf{u}[k]$ denote the $k$-th element of a vector. We must ad
 
 $$
 \boxed{
-m_{ik} = m_{ik'}
+m_{ik} = m_{ik'} := \mu_i
 \qquad
 \forall
 \ \
-k, k'.
+k, k'
+}
+$$
+
+except where one of the two is undefined, and of course that the measure is normalized:
+
+$$
+\boxed{
+\sum_i
+\mu_i = 1.
 }
 $$
 
@@ -105,22 +117,26 @@ That is, orthogonality with respect to the measure implies orthogonality with re
 
 ## Back to functional language
 
-To phrase these results in functional language, we need to define the *inverse kernel operator.* Define the kernel operator $T\_K\[g\](\cdot) = \int K(\cdot, x) g(x) dx$[^3]. Let us assume this operator is invertible and construct the inverse $T^{-1}\_K$. In functional language, we require that
+To phrase these results in functional language, we need to define the *inverse kernel operator.* Define the kernel operator $T\_K\[g\](\cdot) = \int K(\cdot, x) g(x) dx$. Let us assume this operator is invertible and construct the inverse $T^{-1}\_K$.[^3] In functional language, we require that
 
-[^3]: To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T\_K$ performs Gaussian smoothing, while $T\_K$ performs “unsmoothing.”
+[^3]: To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T\_K$ performs Gaussian smoothing, while $T\_K^{-1}$ performs “unsmoothing.”
 
 $$
 \frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} > 0
 \qquad \forall \ i, j, x,
 $$
 
-except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which these are eigenfunctions.
+except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which $\{\phi_i\}$ are orthogonal.
+Again, a single candidate eigenfunction $\phi_i$ determines the whole measure $\mu$ except where $\phi_i(x) = 0$.
+We also of course require that the measure we find from the above is normalized when integrated over the full domain.
 
 We also find the (somewhat more inscrutable to me) condition that
 
 $$
-\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1}.
+\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1},
 $$
+
+which again may be treated as a normalization condition on the eigenfunctions $$\phi_i$$.
 
 ## Connection to RKHS inner product
 
