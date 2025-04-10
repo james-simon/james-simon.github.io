@@ -77,3 +77,11 @@ $$
 $$
 
 This looks like a classical generalization bound! It seems to me like this sort of classical bound often doesn’t have one canonical statement but instead gets written many different ways (which I suppose makes sense if your equation is a fairly loose bound that you could tighten up in some places and loosen in others), and I couldn’t find an exact statement of precisely this form anywhere, so I suppose I’m not actually sure this is equivalent to a classical result (though ChatGPT assures me it is), but it certainly looks like lots of classical bounds I’ve seen.
+
+If we use the fact that $\lvert \! \lvert f_\ast \rvert \! \rvert_{L^2(\mu)}^2 = \sum_i v_i^2$, we can obtain the (to me more illuminating) result that
+
+$$
+\frac{\mathcal{E}|_{\delta = \delta_*}}{\mathcal{E}|_{\delta \rightarrow \infty}} \le \frac{4 \cdot \max_{x \sim \mu} K(x,x)}{n} \cdot \frac{|\!| f_* |\!|_K^2}{|\!| f_* |\!|_{L^2(\mu)}^2}.
+$$
+
+That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.
