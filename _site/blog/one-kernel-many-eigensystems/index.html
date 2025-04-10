@@ -151,7 +151,7 @@ m_{ik} = m_{ik'} := \mu_i
 k, k'
 }\]
 
-<p>except where one of the two is undefined, and of course that the measure is normalized:</p>
+<p>except where one of the two is undefined. Finally, we must have that the measure we obtain is normalized:</p>
 
 \[\boxed{
 \sum_i
@@ -181,7 +181,7 @@ We also of course require that the measure we find from the above is normalized 
 
 <p>which again may be treated as a normalization condition on the eigenfunctions \(\phi_i\).</p>
 
-<h2 id="connection-to-rkhs-inner-product">Connection to RKHS inner product</h2>
+<h2 id="connection-to-the-rkhs-inner-product">Connection to the RKHS inner product</h2>
 
 <p>The usual reproducing kernel Hilbert space (RKHS) inner product is given by</p>
 
@@ -199,7 +199,7 @@ We also of course require that the measure we find from the above is normalized 
       <p>Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:4" role="doc-endnote">
-      <p>Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive <em>definite</em> instead of merely PSD. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>Since we have assumed that all eigenvalues are nonnegative, we are assured that $\mathbf{M}$ will be positive <em>definite</em> instead of merely PSD. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
       <p>This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>

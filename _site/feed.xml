@@ -5,9 +5,77 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 09 Apr 2025 10:03:35 -0700</pubDate>
-    <lastBuildDate>Wed, 09 Apr 2025 10:03:35 -0700</lastBuildDate>
+    <pubDate>Wed, 09 Apr 2025 17:29:14 -0700</pubDate>
+    <lastBuildDate>Wed, 09 Apr 2025 17:29:14 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Backsolving classical generalization bounds from the modern kernel regression eigenframework</title>
+        <description>&lt;p&gt;&lt;em&gt;This blogpost shows how to use the omniscient KRR eigenframework, which gives a closed-form expression for the test error of KRR in terms of task eigenstructure, to quickly recover a classical generalization bound. I’ve worked with the modern eigenframework a great deal, and this blogpost was the result of a calculation I thought was new but quickly resolved to a classical bound. Even though the old classical bounds have proven fairly useless in modern problems, I still found this interesting: the calculation here presented is a different (and fast) way to arrive at a classical result, and it was clarifying for me to see where the looseness of the classical result slips in in the course of various approximations.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;We will take as starting point the KRR eigenframework derived in many recent papers. We will use the notation of &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;our KRR eigenpaper&lt;/a&gt; with little further explanation.&lt;/p&gt;
+
+&lt;h3 id=&quot;setup&quot;&gt;Setup&lt;/h3&gt;
+
+&lt;p&gt;We have a target function $f_*(\cdot)$ and a kernel function $K(\cdot,\cdot)$. We know the target function’s RKHS norm $\lvert \! \lvert f_\ast \rvert \! \rvert_K$. We will perform KRR with $n$ samples from an arbitrary measure $\mu$, and we would like to obtain a bound on the test error at optimal ridge&lt;/p&gt;
+
+\[\text{[test MSE]}|_{\delta = \delta_*} \equiv \mathbb{E}_{x \sim \mu}[(f_*(x) - \hat{f}(x))^2].\]
+
+&lt;p&gt;We know $\max_{x \sim \mu} K(x,x)$, where the max runs over the support of $\mu$, or at least we know an upper bound for this quantity.&lt;/p&gt;
+
+&lt;h3 id=&quot;rewriting-known-quantities-in-the-kernel-eigensystem&quot;&gt;Rewriting known quantities in the kernel eigensystem&lt;/h3&gt;
+
+&lt;p&gt;There exists a kernel eigendecomposition $K(x,x’) = \sum_i \lambda_i \phi_i(x) \phi_i(x’)$ which is orthonormal w.r.t. $\mu$, though we will not need to assume that we can find it. There also exists a decomposition $f_*(x) = \sum_i v_i \phi_i(x)$, though we again do not assume we can find it.&lt;/p&gt;
+
+&lt;p&gt;It holds that&lt;/p&gt;
+
+\[|\!| f_* |\!|_K^2 = \sum_i \frac{v_i^2}{\lambda_i}.\]
+
+&lt;p&gt;Note that this is true regardless of the measure $\mu$ — see my note on measure-independent properties of kernel eigensystems.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-the-kernel-eigenframework&quot;&gt;Using the kernel eigenframework&lt;/h3&gt;
+
+&lt;p&gt;The effective ridge $\kappa &amp;gt; 0$ is the unique positive solution to&lt;/p&gt;
+
+\[n = \sum_i \mathcal{L}_i \ + \ \frac{\delta}{\kappa},\]
+
+&lt;p&gt;where $\mathcal{L}_i := \frac{\lambda_i}{\lambda_i + \kappa} \in [0,1]$ is the “learnability” of mode $i$. We will go head and choose $\delta$ such that $\sum_i \mathcal{L}_i = \frac{n}{2}$, which will later give us the best constant prefactor in our bound.&lt;/p&gt;
+
+&lt;p&gt;The eigenframework states that&lt;/p&gt;
+
+\[\text{[test MSE]} \approx \mathcal{E} := \frac{n}{n - \sum_i \mathcal{L}_i^2} \sum_i (1 - \mathcal{L}_i)^2 v_i^2.\]
+
+&lt;p&gt;We may now note three useful bounds. First, we may bound the prefactor above as&lt;/p&gt;
+
+\[\frac{n}{n - \sum_i \mathcal{L}_i^2} \le \frac{n}{n - \sum_i \mathcal{L}_i} = 2,\]
+
+&lt;p&gt;where in the last step we have applied our choice of $\delta$. Second, we may bound the sum as&lt;/p&gt;
+
+\[\sum_i (1 - \mathcal{L}_i)^2 v_i^2 
+\ \le \ \sum_i (1 - \mathcal{L}_i) v_i^2
+\ = \ \sum_i \frac{v_i^2}{\lambda_i} \frac{\kappa \lambda_i}{\lambda_i + \kappa}
+\ \le \ \kappa \cdot \sum_i \frac{v_i^2}{\lambda_i} \le \kappa \cdot |\!| f_* |\!|_K^2.\]
+
+&lt;p&gt;Finally, noting that $\sum_i \frac{\lambda_i}{\kappa} \ge \sum_i \mathcal{L}_i = \frac{n}{2}$, we may bound the constant $\kappa$ as&lt;/p&gt;
+
+\[\kappa &amp;lt; \frac{2}{n} \sum_i \lambda_i = \frac{2 \cdot \text{Tr}[K]}{n} = \frac{2 \cdot \mathbb{E}_{x \sim \mu}[K(x,x)]}{n} \le \frac{2 \cdot \max_{x \sim \mu}K(x,x)}{n}.\]
+
+&lt;p&gt;Putting the above four equations together (and also using the fact that the test MSE at optimal ridge will be less than or equal to the test MSE at our chosen ridge), we find that&lt;/p&gt;
+
+\[\boxed{\mathcal{E}|_{\delta = \delta_*} \le \frac{4 \cdot \max_{x \sim \mu} K(x,x)}{n} \cdot |\!| f_* |\!|_K^2.}\]
+
+&lt;p&gt;This looks like a classical generalization bound! It seems to me like this sort of classical bound often doesn’t have one canonical statement but instead gets written many different ways (which I suppose makes sense if your equation is a fairly loose bound that you could tighten up in some places and loosen in others), and I couldn’t find an exact statement of precisely this form anywhere, so I suppose I’m not actually sure this is equivalent to a classical result (though ChatGPT assures me it is), but it certainly looks like lots of classical bounds I’ve seen.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
+        
+        
+        <category>deep learning, research</category>
+        
+      </item>
     
       <item>
         <title>One kernel, many eigensystems</title>
@@ -78,7 +146,7 @@ m_{ik} = m_{ik'} := \mu_i
 k, k'
 }\]
 
-&lt;p&gt;except where one of the two is undefined, and of course that the measure is normalized:&lt;/p&gt;
+&lt;p&gt;except where one of the two is undefined. Finally, we must have that the measure we obtain is normalized:&lt;/p&gt;
 
 \[\boxed{
 \sum_i
@@ -108,7 +176,7 @@ We also of course require that the measure we find from the above is normalized 
 
 &lt;p&gt;which again may be treated as a normalization condition on the eigenfunctions \(\phi_i\).&lt;/p&gt;
 
-&lt;h2 id=&quot;connection-to-rkhs-inner-product&quot;&gt;Connection to RKHS inner product&lt;/h2&gt;
+&lt;h2 id=&quot;connection-to-the-rkhs-inner-product&quot;&gt;Connection to the RKHS inner product&lt;/h2&gt;
 
 &lt;p&gt;The usual reproducing kernel Hilbert space (RKHS) inner product is given by&lt;/p&gt;
 
@@ -126,7 +194,7 @@ We also of course require that the measure we find from the above is normalized 
       &lt;p&gt;Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:4&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive &lt;em&gt;definite&lt;/em&gt; instead of merely PSD. &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Since we have assumed that all eigenvalues are nonnegative, we are assured that $\mathbf{M}$ will be positive &lt;em&gt;definite&lt;/em&gt; instead of merely PSD. &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
@@ -1276,175 +1344,6 @@ The satisfying ka-&lt;em&gt;chunk&lt;/em&gt; of the egg clinking off my teeth an
         
         
         <category>random</category>
-        
-      </item>
-    
-      <item>
-        <title>Experiments in self-assembly</title>
-        <description>&lt;p&gt;In 2018, I designed and prototyped a series of self-assembling objects.
-I never published anything about it then, so I’m doing it now.
-I’ll give background and my motivation, show some cute demos, and conclude with some reflections.&lt;/p&gt;
-
-&lt;h3 id=&quot;background&quot;&gt;Background&lt;/h3&gt;
-
-&lt;p&gt;I’ve always liked cute interactive technical projects. This was particularly true in college, during which I made lots of mostly-useless-but-fun things, including&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;a laser-activated light switch&lt;/li&gt;
-  &lt;li&gt;a robotic articulated necktie which could grab food and bring it to the wearer’s mouth&lt;/li&gt;
-  &lt;li&gt;various 3D printed ball mazes&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://james-simon.github.io/blog/gravitrees/&quot;&gt;lots of balancing sculptures&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;and &lt;a href=&quot;vthunt.com&quot;&gt;a campus-wide puzzlehunt&lt;/a&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included &lt;a href=&quot;https://www.youtube.com/watch?v=Bnj1sPfo4Ek&quot;&gt;this self-assembling “chair,”&lt;/a&gt; &lt;a href=&quot;https://www.youtube.com/watch?v=6aZbJS6LZbs&quot;&gt;this swarm of cubic robots&lt;/a&gt;, and this &lt;a href=&quot;https://www.youtube.com/watch?v=ZVYz7g-qLjs&quot;&gt;robot origami&lt;/a&gt;, all from MIT. As a senior, I got a small grant from the 3D printing service Shapeways to explore 3D printed self-assembling systems.&lt;/p&gt;
-
-&lt;p&gt;I spent a semester on the project and came up with some cool prototypes. None of them are particularly scalable or practical, but they are cute.&lt;/p&gt;
-
-&lt;h3 id=&quot;self-assembling-circuit&quot;&gt;Self-assembling circuit&lt;/h3&gt;
-
-&lt;p&gt;I designed a self-assembling circuit. It consists of four pieces, each of which has two magnetic surfaces to link up to its two neighbors. The four pieces are hollow and contain circuit components: a battery, a resistor, an LED, and a blank wire, respectively. When all four pieces are joined in a loop, the LED lights up. As far as I know, this is the first self-assembling circuit ever made (as long as you don’t count naturally-occurring circuits in biochemistry!).&lt;/p&gt;
-
-&lt;p&gt;The four pieces will link up after being shaken together for a minute or two. Here’s a demo video:&lt;/p&gt;
-
-&lt;!-- youtube embed. pretty cursed -- no idea how this is working --&gt;
-&lt;style&gt;
-    .video-container {
-        position: relative;
-        width: 60%; /* Set the width to 60% */
-        padding-bottom: 33.75%; /* Aspect ratio for 16:9 videos, calculated as (9/16)*60 */
-        height: 0;
-        overflow: hidden;
-        margin: 0 auto; /* Center the container */
-    }
-    .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-&lt;/style&gt;
-
-&lt;div class=&quot;video-container&quot;&gt;
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;iframe width=&quot;600px&quot; src=&quot;https://www.youtube.com/embed/VN1XIlCqdOU?si=ldut7K_l5Qoa6S2W&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share&quot; referrerpolicy=&quot;strict-origin-when-cross-origin&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
-&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Some technical facts:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The magnetic pattern on each connecting surface is addressed uniquely to its counterpart. These pieces will always assemble the same way.&lt;/li&gt;
-  &lt;li&gt;The internal wires are soldered to the little magnets on the connecting surfaces. This was harder than it sounds because a soldering iron will &lt;a href=&quot;https://en.wikipedia.org/wiki/Curie_temperature&quot;&gt;heat up a magnet enough to demagnetize it!&lt;/a&gt; I ended up attaching each demagnetized magnet to a working magnet to get around this.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;magnacubes&quot;&gt;“Magnacubes”&lt;/h3&gt;
-
-&lt;p&gt;Before the self-assembling circuit, I tried the same concept with ordinary cubic blocks. Here are two pictures (before and after assembly, respectively) and a video.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-1&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-5&quot;&gt;
-        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/self_assembly/magnacubes.JPG&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
-			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-5&quot;&gt;
-        	&lt;div style=&quot;width: 100%; height: 0; padding-bottom: 70%; overflow: hidden; position: relative;&quot;&gt;
-				&lt;img src=&quot;/img/self_assembly/magnacubes_assembled.JPG&quot; style=&quot;position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; object-fit: cover;&quot; /&gt;
-			&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-1&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;/img/self_assembly/magnacube_video.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-&lt;/p&gt;
-
-&lt;h3 id=&quot;instacube&quot;&gt;“Instacube”&lt;/h3&gt;
-
-&lt;p&gt;These linked rods take on a cubic shape under the influence of gravity.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;40%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-    &lt;source src=&quot;/img/self_assembly/instacube.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-&lt;/video&gt;
-&lt;/p&gt;
-
-&lt;h3 id=&quot;self-healing-magnetic-material&quot;&gt;“Self-healing” magnetic material&lt;/h3&gt;
-
-&lt;p&gt;I designed a repeating unit with four embedded magnets on springs pointing out in cardinal directions.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; These units can be linked up in big sheets or closed 3D structures. Individual magnetic bonds will reform if they’re broken, so you can pass a thin object through the material without any lasting damage. Here are a picture of some assembled units and a video showing the “self-healing” property.&lt;/p&gt;
-
-&lt;div class=&quot;container&quot;&gt;
-    &lt;div class=&quot;row&quot;&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-        	&lt;p&gt;
-				&lt;img src=&quot;/img/self_assembly/magnetic_material.JPG&quot; class=&quot;image&quot; width=&quot;100%&quot; /&gt;
-			&lt;/p&gt;
-			&lt;!-- &lt;img src=&quot;/img/gravitree_update/autogravitree_1.jpg&quot; width=&quot;100%&quot;&gt; --&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-4&quot;&gt;
-			&lt;video autoplay=&quot;&quot; loop=&quot;&quot; muted=&quot;&quot; playsinline=&quot;&quot; width=&quot;100%&quot; style=&quot;display:block; margin: 0 auto;&quot;&gt;
-			    &lt;source src=&quot;/img/self_assembly/magnetic_material.mp4&quot; type=&quot;video/mp4&quot; /&gt;
-			&lt;/video&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;col-2&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;other-ideas-and-failures&quot;&gt;Other ideas and failures&lt;/h3&gt;
-
-&lt;p&gt;I spent a lot of time exploring “self-assembly by pulled string” in which you could pull a string taut and a 3D object would pop up. This was motivated by a desire for an instantly-assemblable tent. I got some promising initial results, but ultimately it was too hard to get the tension to transmit through the whole chain with the materials and geometry I was using. I’m sure something like this could work well enough to make a cool demo.&lt;/p&gt;
-
-&lt;p&gt;I also tried making something that’d assemble with buoyant forces when submerged in water, but didn’t get far. I’m sure that could be made to work in some capacity, too.&lt;/p&gt;
-
-&lt;h3 id=&quot;reflections&quot;&gt;Reflections&lt;/h3&gt;
-
-&lt;p&gt;It’s been six years since this series of projects. In that span, I’ve matured into a proper scientist. Looking back, they’re clearly immature work, but I still find most of these demos cool. I appreciate my past self’s ingenuity and initiative.&lt;/p&gt;
-
-&lt;p&gt;Given the opportunity, I’d offer my college self the following advice on this project:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Find mentorship. Try hard to work with a professor. You’ll learn much more that way, and the small sacrifice of freedom is worth it.&lt;/li&gt;
-  &lt;li&gt;Choose projects that will teach you skills you want to learn, not projects that’ll lead to the cutest demos.&lt;/li&gt;
-  &lt;li&gt;Document finished projects better. You’ll want nice videos when you write a blog post in six years.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Most significantly, I am no longer enamored with flashy demos of the type that inspired me in college. They have undeniable aesthetic appeal, and they can certainly be technically impressive, but it’s not clear that they’re &lt;em&gt;leading&lt;/em&gt; anywhere research-wise. In that respect, they seem more like art than engineering research. I still appreciate flashy demos as art, but I’m now quite wary when they’re presented as technical progress towards some important problem.&lt;/p&gt;
-
-&lt;!-- [^b]: See [this related xkcd](https://xkcd.com/2128/). --&gt;
-
-&lt;!-- I think macroscopic self-assembly research (like I did here) is much more flashy than useful. This kind of work often cites the creation of nanomachines as a main motivation [^b] — as the big problem they’re trying to solve — but it’s totally unclear to me that designing macroscopic objects that magnetically assemble is really going to help get us there. It’s certainly cool and inspiring, and if we had a plausible related avenue to making nanomachines, it could be a good way to draw attention to that, but as far as I know, the nanoscience is so far from working that this motivation seems a little blustery. The same thing happens in lots of other fields — [this xkcd](https://xkcd.com/2128/) gives the classic justification for flashy robots! --&gt;
-
-&lt;p&gt;These days, I generally want technical research to feel like it’s going to be useful in the future — that it’s providing a useful tool, or that it’s revealing some piece of a larger puzzle, or that it suggests some new path forwards. I tend to feel that research is building an enormous tree of human knowledge, and that the best new pieces have lots of open joints to connect to yet more pieces that we could imagine discovering! One of my main reflections on my college research is that, when you’re brutally honest about it, it’s unclear that it’s actually leading anywhere!&lt;/p&gt;
-
-&lt;p&gt;I did not have this desire for utility at the start of graduate school: at that time, novelty and aesthetic appeal were probably my primary considerations, and I frankly resented the notion of doing something more like what everyone else was doing in order to have more of an impact.
-I suppose I ultimately landed somewhere in the middle: ML theory has proven important enough to do impactful stuff, but also wide open enough to do creative and beautiful work.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;The north-facing and south-facing magnets are “south-pole-outwards,” and the east-facing and west-facing magnets are “north-pole-outwards.” This choice is nice for making big sheets from many units. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Wed, 03 Jul 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/self-assembly/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/self-assembly/</guid>
-        
-        
-        <category>research</category>
         
       </item>
     

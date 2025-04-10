@@ -39,7 +39,7 @@ $$
 
 We would like to determine necessary and sufficient conditions on $\{\lambda\_i, \mathbf{v}\_i\}$ such that there exists a positive-definite[^4] diagonal $\mathbf{M}$ such that
 
-[^4]: Since we have assumed that all eigenvalues are nonnegative, we can conclude that $\mathbf{M}$ will be positive *definite* instead of merely PSD.
+[^4]: Since we have assumed that all eigenvalues are nonnegative, we are assured that $\mathbf{M}$ will be positive *definite* instead of merely PSD.
 
 $$
 \mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}
@@ -98,7 +98,7 @@ k, k'
 }
 $$
 
-except where one of the two is undefined, and of course that the measure is normalized:
+except where one of the two is undefined. Finally, we must have that the measure we obtain is normalized:
 
 $$
 \boxed{
@@ -138,7 +138,7 @@ $$
 
 which again may be treated as a normalization condition on the eigenfunctions $$\phi_i$$.
 
-## Connection to RKHS inner product
+## Connection to the RKHS inner product
 
 The usual reproducing kernel Hilbert space (RKHS) inner product is given by
 
