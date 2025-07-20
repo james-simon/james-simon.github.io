@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Backsolving classical generalization bounds from the modern kernel regression eigenframework</title>
+  <meta name="description" content="This blogpost shows how to use the omniscient KRR eigenframework, which gives a closed-form expression for the test error of KRR in terms of task eigenstruct...">
+
+  <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="/boostrap/js/bootstrap.js"></script> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/blog/backsolving-classical-bounds/">
+  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+
+  
+
+</head>
+
+
+  <body>
+
+    <!-- <header class="site-header"> -->
+    <!-- <a class="site-title" href="/">JS</a> -->
+<!-- </header> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+      <div class = "container">
+        <a class="navbar-brand" href="/">JS</a></span> </a>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav ml-auto">
+            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
+          </ul> 
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="container">
+    <br>
+
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">Backsolving classical generalization bounds from the modern kernel regression eigenframework</h1>
+      <p class="post-meta"><time datetime="2025-04-09T00:00:00-08:00" itemprop="datePublished">Apr 9, 2025</time></p>
+    </header>
+
+    <div class="post-content" itemprop="articleBody">
+      <p><em>This blogpost shows how to use the omniscient KRR eigenframework, which gives a closed-form expression for the test error of KRR in terms of task eigenstructure, to quickly recover a classical generalization bound. I’ve worked with the modern eigenframework a great deal, and this blogpost was the result of a calculation I thought was new but quickly resolved to a classical bound. Even though the old classical bounds have proven fairly useless in modern problems, I still found this interesting: the calculation here presented is a different (and fast) way to arrive at a classical result, and it was clarifying for me to see where the looseness of the classical result slips in in the course of various approximations.</em></p>
+
+<hr />
+
+<p>We will take as starting point the KRR eigenframework derived in many recent papers. We will use the notation of <a href="https://arxiv.org/abs/2110.03922">our KRR eigenpaper</a> with little further explanation.</p>
+
+<h3 id="setup">Setup</h3>
+
+<p>We have a target function $f_*(\cdot)$ and a kernel function $K(\cdot,\cdot)$. We know the target function’s RKHS norm $\lvert \! \lvert f_\ast \rvert \! \rvert_K$. We will perform KRR with $n$ samples from an arbitrary measure $\mu$, and we would like to obtain a bound on the test error at optimal ridge</p>
+
+\[\text{[test MSE]}|_{\delta = \delta_*} \equiv \mathbb{E}_{x \sim \mu}[(f_*(x) - \hat{f}(x))^2].\]
+
+<p>We know $\max_{x \sim \mu} K(x,x)$, where the max runs over the support of $\mu$, or at least we know an upper bound for this quantity.</p>
+
+<h3 id="rewriting-known-quantities-in-the-kernel-eigensystem">Rewriting known quantities in the kernel eigensystem</h3>
+
+<p>There exists a kernel eigendecomposition $K(x,x’) = \sum_i \lambda_i \phi_i(x) \phi_i(x’)$ which is orthonormal w.r.t. $\mu$, though we will not need to assume that we can find it. There also exists a decomposition $f_*(x) = \sum_i v_i \phi_i(x)$, though we again do not assume we can find it.</p>
+
+<p>It holds that</p>
+
+\[|\!| f_* |\!|_K^2 = \sum_i \frac{v_i^2}{\lambda_i}.\]
+
+<p>Note that this is true regardless of the measure $\mu$ — see my note on measure-independent properties of kernel eigensystems.</p>
+
+<h3 id="using-the-kernel-eigenframework">Using the kernel eigenframework</h3>
+
+<p>The effective ridge $\kappa &gt; 0$ is the unique positive solution to</p>
+
+\[n = \sum_i \mathcal{L}_i \ + \ \frac{\delta}{\kappa},\]
+
+<p>where $\mathcal{L}_i := \frac{\lambda_i}{\lambda_i + \kappa} \in [0,1]$ is the “learnability” of mode $i$. We will go head and choose $\delta$ such that $\sum_i \mathcal{L}_i = \frac{n}{2}$, which will later give us the best constant prefactor in our bound.</p>
+
+<p>The eigenframework states that</p>
+
+\[\text{[test MSE]} \approx \mathcal{E} := \frac{n}{n - \sum_i \mathcal{L}_i^2} \sum_i (1 - \mathcal{L}_i)^2 v_i^2.\]
+
+<p>We may now note three useful bounds. First, we may bound the prefactor above as</p>
+
+\[\frac{n}{n - \sum_i \mathcal{L}_i^2} \le \frac{n}{n - \sum_i \mathcal{L}_i} = 2,\]
+
+<p>where in the last step we have applied our choice of $\delta$. Second, we may bound the sum as</p>
+
+\[\sum_i (1 - \mathcal{L}_i)^2 v_i^2 
+\ \le \ \sum_i (1 - \mathcal{L}_i) v_i^2
+\ = \ \sum_i \frac{v_i^2}{\lambda_i} \frac{\kappa \lambda_i}{\lambda_i + \kappa}
+\ \le \ \kappa \cdot \sum_i \frac{v_i^2}{\lambda_i} \le \kappa \cdot |\!| f_* |\!|_K^2.\]
+
+<p>Finally, noting that $\sum_i \frac{\lambda_i}{\kappa} \ge \sum_i \mathcal{L}_i = \frac{n}{2}$, we may bound the constant $\kappa$ as</p>
+
+\[\kappa &lt; \frac{2}{n} \sum_i \lambda_i = \frac{2 \cdot \text{Tr}[K]}{n} = \frac{2 \cdot \mathbb{E}_{x \sim \mu}[K(x,x)]}{n} \le \frac{2 \cdot \max_{x \sim \mu}K(x,x)}{n}.\]
+
+<p>Putting the above four equations together (and also using the fact that the test MSE at optimal ridge will be less than or equal to the test MSE at our chosen ridge), we find that</p>
+
+\[\boxed{\mathcal{E}|_{\delta = \delta_*} \le \frac{4 \cdot \max_{x \sim \mu} K(x,x)}{n} \cdot |\!| f_* |\!|_K^2.}\]
+
+<p>This looks like a classical generalization bound! It seems to me like this sort of classical bound often doesn’t have one canonical statement but instead gets written many different ways (which I suppose makes sense if your equation is a fairly loose bound that you could tighten up in some places and loosen in others), and I couldn’t find an exact statement of precisely this form anywhere, so I suppose I’m not actually sure this is equivalent to a classical result (though ChatGPT assures me it is), but it certainly looks like lots of classical bounds I’ve seen.</p>
+
+<p>If we use the fact that $\lvert ! \lvert f_\ast \rvert ! \rvert_{L^2(\mu)}^2 = \sum_i v_i^2$, we can obtain the (to me more illuminating) result that</p>
+
+\[\frac{\mathcal{E}|_{\delta = \delta_*}}{\mathcal{E}|_{\delta \rightarrow \infty}} \le \frac{4 \cdot \max_{x \sim \mu} K(x,x)}{n} \cdot \frac{|\!| f_* |\!|_K^2}{|\!| f_* |\!|_{L^2(\mu)}^2}.\]
+
+<p>That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.</p>
+
+    </div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <div class="text-center p-3" style="background-color: #edf3f5;">
+  <div class="container ">
+    <div class="row justify-content-md-center">
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="far fa-envelope"></i>
+          <a href="mailto:jsi@berkeley.edu">jsi@berkeley.edu</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-github"></i>
+          <a href="https://github.com/james-simon">james-simon</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fas fa-graduation-cap"></i>
+          <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          <i class="fab fa-instagram"></i>
+          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
+        </p>
+      </div>
+
+      <div class="col-2">
+        <p class="text-center">
+          SSN: 314-15-9265
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+</footer>
+
+  </body>
+
+</html>
