@@ -66,7 +66,7 @@ Papers of this mathematical sort rarely include experiments: sometimes there are
 
 The overly mathematical nature of much deep learning theory research is natural and understandable given the field’s history: most workers come from TCS, statistics, or mathematics. Nonetheless, the game has changed, and we should require less rigor, more insight, and more empirics from contributions.
 
-**Progress in the study of the dynamics of neural network training** It seems to me that much of the lasting progress of the last five years — the stuff that’s really stuck around and been built on — is essentially all of a particular type which marries theory and empirics. This strain of research is characterized by several trends:
+**Progress in the study of the dynamics of neural network training.** It seems to me that much of the lasting progress of the last five years — the stuff that’s really stuck around and been built on — is essentially all of a particular type which marries theory and empirics. This strain of research is characterized by several trends:
 
 - It demands satisfying equations and quantitative predictions, and it is willing to study very simple cases and study dumb-seeming quantities in order to make this happen.
 - While the equations do not usually come *from* experiments, they are easily verified *by* experiments.
@@ -86,7 +86,7 @@ On the even more empirical side, phenomena like adversarial examples and the lot
 
 Most “observations” in deep learning are of the type that “X method works for Y task.” Much fruitful dialog could be had between deep learning scientists and practitioners if the practitioners were more proactive in aggregating interesting phenomena and handing them to the scientists, and likewise if the scientists were more proactive in asking for them. Of course, most practitioners are too laser-focused on building AGI to care about theory, so I am dubious this will happen.
 
-**"Hail Maries"**
+**"Hail Maries."**
 Lastly, there have been a few ideas proffered of a type that I'll call "hail Maries" after the long-bomb football pass.
 These ideas try to take a big step forwards all in one step with a very good guess: they tend to be summarizable by statements of the form "hey, what if deep learning is actually just X?"
 A good example of this is the much-embattled ["information bottleneck" theory](https://arxiv.org/abs/1503.02406).

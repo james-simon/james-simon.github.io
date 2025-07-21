@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Jul 2025 19:10:34 -0800</pubDate>
-    <lastBuildDate>Sun, 20 Jul 2025 19:10:34 -0800</lastBuildDate>
+    <pubDate>Mon, 21 Jul 2025 09:59:35 -0800</pubDate>
+    <lastBuildDate>Mon, 21 Jul 2025 09:59:35 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -71,7 +71,7 @@
 
 &lt;p&gt;The overly mathematical nature of much deep learning theory research is natural and understandable given the field’s history: most workers come from TCS, statistics, or mathematics. Nonetheless, the game has changed, and we should require less rigor, more insight, and more empirics from contributions.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Progress in the study of the dynamics of neural network training&lt;/strong&gt; It seems to me that much of the lasting progress of the last five years — the stuff that’s really stuck around and been built on — is essentially all of a particular type which marries theory and empirics. This strain of research is characterized by several trends:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Progress in the study of the dynamics of neural network training.&lt;/strong&gt; It seems to me that much of the lasting progress of the last five years — the stuff that’s really stuck around and been built on — is essentially all of a particular type which marries theory and empirics. This strain of research is characterized by several trends:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;It demands satisfying equations and quantitative predictions, and it is willing to study very simple cases and study dumb-seeming quantities in order to make this happen.&lt;/li&gt;
@@ -91,7 +91,7 @@ The above discussion is centered largely on deep learning theory. The science of
 
 &lt;p&gt;Most “observations” in deep learning are of the type that “X method works for Y task.” Much fruitful dialog could be had between deep learning scientists and practitioners if the practitioners were more proactive in aggregating interesting phenomena and handing them to the scientists, and likewise if the scientists were more proactive in asking for them. Of course, most practitioners are too laser-focused on building AGI to care about theory, so I am dubious this will happen.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;“Hail Maries”&lt;/strong&gt;
+&lt;p&gt;&lt;strong&gt;“Hail Maries.”&lt;/strong&gt;
 Lastly, there have been a few ideas proffered of a type that I’ll call “hail Maries” after the long-bomb football pass.
 These ideas try to take a big step forwards all in one step with a very good guess: they tend to be summarizable by statements of the form “hey, what if deep learning is actually just X?”
 A good example of this is the much-embattled &lt;a href=&quot;https://arxiv.org/abs/1503.02406&quot;&gt;“information bottleneck” theory&lt;/a&gt;.
