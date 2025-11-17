@@ -10,5 +10,5 @@ coauthor: Kaz Nobumoto
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/coasters.png" width="70%"/>
+<img src="{{site.baseurl}}/img/coasters/coasters.png" width="70%"/>
 </p>

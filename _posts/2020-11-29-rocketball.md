@@ -22,7 +22,7 @@ This proposal has one[^2] minor logistical problem: some sports are better than 
 At their core, all rockets operate on the same principle: they fling matter in one direction, and the recoil force pushes the rocket in the opposite direction. This recoil force is the same sort of pushback you'd feel when firing a gun, holding a fire hose, or doing a fast chest pass in basketball, but in a typical rocket the matter being launched is exhaust from burning fuel moving several kilometers per second. True to this principle, rockets have two main parts: the *fuel,* which is gradually fired to propel the rocket, and the *payload,* which is the important other bits that the fuel's there to accelerate. The fuel section also usually includes engines that help burn the fuel but fall off when they're no longer needed. Here's a diagram of the Saturn V rocket split into the launch vehicle (fuel + engines) and spacecraft (payload).
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/saturn_v.png" width="50%">
+   <img src="{{site.baseurl}}/img/rocketball/saturn_v.png" width="50%">
 </p>
 
 Our sportsball rockets will work basically the same way, but instead of liquid fuel they carry sports equipment, and instead of the most powerful engines ever built, they'll be powered by lone humans flinging objects into the vacuum of space.
@@ -32,7 +32,7 @@ If you're not familiar with rocketry or are very used to cars, you might wonder 
 Rockets are complicated, but for a rocket accelerating in a straight line, it turns out we can find its speed over time if we know just a few numbers. These are the payload mass (which we'll call $$m$$), the starting mass of the fuel and payload together ($$M$$), the relative speed the propellant's fired at ($$u$$), and the thrust of the rocket (this is the average kickback force the rocket feels; we'll call it $$F$$). Here's a diagram illustrating what some of these are.
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/rocket_math_diagram.png" width="70%">
+   <img src="{{site.baseurl}}/img/rocketball/rocket_math_diagram.png" width="70%">
 </p>
 
 If you do the rocket science, you find that to reach a final speed $$v$$, the rocket needs a starting mass of $$M = m e^{v/u}$$, and it runs out of fuel and reaches speed $$v$$ at a time $$t = \frac{(M-m)u}{F}$$. For a given target speed $$v$$, this choice of $$M$$ is optimal - with less fuel, it won't reach the target speed, but with any more, it'll reach it slower.
@@ -40,7 +40,7 @@ If you do the rocket science, you find that to reach a final speed $$v$$, the ro
 We can use these formulae to figure out roughly what'll happen in our intersport showdown. For a given sport, $$u$$ is just the projectile speed (around 76 m/s for a golf ball and 4 m/s for a pool ball) and the thrust is equal to (projectile speed)$$\times$$(projectile mass)$$\times$$(fire rate). If we assume a constant fire rate of 1 shot/s across all sports for simplicity, we can get the speed and thrust for every sport. Here's a plot showing the results.
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/rocketball_scatterplot.png" width="70%">
+   <img src="{{site.baseurl}}/img/rocketball/rocketball_scatterplot.png" width="70%">
 </p>
 
 A quick look at this might reveal some oddities. Jai alai (also called Basque pelota) was once an Olympic sport; it's like wallball but with a giant curved launcher on your throwing arm. Bowling and pool I've included even though they're not Olympic sports. Crossbow shooting I included because our question is ultimately about projectiles launched solely with energy from human muscles, and it's one of the best examples of that. For the same reason, I didn't include gun sports. Lastly, running and swimming events don't have projectiles, so I assumed their respective gold medalists will be throwing shoes and spitting mouthfuls of pool water[^3].
@@ -48,7 +48,7 @@ A quick look at this might reveal some oddities. Jai alai (also called Basque pe
 This plot makes it clear that some sports are better than others, but it's not apparent which is best. To decide, we'll have to pick a target speed. Let's say the athlete and their suit are 100 kg, and they're trying to reach a final speed of 10 m/s. We'll also assume that the athlete can repeatedly launch projectiles in the same direction without uncontrollably spinning or getting knocked off, but that seems fair; after all, they are professionals. About how long will each sport's champion take to finish?
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/rocketball_ts_10.png" width="70%">
+   <img src="{{site.baseurl}}/img/rocketball/rocketball_ts_10.png" width="70%">
 </p>
 
 This plot shows that the best sport to reach 10 m/s is shot put. It'd actually only take 24 solid throws to finish, which is 24 seconds with our assumption of one shot per second. Most other sports take a few minutes; the swimmers will be spitting into the void for several days.
@@ -56,7 +56,7 @@ This plot shows that the best sport to reach 10 m/s is shot put. It'd actually o
 What if we instead want to reach 100 m/s?
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/rocketball_ts_100.png" width="70%">
+   <img src="{{site.baseurl}}/img/rocketball/rocketball_ts_100.png" width="70%">
 </p>
 
 Now the best option is to accelerate with 2053 jai alai throws, which takes a little over half an hour. Due to the exponential in our time formula, however, accelerating with pool balls will now take over a hundred million years. Surprisingly, most high-energy projectile sports are all relatively close, with a time less than a few hours. Actually, at a target speed of 130 m/s, the entire swath from crossbow to javelin is about even! This, I propose, is the ideal choice for Rocketball; the sports without high-energy projectiles can get a handicap.
@@ -64,7 +64,7 @@ Now the best option is to accelerate with 2053 jai alai throws, which takes a li
 What if we make the target 1000 m/s?
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/rocketball_ts_1000.png" width="70%">
+   <img src="{{site.baseurl}}/img/rocketball/rocketball_ts_1000.png" width="70%">
 </p>
 
 With this high target speed, the $$e^{v/u}$$ term is so dominant that the thrust is basically irrelevant compared to the exhaust speed. The best option now is to use 35 million crossbow bolts, which will take around a year. This is one of the few situations where your best choice is to use a bow in space. All the sports slower than javelin will take longer than the current age of the universe.
@@ -76,7 +76,7 @@ There is, however, a sport we've overlooked. The tires of a bike contain air und
 How long would that take? By our constraint of only man-powered projectiles, you'd have to pump up the air. This is about 47 billion bike tires' worth of air, so it'd take around a millenium even if you're the [world's fastest tire pumper](https://www.guinnessworldrecords.com/world-records/419351-fastest-time-to-pump-a-bicycle-tyre). The release, however, would be quick.
 
 <p align="center">
-   <img src="{{site.imgurl}}/rocketball/air_jetpack.png" width="100%">
+   <img src="{{site.baseurl}}/img/rocketball/air_jetpack.png" width="100%">
 </p>
 
 

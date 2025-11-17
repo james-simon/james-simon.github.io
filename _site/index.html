@@ -109,6 +109,50 @@
     font-size: 80%;
     margin-top: -1em;
   }
+
+  .headshot-container {
+    position: relative;
+    display: inline-block;
+    margin-right: -15px;
+    margin-top: 1em;
+  }
+
+  .headshot-container img {
+    width: 100%;
+    height: auto;
+    max-width: 250px;
+  }
+
+  .loading-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .loading-bar.visible {
+    opacity: 1;
+  }
+
+  .loading-bar-fill {
+    height: 100%;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: width 3s linear;
+  }
+
+  .loading-bar.no-transition .loading-bar-fill {
+    transition: none;
+  }
+
+  .loading-bar.active .loading-bar-fill {
+    width: 100%;
+  }
 </style>
 <!-- <hr class="hr-thick"> -->
 <!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"><div class="hovereffect"><img class="img-responsive" src="https://james-simon.github.io/img/headshot.png" alt=""><div class="overlay"><a class="info" href="#">link here</a></div></div></div>
@@ -121,23 +165,17 @@
 
   <div class="row">
     <div class="col-md-3">
-      <div class="mr-4">
-        <div class="hovereffect">
-          <img src="https://james-simon.github.io/img/headshot.png" height="210px">
-          <div class="tint"></div>
-          <a class="hoverinfo hover1" style="font-size:xx-small;" href="">This is me about to do a 100' rope swing off El Capitan in Yosemite</a>
-          <a class="hoverinfo hover2" style="font-size:xx-small;" href="">Actually, I guess this was taken just after swinging, but the rest is right</a>
-          <a class="hoverinfo hover3" style="font-size:xx-small;" href="">Well, actually, the swing was only 30', but everything else is definitely the truth</a>
-          <a class="hoverinfo hover4" style="font-size:xx-small;" href="">Okay, fine, it wasn't El Capitan, it was just a rock in Delaware, but I swear the rest is real</a>
-          <a class="hoverinfo hover5" style="font-size:xx-small;" href="">Fine, I didn't actually swing, I just held a rope, but the idea is the same</a>
-          <a class="hoverinfo hover6" style="font-size:xx-small;" href="">Alright, alright, I'll come clean: the original story was true</a>
+      <div class="headshot-container">
+        <img id="headshot" src="/img/pictures_of_me/me_at_collingwood_house_1.jpeg">
+        <div class="loading-bar">
+          <div class="loading-bar-fill"></div>
         </div>
       </div>
     </div>
 
     <div class="col-md-9">
       <h1>Jamie Simon</h1>
-      <p>I'm a final-year PhD student in the physics department at UC Berkeley, aiming to use tools from theoretical physics to build fundamental understanding of deep neural networks. I'm advised by <a href="https://deweeselab.com/">Mike DeWeese</a> and supported by an NSF Graduate Research Fellowship. I'm also a research fellow at <a href="https://imbue.com/">Imbue</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="/blog/gravitrees">balancing things</a>.
+      <p>I'm a scientist aiming to understand the training dynamics of deep neural networks. I currently run a small lab within the <a href="https://redwood.berkeley.edu/">Redwood Center</a> and am supported by <a href="https://imbue.com/">Imbue</a>, where I am a research fellow. I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="gravitrees.com">balancing things</a>.
       <br>
       <br>
       A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing
@@ -158,7 +196,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="/img/more_is_better_mainpage_figure.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/more_is_better_mainpage_figure.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>More is better: when infinite overparameterization is optimal and overfitting is obligatory</h3>
@@ -175,7 +213,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="/img/spectral_scaling_mainpage_figure.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/spectral_scaling_mainpage_figure.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>A spectral condition for feature learning</h3>
@@ -191,7 +229,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="/img/stepwise_mainpage_figure.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/stepwise_mainpage_figure.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>On the stepwise nature of self-supervised learning</h3>
@@ -208,7 +246,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="/img/fedex_attack_mainpage_figure.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/fedex_attack_mainpage_figure.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>You can just put up a poster at ICML and nobody will stop you</h3>
@@ -225,7 +263,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="/img/eigenlearning_mainpage_figure.png" width=80%>
+      <img class="mr-4" src="/img/mainpage_figures/eigenlearning_mainpage_figure.png" width=80%>
     </div>
     <div class="col-md-9">
       <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
@@ -243,7 +281,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="https://james-simon.github.io/img/shallow_learning_sketch.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/shallow_learning_sketch.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>Reverse engineering the neural tangent kernel</h3>
@@ -261,7 +299,7 @@
   <hr class="hr-thick">
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="https://james-simon.github.io/img/tempered_overfitting.png" width=100%>
+      <img class="mr-4" src="/img/mainpage_figures/tempered_overfitting.png" width=100%>
     </div>
     <div class="col-md-9">
       <h3>Benign, tempered or catastrophic: a taxonomy of overfitting</h3>
@@ -277,39 +315,10 @@
     </div>
   </div>
 
-<!--   <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <br>
-      <video autoplay loop muted playsinline width="100%" style="display:block; margin: 0 auto;">
-        <source src="https://james-simon.github.io/img/eigenlearning_exp_matches_th_small.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="col-md-9">
-      <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
-      <strong>A simple theory of the generalization of kernel ridge regression</strong>
-      <p class="blurb"> Of all the many mysteries of modern neural networks, perhaps the greatest is the question of generalization: why do the functions learned by neural networks generalize so well to new data? "Why" questions can be difficult to pin down, so in recent joint work with Maddie Dickens, we took up a more scientific question: <i>can we predict, from first principles, how well a given net will generalize on a given function?</i> It turns out that recent breakthroughs have essentially answered this question for kernel ridge regression, furnishing accurate approximations for several key metrics of neural network generalization. In this work, we give a simpler derivation of these important results, ascribe a new interpretation to the final theory, and discuss several new applications of the theory to shed light on various aspects of neural network generalization, including double descent and the hardness of the classic parity problem. Key to our formulation is a simple conservation law, latent in kernel regression, which limits the total "learnability" of any orthonormal basis of target functions. Our theory is transparent enough to give intuitive insights into when and why a neural network generalizes well.
-      <p class="paper-info">
-        <strong>(2021)</strong>
-        <strong>
-          <em>TMLR</em>
-        </strong>
-        <a href="https://arxiv.org/abs/2110.03922">[arXiv]</a>
-        <a href="https://github.com/james-simon/eigenlearning">[code]</a>
-        <a href="https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/">[blog]</a>
-      </p>
-    </div>
-  </div> -->
-  <!--    <hr class="hr-thick"><div class="row"><div  class="col-md-3"><img class="mr-4" src="https://james-simon.github.io/img/GRFtest.gif" width="100%"></div><div class="col-md-9"><h3>A phenomenological theory of high-dimensional optimization</h3><p class="blurb">
-            I'm currently working on a phenomenological field-theory-based model of high-dimensional loss surfaces that'll hopefully faithfully capture several emprical features of real neural net loss surfaces. I aim for my model to explain the Hessian loss-index relationship, agree with findings that datasets have <a href="https://arxiv.org/abs/1804.08838">intrinsic dimensions</a>, and shed light on <a href="https://arxiv.org/abs/1802.10026">mode connectivity</a>. This research direction was the subject of my proposal for the NSF-GRFP.
-         </p></div></div> -->
-  <!--    <hr class="hr-thick"><div class="row"><div class="col-md-3"><img class="mr-4" src="https://james-simon.github.io/img/net_diagrams/net_diagram_rules.png" width="100%"></div><div class="col-md-9"><h3>Alternative neural network formulations</h3><p class="blurb">
-            One current direction of my research involves exploring variants on the classic neural network design that are still able to do complex deep learning tasks. Much evidence in the last few years indicates that the magic of neural networks lies in their hierarchical nonlinear structure, not in the low-level details of their mathematical formulation, so this project's aiming to explore other, new deep learning models to build an understanding of what the requirements are for a model to learn complex patterns. I've written up some of my progress on one variant <a href="/deep learning/2020/08/31/multiplicative-neural-nets">here.</a></p></div></div> -->
-
   <hr class="hr-thick">
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="https://james-simon.github.io/img/trajectories.png" width="100%">
+      <img class="mr-4" src="/img/mainpage_figures/trajectories.png" width="100%">
     </div>
     <div class="col-md-9">
       <h3>Critical point-finding methods reveal gradient-flat regions of deep network losses</h3>
@@ -327,7 +336,7 @@
   <hr class="hr-thick">
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="https://james-simon.github.io/img/jj.png" width="100%">
+      <img class="mr-4" src="/img/mainpage_figures/jj.png" width="100%">
     </div>
     <div class="col-md-9">
       <h3>Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits</h3>
@@ -343,7 +352,7 @@
   <hr class="hr-thick">
   <div class="row">
     <div class="col-md-3">
-      <img class="mr-4" src="https://james-simon.github.io/img/statediagram.png" width="100%">
+      <img class="mr-4" src="/img/mainpage_figures/statediagram.png" width="100%">
     </div>
     <div class="col-md-9">
       <h3>Fast noise-resistant control of donor nuclear spin qubits in silicon</h3>
@@ -357,11 +366,6 @@
     </div>
   </div>
 
-  <hr class="hr-thick">
-  <!--    <div  class="media"><div  class="pull-left media-top" width=250px><br><img class="mr-4" src="https://james-simon.github.io/img/shallow_learning_sketch.png" width=250px></div><div class="media-body"><h3>On the Power of Shallow Learning</h3><strong>Reverse-engineering the neural network-kernel method equivalence</strong><p class="blurb">
-            Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel methods.</i> Given a wide network architecture, it's surprisingly easy to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In recent work with Sajant Anand, I showed that, for fully-connected nets (FCNs), this mapping can be run in reverse: given a desired kernel, we can work backwards to find a network that achieves it. Surprisingly, we can always design this network to have only a single hidden layer, and we used that fact to prove that wide shallow FCNs can achieve any kernel a deep FCN can, an analytical conclusion our experiments support. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning.
-         </p><p class="paper-info"><strong>(2021)</strong><strong><em>In Submission</em></strong><a href="https://arxiv.org/abs/2106.03186v1">[arXiv]</a><a href="https://github.com/james-simon/shallow-learning">[code]</a></p></div></div> -->
-         
   <a name="puzzles"></a>
   <h2>Puzzles</h2>
   <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher. It became a university tradition, with the 2019-22 VT Hunts each drawing 1000-2000 participants and raising money for charities, and I've stayed involved as a mentor. I've also helped concoct six other puzzle events starting in high school. A few of my favorite puzzles I've made are below. They're roughly ordered from easiest to hardest, so you can pick where to start. </p>
@@ -528,7 +532,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/coasters.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/coasters/coasters.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/coasters/">
               <h4>COASTERS</h4>
@@ -588,7 +596,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/flags.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/flags/flags.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/flags/">
               <h4>FLAGS</h4>
@@ -600,7 +612,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/forestson.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/forestson/forestson.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/forestson/">
               <h4>FOREST SON</h4>
@@ -636,7 +652,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/addersmultiplying.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/addersmultiplying/addersmultiplying.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/addersmultiplying/">
               <h4>ADDERS MULTIPLYING</h4>
@@ -684,7 +704,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/90shadesofblack.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/90shades/90shadesofblack.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/90shades/">
               <h4>90 SHADES OF BLACK</h4>
@@ -704,7 +728,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/nameamoreiconicsetofcouplets.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/couplets/nameamoreiconicsetofcouplets.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/couplets/">
               <h4>NAME A MORE ICONIC SET OF COUPLETS</h4>
@@ -734,7 +762,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/topology.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/topology/topology.jpg">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/topology/">
               <h4>TOPOLOGY</h4>
@@ -826,7 +858,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/mining.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/mining/mining.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/mining/">
               <h4>MINING</h4>
@@ -842,7 +878,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/transit.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/transit/transit.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/transit/">
               <h4>TRANSIT</h4>
@@ -926,7 +966,11 @@
       
         
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            <img class="center-cropped" src="https://james-simon.github.io/img/maelstrom.png">
+            
+            
+            
+              <img class="center-cropped" src="/img/maelstrom/maelstrom.png">
+            
             <div class="tint"></div>
             <a class="hoverinfo" href="/puzzles/maelstrom/">
               <h4>MAELSTROM</h4>
@@ -1511,6 +1555,116 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  const headshot = document.getElementById('headshot');
+  const container = document.querySelector('.headshot-container');
+  const loadingBar = document.querySelector('.loading-bar');
+
+  // Edit this list to change the photo sequence!
+  // Add or remove filenames from img/pictures_of_me/
+  const photoSequence = [
+    'me_in_glacier.jpg',
+    'me_at_collingwood_house_1.jpeg',
+    'me_at_collingwood_house_2.jpg',
+    'me_grinding.jpeg',
+    'me_in_tux.jpeg',
+    'me_with_lizard.jpeg',
+    'baby_me.jpeg',
+    'baby_me_in_goldfish.jpg',
+    'me_with_gravitree.jpeg',
+    // 'me_pre_eclipse.jpeg',
+    'me_walking_in_texas.jpeg',
+    'dolly_spartan_me.jpeg',
+    'me_on_ski_lift.jpeg',
+    'me_in_sibley_volcanic.jpeg',
+    // 'me_in_utah_maybe.jpg',
+    // 'me_on_el_capitan.png',
+    'me_on_rock.png',
+  ];
+
+  // Build full paths
+  const images = photoSequence.map(function(filename) {
+    return '/img/pictures_of_me/' + filename;
+  });
+
+  // Set initial image to first in sequence
+  headshot.src = images[0];
+
+  let currentIndex = 0;
+  let timeout = null;
+  let isLoading = false;
+  let isHovering = false;
+
+  function startLoading() {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    // Show and start loading bar animation
+    loadingBar.classList.add('visible');
+    // Small delay to ensure visibility is set before animation starts
+    setTimeout(function() {
+      loadingBar.classList.add('active');
+    }, 10);
+
+    // Set timeout to switch image after 3 seconds
+    timeout = setTimeout(function() {
+      // Toggle to next image
+      currentIndex = (currentIndex + 1) % images.length;
+      headshot.src = images[currentIndex];
+
+      // Reset loading bar without transition
+      loadingBar.classList.add('no-transition');
+      loadingBar.classList.remove('active');
+      loadingBar.classList.remove('visible');
+
+      // Force reflow to apply the reset
+      void loadingBar.offsetWidth;
+
+      // Re-enable transitions
+      loadingBar.classList.remove('no-transition');
+
+      // Reset loading state
+      isLoading = false;
+      timeout = null;
+
+      // If still hovering, start next cycle
+      if (isHovering) {
+        setTimeout(startLoading, 100);
+      }
+    }, 3000);
+  }
+
+  container.addEventListener('mouseenter', function() {
+    isHovering = true;
+    startLoading();
+  });
+
+  container.addEventListener('mouseleave', function() {
+    isHovering = false;
+
+    // Only reset if we haven't completed the load
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+      isLoading = false;
+
+      // Hide and reset loading bar without transition
+      loadingBar.classList.add('no-transition');
+      loadingBar.classList.remove('visible');
+      loadingBar.classList.remove('active');
+
+      // Force reflow to reset animation
+      void loadingBar.offsetWidth;
+
+      // Re-enable transitions
+      loadingBar.classList.remove('no-transition');
+    }
+  });
+})();
+</script>
 
       </div>
     </div>

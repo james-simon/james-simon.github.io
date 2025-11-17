@@ -9,5 +9,5 @@ difficulty: 7
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/transit.png" width="80%" />
+<img src="{{site.baseurl}}/img/transit/transit.png" width="80%" />
 </p>

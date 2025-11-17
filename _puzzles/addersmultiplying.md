@@ -8,5 +8,5 @@ difficulty: 4
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/addersmultiplying.png" width="80%" />
+<img src="{{site.baseurl}}/img/addersmultiplying/addersmultiplying.png" width="80%" />
 </p>

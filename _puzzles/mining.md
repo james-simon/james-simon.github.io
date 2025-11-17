@@ -9,5 +9,5 @@ difficulty: 7
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/mining.png" width="100%" />
+<img src="{{site.baseurl}}/img/mining/mining.png" width="100%" />
 </p>

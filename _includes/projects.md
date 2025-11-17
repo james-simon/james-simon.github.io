@@ -120,9 +120,9 @@ as "The 1992 Philadelphia Eagles".
 I'm the clarinet.
 
 
-[emojify]: {{site.imgurl}}/emojiTest3.png
-[qualBlog]: {{site.imgurl}}/qualBlog.png
-[broLove]: {{site.imgurl}}/broLove.jpg
-[soil_banner_crop]: {{site.imgurl}}/soil_banner_crop.png
-[stats_for_neuro]: {{site.imgurl}}/stats_for_neuro.png
-[101d_banner]: {{site.imgurl}}/101d_banner.png
+[emojify]: {{site.baseurl}}/img/emojiTest3.png
+[qualBlog]: {{site.baseurl}}/img/qualBlog.png
+[broLove]: {{site.baseurl}}/img/broLove.jpg
+[soil_banner_crop]: {{site.baseurl}}/img/soil_banner_crop.png
+[stats_for_neuro]: {{site.baseurl}}/img/stats_for_neuro.png
+[101d_banner]: {{site.baseurl}}/img/101d_banner.png

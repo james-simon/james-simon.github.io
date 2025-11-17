@@ -80,7 +80,7 @@
 
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">Reverse engineering the NTK</h1>
-      <p class="post-meta"><time datetime="2022-08-23T00:00:00-08:00" itemprop="datePublished">Aug 23, 2022</time></p>
+      <p class="post-meta"><time datetime="2022-08-23T00:00:00-07:00" itemprop="datePublished">Aug 23, 2022</time></p>
     </header>
 
     <div class="post-content" itemprop="articleBody">
@@ -92,7 +92,7 @@ In <a href="https://arxiv.org/abs/2106.03186">Reverse Engineering the Neural Tan
 Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep \(\textrm{ReLU}\) network performance with just one hidden layer and another that soundly outperforms deep \(\textrm{ReLU}\) networks on a synthetic task.</p>
 
 <p style="text-align:center;">
-<img src="https://james-simon.github.io/img/rev_eng_fig1.png" width="80%" />
+<img src="/img/rev_eng/rev_eng_fig1.png" width="80%" />
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -127,7 +127,7 @@ Since \(K(c)\) is a scalar function of a scalar argument, we can simply plot it.
 Fig. 2 shows the NTK of a four-hidden-layer (4HL) \(\textrm{ReLU}\) FCN.</p>
 
 <p style="text-align:center;">
-<img src="https://james-simon.github.io/img/rev_eng_fig2.png" width="65%" />
+<img src="/img/rev_eng/rev_eng_fig2.png" width="65%" />
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -164,7 +164,7 @@ This implies we can come up with some new activation function \(\tilde{\phi}\) t
 Fig. 3 illustrates this experiment.</p>
 
 <p style="text-align:center;">
-<img src="https://james-simon.github.io/img/rev_eng_fig3.png" width="60%" />
+<img src="/img/rev_eng/rev_eng_fig3.png" width="60%" />
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -178,7 +178,7 @@ The right plots then show train + test loss + accuracy traces for three FCNs on 
 Note that, while the shallow and deep ReLU networks have very different behaviors, our engineered shallow mimic network tracks the deep network almost exactly!</p>
 
 <p style="text-align:center;">
-<img src="https://james-simon.github.io/img	/ntk-reveng/rev_eng_fig4.png" width="70%" />
+<img src="/img/rev_eng/rev_eng_fig4.png" width="70%" />
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>

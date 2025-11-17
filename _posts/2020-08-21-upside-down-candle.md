@@ -23,7 +23,7 @@ However, there's a problem with this situation.  This augmented flame would melt
 I also asked friends to guess how an upside-down candle would burn and got around 10 responses.  Most people either gave the self-snuffing scenario - let's call it scenario (1) - or the second, self-sustaining scenario - say, (2).
 
 <p align="center">
-   <img src="{{site.imgurl}}/candle_scenarios.png" width="30%" />
+   <img src="{{site.baseurl}}/img/upside_down_candle/candle_scenarios.png" width="30%" />
 </p>
 
 To answer this question, I dangled a candle, set up another for comparison, and lit them.  [A video of the result is here.](https://www.youtube.com/watch?v=tJv4IOTvCWY)  Forgive the subpar quality.

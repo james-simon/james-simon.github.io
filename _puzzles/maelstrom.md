@@ -9,5 +9,5 @@ difficulty: 9
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/maelstrom.png" width="50%" />
+<img src="{{site.baseurl}}/img/maelstrom/maelstrom.png" width="50%" />
 </p>

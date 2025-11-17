@@ -9,5 +9,5 @@ difficulty: 5
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/90shadesofblack.png" width="50%" />
+<img src="{{site.baseurl}}/img/90shades/90shadesofblack.png" width="50%" />
 </p>

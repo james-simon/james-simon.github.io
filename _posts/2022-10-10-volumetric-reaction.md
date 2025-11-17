@@ -75,7 +75,7 @@ Turing patterns are beautiful, amorphous-looking spatial patterns in the concent
 Here are some examples ([source here](https://www.youtube.com/watch?v=MR79V9UmM6s)):
 
 <p align="center">
-	<img src="{{site.imgurl}}/reaction_diffusion/turing_patterns.png" width="50%">
+	<img src="{{site.baseurl}}/img/reaction_diffusion/turing_patterns.png" width="50%">
 </p>
 
 (Note that these are 2D, while we'll be working in 1D.)
@@ -116,8 +116,8 @@ I'll defer further discussion and the equations themselves to the [Appendix](#ap
 Let's just jump to the good part: here are videos of the reaction working.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/reaction_diffusion/rd_sim_v=3.gif" width="30%">
-<img src="{{site.imgurl}}/reaction_diffusion/rd_sim_v=5.gif" width="44%">
+<img src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=3.gif" width="30%">
+<img src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=5.gif" width="44%">
 </p>
 <p style="margin-left:18%; margin-right:18%;">
 <small>
@@ -131,7 +131,7 @@ The medians land right on the true volumes.
 (The long tails of outliers reporting smaller volumes reflects cases in which more than one bump was formed; the reaction's pretty noisy, but I count this as success since it works most of the time.)
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/reaction_diffusion/volumetric_reaction_vol_test.png" width="40%">
+<img src="{{site.baseurl}}/img/reaction_diffusion/volumetric_reaction_vol_test.png" width="40%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>

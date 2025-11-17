@@ -4,7 +4,7 @@ title: About Me
 permalink: /about/
 ---
 
-<img style="float: right; margin: 0px 15px 15px 0px;" src="{{site.imgurl}}/me.jpg" width="33%" />
+<img style="float: right; margin: 0px 15px 15px 0px;" src="{{site.baseurl}}/img/me.jpg" width="33%" />
 
 My name is Charles Frye and I'm a graduate student at UC Berkeley in the
 [Helen Wills Neuroscience Institute](http://neuroscience.berkeley.edu/)

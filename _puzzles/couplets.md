@@ -10,5 +10,5 @@ coauthor: Andreas Butler
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/nameamoreiconicsetofcouplets.png" width="90%" />
+<img src="{{site.baseurl}}/img/couplets/nameamoreiconicsetofcouplets.png" width="90%" />
 </p>

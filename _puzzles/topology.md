@@ -9,5 +9,5 @@ difficulty: 5
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/topology.jpg" width="70%" />
+<img src="{{site.baseurl}}/img/topology/topology.jpg" width="70%" />
 </p>

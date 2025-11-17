@@ -13,7 +13,7 @@ In [Reverse Engineering the Neural Tangent Kernel](https://arxiv.org/abs/2106.03
 Our main theoretical result enables the design of activation functions from first principles, and we use it to create one activation function that mimics deep $$\textrm{ReLU}$$ network performance with just one hidden layer and another that soundly outperforms deep $$\textrm{ReLU}$$ networks on a synthetic task.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/rev_eng_fig1.png" width="80%">
+<img src="{{site.baseurl}}/img/rev_eng/rev_eng_fig1.png" width="80%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -48,7 +48,7 @@ Since $$K(c)$$ is a scalar function of a scalar argument, we can simply plot it.
 Fig. 2 shows the NTK of a four-hidden-layer (4HL) $$\textrm{ReLU}$$ FCN.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/rev_eng_fig2.png" width="65%">
+<img src="{{site.baseurl}}/img/rev_eng/rev_eng_fig2.png" width="65%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -85,7 +85,7 @@ This implies we can come up with some new activation function $$\tilde{\phi}$$ t
 Fig. 3 illustrates this experiment.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/rev_eng_fig3.png" width="60%">
+<img src="{{site.baseurl}}/img/rev_eng/rev_eng_fig3.png" width="60%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -99,7 +99,7 @@ The right plots then show train + test loss + accuracy traces for three FCNs on 
 Note that, while the shallow and deep ReLU networks have very different behaviors, our engineered shallow mimic network tracks the deep network almost exactly!
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}	/ntk-reveng/rev_eng_fig4.png" width="70%">
+<img src="{{site.baseurl}}/img/rev_eng/rev_eng_fig4.png" width="70%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>

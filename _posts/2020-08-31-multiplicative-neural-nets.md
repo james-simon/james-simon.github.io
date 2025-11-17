@@ -33,7 +33,7 @@ My argument could easily be laid out with standard symbolic math.  However, that
 Basic neural nets are built of a few basic pieces.  There are *input nodes*, where input data vectors go into the net.  There are *output nodes*, where the net's output comes out.  There are elementwise *nonlinear functions*, mapping real numbers to real numbers.  There are *additive* or *matrix operations*, each with its own 2D array of parameters $$W$$, which in normal neural nets come between applications of nonlinear functions.  Lastly, we'll include *multiplicative operations*, which also each have their own 2D array array of parameters <span style="color:purple">$$W$$</span> as discussed above.  We'll use color to differentiate between additive and multiplicative operations; additive will be black, multiplicative will be purple.  Note that changing an operation from additive to multiplicative or vice versa doesn't change its parameter matrix; the same numerical weights are just interpreted differently in a different operation.  We could also add pieces like biases or specialized layers like softmax or maxpooling, but we'll leave those out for now for simplicity.  We could cast these pieces into diagrammatic form as follows:
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/net_components.png" width="30%">
+   <img src="{{site.baseurl}}/img/net_diagrams/net_components.png" width="30%">
 </p>
 
 
@@ -41,37 +41,37 @@ We can now build neural nets out of these components.  For example, the followin
 
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/net_example.png" width="60%">
+   <img src="{{site.baseurl}}/img/net_diagrams/net_example.png" width="60%">
 </p>
 
 There are a few different ways we can manipulate these diagrams while still keeping the model the same.  The first way is *function composition*.  If there are two nonlinear functions in a row, we can just replace them with one new function.  This is just saying that the double function application $$f(g(x))$$ is equivalent to the single function application $$h(x)$$, defining $$h = f \circ g$$.  One special, familiar case is when the two functions are each other's inverses, and the new function is simply the identity; for example, $$\ln(\exp(x)) = x$$.  Instead of writing the identity function explicitly, we can just write a line.  Note that in the notation $$f \circ g$$, functions are applied right to left, but in our diagramas, everything flows from left to right, so the ordering of the composed functions might seem backwards at first.  There's also the multiplicative-additive net identity we talked about earlier: $$\prod_j x_j ^ {w_{ij}} = \exp \big( \sum_j w_{ij} \ln(x_j) \big)$$.  A multiplicative layer is the same as an additive layer with logarithms before and exponentials afterwards.  We can write these rules like this:
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/net_diagram_rules.png" width="40%">
+   <img src="{{site.baseurl}}/img/net_diagrams/net_diagram_rules.png" width="40%">
 </p>
 
 These rules lay out ways we can manipulate diagrams.  As a test of this notation, with just these simple rules we can derive a companion rule to the multiplicative-additive identity.  Just as you can take a function of both sides of an algebraic equation, we're allowed to modify a diagrammatic equation by attaching pieces to dangling ends of both diagrams in the same way.  In this case, we'll attach exponentials on all dangling ends on the left and logarithms on the right of both diagrams.  This gives us a new diagrammatic equation.  We can then use function composition to simplify the adjacent logarithms and exponentials to get a new, simple identity.  This one tells us that $$\ln \big( \prod_j  \exp(x_j)^{w_{ij}} \big) = \sum_j w_{ij} x_j$$, which you can algebraically check is true.
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/manipulation_example.png" width="60%">
+   <img src="{{site.baseurl}}/img/net_diagrams/manipulation_example.png" width="60%">
 </p>
 
 Now, let's put together a multiplicative net and see what we can derive.  Our starting point will be the same simple 3-3-3-3 net as before, but with multiplicative layers; it will be clear that our operations will generalize to different sizes.  First, we use the multiplicative-additive identity to get an additive net.  However, instead of just having one nonlinear function acting on each element of the feature vector, there are now three in succession.  Using function composition, we can just group these into a new nonlinearity we define as $$\sigma' = \ln \circ \sigma \circ \exp$$.  We now arrive at an additive net *exactly equivalent to the multiplicative net*.  The only major oddity of the new additive net is elementwise logarithms at the start and exponentials at the end.
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/multiplicative_net_transformation.png" width="80%">
+   <img src="{{site.baseurl}}/img/net_diagrams/multiplicative_net_transformation.png" width="80%">
 </p>
 
 These logarithms and exponentials at the start and end aren't surprising.  We're requiring that multiplicative nets need positive input and give positive output, so since logarithms of negative numbers aren't real, these logarithms enforce the positivity of the input.  The exponentials similarly enforce the positivity of the output.  Also, as long as $$\sigma$$ maps positive numbers to positive numbers, the net only operates on positive numbers intermediately, and we don't have the undefined power problem.  We can make our diagram even simpler by absorbing the logarithms and exponentials into the inputs as follows:
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/end_absorption.png" width="60%">
+   <img src="{{site.baseurl}}/img/net_diagrams/end_absorption.png" width="60%">
 </p>
 
 It turns out that a multiplicative net is basically the same as an additive net *with the same weights!*  Our choice of notation emphasizes the similarity of form.  However, is this really a meaningful, useful correspondence?  The main question is this: what's the nonlinearity $$\sigma'$$ like?  It's possible that $$\sigma' = \ln \circ \sigma \circ \exp$$ is some bizarre function that'd be totally nonfunctional in an additive net, which would bode badly for our multiplicative net.  To answer this, a few examples are plotted below.  The blue curves show different choices of nonlinearity for multiplicative nets, defined only for positive inputs, and the orange curves show the corresponding additive nonlinearities.
 
 <p align="center">
-   <img src="{{site.imgurl}}/net_diagrams/nonlinearities.png" width="100%">
+   <img src="{{site.baseurl}}/img/net_diagrams/nonlinearities.png" width="100%">
 </p>
 
 As shown in (a), when $$\sigma$$ is the $$\tanh$$ function, $$\sigma'$$ looks a lot like a smoothed $$\text{ReLU}$$, also called a softplus!  It's flipped across the x- and y-axes, but that doesn't change the usefulness of a nonlinearity in an additive neural net.  This would definitely work as an activation function.  Surprisingly, (b) shows that when $$\sigma$$ is a sigmoid, $$\sigma'$$ is also roughly a sigmoid (but again flipped across both axes), which also works as a nonlinearity.  Shown in (c) is the case when the multiplicative net uses a $$\text{ReLU}$$ nonlinearity.  This is a distinctly horrendous choice for only positive inputs, since it's the same as the identity on positive input, which is reflected in the fact that $$\sigma'(x) = x$$.  A multiplicative neural net with $$\text{ReLU}$$ nonlinearities is basically linear; adding extra layers doesn't give it any power since, for additive networks, a multilayer linear net is reducible to a linear model.  With a slight modification, however, we get a very useful nonlinearity.  As shown in (d), if the nonlinear net uses a modified $$\text{ReLU}$$ - specifically, $$\sigma(x) = \max(x, 1)$$ - the corresponding linear net has exactly $$\text{ReLU}$$ activations.

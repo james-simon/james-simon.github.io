@@ -28,7 +28,7 @@ Without further ado, here’s a bunch of stuff I learned.
 Coming from machine learning, my naive picture of the brain was basically that it’s a big homogeneous mass of neurons initially connected in a mostly random fashion, with inputs to some regions and outputs from others, and that learning from experience leads to gradual strengthening and weakening of neural connections so that this mass of neurons eventually knows and learns.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/neuro/self_conception.png" width="50%">
+<img src="{{site.baseurl}}/img/neuro/self_conception.png" width="50%">
 </p>
 
 In reality, the brain is highly structured. This is actually pretty apparent from anatomy, even at a coarse level: the inside of the brain is whitish (containing mostly long insulated communication channels, or *white matter*), while the outer few millimeters is greyish (containing lots of neurons with dense short-range connections, or *grey matter*). Different regions of the brain have different textures, with peculiarly-shaped masses on the inside and in the hindbrain.
@@ -36,7 +36,7 @@ In reality, the brain is highly structured. This is actually pretty apparent fro
 In fact, even the cerebral cortex — the big wrinkly part that covers most of the outside of the brain — is in reality made up of lots of distinct regions which differ in their cellular structure! Over a century ago, Korbinian Brodmann made close examination of the cytostructure of the cortex and identified some [52 distinct regions](https://en.wikipedia.org/wiki/Brodmann_area) with different cellular composition and patterning. Some of these regions have since been found to be robustly responsible for distinct brain functions, like [processing sound](https://en.wikipedia.org/wiki/Auditory_cortex), [processing touch](https://en.wikipedia.org/wiki/Postcentral_gyrus), and [language production](https://en.wikipedia.org/wiki/Broca%27s_area). The fact that these different regions of the homogenous-looking cortex are physiologically distinct and consistently perform different roles is a surprise to me![^2]
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/neuro/brodmann_areas.png" width="40%">
+<img src="{{site.baseurl}}/img/neuro/brodmann_areas.png" width="40%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>
@@ -64,7 +64,7 @@ What does it mean to “understand the brain”? Coming from machine learning th
 - **Send at the lowest acceptable rate.** A cool fact I hadn’t known: sending a neural signal faster requires a thicker axon, which for biophysical reasons turns out to require superlinearly more resources and energy! The brain’s thus incentivized to send information as slowly as possible. This is basically true everywhere in the brain — I suppose it’s evolutionarily “easy” to tweak axons to be thinner and slower, so they’ll always tend to settle down to the slowest rate that works well enough. An amazing example of this is the speeds of different sensory modalities: olfaction (smell) has no need to be fast, so it uses a cable of $10^7$ very thin axons to send information quite slowly, while on the other end, the vestibular sense (balance) needs to send little information but needs to send it fast to keep us upright, so it uses far fewer axons which are about 100x cross-sectionally larger.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/neuro/axon_sizes.png" width="60%">
+<img src="{{site.baseurl}}/img/neuro/axon_sizes.png" width="60%">
 </p>
 
 There are, of course, plenty of exceptions here: the design of the vertebrate retina is famously silly, with processing circuitry partially blocking the photosensitive cells and the optic nerve creating a blind spot in each eye. I'm not sure how to square these cases with the observation that the brain often does a good job finding efficient design. Maybe the satisfaction of these principles is achieved via a kind of local gradient descent -- e.g., by making small adjustments to axon thickness, neuron count, connectivity, and so on -- and these weird cases reflect evolutionary "local minima" that are hard to escape?

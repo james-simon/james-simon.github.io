@@ -11,7 +11,7 @@ category: deep learning, research
 
 <p>
 <video autoplay loop muted playsinline width="60%" style="display:block; margin: 0 auto;">
-    <source src="{{site.imgurl}}/eigenlearning_exp_matches_th.mp4" type="video/mp4">
+    <source src="{{site.baseurl}}/img/eigenlearning/eigenlearning_exp_matches_th.mp4" type="video/mp4">
 </video>
 </p>
 <p style="margin-left:20%; margin-right:20%;">
@@ -71,7 +71,7 @@ $$
 That is, the sum of learnabilities across all kernel eigenfunctions equals the training set size. This exact result paints a vivid picture of a kernel’s inductive bias: the kernel has exactly $\text{[training set size]}$ units of learnability to parcel out to its eigenmodes - no more, no less - and thus eigenmodes are locked in a zero-sum competition to be learned. As shown in Fig 2, we find that this basic conservation law holds exactly for NTK regression and even approximately for finite networks. To our knowledge, this is the first result quantifying such a tradeoff in kernel regression or deep learning. It also applies to linear regression, a special case of kernel regression.
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/eigenlearning_conservation_of_lrn.png" width="50%">
+<img src="{{site.baseurl}}/img/eigenlearning/eigenlearning_conservation_of_lrn.png" width="50%">
 </p>
 <p style="margin-left:20%; margin-right:20%;">
 <small>

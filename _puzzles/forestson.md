@@ -9,5 +9,5 @@ difficulty: 3
 ---
 
 <p align="center">
-<img src="{{site.imgurl}}/forestson.png" width="70%" />
+<img src="{{site.baseurl}}/img/forestson/forestson.png" width="70%" />
 </p>

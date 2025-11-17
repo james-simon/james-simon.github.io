@@ -6,7 +6,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 
 title: JS
 url: "http://james-simon.github.io"
-imgurl: "https://james-simon.github.io/img"
+imgurl: "/img"
 
 github_username:  james-simon
 insta_username: sam.simon17

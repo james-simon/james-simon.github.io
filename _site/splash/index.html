@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jamie Simon</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'et-book', 'ETBookOT', 'ET Book', Georgia, 'Times New Roman', serif;
+      background-color: #000;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/img/misty_forest.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -1;
+      animation: fadeIn 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .splash-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 4em;
+    opacity: 0;
+    animation: fadeIn 3s linear 0.5s forwards;
+  }
+
+  .splash-image {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    flex-shrink: 0;
+    border: 2px solid;
+    border-image: linear-gradient(to bottom, #6b7b6e, #333) 1;
+  }
+
+  .splash-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .splash-title {
+    font-size: 3em;
+    font-weight: bold;
+    color: #f0f0f0;
+    margin-bottom: 0.5em;
+    text-transform: lowercase;
+  }
+
+  .splash-text {
+    font-size: 1.5em;
+    line-height: 1.8;
+    color: #eff5f0;
+  }
+
+  .splash-text a {
+    color: #a8d5a8;
+    text-decoration: none;
+    border-bottom: 1px solid #a8d5a8;
+  }
+
+  .splash-text a:hover {
+    color: #c0e8c0;
+    border-bottom-color: #c0e8c0;
+  }
+
+  </style>
+</head>
+<body>
+  <audio id="forestAudio" loop preload="auto" src="/img/forest-sounds.mp3"></audio>
+
+  <script>
+    var audio = document.getElementById('forestAudio');
+    var hasStarted = false;
+
+    function startAudio() {
+      if (hasStarted) return;
+      hasStarted = true;
+
+      audio.volume = 1.0;
+      audio.muted = false;
+
+      audio.play().then(function() {
+        console.log('Audio started successfully on user interaction');
+      }).catch(function(error) {
+        console.error('Error starting audio:', error);
+      });
+    }
+
+    // Play on first click anywhere on the page
+    document.addEventListener('click', function() {
+      console.log('Click detected, starting audio');
+      startAudio();
+    }, { once: true });
+  </script>
+
+  <div class="splash-container">
+    <img src="/img/pictures_of_me/imbue_headshot_greyscale.jpg" alt="Jamie Simon" class="splash-image">
+
+    <div class="splash-text-container">
+      <h1 class="splash-title">meet jamie simon.</h1>
+      <div class="splash-text">
+        <p>naturalist. novelist. therapist. masseur...</p>
+        <p style="text-indent: 9em;">...he is none of these things.</p>
+        <p>enter into the life of a <a href="/">totally ordinary man.</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

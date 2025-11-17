@@ -85,9 +85,9 @@ p(x_t) = 2^{-t} \left( \begin{array}{c} t \\ x_t \end{array} \right).
 Figure 1 gives an schematic illustration of this random walk as well as a visualization of many simulated runs[^d].
 
 <p align="center">
-   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig1a.png" width="30%">
+   <img src="{{site.baseurl}}/img/reversed_rws/rev_rws_fig1a.png" width="30%">
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig1b.svg" width="30%">
+   <img src="{{site.baseurl}}/img/reversed_rws/rev_rws_fig1b.svg" width="30%">
 </p>
 <p style="margin-left:10%; margin-right:10%;">
 <small>
@@ -141,9 +141,9 @@ The resulting trajectories look a lot like normal random walks for the first few
 It's worth noting that we could have generated these trajectories by randomly sampling *forwards* walks and only keeping those which intersect our chosen starting point, but directly simulating the backwards process is far more efficient, so our reversed-time transition probabilities are worth having.
 
 <p align="center">
-   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2a.png" width="30%">
+   <img src="{{site.baseurl}}/img/reversed_rws/rev_rws_fig2a.png" width="30%">
 	&nbsp;&nbsp;&nbsp;
-   <img src="{{site.imgurl}}/reversed_rws/rev_rws_fig2b.svg" width="60%">
+   <img src="{{site.baseurl}}/img/reversed_rws/rev_rws_fig2b.svg" width="60%">
 </p>
 <p style="margin-left:10%; margin-right:10%;">
 <small>

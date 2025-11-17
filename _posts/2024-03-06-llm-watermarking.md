@@ -28,7 +28,7 @@ Their strategy is pretty simple: *just make random small changes to the text, an
 Their main result is that, given both a quality oracle and a perturbation oracle, you can remove the watermark by *rejection sampling:* at every step, use the perturbation oracle to generate a random modification, and then accept the change only if the quality oracle confirms that the change hasn’t made the overall text worse. This provably results in a *random walk around the space of high-quality responses,* and since only a small fraction of these high-quality responses are “watermarked,” after you follow this random walk for a while, you’re going to reach the promised land of watermark-free essays for your English class. Here’s a beautiful figure from their paper illustrating this scheme:
 
 <p style="text-align:center;">
-<img src="{{site.imgurl}}/llm_watermarks/harvard_random_walk_attack.png" width="80%">
+<img src="{{site.baseurl}}/img/llm_watermarks/harvard_random_walk_attack.png" width="80%">
 </p>
 <!-- <p style="margin-left:20%; margin-right:20%;">
 <small>

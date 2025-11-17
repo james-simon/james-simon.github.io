@@ -12,7 +12,7 @@ This clue uses every letter of the alphabet at least once. That’s for a simple
 To demonstrate, here are the first two letters of the solution:
 
 <p align="center">
-  <img src="{{site.imgurl}}/topologysol.png" width="70%" />
+  <img src="{{site.baseurl}}/img/topology/topologysol.png" width="70%" />
 </p>
 
 Doing this for all the parts of the word ANSWER gives OPPOSITEOFDARK. The answer, then, was LIGHT. 

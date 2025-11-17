@@ -80,7 +80,7 @@
 
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">Simulating cells fighting to the death</h1>
-      <p class="post-meta"><time datetime="2022-09-24T00:00:00-08:00" itemprop="datePublished">Sep 24, 2022</time></p>
+      <p class="post-meta"><time datetime="2022-09-24T00:00:00-07:00" itemprop="datePublished">Sep 24, 2022</time></p>
     </header>
 
     <div class="post-content" itemprop="articleBody">
@@ -89,7 +89,7 @@ I recently used it to simulate a bunch of cells fighting to the death like littl
 Here’s a video.</p>
 
 <video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/cell_fight.mp4" type="video/mp4" />
+    <source src="/img/cell_fight/cell_fight.mp4" type="video/mp4" />
 </video>
 
 <p>I’ll give a lightning overview of how this works.
@@ -99,7 +99,7 @@ In the Ising model, each cell prefers to match its neighbors, so the grid forms 
 Here’s the Ising model:</p>
 
 <video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/ising_test.mp4" type="video/mp4" />
+    <source src="/img/cell_fight/ising_test.mp4" type="video/mp4" />
 </video>
 
 <p>Skipping a mathematical explanation, the basic algorithm at play here is the following: at every timestep, (a) choose a random grid site and (b) flip its value with some probability.
@@ -112,7 +112,7 @@ This enforces that the sites with value \(i\) have total volume around \(V_i\), 
 Here’s the cellular Potts model with a few randomly-placed cells:</p>
 
 <video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/cells_stationary.mp4" type="video/mp4" />
+    <source src="/img/cell_fight/cells_stationary.mp4" type="video/mp4" />
 </video>
 
 <p>To make them fight, I just added a third energy term which makes a site more likely to flip to the color of cell \(i\) if doing so would move the center of mass of cell \(i\) towards its nearest neighbor, and then added the ad hoc rule that, when one cell loses a site to another cell, its target volume \(V_i\) decreases to track its loss of hitpoints.</p>
@@ -128,7 +128,7 @@ This is indeed doable with this simulator: I just replaced one cell’s stochast
 Here’s a fight between my brother and I.</p>
 
 <video autoplay="" loop="" muted="" playsinline="" width="40%" style="display:block; margin: 0 auto;">
-    <source src="https://james-simon.github.io/img/cell_fight/cell_duel.mp4" type="video/mp4" />
+    <source src="/img/cell_fight/cell_duel.mp4" type="video/mp4" />
 </video>
 
 <p>Okay, I also added bullets.</p>
