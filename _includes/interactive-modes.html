@@ -1067,6 +1067,33 @@
     startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++);
   }
 
+  function createBurst(x, y, color) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '80px';
+    burst.style.height = '80px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = color;
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.8';
+    burst.style.boxShadow = `0 0 40px ${color}, 0 0 80px ${color}`;
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.3s, transform 0.3s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      setTimeout(() => {
+        burst.remove();
+      }, 300);
+    }, 50);
+  }
+
   function startPongAnimation(particles, leftScoreEl, rightScoreEl, incrementThem, incrementYou) {
     let lastTime = performance.now();
     let themScore = 0;
@@ -1090,6 +1117,10 @@
 
         // Check for left edge (YOU scores)
         if (particle.x + particle.width < 0) {
+          // Create green burst at contact point
+          const contactY = particle.y + particle.height / 2;
+          createBurst(0, contactY, '#00ff00');
+
           particle.el.remove();
           particles.splice(i, 1);
           youScore++;
@@ -1099,6 +1130,10 @@
 
         // Check for right edge (THEM scores)
         if (particle.x > width) {
+          // Create red burst at contact point
+          const contactY = particle.y + particle.height / 2;
+          createBurst(width, contactY, '#ff0000');
+
           particle.el.remove();
           particles.splice(i, 1);
           themScore++;
