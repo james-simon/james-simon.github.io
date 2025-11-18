@@ -1172,10 +1172,18 @@
     let themScore = 0;
     let youScore = 0;
     const paddleSpeed = 600;
+    const enemyPaddleSpeed = 500; // Slightly slower than player
     const paddleWidth = 15;
     const paddleHeight = 200;
     const leftPaddleX = 20;
     const rightPaddleX = window.innerWidth - 20 - paddleWidth;
+
+    // AI state
+    let enemyPaddleY = getEnemyPaddleY();
+    const aiReactionDelay = 200; // ms
+    const aiRandomOffset = 20; // px
+    let lastAIUpdate = 0;
+    let aiTargetY = enemyPaddleY;
 
     function animate(currentTime) {
       let dt = (currentTime - lastTime) / 1000;
@@ -1198,9 +1206,56 @@
         setPlayerPaddleY(paddleY);
       }
 
+      // Update enemy AI paddle
+      if (currentTime - lastAIUpdate > aiReactionDelay) {
+        lastAIUpdate = currentTime;
+
+        // Find the nearest threatening letter (moving left towards enemy paddle)
+        let closestThreat = null;
+        let minTime = Infinity;
+
+        particles.forEach(particle => {
+          if (particle.vx < 0 && particle.active) { // Moving left
+            const timeToReach = (particle.x - (leftPaddleX + paddleWidth)) / -particle.vx;
+            if (timeToReach > 0 && timeToReach < minTime) {
+              minTime = timeToReach;
+              // Predict where it will be
+              let predictedY = particle.y + particle.vy * timeToReach;
+
+              // Account for bounces off top/bottom
+              while (predictedY < 0 || predictedY + particle.height > height) {
+                if (predictedY < 0) {
+                  predictedY = -predictedY;
+                } else if (predictedY + particle.height > height) {
+                  predictedY = 2 * (height - particle.height) - predictedY;
+                }
+              }
+
+              closestThreat = predictedY + particle.height / 2; // Center of letter
+            }
+          }
+        });
+
+        if (closestThreat !== null) {
+          // Add random offset for imperfection
+          aiTargetY = closestThreat - paddleHeight / 2 + (Math.random() - 0.5) * aiRandomOffset;
+        } else {
+          // No threats, drift toward center
+          aiTargetY = height / 2 - paddleHeight / 2;
+        }
+      }
+
+      // Move enemy paddle smoothly towards target
+      if (enemyPaddleY < aiTargetY) {
+        enemyPaddleY = Math.min(aiTargetY, enemyPaddleY + enemyPaddleSpeed * dt);
+      } else if (enemyPaddleY > aiTargetY) {
+        enemyPaddleY = Math.max(aiTargetY, enemyPaddleY - enemyPaddleSpeed * dt);
+      }
+      enemyPaddleY = Math.max(0, Math.min(height - paddleHeight, enemyPaddleY));
+
       // Update paddle element positions
       playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
-      enemyPaddleEl.style.top = getEnemyPaddleY() + 'px';
+      enemyPaddleEl.style.top = enemyPaddleY + 'px';
 
       // Update particles and check for scoring
       for (let i = particles.length - 1; i >= 0; i--) {
@@ -1231,7 +1286,6 @@
         }
 
         // Check for enemy paddle collision (left side)
-        const enemyPaddleY = getEnemyPaddleY();
         if (particle.vx < 0 && // Moving left
             particle.x < leftPaddleX + paddleWidth &&
             particle.x + particle.width > leftPaddleX &&
@@ -1250,29 +1304,29 @@
           particle.x = leftPaddleX + paddleWidth;
         }
 
-        // Check for left edge (THEM scores - enemy missed)
+        // Check for left edge (YOU score - enemy missed)
         if (particle.x + particle.width < 0) {
-          // Create red burst at contact point
-          const contactY = particle.y + particle.height / 2;
-          createBurst(0, contactY, '#ff0000');
-
-          particle.el.remove();
-          particles.splice(i, 1);
-          themScore++;
-          leftScoreEl.textContent = themScore.toString();
-          continue;
-        }
-
-        // Check for right edge (YOU score - player missed)
-        if (particle.x > width) {
           // Create green burst at contact point
           const contactY = particle.y + particle.height / 2;
-          createBurst(width, contactY, '#00ff00');
+          createBurst(0, contactY, '#00ff00');
 
           particle.el.remove();
           particles.splice(i, 1);
           youScore++;
           rightScoreEl.textContent = youScore.toString();
+          continue;
+        }
+
+        // Check for right edge (THEM score - player missed)
+        if (particle.x > width) {
+          // Create red burst at contact point
+          const contactY = particle.y + particle.height / 2;
+          createBurst(width, contactY, '#ff0000');
+
+          particle.el.remove();
+          particles.splice(i, 1);
+          themScore++;
+          leftScoreEl.textContent = themScore.toString();
           continue;
         }
 
