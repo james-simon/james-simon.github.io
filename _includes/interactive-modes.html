@@ -1111,7 +1111,8 @@
         vy: 0,
         width: rect.width,
         height: rect.height,
-        active: false
+        active: false,
+        trail: [] // Store last 5 positions for comet tail
       });
     });
 
@@ -1304,29 +1305,33 @@
           particle.x = leftPaddleX + paddleWidth;
         }
 
-        // Check for left edge (YOU score - enemy missed)
+        // Check for left edge (THEM score - enemy missed)
         if (particle.x + particle.width < 0) {
-          // Create green burst at contact point
+          // Create green burst at contact point (they scored)
           const contactY = particle.y + particle.height / 2;
           createBurst(0, contactY, '#00ff00');
 
           particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
           particles.splice(i, 1);
-          youScore++;
-          rightScoreEl.textContent = youScore.toString();
+          themScore++;
+          leftScoreEl.textContent = themScore.toString();
           continue;
         }
 
-        // Check for right edge (THEM score - player missed)
+        // Check for right edge (YOU score - player missed)
         if (particle.x > width) {
-          // Create red burst at contact point
+          // Create red burst at contact point (you scored)
           const contactY = particle.y + particle.height / 2;
           createBurst(width, contactY, '#ff0000');
 
           particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
           particles.splice(i, 1);
-          themScore++;
-          leftScoreEl.textContent = themScore.toString();
+          youScore++;
+          rightScoreEl.textContent = youScore.toString();
           continue;
         }
 
@@ -1339,7 +1344,39 @@
           particle.vy = -particle.vy;
         }
 
-        // Apply transform
+        // Update trail (store last 5 positions)
+        if (particle.active) {
+          particle.trail.push({ x: particle.x, y: particle.y });
+          if (particle.trail.length > 5) {
+            // Remove oldest trail element if it exists
+            const oldest = particle.trail.shift();
+            if (oldest.el) {
+              oldest.el.remove();
+            }
+          }
+
+          // Create/update trail elements
+          particle.trail.forEach((trailPos, idx) => {
+            if (!trailPos.el) {
+              // Create new trail element
+              const trailEl = particle.el.cloneNode(true);
+              trailEl.style.pointerEvents = 'none';
+              document.body.appendChild(trailEl);
+              trailPos.el = trailEl;
+            }
+
+            // Update trail element position and style
+            const age = particle.trail.length - idx - 1; // 0 = newest, 4 = oldest
+            const opacity = 1 - (age + 1) / 6; // Fade from 0.83 to 0.17
+            const scale = 1 - (age + 1) * 0.1; // Scale from 0.9 to 0.5
+
+            trailPos.el.style.opacity = opacity.toString();
+            trailPos.el.style.transform = `translate(${trailPos.x - parseFloat(particle.el.style.left)}px, ${trailPos.y - parseFloat(particle.el.style.top)}px) scale(${scale})`;
+            trailPos.el.style.zIndex = (10000 - age - 1).toString(); // Behind main letter
+          });
+        }
+
+        // Apply transform to main particle
         particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
       }
 
