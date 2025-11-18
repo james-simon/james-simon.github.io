@@ -920,9 +920,9 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
-    // Create flashy "PONG MODE ACTIVATED" message
+    // Create flashy "METEOR SHOWER INCOMING" message
     const flashMessage = document.createElement('div');
-    flashMessage.textContent = 'PONG MODE ACTIVATED';
+    flashMessage.textContent = 'METEOR SHOWER INCOMING';
     flashMessage.style.position = 'fixed';
     flashMessage.style.top = '50%';
     flashMessage.style.left = '50%';
@@ -1010,6 +1010,38 @@
     rightScoreContainer.appendChild(rightLabel);
     rightScoreContainer.appendChild(rightScore);
     document.body.appendChild(rightScoreContainer);
+
+    // Create black hole in center
+    const blackHole = document.createElement('div');
+    blackHole.style.position = 'fixed';
+    blackHole.style.left = '50%';
+    blackHole.style.top = '50%';
+    blackHole.style.width = '20px';
+    blackHole.style.height = '20px';
+    blackHole.style.borderRadius = '50%';
+    blackHole.style.backgroundColor = '#000';
+    blackHole.style.transform = 'translate(-50%, -50%)';
+    blackHole.style.zIndex = '99998';
+    blackHole.style.pointerEvents = 'none';
+    blackHole.style.boxShadow = '0 0 20px 10px rgba(0, 0, 0, 0.3), 0 0 40px 20px rgba(0, 0, 0, 0.2), 0 0 60px 30px rgba(0, 0, 0, 0.1)';
+    blackHole.style.transition = 'width 3s ease-in-out, height 3s ease-in-out, box-shadow 3s ease-in-out';
+    document.body.appendChild(blackHole);
+
+    // Pulse black hole
+    let blackHolePulseDirection = 1;
+    setInterval(() => {
+      if (blackHolePulseDirection === 1) {
+        blackHole.style.width = '30px';
+        blackHole.style.height = '30px';
+        blackHole.style.boxShadow = '0 0 30px 15px rgba(0, 0, 0, 0.3), 0 0 60px 30px rgba(0, 0, 0, 0.2), 0 0 90px 45px rgba(0, 0, 0, 0.1)';
+        blackHolePulseDirection = -1;
+      } else {
+        blackHole.style.width = '20px';
+        blackHole.style.height = '20px';
+        blackHole.style.boxShadow = '0 0 20px 10px rgba(0, 0, 0, 0.3), 0 0 40px 20px rgba(0, 0, 0, 0.2), 0 0 60px 30px rgba(0, 0, 0, 0.1)';
+        blackHolePulseDirection = 1;
+      }
+    }, 3000);
 
     // Create player paddle (right side, green)
     const playerPaddle = document.createElement('div');
@@ -1258,9 +1290,35 @@
       playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
       enemyPaddleEl.style.top = enemyPaddleY + 'px';
 
+      // Black hole gravity parameters
+      const blackHoleX = width / 2;
+      const blackHoleY = height / 2;
+      const blackHoleLambda = 150;
+      const blackHoleForce = 3000;
+
       // Update particles and check for scoring
       for (let i = particles.length - 1; i >= 0; i--) {
         const particle = particles[i];
+
+        // Apply black hole gravity if particle is active
+        if (particle.active) {
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = blackHoleX - centerX;
+          const dy = blackHoleY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ)
+            const forceMagnitude = (1 / blackHoleLambda) * Math.exp(-dist / blackHoleLambda) * blackHoleForce;
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
 
         // Update position
         particle.x += particle.vx * dt;
