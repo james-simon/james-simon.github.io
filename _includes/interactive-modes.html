@@ -211,9 +211,9 @@
     flashMessage.style.textAlign = 'center';
     document.body.appendChild(flashMessage);
 
-    // Flash the message on/off
+    // Flash the message on/off (only twice)
     let flashCount = 0;
-    const maxFlashes = 6;
+    const maxFlashes = 4; // 4 transitions = 2 full flashes (on->off->on->off)
     const flashInterval = setInterval(() => {
       flashMessage.style.opacity = flashMessage.style.opacity === '0' ? '1' : '0';
       flashCount++;
