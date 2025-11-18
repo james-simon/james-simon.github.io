@@ -360,6 +360,12 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
+    // Initialize mouse position to center of viewport to avoid initial top-left attraction
+    mouseX = window.innerWidth / 2;
+    mouseY = window.innerHeight / 2;
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
+
     // Track mouse position
     document.addEventListener('mousemove', (e) => {
       prevMouseX = mouseX;
@@ -367,10 +373,6 @@
       mouseX = e.clientX;
       mouseY = e.clientY;
     });
-
-    // Initialize mouse position
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
 
     const particles = [];
 
@@ -567,6 +569,12 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
+    // Initialize mouse position to center of viewport to avoid initial top-left attraction
+    mouseX = window.innerWidth / 2;
+    mouseY = window.innerHeight / 2;
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
+
     // Track mouse position
     document.addEventListener('mousemove', (e) => {
       prevMouseX = mouseX;
@@ -574,10 +582,6 @@
       mouseX = e.clientX;
       mouseY = e.clientY;
     });
-
-    // Initialize mouse position
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
 
     const particles = [];
 
