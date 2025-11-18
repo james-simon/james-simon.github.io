@@ -1011,33 +1011,46 @@
     rightScoreContainer.appendChild(rightScore);
     document.body.appendChild(rightScoreContainer);
 
-    // Create paddle
-    const paddle = document.createElement('div');
-    paddle.style.position = 'fixed';
-    paddle.style.left = '20px';
-    paddle.style.width = '15px';
-    paddle.style.height = '100px';
-    paddle.style.backgroundColor = '#00ff00';
-    paddle.style.boxShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
-    paddle.style.zIndex = '99999';
-    paddle.style.pointerEvents = 'none';
-    document.body.appendChild(paddle);
+    // Create player paddle (right side, green)
+    const playerPaddle = document.createElement('div');
+    playerPaddle.style.position = 'fixed';
+    playerPaddle.style.right = '20px';
+    playerPaddle.style.width = '15px';
+    playerPaddle.style.height = '200px';
+    playerPaddle.style.backgroundColor = '#00ff00';
+    playerPaddle.style.boxShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+    playerPaddle.style.zIndex = '99999';
+    playerPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(playerPaddle);
+
+    // Create enemy paddle (left side, red, static)
+    const enemyPaddle = document.createElement('div');
+    enemyPaddle.style.position = 'fixed';
+    enemyPaddle.style.left = '20px';
+    enemyPaddle.style.width = '15px';
+    enemyPaddle.style.height = '200px';
+    enemyPaddle.style.backgroundColor = '#ff0000';
+    enemyPaddle.style.boxShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+    enemyPaddle.style.zIndex = '99999';
+    enemyPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(enemyPaddle);
 
     // Paddle control state
-    let paddleY = window.innerHeight / 2 - 50; // Center paddle
-    let paddleVelocity = 0;
+    let playerPaddleY = window.innerHeight / 2 - 100; // Center paddle
+    let enemyPaddleY = window.innerHeight / 2 - 100; // Center enemy paddle (static)
     let lastMouseMoveTime = 0;
     let mouseControlActive = false;
     const paddleSpeed = 600; // px/s for keyboard control
 
-    // Update paddle position
-    paddle.style.top = paddleY + 'px';
+    // Update paddle positions
+    playerPaddle.style.top = playerPaddleY + 'px';
+    enemyPaddle.style.top = enemyPaddleY + 'px';
 
     // Mouse control
     document.addEventListener('mousemove', (e) => {
       mouseControlActive = true;
       lastMouseMoveTime = Date.now();
-      paddleY = Math.max(0, Math.min(window.innerHeight - 100, e.clientY - 50));
+      playerPaddleY = Math.max(0, Math.min(window.innerHeight - 200, e.clientY - 100));
     });
 
     // Keyboard control
@@ -1124,7 +1137,7 @@
     }, 1000);
 
     // Start animation
-    startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++, paddle, () => paddleY, (newY) => { paddleY = newY; }, keys, () => mouseControlActive, () => { lastMouseMoveTime = Date.now(); });
+    startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++, playerPaddle, enemyPaddle, () => playerPaddleY, (newY) => { playerPaddleY = newY; }, () => enemyPaddleY, keys, () => mouseControlActive);
   }
 
   function createBurst(x, y, color) {
@@ -1154,14 +1167,15 @@
     }, 50);
   }
 
-  function startPongAnimation(particles, leftScoreEl, rightScoreEl, incrementThem, incrementYou, paddleEl, getPaddleY, setPaddleY, keys, getMouseActive, resetMouseTimer) {
+  function startPongAnimation(particles, leftScoreEl, rightScoreEl, incrementThem, incrementYou, playerPaddleEl, enemyPaddleEl, getPlayerPaddleY, setPlayerPaddleY, getEnemyPaddleY, keys, getMouseActive) {
     let lastTime = performance.now();
     let themScore = 0;
     let youScore = 0;
     const paddleSpeed = 600;
     const paddleWidth = 15;
-    const paddleHeight = 100;
-    const paddleX = 20;
+    const paddleHeight = 200;
+    const leftPaddleX = 20;
+    const rightPaddleX = window.innerWidth - 20 - paddleWidth;
 
     function animate(currentTime) {
       let dt = (currentTime - lastTime) / 1000;
@@ -1171,9 +1185,9 @@
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      // Update paddle position with keyboard if mouse hasn't moved recently
+      // Update player paddle position with keyboard if mouse hasn't moved recently
       if (Date.now() - performance.now() > 100 || !getMouseActive()) {
-        let paddleY = getPaddleY();
+        let paddleY = getPlayerPaddleY();
         if (keys['ArrowUp'] || keys['w'] || keys['W']) {
           paddleY -= paddleSpeed * dt;
         }
@@ -1181,11 +1195,12 @@
           paddleY += paddleSpeed * dt;
         }
         paddleY = Math.max(0, Math.min(height - paddleHeight, paddleY));
-        setPaddleY(paddleY);
+        setPlayerPaddleY(paddleY);
       }
 
-      // Update paddle element position
-      paddleEl.style.top = getPaddleY() + 'px';
+      // Update paddle element positions
+      playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
+      enemyPaddleEl.style.top = getEnemyPaddleY() + 'px';
 
       // Update particles and check for scoring
       for (let i = particles.length - 1; i >= 0; i--) {
@@ -1195,49 +1210,69 @@
         particle.x += particle.vx * dt;
         particle.y += particle.vy * dt;
 
-        // Check for paddle collision
-        const paddleY = getPaddleY();
-        if (particle.vx < 0 && // Moving left
-            particle.x < paddleX + paddleWidth &&
-            particle.x + particle.width > paddleX &&
-            particle.y + particle.height > paddleY &&
-            particle.y < paddleY + paddleHeight) {
+        // Check for player paddle collision (right side)
+        const playerPaddleY = getPlayerPaddleY();
+        if (particle.vx > 0 && // Moving right
+            particle.x + particle.width > rightPaddleX &&
+            particle.x < rightPaddleX + paddleWidth &&
+            particle.y + particle.height > playerPaddleY &&
+            particle.y < playerPaddleY + paddleHeight) {
 
           // Reflect and increase speed
           particle.vx = -particle.vx * 1.1;
 
           // Change y-velocity based on where it hit the paddle
-          const hitPosition = (particle.y + particle.height / 2 - paddleY) / paddleHeight; // 0 to 1
+          const hitPosition = (particle.y + particle.height / 2 - playerPaddleY) / paddleHeight; // 0 to 1
           const angle = (hitPosition - 0.5) * 2; // -1 to 1
           particle.vy = angle * 400; // Max vy change of ±400
 
           // Move particle out of paddle to prevent multiple collisions
-          particle.x = paddleX + paddleWidth;
+          particle.x = rightPaddleX - particle.width;
         }
 
-        // Check for left edge (YOU scores)
+        // Check for enemy paddle collision (left side)
+        const enemyPaddleY = getEnemyPaddleY();
+        if (particle.vx < 0 && // Moving left
+            particle.x < leftPaddleX + paddleWidth &&
+            particle.x + particle.width > leftPaddleX &&
+            particle.y + particle.height > enemyPaddleY &&
+            particle.y < enemyPaddleY + paddleHeight) {
+
+          // Reflect and increase speed
+          particle.vx = -particle.vx * 1.1;
+
+          // Change y-velocity based on where it hit the paddle
+          const hitPosition = (particle.y + particle.height / 2 - enemyPaddleY) / paddleHeight; // 0 to 1
+          const angle = (hitPosition - 0.5) * 2; // -1 to 1
+          particle.vy = angle * 400; // Max vy change of ±400
+
+          // Move particle out of paddle to prevent multiple collisions
+          particle.x = leftPaddleX + paddleWidth;
+        }
+
+        // Check for left edge (THEM scores - enemy missed)
         if (particle.x + particle.width < 0) {
-          // Create green burst at contact point
-          const contactY = particle.y + particle.height / 2;
-          createBurst(0, contactY, '#00ff00');
-
-          particle.el.remove();
-          particles.splice(i, 1);
-          youScore++;
-          rightScoreEl.textContent = youScore.toString();
-          continue;
-        }
-
-        // Check for right edge (THEM scores)
-        if (particle.x > width) {
           // Create red burst at contact point
           const contactY = particle.y + particle.height / 2;
-          createBurst(width, contactY, '#ff0000');
+          createBurst(0, contactY, '#ff0000');
 
           particle.el.remove();
           particles.splice(i, 1);
           themScore++;
           leftScoreEl.textContent = themScore.toString();
+          continue;
+        }
+
+        // Check for right edge (YOU score - player missed)
+        if (particle.x > width) {
+          // Create green burst at contact point
+          const contactY = particle.y + particle.height / 2;
+          createBurst(width, contactY, '#00ff00');
+
+          particle.el.remove();
+          particles.splice(i, 1);
+          youScore++;
+          rightScoreEl.textContent = youScore.toString();
           continue;
         }
 
