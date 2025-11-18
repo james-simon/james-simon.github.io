@@ -1112,7 +1112,7 @@
         width: rect.width,
         height: rect.height,
         active: false,
-        trail: [] // Store last 5 positions for comet tail
+        trail: [] // Store last 15 positions for comet tail
       });
     });
 
@@ -1344,10 +1344,10 @@
           particle.vy = -particle.vy;
         }
 
-        // Update trail (store last 5 positions)
+        // Update trail (store last 15 positions)
         if (particle.active) {
           particle.trail.push({ x: particle.x, y: particle.y });
-          if (particle.trail.length > 5) {
+          if (particle.trail.length > 15) {
             // Remove oldest trail element if it exists
             const oldest = particle.trail.shift();
             if (oldest.el) {
@@ -1366,9 +1366,9 @@
             }
 
             // Update trail element position and style
-            const age = particle.trail.length - idx - 1; // 0 = newest, 4 = oldest
-            const opacity = 1 - (age + 1) / 6; // Fade from 0.83 to 0.17
-            const scale = 1 - (age + 1) * 0.1; // Scale from 0.9 to 0.5
+            const age = particle.trail.length - idx - 1; // 0 = newest, 14 = oldest
+            const opacity = 1 - (age + 1) / 16; // Fade from 0.94 to 0.06
+            const scale = 1 - (age + 1) * 0.05; // Scale from 0.95 to 0.25
 
             trailPos.el.style.opacity = opacity.toString();
             trailPos.el.style.transform = `translate(${trailPos.x - parseFloat(particle.el.style.left)}px, ${trailPos.y - parseFloat(particle.el.style.top)}px) scale(${scale})`;
