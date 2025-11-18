@@ -360,11 +360,11 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
-    // Initialize mouse position to center of viewport to avoid initial top-left attraction
-    mouseX = window.innerWidth / 2;
-    mouseY = window.innerHeight / 2;
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
+    // Initialize mouse position to null - don't apply forces until we know where mouse is
+    mouseX = null;
+    mouseY = null;
+    prevMouseX = null;
+    prevMouseY = null;
 
     // Track mouse position
     document.addEventListener('mousemove', (e) => {
@@ -491,23 +491,26 @@
       dt = Math.min(dt, 0.033); // Max ~30fps worth of time
 
       particles.forEach(particle => {
-        // Calculate distance from particle center to mouse
-        const centerX = particle.x + particle.width / 2;
-        const centerY = particle.y + particle.height / 2;
-        const dx = mouseX - centerX;
-        const dy = mouseY - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        // Only apply forces if we have a valid mouse position
+        if (mouseX !== null && mouseY !== null) {
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > 0) {
-          // Force from potential V(r) = -exp(-r/λ)
-          // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
-          const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 5000;
-          const fx = (dx / dist) * forceMagnitude;
-          const fy = (dy / dist) * forceMagnitude;
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ)
+            // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
+            const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 5000;
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
 
-          // Apply force as acceleration
-          particle.vx += fx * dt;
-          particle.vy += fy * dt;
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
         }
 
         // Update position
@@ -569,11 +572,11 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
-    // Initialize mouse position to center of viewport to avoid initial top-left attraction
-    mouseX = window.innerWidth / 2;
-    mouseY = window.innerHeight / 2;
-    prevMouseX = mouseX;
-    prevMouseY = mouseY;
+    // Initialize mouse position to null - don't apply forces until we know where mouse is
+    mouseX = null;
+    mouseY = null;
+    prevMouseX = null;
+    prevMouseY = null;
 
     // Track mouse position
     document.addEventListener('mousemove', (e) => {
@@ -700,50 +703,56 @@
       // Cap dt to prevent huge jumps when tab becomes inactive
       dt = Math.min(dt, 0.033); // Max ~30fps worth of time
 
-      // Filter out particles that should be removed
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const particle = particles[i];
+      // Only check for particle removal if we have a valid mouse position
+      if (mouseX !== null && mouseY !== null && prevMouseX !== null && prevMouseY !== null) {
+        // Filter out particles that should be removed
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const particle = particles[i];
 
-        // Calculate distance from particle center to mouse
-        const centerX = particle.x + particle.width / 2;
-        const centerY = particle.y + particle.height / 2;
-        const dx = mouseX - centerX;
-        const dy = mouseY - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Also check distance to line segment traced by mouse movement
-        const distToPath = distanceToLineSegment(centerX, centerY, prevMouseX, prevMouseY, mouseX, mouseY);
+          // Also check distance to line segment traced by mouse movement
+          const distToPath = distanceToLineSegment(centerX, centerY, prevMouseX, prevMouseY, mouseX, mouseY);
 
-        // Effective capture radius is proportional to particle size
-        const effectiveRadius = Math.min(particle.width, particle.height) / 2;
+          // Effective capture radius is proportional to particle size
+          const effectiveRadius = Math.min(particle.width, particle.height) / 2;
 
-        // Remove particle if within effective radius of current mouse position or path
-        if (dist < effectiveRadius || distToPath < effectiveRadius) {
-          particle.el.remove();
-          particles.splice(i, 1);
-          playRandomPop(); // Play pop sound
-          continue;
+          // Remove particle if within effective radius of current mouse position or path
+          if (dist < effectiveRadius || distToPath < effectiveRadius) {
+            particle.el.remove();
+            particles.splice(i, 1);
+            playRandomPop(); // Play pop sound
+            continue;
+          }
         }
       }
 
       particles.forEach(particle => {
-        // Calculate distance from particle center to mouse
-        const centerX = particle.x + particle.width / 2;
-        const centerY = particle.y + particle.height / 2;
-        const dx = mouseX - centerX;
-        const dy = mouseY - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        // Only apply forces if we have a valid mouse position
+        if (mouseX !== null && mouseY !== null) {
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > 0) {
-          // Force from potential V(r) = -exp(-r/λ), 30x stronger than base
-          // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
-          const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 150000; // 30x force
-          const fx = (dx / dist) * forceMagnitude;
-          const fy = (dy / dist) * forceMagnitude;
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ), 30x stronger than base
+            // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
+            const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 150000; // 30x force
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
 
-          // Apply force as acceleration
-          particle.vx += fx * dt;
-          particle.vy += fy * dt;
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
         }
 
         // Apply velocity damping
