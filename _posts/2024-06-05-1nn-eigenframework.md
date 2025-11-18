@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "An eigenframework for the generalization of 1NN"
+title: "An eigenframework for the generalization of 1NN on the torus"
 date: 2024-06-05 02:00
-category: research
+category: dl-science
+emoji: 📊
 ---
 
 

@@ -2,7 +2,8 @@
 layout: post
 title: "Reflections on introductory neuroscience reading"
 date: 2024-03-02
-category: neuroscience, research
+category: essays
+emoji: 🧠
 ---
 
 Have you ever lived in a neighborhood for years and realized, as you prepare to move out, that you never got to know the guy who lives next door? For me, that unknown neighbor is the field of neuroscience. I am nearing the end of a PhD in [a lab that does largely neuroscience](https://deweeselab.com) and live under the umbrella of the [Redwood Center for Theoretical Neuroscience](https://redwood.berkeley.edu/), but I confess I’ve never engaged with the field in any serious way.

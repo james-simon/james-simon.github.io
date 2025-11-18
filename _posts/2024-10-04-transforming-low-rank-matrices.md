@@ -2,7 +2,8 @@
 layout: post
 title: "It's hard to turn a low-rank matrix into a high-rank matrix"
 date: 2024-10-04
-category: research
+category: mathematics
+emoji: 📉
 ---
 
 ***In this blogpost, I point out that applying a nonlinear function to a low-rank random matrix cannot make it into a high-rank matrix.***

@@ -1,8 +1,8 @@
 <!-- <li> -->
-<h5>
-<a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a> <small> ({{ post.date | date: "%B %Y" }}, {% include read_time.html%}) </small>
-</h5>
+<h6>
+{% if post.emoji %}{{ post.emoji }} {% endif %}<a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a> <small>({{ post.date | date: "%b '%y" }}, {% include read_time.html %})</small>
+</h6>
 
 <!-- <span class="post-meta"></span> -->
-<!-- {{ post.date | date: "%b %-d, %Y" }}--> 
+<!-- {{ post.date | date: "%b %-d, %Y" }}-->
 <!-- </li> -->

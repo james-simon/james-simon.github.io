@@ -2,7 +2,8 @@
 layout: post
 title:	"The expected cost of breaking quarantine"
 date:	2020-05-17
-category: stats, society, random
+category: chemistry
+emoji: 🦠
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

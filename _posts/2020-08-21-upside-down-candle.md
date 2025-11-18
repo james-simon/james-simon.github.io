@@ -2,7 +2,8 @@
 layout: post
 title:	"How would an upside-down candle burn?"
 date:	2020-08-20
-category: physics, fun-science
+category: physics
+emoji: 🕯️
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

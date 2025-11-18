@@ -2,7 +2,8 @@
 layout: post
 title: "Simulating cells fighting to the death"
 date: 2022-09-24
-category: physics, fun-science
+category: biology
+emoji: ⚔️
 ---
 
 

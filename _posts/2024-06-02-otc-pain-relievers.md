@@ -2,7 +2,8 @@
 layout: post
 title: "Ibuprofen vs. aspirin vs naproxen vs acetaminophen"
 date: 2024-06-01
-category: unlisted
+category: biology
+emoji: 💊
 ---
 
 Ibuprofen, aspirin, naproxen, and acetaminophen are the most common drugs for pain relief.

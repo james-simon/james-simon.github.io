@@ -2,7 +2,8 @@
 layout: post
 title: "The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure"
 date: 2025-03-18
-category: deep learning, research
+category: kernels
+emoji: 🔔
 ---
 
 *This blogpost composed in collaboration with [Yuxi Liu](https://yuxi-liu-wired.github.io/), who did much of the analytical legwork.*

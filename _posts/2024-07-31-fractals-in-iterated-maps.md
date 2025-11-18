@@ -2,7 +2,8 @@
 layout: post
 title: "Understanding fractals from iterated maps"
 date: 2024-07-31 12:00
-category: fun-science
+category: mathematics
+emoji: 🌀
 ---
 
 *In this post, I give some mechanistic intuition for why and how the basins of iterated maps form fractals which I feel is usually missing from academic treatments of the subject.*

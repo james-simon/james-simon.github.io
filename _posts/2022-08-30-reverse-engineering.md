@@ -2,7 +2,8 @@
 layout: post
 title: "Reverse engineering the NTK"
 date: 2022-08-23
-category: deep learning, research
+category: kernels
+emoji: 🔧
 ---
 
 *This post also appeared on the [BAIR blog](https://bair.berkeley.edu/blog/2022/08/29/reverse-engineering/).*

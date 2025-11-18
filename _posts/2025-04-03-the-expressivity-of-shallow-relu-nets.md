@@ -2,7 +2,8 @@
 layout: post
 title: "A complete characterization of the expressivity of shallow, bias-free ReLU networks"
 date: 2025-04-03
-category: deep learning, research
+category: dl-science
+emoji: 🧮
 ---
 
 In the theoretical study of neural networks, one of the simplest questions one can ask is that of *expressivity.* A neural network $f_{\boldsymbol{\theta}}(\cdot)$ can represent (or “express”) many different functions, and which function is expressed is determined by the choice of the parameters $\boldsymbol{\theta}$. The study of expressivity simply asks: which class of functions may be represented?

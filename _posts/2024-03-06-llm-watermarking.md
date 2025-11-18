@@ -2,7 +2,8 @@
 layout: post
 title: "Creating and erasing AI watermarks"
 date: 2024-03-06
-category: deep learning, research
+category: dl-science
+emoji: 🔏
 ---
 
 I’ve been sitting in on many of the guest lectures for [CS 294](https://rdi.berkeley.edu/understanding_llms/s24), "Understanding LLMs.” To my excitement, yesterday’s speaker was [Boaz Barak](https://www.boazbarak.org/), a Harvard professor who studies theoretical CS and machine learning foundations and whose work and lectures I often enjoy. He spoke about LLM watermarking schemes, and in particular a scheme for breaking more or less arbitrary watermarks. In this post, I’ll give a brief overview of the problem and their solution and offer a synthesis that, to me, gives a succinct way to think about what’s going on here.

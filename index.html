@@ -47,9 +47,10 @@ layout: default
   }
 
   .headshot-container img {
-    width: 100%;
-    height: auto;
-    max-width: 250px;
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    object-position: left 20%;
   }
 
   .loading-bar {
@@ -121,6 +122,21 @@ layout: default
   <hr class="hr-thin">
   <a name="research"></a>
   <h2>Research</h2>
+  <hr class="hr-thick">
+
+  <div class="row">
+    <div class="col-md-3">
+      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/hea_paper_mainpage_figure.png" width=100%>
+    </div>
+    <div class="col-md-9">
+      <h3>Predicting kernel regression learning curves from only raw data statistics</h3>
+      <p class="blurb"> [abstract to go here] </p>
+      <p class="paper-info">
+        <a href="https://arxiv.org/abs/2510.14878">[arXiv]</a>
+      </p>
+    </div>
+  </div>
+
   <hr class="hr-thick">
 
   <div class="row">
@@ -344,20 +360,62 @@ layout: default
   <a name="posts"></a>
   <h2>Blog</h2>
   <hr>
+
+  <!-- Supercategory 1: Research essays and ML theory -->
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Essays</h4>
+      {% for post in site.posts %} {% if post.category contains "essays" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
   <div class="row">
     <div class="col-md-6">
-      <h4>Science (research)</h4>
-      <!-- <ul class="post-list"> --> {% for post in site.posts %} {% if post.category contains "research" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <!-- </ul> -->
-      <hr>
-      <h4>Potpourri</h4>
-      <!-- <ul class="post-list"> --> {% for post in site.posts %} {% if post.category contains "random" or post.category contains "personal" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <!-- </ul> -->
+      <h4>Kernels and linear regression</h4>
+      {% for post in site.posts %} {% if post.category contains "kernels" %} {% include make_post_link.html %} {% endif %} {% endfor %}
     </div>
     <div class="col-md-6">
-      <h4>Science (fun)</h4>
-      <!-- <ul class="post-list"> --> {% for post in site.posts %} {% if post.category contains "fun-science" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <!-- </ul> -->
+      <h4>Science and mathematics of deep learning</h4>
+      {% for post in site.posts %} {% if post.category contains "dl-science" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Supercategory 2: Mathematics and Physics -->
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Mathematics</h4>
+      {% for post in site.posts %} {% if post.category contains "mathematics" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+      <hr>
+      <h4>Biology and chemistry</h4>
+      {% for post in site.posts %} {% if post.category contains "biology" or post.category contains "chemistry" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+    </div>
+    <div class="col-md-6">
+      <h4>Physics</h4>
+      {% for post in site.posts %} {% if post.category contains "physics" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Supercategory 3: Art, Adventures, Poetry, Society -->
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Art</h4>
+      {% for post in site.posts %} {% if post.category contains "art" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+      <hr>
+      <h4>Adventures</h4>
+      {% for post in site.posts %} {% if post.category contains "adventures" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+    </div>
+    <div class="col-md-6">
+      <h4>Poetry and performance</h4>
+      {% for post in site.posts %} {% if post.category contains "poetry" %} {% include make_post_link.html %} {% endif %} {% endfor %}
+      <hr>
+      <h4>Society</h4>
+      {% for post in site.posts %} {% if post.category contains "society" %} {% include make_post_link.html %} {% endif %} {% endfor %}
     </div>
   </div>
 </div>
@@ -371,9 +429,9 @@ layout: default
   // Edit this list to change the photo sequence!
   // Add or remove filenames from img/pictures_of_me/
   const photoSequence = [
-    'me_in_glacier.jpg',
     'me_at_collingwood_house_1.jpeg',
-    'me_at_collingwood_house_2.jpg',
+    'me_in_glacier.jpg',
+    // 'me_at_collingwood_house_2.jpg',
     'me_grinding.jpeg',
     'me_in_tux.jpeg',
     'me_with_lizard.jpeg',
@@ -388,6 +446,7 @@ layout: default
     // 'me_in_utah_maybe.jpg',
     // 'me_on_el_capitan.png',
     'me_on_rock.png',
+    'me_on_mechanical_bull.gif',
   ];
 
   // Build full paths

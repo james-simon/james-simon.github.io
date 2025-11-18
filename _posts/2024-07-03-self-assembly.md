@@ -2,7 +2,8 @@
 layout: post
 title: "Experiments in self-assembly"
 date: 2024-07-03 00:00
-category: research
+category: physics
+emoji: 🧩
 ---
 
 

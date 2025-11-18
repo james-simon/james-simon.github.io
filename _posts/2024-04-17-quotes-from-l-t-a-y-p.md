@@ -2,7 +2,8 @@
 layout: post
 title: "Favorite quotes from <em>Letters to a Young Poet</em>"
 date: 2024-04-17
-category: random
+category: poetry
+emoji: 📖
 ---
 
 <style>

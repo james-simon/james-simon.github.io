@@ -2,7 +2,8 @@
 layout: post
 title:	"The gravitree"
 date:	2021-10-11
-category: physics, fun-science
+category: art
+emoji: 🌳
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

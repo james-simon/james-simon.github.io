@@ -2,7 +2,8 @@
 layout: post
 title: "The sixth lake"
 date: 2024-06-10
-category: random, personal
+category: adventures
+emoji: 🏔️
 ---
 
 

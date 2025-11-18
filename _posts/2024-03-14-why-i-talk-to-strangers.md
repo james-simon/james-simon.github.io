@@ -2,7 +2,8 @@
 layout: post
 title: "Why I talk to strangers"
 date: 2024-03-15
-category: poetry, personal
+category: poetry
+emoji: 💬
 ---
 
 i met someone today\

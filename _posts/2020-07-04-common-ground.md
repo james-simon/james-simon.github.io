@@ -2,7 +2,8 @@
 layout: post
 title:	"Common ground"
 date:	2020-07-04
-category: society, random
+category: society
+emoji: 🤝
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

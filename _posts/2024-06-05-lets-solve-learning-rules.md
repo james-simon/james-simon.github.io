@@ -2,7 +2,8 @@
 layout: post
 title: "Let's solve more learning rules"
 date: 2024-06-05 01:00
-category: research
+category: dl-science
+emoji: 📐
 ---
 
 

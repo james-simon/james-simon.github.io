@@ -2,7 +2,8 @@
 layout: post
 title: "One kernel, many eigensystems"
 date: 2025-04-07
-category: deep learning, research
+category: kernels
+emoji: 🔀
 ---
 
 *This is a technical note on a subtlety of kernel theory. Venture in at your own risk!*

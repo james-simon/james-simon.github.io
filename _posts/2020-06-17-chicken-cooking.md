@@ -2,7 +2,8 @@
 layout: post
 title:	"How hard do you have to hit a chicken to cook it?"
 date:	2020-06-17
-category: physics, fun-science
+category: physics
+emoji: 🐔
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

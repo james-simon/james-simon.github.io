@@ -2,7 +2,8 @@
 layout: post
 title: "Time-reversed random walks"
 date: 2022-09-03
-category: math, fun-science
+category: physics
+emoji: ⏪
 ---
 
 A year or so ago, at the height of the pandemic, a few friends and I watched *Tenet (2020)*, an action movie whose core conceit is that certain people and objects move the opposite direction through time.

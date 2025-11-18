@@ -2,7 +2,8 @@
 layout: post
 title: "Household microscopy"
 date: 2024-06-11
-category: fun-science
+category: biology
+emoji: 🔬
 ---
 
 

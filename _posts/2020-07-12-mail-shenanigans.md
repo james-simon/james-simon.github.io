@@ -2,7 +2,8 @@
 layout: post
 title:   "Messing with the postal service"
 date: 2020-07-12
-category: mail, random
+category: adventures
+emoji: 📮
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

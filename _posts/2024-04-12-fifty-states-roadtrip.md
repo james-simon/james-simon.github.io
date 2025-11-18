@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "Roadtripping to North Dakota"
+title: "Reflections after visiting all 50 states"
 date: 2024-04-14
-category: random, personal
+category: adventures
+emoji: 🗺️
 ---
 
 <link rel="stylesheet" href="{{site.baseurl}}/css/hover_effects.css">

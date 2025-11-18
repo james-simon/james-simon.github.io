@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "The optimal low-rank solution for linear regression"
+title: "The optimal low-rank solution for multivariate linear regression"
 date: 2024-11-06
-category: deep learning, research
+category: kernels
+emoji: 📈
 ---
 
 Consider linear regression with squared error in which we wish to choose a matrix $\mathbf{W}$ to minimize

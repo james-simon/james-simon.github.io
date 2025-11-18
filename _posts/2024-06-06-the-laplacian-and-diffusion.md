@@ -2,7 +2,8 @@
 layout: post
 title: "Using the Laplacian to take a local average of a function"
 date: 2024-06-06
-category: research
+category: mathematics
+emoji: ∇
 ---
 
 The Laplacian operator in $d$ dimensions is defined as $\nabla^2 \equiv \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2}$. It’s widely used to model diffusion processes in physics — for example, the [heat equation](https://en.wikipedia.org/wiki/Heat_equation), which describes the diffusion of heat through a material, is given by $\frac{\partial f(\mathbf{x},t)}{\partial t} = \nabla^2 f(\mathbf{x}, t)$. This operator’s come up in [my recent thinking about the 1NN algorithm]({{site.baseurl}}/blog/1nn-eigenframework): in particular, I’ve been trying to write down a linear operator that replaces a function with its local average, and I had a sense that you could probably do this with the Laplacian somehow. In thinking this through, I encountered something neat I hadn’t appreciated before: for any analytic function $f$, it holds that

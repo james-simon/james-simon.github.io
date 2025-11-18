@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "Gravitree update: June 2024"
+title: "Gravitrees 2: Electric Boogaloo"
 date: 2024-06-23 02:00
-category: random
+category: art
+emoji: 🌲
 ---
 
 *This is an update to my [previous post](https://james-simon.github.io/blog/gravitrees/) introducing gravitrees.*

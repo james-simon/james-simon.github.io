@@ -2,7 +2,8 @@
 layout: post
 title: "Insights into GPT-2's positional encodings"
 date: 2024-08-20
-category: deep learning, research
+category: dl-science
+emoji: 🤖
 ---
 
 

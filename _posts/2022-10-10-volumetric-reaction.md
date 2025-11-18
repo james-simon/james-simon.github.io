@@ -2,7 +2,8 @@
 layout: post
 title: "Can a chemical reaction measure the size of its container?"
 date: 2022-10-10
-category: chemistry, physics, fun-science
+category: chemistry
+emoji: 🧪
 ---
 
 All modern society rests on a suite of basic chemical processes, developed over centuries, that let us feed ourselves, power our cities, and make virtually every artifact of technology we manufacture.

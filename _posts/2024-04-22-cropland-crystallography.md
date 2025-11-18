@@ -2,7 +2,8 @@
 layout: post
 title: "Geometric patterns in croplands"
 date: 2024-04-21
-category: fun-math, random
+category: mathematics
+emoji: 🌾
 ---
 
 

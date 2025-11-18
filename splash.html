@@ -113,11 +113,27 @@ permalink: /splash/
       if (hasStarted) return;
       hasStarted = true;
 
-      audio.volume = 1.0;
+      audio.volume = 0;
       audio.muted = false;
 
       audio.play().then(function() {
         console.log('Audio started successfully on user interaction');
+
+        // Fade in over 2 seconds
+        var startTime = Date.now();
+        var fadeDuration = 2000; // 2 seconds in milliseconds
+
+        function fadeIn() {
+          var elapsed = Date.now() - startTime;
+          var progress = Math.min(elapsed / fadeDuration, 1);
+          audio.volume = progress;
+
+          if (progress < 1) {
+            requestAnimationFrame(fadeIn);
+          }
+        }
+
+        fadeIn();
       }).catch(function(error) {
         console.error('Error starting audio:', error);
       });

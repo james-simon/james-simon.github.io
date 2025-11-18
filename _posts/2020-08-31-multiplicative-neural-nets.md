@@ -2,7 +2,8 @@
 layout: post
 title:	"Multiplicative neural networks"
 date:	2020-08-31
-category: deep learning, research
+category: dl-science
+emoji: ✖️
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

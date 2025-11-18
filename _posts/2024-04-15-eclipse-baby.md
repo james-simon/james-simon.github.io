@@ -2,7 +2,8 @@
 layout: post
 title: "How many babies were born during the 2024 eclipse?"
 date: 2024-04-15
-category: random
+category: mathematics
+emoji: 🌝
 ---
 
 
