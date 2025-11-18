@@ -1027,38 +1027,18 @@
     blackHole.style.transition = 'width 3s ease-in-out, height 3s ease-in-out, box-shadow 3s ease-in-out';
     document.body.appendChild(blackHole);
 
-    // Create white ring inside black hole
-    const whiteRing = document.createElement('div');
-    whiteRing.style.position = 'fixed';
-    whiteRing.style.left = '50%';
-    whiteRing.style.top = '50%';
-    whiteRing.style.width = '30px'; // 3/4 of 40px
-    whiteRing.style.height = '30px';
-    whiteRing.style.borderRadius = '50%';
-    whiteRing.style.border = '3px solid rgba(255, 255, 255, 0.8)';
-    whiteRing.style.transform = 'translate(-50%, -50%)';
-    whiteRing.style.zIndex = '99999';
-    whiteRing.style.pointerEvents = 'none';
-    whiteRing.style.boxSizing = 'border-box';
-    whiteRing.style.transition = 'width 3s ease-in-out, height 3s ease-in-out';
-    document.body.appendChild(whiteRing);
-
-    // Pulse black hole and ring
+    // Pulse black hole
     let blackHolePulseDirection = 1;
     setInterval(() => {
       if (blackHolePulseDirection === 1) {
         blackHole.style.width = '60px';
         blackHole.style.height = '60px';
         blackHole.style.boxShadow = '0 0 30px 15px rgba(0, 0, 0, 0.3), 0 0 60px 30px rgba(0, 0, 0, 0.2), 0 0 90px 45px rgba(0, 0, 0, 0.1)';
-        whiteRing.style.width = '45px'; // 3/4 of 60px
-        whiteRing.style.height = '45px';
         blackHolePulseDirection = -1;
       } else {
         blackHole.style.width = '40px';
         blackHole.style.height = '40px';
         blackHole.style.boxShadow = '0 0 20px 10px rgba(0, 0, 0, 0.3), 0 0 40px 20px rgba(0, 0, 0, 0.2), 0 0 60px 30px rgba(0, 0, 0, 0.1)';
-        whiteRing.style.width = '30px'; // 3/4 of 40px
-        whiteRing.style.height = '30px';
         blackHolePulseDirection = 1;
       }
     }, 3000);
@@ -1314,7 +1294,7 @@
       const blackHoleX = width / 2;
       const blackHoleY = height / 2;
       const blackHoleLambda = 250; // Larger radius of effect
-      const blackHoleForce = 15000; // Much stronger force
+      const blackHoleForce = 150000; // 10x stronger force
 
       // Update particles and check for scoring
       for (let i = particles.length - 1; i >= 0; i--) {
