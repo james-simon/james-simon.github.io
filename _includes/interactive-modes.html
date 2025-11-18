@@ -274,6 +274,39 @@
       createParticle(el, rect);
     });
 
+    // Collect line breaks and render them as small horizontal lines
+    const lineBreaks = document.querySelectorAll('br');
+    lineBreaks.forEach(br => {
+      const rect = br.getBoundingClientRect();
+
+      // Create a visible line element for the br
+      const line = document.createElement('div');
+      line.style.width = '20px';
+      line.style.height = '2px';
+      line.style.backgroundColor = '#999';
+      line.style.position = 'fixed';
+      line.style.left = rect.left + 'px';
+      line.style.top = rect.top + 'px';
+      line.classList.add('char-particle');
+
+      // Add to body
+      document.body.appendChild(line);
+
+      // Hide original
+      br.style.visibility = 'hidden';
+
+      // Add to particles array with random velocity
+      particles.push({
+        el: line,
+        x: rect.left,
+        y: rect.top,
+        vx: (Math.random() - 0.5) * 800,
+        vy: (Math.random() - 0.5) * 800 - 200,
+        width: 20,
+        height: 2
+      });
+    });
+
     // Play shatter sound after text wrapping and particle collection
     const audio = document.getElementById('shatter-audio');
     if (audio) {
