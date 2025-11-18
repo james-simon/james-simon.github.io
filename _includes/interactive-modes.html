@@ -70,6 +70,7 @@
   let shatterActive = false;
   let gravityActive = false;
   let vacuumActive = false;
+  let pongActive = false;
   let mouseX = 0;
   let mouseY = 0;
   let prevMouseX = 0;
@@ -902,6 +903,229 @@
   }
 
   // ============================================================================
+  // PONG MODE
+  // ============================================================================
+
+  function enterPongMode() {
+    if (pongActive) return;
+    pongActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "PONG MODE ACTIVATED" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'PONG MODE ACTIVATED';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#ff00ff';
+    flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #ff00ff';
+    flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+    document.body.appendChild(flashMessage);
+
+    // Show for 1 second, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000);
+    }, 1000);
+
+    // Create score displays
+    const leftScoreContainer = document.createElement('div');
+    leftScoreContainer.style.position = 'fixed';
+    leftScoreContainer.style.top = '50px';
+    leftScoreContainer.style.left = '50px';
+    leftScoreContainer.style.zIndex = '99999';
+    leftScoreContainer.style.pointerEvents = 'none';
+    leftScoreContainer.style.textAlign = 'center';
+
+    const leftLabel = document.createElement('div');
+    leftLabel.textContent = 'THEM';
+    leftLabel.style.fontFamily = 'Courier New, monospace';
+    leftLabel.style.fontSize = '24px';
+    leftLabel.style.fontWeight = 'bold';
+    leftLabel.style.color = '#ff0000';
+    leftLabel.style.textShadow = '0 0 10px #ff0000';
+    leftLabel.style.marginBottom = '10px';
+
+    const leftScore = document.createElement('div');
+    leftScore.textContent = '0';
+    leftScore.style.fontFamily = 'Courier New, monospace';
+    leftScore.style.fontSize = '72px';
+    leftScore.style.fontWeight = 'bold';
+    leftScore.style.color = '#ff0000';
+    leftScore.style.textShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+
+    leftScoreContainer.appendChild(leftLabel);
+    leftScoreContainer.appendChild(leftScore);
+    document.body.appendChild(leftScoreContainer);
+
+    const rightScoreContainer = document.createElement('div');
+    rightScoreContainer.style.position = 'fixed';
+    rightScoreContainer.style.top = '50px';
+    rightScoreContainer.style.right = '50px';
+    rightScoreContainer.style.zIndex = '99999';
+    rightScoreContainer.style.pointerEvents = 'none';
+    rightScoreContainer.style.textAlign = 'center';
+
+    const rightLabel = document.createElement('div');
+    rightLabel.textContent = 'YOU';
+    rightLabel.style.fontFamily = 'Courier New, monospace';
+    rightLabel.style.fontSize = '24px';
+    rightLabel.style.fontWeight = 'bold';
+    rightLabel.style.color = '#00ff00';
+    rightLabel.style.textShadow = '0 0 10px #00ff00';
+    rightLabel.style.marginBottom = '10px';
+
+    const rightScore = document.createElement('div');
+    rightScore.textContent = '0';
+    rightScore.style.fontFamily = 'Courier New, monospace';
+    rightScore.style.fontSize = '72px';
+    rightScore.style.fontWeight = 'bold';
+    rightScore.style.color = '#00ff00';
+    rightScore.style.textShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+
+    rightScoreContainer.appendChild(rightLabel);
+    rightScoreContainer.appendChild(rightScore);
+    document.body.appendChild(rightScoreContainer);
+
+    let themScore = 0;
+    let youScore = 0;
+
+    const particles = [];
+
+    // Collect all text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily;
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with random velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: (Math.random() - 0.5) * 600,
+        vy: (Math.random() - 0.5) * 600,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Start animation
+    startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++);
+  }
+
+  function startPongAnimation(particles, leftScoreEl, rightScoreEl, incrementThem, incrementYou) {
+    let lastTime = performance.now();
+    let themScore = 0;
+    let youScore = 0;
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+      dt = Math.min(dt, 0.033);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Update particles and check for scoring
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Check for left edge (YOU scores)
+        if (particle.x + particle.width < 0) {
+          particle.el.remove();
+          particles.splice(i, 1);
+          youScore++;
+          rightScoreEl.textContent = youScore.toString();
+          continue;
+        }
+
+        // Check for right edge (THEM scores)
+        if (particle.x > width) {
+          particle.el.remove();
+          particles.splice(i, 1);
+          themScore++;
+          leftScoreEl.textContent = themScore.toString();
+          continue;
+        }
+
+        // Bounce off top and bottom
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy;
+        } else if (particle.y + particle.height > height) {
+          particle.y = height - particle.height;
+          particle.vy = -particle.vy;
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
   // INITIALIZATION
   // ============================================================================
 
@@ -1002,6 +1226,28 @@
       splashLi.appendChild(splashLink);
 
       navList.appendChild(splashLi);
+
+      // Pong mode icon (gamepad)
+      const pongLi = document.createElement('li');
+      pongLi.className = 'nav-item active';
+
+      const pongLink = document.createElement('a');
+      pongLink.className = 'nav-link';
+      pongLink.style.cursor = 'pointer';
+      pongLink.href = '#';
+
+      const pongIcon = document.createElement('i');
+      pongIcon.className = 'fas fa-gamepad';
+
+      pongLink.appendChild(pongIcon);
+      pongLi.appendChild(pongLink);
+
+      pongLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        enterPongMode();
+      });
+
+      navList.appendChild(pongLi);
     }
   });
 </script>
