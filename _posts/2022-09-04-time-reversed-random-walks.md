@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Time-reversed random walks"
+title: "Modeling time-reversed random walks"
 date: 2022-09-03
 category: physics
 emoji: ⏪
@@ -301,7 +301,7 @@ If you're game-design-minded and interested in thinking through this further, fe
 This idea was largely inspired by a post-*Tenet* conversation with Vishal Talasani.
 This writeup was made by starting with a blank file and randomly hitting a time-reversed delete key until it was done.
 
-#### Footnotes
+***
 
 [^a]: It turns out the weak nuclear force actually does violate time symmetry just a little, so you'd see a break in the laws of physics if you sent a certain atomic physics experiment backwards in time, but let's ignore that for now. We'll also neglect questions of quantum measurement.
 

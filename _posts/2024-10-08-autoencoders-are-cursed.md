@@ -3,7 +3,7 @@ layout: post
 title: "Infinite-width autoencoders are cursed"
 date: 2024-10-08
 category: dl-science
-emoji: 🔮
+emoji: 👺
 ---
 
 

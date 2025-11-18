@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Geometric patterns in croplands"
+title: "Number theory, fractals, and crystallography in rows of crops"
 date: 2024-04-21
 category: mathematics
 emoji: 🌾

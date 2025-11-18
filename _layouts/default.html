@@ -3,11 +3,11 @@
 
   {% include head.html %}
 
-  <body>
+  <body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
 
     {% include navigation.html %}
 
-    <div class="page-content">
+    <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
         {{ content }}
       </div>

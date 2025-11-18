@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Reflections after visiting all 50 states"
+title: "Reflections upon visiting all 50 states"
 date: 2024-04-14
 category: adventures
 emoji: 🗺️

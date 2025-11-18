@@ -100,6 +100,40 @@ permalink: /splash/
     border-bottom-color: #c0e8c0;
   }
 
+  /* Mobile responsive styles */
+  @media (max-width: 768px) {
+    .splash-container {
+      flex-direction: column;
+      gap: 2em;
+      padding: 20px;
+    }
+
+    .splash-image {
+      max-width: 200px;
+    }
+
+    .splash-text-container {
+      align-items: center;
+      text-align: center;
+    }
+
+    .splash-title {
+      font-size: 2em;
+      text-align: center;
+    }
+
+    .splash-text {
+      font-size: 1.2em;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .splash-text p[style*="text-indent"] {
+      text-indent: 0 !important;
+      margin-top: 0.5em;
+    }
+  }
+
   </style>
 </head>
 <body>

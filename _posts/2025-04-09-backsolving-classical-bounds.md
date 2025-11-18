@@ -3,7 +3,7 @@ layout: post
 title: "Backsolving classical generalization bounds from the modern kernel regression eigenframework"
 date: 2025-04-09
 category: kernels
-emoji: 🔄
+emoji: ⬅️
 ---
 
 *This blogpost shows how to use the omniscient KRR eigenframework, which gives a closed-form expression for the test error of KRR in terms of task eigenstructure, to quickly recover a classical generalization bound. I’ve worked with the modern eigenframework a great deal, and this blogpost was the result of a calculation I thought was new but quickly resolved to a classical bound. Even though the old classical bounds have proven fairly useless in modern problems, I still found this interesting: the calculation here presented is a different (and fast) way to arrive at a classical result, and it was clarifying for me to see where the looseness of the classical result slips in in the course of various approximations.*
