@@ -189,7 +189,45 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
-    const particles = [];
+    // Create flashy "SHATTER INITIATED" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'SHATTER INITIATED';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#ff4500';
+    flashMessage.style.textShadow = '0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff4500, 0 0 40px #ff4500';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #ff4500';
+    flashMessage.style.boxShadow = '0 0 20px #ff4500, inset 0 0 20px rgba(255, 69, 0, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    document.body.appendChild(flashMessage);
+
+    // Flash the message on/off
+    let flashCount = 0;
+    const maxFlashes = 6;
+    const flashInterval = setInterval(() => {
+      flashMessage.style.opacity = flashMessage.style.opacity === '0' ? '1' : '0';
+      flashCount++;
+
+      if (flashCount >= maxFlashes) {
+        clearInterval(flashInterval);
+        flashMessage.remove();
+        // Start shattering after flashing is complete
+        startShatterSequence();
+      }
+    }, 600);
+
+    function startShatterSequence() {
+      const particles = [];
 
     // Helper function to create particle from element
     function createParticle(element, rect, isText = false) {
@@ -307,15 +345,16 @@
       });
     });
 
-    // Play shatter sound after text wrapping and particle collection
-    const audio = document.getElementById('shatter-audio');
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(err => console.log('Audio play failed:', err));
-    }
+      // Play shatter sound after text wrapping and particle collection
+      const audio = document.getElementById('shatter-audio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(err => console.log('Audio play failed:', err));
+      }
 
-    // Start animation
-    startShatterAnimation(particles);
+      // Start animation
+      startShatterAnimation(particles);
+    }
   }
 
   function startShatterAnimation(particles) {
@@ -392,6 +431,41 @@
     // Lock body in place
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "GRAVITY ACTIVATED" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'GRAVITY ACTIVATED';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#00bfff';
+    flashMessage.style.textShadow = '0 0 10px #00bfff, 0 0 20px #00bfff, 0 0 30px #00bfff, 0 0 40px #00bfff';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #00bfff';
+    flashMessage.style.boxShadow = '0 0 20px #00bfff, inset 0 0 20px rgba(0, 191, 255, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    document.body.appendChild(flashMessage);
+
+    // Flash the message on/off
+    let flashCount = 0;
+    const maxFlashes = 6;
+    const flashInterval = setInterval(() => {
+      flashMessage.style.opacity = flashMessage.style.opacity === '0' ? '1' : '0';
+      flashCount++;
+
+      if (flashCount >= maxFlashes) {
+        clearInterval(flashInterval);
+        flashMessage.remove();
+      }
+    }, 600);
 
     // Initialize mouse position to null - don't apply forces until we know where mouse is
     mouseX = null;
@@ -638,7 +712,7 @@
         clearInterval(flashInterval);
         flashMessage.remove();
       }
-    }, 300);
+    }, 600);
 
     // Initialize mouse position to null - don't apply forces until we know where mouse is
     mouseX = null;
