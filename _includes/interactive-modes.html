@@ -393,9 +393,9 @@
     document.body.classList.add('shatter-locked');
     document.body.style.top = `-${scrollY}px`;
 
-    // Create flashy "GRAVITY ACTIVATED" message
+    // Create flashy "GRAVITY ON" message
     const flashMessage = document.createElement('div');
-    flashMessage.textContent = 'GRAVITY ACTIVATED';
+    flashMessage.textContent = 'GRAVITY ON';
     flashMessage.style.position = 'fixed';
     flashMessage.style.top = '50%';
     flashMessage.style.left = '50%';
@@ -414,15 +414,15 @@
     flashMessage.style.pointerEvents = 'none';
     flashMessage.style.textAlign = 'center';
     flashMessage.style.opacity = '1';
-    flashMessage.style.transition = 'opacity 1s';
+    flashMessage.style.transition = 'opacity 2s';
     document.body.appendChild(flashMessage);
 
-    // Show for 1 second, then fade out over 1 second
+    // Show for 1 second, then fade out over 2 seconds
     setTimeout(() => {
       flashMessage.style.opacity = '0';
       setTimeout(() => {
         flashMessage.remove();
-      }, 1000); // Remove after fade completes
+      }, 2000); // Remove after fade completes
     }, 1000);
 
     // Initialize mouse position to null - don't apply forces until we know where mouse is
@@ -658,15 +658,15 @@
     flashMessage.style.pointerEvents = 'none';
     flashMessage.style.textAlign = 'center';
     flashMessage.style.opacity = '1';
-    flashMessage.style.transition = 'opacity 1s';
+    flashMessage.style.transition = 'opacity 2s';
     document.body.appendChild(flashMessage);
 
-    // Show for 1 second, then fade out over 1 second
+    // Show for 1 second, then fade out over 2 seconds
     setTimeout(() => {
       flashMessage.style.opacity = '0';
       setTimeout(() => {
         flashMessage.remove();
-      }, 1000); // Remove after fade completes
+      }, 2000); // Remove after fade completes
     }, 1000);
 
     // Initialize mouse position to null - don't apply forces until we know where mouse is
