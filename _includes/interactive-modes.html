@@ -1051,17 +1051,39 @@
       // Hide original
       char.style.visibility = 'hidden';
 
-      // Add to particles array with random velocity
+      // Add to particles array with zero initial velocity
       particles.push({
         el: clone,
         x: rect.left,
         y: rect.top,
-        vx: (Math.random() - 0.5) * 600,
-        vy: (Math.random() - 0.5) * 600,
+        vx: 0,
+        vy: 0,
         width: rect.width,
-        height: rect.height
+        height: rect.height,
+        active: false
       });
     });
+
+    // Activate one random letter every second
+    const activationInterval = setInterval(() => {
+      // Find all inactive particles
+      const inactiveParticles = particles.filter(p => !p.active);
+
+      if (inactiveParticles.length === 0) {
+        clearInterval(activationInterval);
+        return;
+      }
+
+      // Pick a random inactive particle
+      const randomParticle = inactiveParticles[Math.floor(Math.random() * inactiveParticles.length)];
+
+      // Give it velocity with guaranteed horizontal movement
+      const minVx = 200; // Minimum horizontal speed
+      const vxSign = Math.random() < 0.5 ? -1 : 1;
+      randomParticle.vx = vxSign * (minVx + Math.random() * 400); // 200-600 px/s
+      randomParticle.vy = (Math.random() - 0.5) * 600;
+      randomParticle.active = true;
+    }, 1000);
 
     // Start animation
     startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++);
