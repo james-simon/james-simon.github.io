@@ -1,0 +1,163 @@
+---
+layout: default
+permalink: /blog/
+nav_order: 2
+---
+
+<style>
+  h1 {
+    margin-top: 1.5em;
+  }
+
+  .hr-thin {
+    border: none;
+    height: 1px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+  }
+
+  .hr-thick {
+    border: none;
+    height: 2px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+  }
+
+  .blog-category {
+    margin-bottom: 2em;
+  }
+
+  .blog-category h4 {
+    margin-bottom: 0.5em;
+  }
+</style>
+
+<div class="container">
+  <h1><i class="fas fa-seedling"></i> Blog</h1>
+  <hr class="hr-thick">
+
+  <p>I started to put my writing on this website early in my PhD. I've found it very useful, and it serves a few purposes: it's a repository of research ideas and intuitions not quite baked enough for a paper; it's a way of sharing thoughts and updates about other parts of my life; it's a place to put fun writing; it's a reason to write at all, and writing teaches one how to think clearly.</p>
+
+  <p>Recommended or favorite blogposts are marked with a ⭐. You can also explore my blog visually through a <a href="{{site.baseurl}}/t-sne/">t-SNE embedding</a>.</p>
+
+  <hr class="hr-thick">
+
+  <!-- Essays -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="blog-category">
+        <h4>Essays</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "essays" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Research Topics -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Kernels and linear regression</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "kernels" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Science of deep learning</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "dl-science" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Math and Science -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Mathematics</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "mathematics" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Biology and chemistry</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "biology" or post.category contains "chemistry" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Physics</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "physics" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Art, Adventures, Poetry, Society -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Art</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "art" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Adventures</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "adventures" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Poetry and performance</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "poetry" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Society</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "society" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ title:   "Messing with the postal service"
 date: 2020-07-12
 category: adventures
 emoji: 📮
+favorite: true
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

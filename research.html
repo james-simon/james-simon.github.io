@@ -1,0 +1,248 @@
+---
+layout: default
+permalink: /research/
+nav_order: 1
+---
+
+<style>
+  h1 {
+    margin-top: 1.5em;
+  }
+
+  .hr-thin {
+    border: none;
+    height: 1px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+  }
+
+  .hr-pale {
+    border: none;
+    height: 1px;
+    color: #eeeeee;
+    background-color: #eeeeee;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+  }
+
+  .hr-thick {
+    border: none;
+    height: 2px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+  }
+
+  .category-section {
+    margin-bottom: 2em;
+    margin-left: -15px;
+    padding-left: 25px;
+    border-left: 5px solid;
+  }
+
+  .category-title {
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    font-size: 1.5em;
+  }
+
+  .category-description {
+    font-size: 90%;
+    color: #555;
+    margin-bottom: 0.8em;
+  }
+
+  .paper-item {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #aaa;
+  }
+
+  .paper-item:last-child {
+    border-bottom: none;
+  }
+
+  .paper-header {
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .paper-toggle {
+    font-size: 0.9em;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .paper-toggle.expanded {
+    transform: rotate(90deg);
+  }
+
+  .paper-title {
+    font-size: 1.05em;
+    margin: 0;
+    flex: 1;
+  }
+
+  .paper-header-links {
+    font-size: 0.9em;
+    margin-left: 0.1em;
+  }
+
+  .paper-header-links a {
+    margin-left: 0.1em;
+  }
+
+  .paper-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    margin-left: 20px;
+    margin-top: 0.5em;
+  }
+
+  .paper-details.expanded {
+    max-height: 2000px;
+  }
+
+  .paper-meta {
+    font-size: 85%;
+    margin-bottom: 0.5em;
+    color: #666;
+  }
+
+  .paper-description {
+    font-size: 90%;
+    margin-bottom: 0.5em;
+  }
+
+  .paper-links a {
+    margin-right: 0.5em;
+  }
+
+  .paper-image {
+    width: 100%;
+    height: auto;
+  }
+</style>
+
+<div class="container">
+  <h1><i class="fas fa-cogs"></i> Research</h1>
+  <hr class="hr-thick">
+
+  <p>
+    Understanding deep learning will be one of the grand scientific challenges of the early 21st century. I want to develop fundamental theory to explain how neural networks learn. I'm a physicist by training and approach this as a physics problem.
+  </p>
+  <p>
+    This is a big project that in total will require at least some theory of the data, a picture of the dynamics of neural net optimization, and a picture of how the model pulls out patterns from the data during this optimization process. We've seen a lot of progress in the past decade, I'm optimistic.
+  </p>
+  <p>
+    This page gives a sketch of my major research threads, with each paper annotated to explain how it fits into its larger line of work and/or how I suggest you read it. The best articulation of my research philosophy's currently <a href="{{site.baseurl}}/blog/on-the-scientific-method/">here</a>.
+  </p>
+  <p>
+    A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>,<a href="https://arxiv.org/abs/2410.04642">5</a>]. Some of these ideas came about from quick initial conversations! If you've got a curious empirical phenomenon you're trying to explain, please reach out.
+  </p>
+
+  {% assign sorted_categories = site.data.research_categories | sort: "order" %}
+  {% assign rainbow_colors = "#e88a8a,#f0a868,#f0d868,#88c88a,#68c8d0,#7884c8,#b078c8" | split: "," %}
+
+  <hr class="hr-thick">
+
+  {% for category in sorted_categories %}
+    {% assign color_index = forloop.index0 | modulo: rainbow_colors.size %}
+    {% assign category_color = rainbow_colors[color_index] %}
+    <div class="category-section" style="border-left-color: {{ category_color }};">
+      <h3 class="category-title">{{ category.title }}</h3>
+
+      {% if category.description != "" %}
+        <p class="category-description">{{ category.description }}</p>
+      {% endif %}
+
+      {% assign category_papers = site.data.papers | where: "category", category.id %}
+
+      <hr class="hr-thin">
+
+      {% for paper in category_papers %}
+        <div class="paper-item">
+          <div class="paper-header" onclick="togglePaper(this)">
+            <span class="paper-toggle">▸</span>
+            <span class="paper-title">
+              {{ paper.title }}
+              {% if paper.venue != "" %}
+                ({{ paper.venue }})
+              {% elsif paper.year %}
+                ({{ paper.year }})
+              {% endif %}
+              {% if paper.links %}<span class="paper-header-links">{% for link in paper.links %}{% if link.type == "blog" and forloop.first == false %}<a href="{% if link.url contains 'http' %}{{ link.url }}{% else %}{{site.baseurl}}{{ link.url }}{% endif %}" onclick="event.stopPropagation();" style="margin-left: 0.3em;">[{{ link.type }}]</a>{% else %}<a href="{% if link.url contains 'http' %}{{ link.url }}{% else %}{{site.baseurl}}{{ link.url }}{% endif %}" onclick="event.stopPropagation();">[{{ link.type }}]</a>{% endif %}{% endfor %}</span>{% endif %}
+            </span>
+          </div>
+          <div class="paper-details">
+            {% if paper.authors != "" %}
+              <div class="paper-meta">{{ paper.authors }}</div>
+              <hr class="hr-pale">
+            {% endif %}
+            {% if paper.image != "" %}
+              <div class="row">
+                <div class="col-md-3">
+                  <img class="paper-image" src="{{site.baseurl}}/img/mainpage_figures/{{ paper.image }}" alt="{{ paper.title }}">
+                </div>
+                <div class="col-md-9">
+                  {% if paper.description != "" %}
+                    <div class="paper-description" style="margin-top: 8px;">{{ paper.description }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% elsif paper.description != "" %}
+              <div class="paper-description">{{ paper.description }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+
+    {% unless forloop.last %}
+      <hr class="hr-thick">
+    {% endunless %}
+  {% endfor %}
+
+</div>
+
+<script>
+function togglePaper(headerElement) {
+  const toggle = headerElement.querySelector('.paper-toggle');
+  const details = headerElement.nextElementSibling;
+
+  toggle.classList.toggle('expanded');
+  details.classList.toggle('expanded');
+}
+
+function processAuthors() {
+  // Process all author lists on page load
+  const authorDivs = document.querySelectorAll('.paper-meta');
+  authorDivs.forEach(div => {
+    let text = div.textContent;
+
+    // Replace "James B. Simon" or "James Simon" with bold "JS"
+    text = text.replace(/James B\. Simon/g, '<b>JS</b>');
+    text = text.replace(/James Simon/g, '<b>JS</b>');
+
+    // Remove middle initials from all names (e.g., "John A. Doe" -> "John Doe")
+    // Match pattern: space + single capital letter + period + space
+    text = text.replace(/ [A-Z]\. /g, ' ');
+
+    // Convert asterisks to superscripts and move them before commas
+    // Handle ",*" -> "<sup>*</sup>,"
+    text = text.replace(/,\*/g, '<sup>*</sup>,');
+    // Handle remaining asterisks not followed by commas
+    text = text.replace(/\*([^,])/g, '<sup>*</sup>$1');
+    // Handle asterisks at end of string
+    text = text.replace(/\*$/g, '<sup>*</sup>');
+
+    div.innerHTML = text;
+  });
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', processAuthors);
+</script>

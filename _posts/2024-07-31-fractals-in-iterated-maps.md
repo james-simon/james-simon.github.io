@@ -255,7 +255,7 @@ This structure is self-similar (which I verified by zooming in).
 ## Conclusions
 
 In this post, I've aimed to give some mechanistic insight into why and how the basins of attraction of iterated maps give fractals.
-There's a huge raft of technical content I could have brought in here but didn't --- if you're interested, I'd encourage you to check out Lyapunov exponents, the logstic map, the Mandelbrot set, and perhaps Steven Strogatz' *Nonlinear Dynamics and Chaos.*
+There's a huge raft of technical content I could have brought in here but didn't --- if you're interested, I'd encourage you to check out Lyapunov exponents, the logistic map, the Mandelbrot set, and perhaps Steven Strogatz' *Nonlinear Dynamics and Chaos.*
 I had never really felt I could see the genesis of this class of fractals before, but now I can, so I hope this sheds some light for some other folks, too!
 
 A major takeaway I have here, which I didn't fully appreciate before, is that in systems like these, chaos is usually studied as a *local* property --- e.g., the Lyapunov exponent is positive, and it's locally defined --- but these fractals are *global.*

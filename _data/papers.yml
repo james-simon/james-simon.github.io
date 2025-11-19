@@ -1,0 +1,266 @@
+- id: predicting-kernel-learning-curves
+  title: Predicting kernel regression learning curves from only raw data statistics
+  authors: "Dhruva Karkada*, Joey Turnbull*, Yuxi Liu, James B. Simon"
+  category: kernel-regression
+  year: 2025
+  venue: ""
+  description: "We study KRR with rotation-invariant kernels. We give a theoretical framework that predicts learning curves (test risk vs. sample size) from only two measurements: the empirical data covariance matrix and an empirical polynomial decomposition of the target function $f_*$.
+<br><br>
+This is possible because it turns out the kernel's eigenfunctions are approximately Hermite polynomials (and approximately insensitive to the actual choice of rotation-invariant kernel).
+We capture this idea mathematically as the <b>Hermite eigenstructure ansatz</b>, prove it in informative limiting cases for Gaussian data, and validate it empirically for several real image datasets.
+<br><br>
+We did this project as a stepping stone towards a theory of MLPs. We needed a rudimentary theory of the structure of the data, and now we have one. As we show in the paper, even feature-learning MLPs seem to learn Hermite monomials in an order predicted by the HEA! This paper worked far better than any of us expected, which when doing science, is a good sign you're on to something.
+<br><br>
+This was my first paper functioning as a PI. It's also my best work -- my coauthors did a remarkable job."
+  image: hea_paper_mainpage_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2510.14878
+
+- id: more-is-better
+  title: "More is better in modern machine learning: when infinite overparameterization is optimal and overfitting is obligatory"
+  authors: "James B. Simon, Dhruva Karkada, Nikhil Ghosh, Mikhail Belkin"
+  category: kernel-regression
+  year: 2024
+  venue: ICLR 2024
+  description: "Our main contribution here a theory of the generalization of random feature models. It's a simple eigenframework which generalizes the one for KRR. With it, we conclude that random feature regression performs better with more parameters, more data, and less regularization, putting theoretical backing to these observations in modern ML. This gives a fairly solid mathematical picture to replace classical intuitions about the risks of overparameterization and overfitting. The eigenframework here can probably be used to answer a lot of other questions."
+  image: more_is_better_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2311.14646
+
+- id: agnostic-overfitting
+  title: An agnostic view on the cost of overfitting in (kernel) ridge regression
+  authors: "Lijia Zhou, James B. Simon, Gal Vardi, Nathan Srebro"
+  category: kernel-regression
+  year: 2024
+  venue: ICLR 2024
+  description: "In this paper, we work backwards from the KRR eigenframework, which is <i>omniscient</i> in the sense that it assumes knowledge of the target function, to an <i>agnostic</i> theory which does not. It's similar in goal to <a href='/blog/backsolving-classical-bounds/'>this blogpost</a>."
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2306.13185
+
+- id: tempered-overfitting
+  title: "Benign, tempered, or catastrophic: toward a refined taxonomy of overfitting"
+  authors: "Neil Mallinar*, James B. Simon*, Amirhesam Abedsoltan, Parthe Pandit, Misha Belkin, Preetum Nakkiran"
+  category: kernel-regression
+  year: 2022
+  venue: NeurIPS 2022
+  description: "Classical wisdom holds that overparameterization is harmful. Neural nets defy this wisdom, generalizing well despite their overparameterization and interpolation of the training data. What gives? How can we understand this discrepancy?<br><br>Recent landmark papers have explored the concept of benign overfitting -- a phenomenon in which certain models can interpolate noisy data without harming generalization -- suggesting that that neural nets may fit benignly. Here we put this idea to the empirical test, giving a new characterization of neural network overfitting and noise sensitivity. We find that neural networks trained to interpolation do not overfit benignly, but neither do they exhibit the catastrophic overfitting foretold by classical wisdom: instead, they usually lie in a third, intermediate regime we call tempered overfitting. I found that we can understand these three regimes of overfitting analytically for kernel regression (a toy model for neural networks), and I proved a simple \"trichotomy theorem\" relating a kernel's eigenspectrum to its overfitting behavior."
+  image: tempered_overfitting.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2207.06569
+
+- id: data-dependent-kernels
+  title: On kernel regression with data-dependent kernels
+  authors: "James B. Simon"
+  category: kernel-regression
+  year: 2022
+  venue: ""
+  description: A short note connecting optimal kernel adaptation to the data to a Bayesian view of target functions. This hasn't been useful since, but maybe someday.
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2209.01691
+
+- id: eigenlearning
+  title: "The eigenlearning framework: A conservation law perspective on kernel regression and wide neural networks"
+  authors: "James B. Simon, Madeline Dickens, Dhruva Karkada, Michael R. DeWeese"
+  category: kernel-regression
+  year: 2023
+  venue: TMLR 2023
+  description: "This is the paper that started this whole sequence for me. Maddie and I managed to derive a simple, physicsy eigenframework for the generalization of KRR. It turned out others had beat us to it, but I was captivated by the beauty of the equations, so we published this paper giving what I think is still the simplest and most accessible version of the theory, plus a handful of applications, plus a surprising connection to quantum physics. If you're not familiar with these ideas and want to study generalization in machine learning, I strongly recommend you read this paper or one of the related ones we cite."
+  image: eigenlearning_mainpage_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2110.03922
+    - type: blog
+      url: /blog/eigenlearning/
+
+- id: word2vec-dynamics
+  title: Closed-form training dynamics reveal learned features and linear structure in word2vec-like models
+  authors: "Dhruva Karkada, James B. Simon, Yasaman Bahri, Michael R. DeWeese"
+  category: stepwise-learning
+  year: 2025
+  venue: NeurIPS 2025
+  description: We show that <code>word2vec</code> exhibits stepwise learning, and even better, the early steps correspond to interpretable semantic concepts in the vocabulary. This is a promising bridge for connecting fundamental theory to mechanistic interpretability.
+  image: word2vec_paper_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2502.09863
+    - type: blog
+      url: https://dkarkada.xyz/posts/qwem/
+
+- id: alternating-gradient-flows
+  title: "Alternating gradient flows: a theory of feature learning in two-layer neural networks"
+  authors: "Daniel Kunin, Giovanni Luca Marchetti, Feng Chen, Dhruva Karkada, James B. Simon, Michael R. DeWeese, Surya Ganguli, Nina Miolane"
+  category: stepwise-learning
+  year: 2025
+  venue: NeurIPS 2025
+  description: We give an explicit algorithmic description of feature learning in some shallow neural networks trained from small init. In this picture, the model alternates between <i>alignment phases,</i> in which dormant neurons align with the current residual gradient, and <i>growth phases,</i> in which a newly grown neuron joints the community, which collectively settles into a new locally optimal configuration.
+  image: agf_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2506.06489
+
+- id: saddle-to-saddle
+  title: "Saddle-To-Saddle Dynamics in Deep ReLU Networks: Low-Rank Bias in the First Saddle Escape"
+  authors: "Ioannis Bantzis, James B. Simon, Arthur Jacot"
+  category: stepwise-learning
+  year: 2025
+  venue: ""
+  description: Do general deep neural networks show stepwise learning dynamics from small initialization? Empirically, it's surprisingly hard to tell. Theoretically, it's also surprisingly hard to tell. In this paper, we take the first step by studying the first step a deep $\textrm{ReLU}$ net provably has at least one plateau-and-drop step, and we characterize this first step, showing that the growth direction is <i>rank-one</i> in almost all weight matrices.
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2505.21722
+
+- id: stepwise-ssl
+  title: On the stepwise nature of self-supervised learning
+  authors: "James B. Simon, Maksis Knutins, Liu Ziyin, Daniel Geisz, Abraham J. Fetterman, Joshua Albrecht"
+  category: stepwise-learning
+  year: 2023
+  venue: ICML 2023
+  description: This is the paper that started this sequence for me. We noticed that self-supervised models sometimes exhibited stepwise loss curves, and I developed a kernel theory that explains why. The theory is exact in the neural tangent kernel regime. The theory and supporting empirics suggest that we can understand self-supervised models as building their representations a few directions at a time, working in a low-rank subspace at any given moment.
+  image: stepwise_mainpage_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2303.15438
+    - type: blog
+      url: https://bair.berkeley.edu/blog/2023/07/10/stepwise-ssl/
+
+- id: optimization-landscape-sgd
+  title: The optimization landscape of sgd across the feature learning strength
+  authors: "Alexander Atanasov*, Alexandru Meterez*, James B. Simon*, Cengiz Pehlevan"
+  category: scaling-dynamics
+  year: 2025
+  venue: ICLR 2025
+  description: We disentangle the network <i>richness parameter</i> $\gamma$ from the <i>learning rate</i> $\eta$, identifying scaling relationships and giving a phase diagram. We give a definition and characterization of the <i>ultra-rich</i> regime, which lives $\gamma \gg 1$ beyond the rich regime. Training in the ultra-rich regime often shows stepwise learning and is conceptually related to training from small initialization. It seems to be mathematically simpler than the rich regime but no less performant (at least given long enough to train), and we came away from this thinking it is a useful subject for future theoretical research.
+  image: richness_phase_diagram.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2410.04642
+
+- id: spectral-condition
+  title: A spectral condition for feature learning
+  authors: "Greg Yang*, James B. Simon*, Jeremy Bernstein*"
+  category: scaling-dynamics
+  year: 2023
+  venue: ""
+  description: We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the <code>$\mu$-parameterization</code>, this is probably the easiest place to start.
+  image: spectral_scaling_mainpage_figure.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2310.17813
+
+- id: thesis
+  title: "Discretized Theories of Deep Learning at Large Width: an Eigenthesis"
+  authors: "James Simon"
+  category: thesis
+  year: 2024
+  venue: ""
+  description: The introduction here is probably a good resource for new students in DL theory to read to get some bearings. The rest is my papers stapled together with some personal history thrown in.
+  image: thesis_figure.png
+  links:
+    - type: pdf
+      url: https://www.proquest.com/openview/5549e5f80dfdbf42ce7c865b8c357998/1?pq-origsite=gscholar&cbl=18750&diss=y
+
+- id: fact-theorem
+  title: "FACT: the Features at Convergence Theorem"
+  authors: "Enric Boix-Adserà*, Neil Mallinar*, James B. Simon, Mikhail Belkin"
+  category: other-ml-theory
+  year: 2025
+  venue: ""
+  description: I quite like the neural feature ansatz, but it's not derivable from first principles, and I was (and remain) convinced it's not quite the right object to study. This paper gives an alternative which <i>does</i> provably come from a first-principles calculation and serves basically the same purposes.
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2507.05644
+
+- id: icml-poster
+  title: You can just put up a poster at ICML and nobody will stop you
+  authors: "Jimmy Neuron, Chet G. P. Tee, Ada Grahd"
+  category: other-ml-theory
+  year: 2023
+  venue: ICML 2023
+  description: Did you know you can just do things?
+  image: fedex_attack_mainpage_figure.png
+  links:
+    - type: viral tweet
+      url: https://x.com/_dsevero/status/1684677903382982656
+
+- id: reverse-engineering-ntk
+  title: Reverse engineering the neural tangent kernel
+  authors: "James B. Simon, Sajant Anand, Michael R. DeWeese"
+  category: other-ml-theory
+  year: 2022
+  venue: ICML 2022
+  description: This was a cute idea with some surprisingly nice math. It's where I first used Hermite polynomials, which would later return. It was a pretty idea, but I no longer believe in it.
+  image: shallow_learning_sketch.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2106.03186
+    - type: blog
+      url: /blog/reverse-engineering/
+
+- id: sgd-large-lr-local-maxima
+  title: "SGD with a constant large learning rate can converge to local maxima"
+  authors: "Liu Ziyin, Botao Li, James B. Simon, Masahito Ueda"
+  category: scaling-dynamics
+  year: 2022
+  venue: ICLR 2022
+  description: A cute observation about pathological cases of SGD loss landscapes.
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2107.11774
+
+- id: critical-point-finding
+  title: Critical point-finding methods reveal gradient-flat regions of deep network losses
+  authors: "Charles G. Frye, James Simon, Neha S. Wadia, Andrew Ligeralde, Michael R. DeWeese, Kristofer E. Bouchard"
+  category: other-ml-theory
+  year: 2021
+  venue: Neural Computation 2021
+  description: This was my first ML theory paper!
+  image: trajectories.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2003.10397
+
+- id: nuclear-spin-qubits
+  title: Fast noise-resistant control of donor nuclear spin qubits in silicon
+  authors: "James Simon, F. A. Calderon-Vargas, Edwin Barnes, Sophia E. Economou"
+  category: physics
+  year: 2020
+  venue: PRB 2020
+  description: ""
+  image: statediagram.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2001.10029
+
+- id: electro-optic-dual-comb
+  title: Interleaved electro-optic dual comb generation to expand bandwidth and scan rate for molecular spectroscopy and dynamics studies near 1.6 µm
+  authors: "Jasper R. Stroud, James B. Simon, Gerd A. Wagner, David F. Plusquellic"
+  category: physics
+  year: 2021
+  venue: Optics Express 2021
+  description: "Experimental optics work done during summer internship at NIST in 2017."
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2106.11414
+
+- id: josephson-junction
+  title: Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits
+  authors: "Amr Osman, James Simon, Andreas Bengtsson, Sandoko Kosen, Philip Krantz, Daniel Perez, Marco Scigliuzzo, Per Delsing, Jonas Bylander, Anita Fadavi Roudsari"
+  category: physics
+  year: 2021
+  venue: APL 2021
+  description: "In the spring and summer of 2019 I worked in the lab of Prof. Per Delsing developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry. My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that's faster to fabricate by one lithography step, or potentially several days of work."
+  image: jj.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2011.05230

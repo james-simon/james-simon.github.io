@@ -4,6 +4,7 @@ title: "Let's solve more learning rules"
 date: 2024-06-05 01:00
 category: dl-science
 emoji: 📐
+favorite: true
 ---
 
 

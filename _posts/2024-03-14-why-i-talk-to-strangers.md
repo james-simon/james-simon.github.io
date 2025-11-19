@@ -4,6 +4,7 @@ title: "Why I talk to strangers"
 date: 2024-03-15
 category: poetry
 emoji: 💬
+favorite: true
 ---
 
 i met someone today\
@@ -45,8 +46,7 @@ and so infinitely more resplendent\
 if you know that secret.
 
 but it goes deeper\
-because unlike with flowers,\
-here you are that type of thing\
+because you too are an object of study\
 and you can learn about yourself\
 in a subway chat with a stranger\
 whose name you do not know\

@@ -1,6 +1,6 @@
 <!-- <li> -->
 <h6>
-{% if post.emoji %}{{ post.emoji }} {% endif %}<a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a> <small>({{ post.date | date: "%b '%y" }}, {% include read_time.html %})</small>
+{% if post.emoji %}{{ post.emoji }} {% endif %}<a class="post-link" href="{{site.baseurl}}{{ post.url | replace: '.html', ''}}">{{ post.title }}</a> <small>({{ post.date | date: "%b '%y" }})</small>{% if post.favorite %} ⭐{% endif %}
 </h6>
 
 <!-- <span class="post-meta"></span> -->

@@ -5,6 +5,7 @@ date:	2022-01-17 1:01
 category: poetry
 read_time: 5m watch
 emoji: 🎤
+favorite: true
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

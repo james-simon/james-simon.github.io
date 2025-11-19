@@ -4,7 +4,7 @@ email: jsi@berkeley.edu
 description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 
-title: JS
+title: Jamie Simon
 url: "http://james-simon.github.io"
 imgurl: "/img"
 

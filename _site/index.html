@@ -35,8 +35,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>JS</title>
+  <title>Jamie Simon</title>
   <meta name="description" content="">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 
   <!-- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
   <script src="/boostrap/js/bootstrap.js"></script> -->
@@ -44,12 +47,26 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/">
-  <link rel="alternate" type="application/rss+xml" title="JS" href="http://localhost:4000/feed.xml">
+  <link rel="canonical" href="http://james-simon.github.io/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
 
   <style>
     body {
       font-family: "et-book", "ETBookOT", "ET Book", Georgia, "Times New Roman", serif !important;
+    }
+
+    a:link {
+      color: #1a4d8f;
+      text-decoration: none;
+    }
+
+    a:visited {
+      color: #6b2d8f;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 
@@ -61,71 +78,2018 @@
   <body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
 
     <!-- <header class="site-header"> -->
-    <!-- <a class="site-title" href="/">JS</a> -->
+    <!-- <a class="site-title" href="/">Jamie Simon</a> -->
 <!-- </header> -->
 
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #edf3f5;">
+    <style>
+      .nav-link {
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 8px 16px !important;
+      }
+
+      .nav-link:hover {
+        background-color: #333 !important;
+        color: white !important;
+      }
+
+      .nav-link:hover i {
+        color: white !important;
+      }
+
+      /* Hide text on narrow screens, show only icons */
+      @media (max-width: 767px) {
+        .nav-link .nav-text {
+          display: none;
+        }
+        .nav-link {
+          padding: 8px 12px !important;
+        }
+      }
+    </style>
+
+    <nav class="navbar navbar-expand navbar-light" style="background-color: #edf3f5;">
       <div class = "container">
-        <a class="navbar-brand" href="/">JS</a></span> </a>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav ml-auto">
-            <li class = "nav-item active"><a class="nav-link" href="/#research"><i class="fas fa-cogs"></i> Research</a></li>
-            <li class = "nav-item active"><a class="nav-link" href="/#puzzles"><i class="fab fa-laravel"></i> Puzzles</a></li>
-            <li class = "nav-item active"><a class="nav-link" href="/#posts"><i class="fas fa-seedling"></i> Blog</a></li>
-          </ul> 
+        <a class="navbar-brand" href="/">Jamie Simon</a></span> </a>
+        <div class="navbar-collapse">
+          <ul class="nav navbar-nav ml-auto" style="flex-wrap: nowrap;">
+            <li class = "nav-item active"><a class="nav-link" href="/research/"><i class="fas fa-cogs"></i><span class="nav-text"> Research</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/blog/"><i class="fas fa-seedling"></i><span class="nav-text"> Blog</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="/puzzles/"><i class="fab fa-laravel"></i><span class="nav-text"> Puzzles</span></a></li>
+          </ul>
         </div>
       </div>
     </nav>
+
+    <style>
+  .char {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    line-height: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    font-family: inherit;
+    color: inherit;
+    white-space: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-decoration: inherit;
+    text-transform: inherit;
+    background: transparent;
+  }
+
+  .char-particle {
+    position: fixed;
+    margin: 0;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  body.shatter-locked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #shatter-overlay-blocker {
+    position: fixed;
+    inset: 0;
+    pointer-events: auto;
+    z-index: 9999;
+    display: none;
+  }
+
+  body.shatter-locked #shatter-overlay-blocker {
+    display: block;
+  }
+</style>
+
+<div id="shatter-overlay-blocker"></div>
+<audio id="shatter-audio" preload="auto" src="/audio/glass_bottle_breaking.mp3"></audio>
+<audio id="pop-1" preload="auto" src="/audio/pop_1.mp3"></audio>
+<audio id="pop-2" preload="auto" src="/audio/pop_2.mp3"></audio>
+<audio id="pop-3" preload="auto" src="/audio/pop_3.mp3"></audio>
+<audio id="pop-4" preload="auto" src="/audio/pop_4.mp3"></audio>
+
+<script>
+  // ============================================================================
+  // INTERACTIVE MODES FOR /shatter PAGE
+  // ============================================================================
+  // This script implements three interactive modes:
+  // 1. SHATTER MODE: All elements explode and bounce with gravity
+  // 2. GRAVITY MODE: Text and glyphs are attracted to the mouse cursor
+  // 3. VACUUM MODE: Text and glyphs are sucked into the mouse and disappear
+  // ============================================================================
+
+  // Global state
+  let shatterActive = false;
+  let gravityActive = false;
+  let vacuumActive = false;
+  let pongActive = false;
+  let mouseX = 0;
+  let mouseY = 0;
+  let prevMouseX = 0;
+  let prevMouseY = 0;
+
+  // ============================================================================
+  // UTILITY FUNCTIONS
+  // ============================================================================
+
+  function playRandomPop() {
+    const popIndex = Math.floor(Math.random() * 4) + 1;
+    const audio = document.getElementById(`pop-${popIndex}`);
+    if (audio) {
+      audio.volume = 0.3; // Quieter pops
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log('Pop sound failed:', err));
+    }
+  }
+
+  // Check if a point is close to a line segment
+  function distanceToLineSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const lengthSquared = dx * dx + dy * dy;
+
+    if (lengthSquared === 0) {
+      // Line segment is a point
+      const distX = px - x1;
+      const distY = py - y1;
+      return Math.sqrt(distX * distX + distY * distY);
+    }
+
+    // Project point onto line segment
+    let t = ((px - x1) * dx + (py - y1) * dy) / lengthSquared;
+    t = Math.max(0, Math.min(1, t)); // Clamp to [0, 1]
+
+    const closestX = x1 + t * dx;
+    const closestY = y1 + t * dy;
+
+    const distX = px - closestX;
+    const distY = py - closestY;
+    return Math.sqrt(distX * distX + distY * distY);
+  }
+
+  function wrapTextNodes(node) {
+    // Skip script, style, and interactive mode elements
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName;
+      const elemId = node.id;
+
+      // Skip these elements entirely
+      if (tagName === 'SCRIPT' || tagName === 'STYLE' ||
+          tagName === 'CODE' || tagName === 'PRE' ||
+          tagName === 'KBD' || tagName === 'SAMP' ||
+          tagName === 'TEXTAREA' || tagName === 'INPUT' ||
+          tagName === 'SELECT' || tagName === 'BUTTON' ||
+          elemId === 'shatter-overlay-blocker' ||
+          elemId === 'shatter-audio' ||
+          elemId?.startsWith('pop-')) {
+        return;
+      }
+
+      // Skip fixed/absolute positioned elements (like nav, modals, etc.)
+      const style = window.getComputedStyle(node);
+      if (style.position === 'fixed' || style.position === 'absolute') {
+        return;
+      }
+
+      // Skip elements that are hidden
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        return;
+      }
+    }
+
+    // If it's a text node, wrap each character
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim().length === 0) return; // Skip whitespace-only nodes
+
+      const fragment = document.createDocumentFragment();
+      // Use Array.from to properly handle multi-byte characters like emojis
+      const chars = Array.from(text);
+      for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
+        if (char === ' ') {
+          // Preserve spaces as regular text nodes
+          fragment.appendChild(document.createTextNode(' '));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = char;
+          fragment.appendChild(span);
+        }
+      }
+      node.parentNode.replaceChild(fragment, node);
+    }
+    // Recursively process child nodes
+    else if (node.nodeType === Node.ELEMENT_NODE) {
+      const children = Array.from(node.childNodes);
+      children.forEach(child => wrapTextNodes(child));
+    }
+  }
+
+  // ============================================================================
+  // SHATTER MODE
+  // ============================================================================
+
+  function enterShatterMode() {
+    if (shatterActive) return;
+    shatterActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    const particles = [];
+
+    // Helper function to create particle from element
+    function createParticle(element, rect, isText = false) {
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the element
+      const clone = element.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(element);
+
+      // For icon elements (i, svg), copy minimal styles to avoid interfering with pseudo-elements
+      if (element.tagName === 'I' || element.tagName === 'SVG') {
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.color = computedStyle.color;
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      } else {
+        // For other elements, copy full styles
+        // Ensure emoji fonts are preserved by adding them to the font stack
+        const fontFamily = computedStyle.fontFamily;
+        clone.style.fontFamily = fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.fontWeight = computedStyle.fontWeight;
+        clone.style.color = computedStyle.color;
+        clone.style.backgroundColor = computedStyle.backgroundColor;
+        clone.style.border = computedStyle.border;
+        clone.style.borderRadius = computedStyle.borderRadius;
+        clone.style.padding = computedStyle.padding;
+
+        // Preserve dimensions for all elements to prevent shrinking
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      }
+
+      // Set z-index: text always on top, then smaller elements in front
+      if (isText) {
+        clone.style.zIndex = '10000';
+      } else {
+        // Calculate area and set z-index inversely (smaller = higher z)
+        const area = rect.width * rect.height;
+        // Map area to z-index range 1000-9999 (larger area = lower z)
+        const zIndex = Math.max(1000, Math.min(9999, 9999 - Math.floor(area / 10)));
+        clone.style.zIndex = zIndex.toString();
+      }
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      element.style.visibility = 'hidden';
+
+      // Add to particles array with random velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: (Math.random() - 0.5) * 800,
+        vy: (Math.random() - 0.5) * 800 - 200,
+        width: rect.width,
+        height: rect.height
+      });
+    }
+
+    // Helper function to shatter images into pieces
+    // COMMENTED OUT - uncomment to enable image shattering
+    /*
+    function shatterImage(imgElement, rect) {
+      if (rect.width === 0 || rect.height === 0) return;
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) return;
+
+      // Get the image source
+      let imageSrc = imgElement.src;
+
+      // If it's an element with background-image, get that instead
+      const computedStyle = window.getComputedStyle(imgElement);
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        const match = bgImage.match(/url\(["']?([^"']*)["']?\)/);
+        if (match) imageSrc = match[1];
+      }
+
+      // Generate random cut positions with average spacing of ~50px
+      const avgSize = 50;
+      const variance = 25; // ±25px variation
+
+      // Generate vertical cut positions (x coordinates)
+      const xCuts = [0];
+      let x = 0;
+      while (x < rect.width) {
+        x += avgSize + (Math.random() - 0.5) * variance * 2;
+        if (x < rect.width) xCuts.push(Math.round(x));
+      }
+      xCuts.push(rect.width);
+
+      // Generate horizontal cut positions (y coordinates)
+      const yCuts = [0];
+      let y = 0;
+      while (y < rect.height) {
+        y += avgSize + (Math.random() - 0.5) * variance * 2;
+        if (y < rect.height) yCuts.push(Math.round(y));
+      }
+      yCuts.push(rect.height);
+
+      // Create pieces based on irregular grid
+      for (let row = 0; row < yCuts.length - 1; row++) {
+        for (let col = 0; col < xCuts.length - 1; col++) {
+          const pieceX = xCuts[col];
+          const pieceY = yCuts[row];
+          const pieceWidth = xCuts[col + 1] - xCuts[col];
+          const pieceHeight = yCuts[row + 1] - yCuts[row];
+
+          const piece = document.createElement('div');
+          piece.style.position = 'fixed';
+          piece.style.width = pieceWidth + 'px';
+          piece.style.height = pieceHeight + 'px';
+          piece.style.left = (rect.left + pieceX) + 'px';
+          piece.style.top = (rect.top + pieceY) + 'px';
+          piece.style.backgroundImage = `url(${imageSrc})`;
+          piece.style.backgroundPosition = `-${pieceX}px -${pieceY}px`;
+          piece.style.backgroundSize = `${rect.width}px ${rect.height}px`;
+          piece.style.backgroundRepeat = 'no-repeat';
+          piece.style.transform = 'translate(0, 0)';
+          piece.style.zIndex = '9000';
+
+          document.body.appendChild(piece);
+
+          // Add to particles array with random velocity
+          particles.push({
+            el: piece,
+            x: rect.left + pieceX,
+            y: rect.top + pieceY,
+            vx: (Math.random() - 0.5) * 800,
+            vy: (Math.random() - 0.5) * 800 - 200,
+            width: pieceWidth,
+            height: pieceHeight
+          });
+        }
+      }
+
+      // Hide original image
+      imgElement.style.visibility = 'hidden';
+    }
+    */
+
+    // Collect all .char elements (text)
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+      createParticle(char, rect, true); // isText = true
+    });
+
+    // Shatter all images - COMMENTED OUT
+    /*
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      const rect = img.getBoundingClientRect();
+      shatterImage(img, rect);
+    });
+    */
+
+    // Collect all other shatterable elements
+    const elements = document.querySelectorAll('img, button, .styled-box, h1, h2, h3, h4, h5, h6, blockquote, svg, i, nav span, nav div');
+    elements.forEach(el => {
+      // Skip if it's the overlay blocker
+      if (el.id === 'shatter-overlay-blocker') return;
+
+      // Skip empty elements or elements with no visible content
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      createParticle(el, rect);
+    });
+
+    // Collect line breaks and render them as small horizontal lines
+    const lineBreaks = document.querySelectorAll('br');
+    lineBreaks.forEach(br => {
+      const rect = br.getBoundingClientRect();
+
+      // Create a visible line element for the br
+      const line = document.createElement('div');
+      line.style.width = '20px';
+      line.style.height = '2px';
+      line.style.backgroundColor = '#999';
+      line.style.position = 'fixed';
+      line.style.left = rect.left + 'px';
+      line.style.top = rect.top + 'px';
+      line.classList.add('char-particle');
+
+      // Add to body
+      document.body.appendChild(line);
+
+      // Hide original
+      br.style.visibility = 'hidden';
+
+      // Add to particles array with random velocity
+      particles.push({
+        el: line,
+        x: rect.left,
+        y: rect.top,
+        vx: (Math.random() - 0.5) * 800,
+        vy: (Math.random() - 0.5) * 800 - 200,
+        width: 20,
+        height: 2
+      });
+    });
+
+    // Play shatter sound after text wrapping and particle collection
+    const audio = document.getElementById('shatter-audio');
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log('Audio play failed:', err));
+    }
+
+    // Start animation
+    startShatterAnimation(particles);
+  }
+
+  function startShatterAnimation(particles) {
+    let lastTime = performance.now();
+    const gravity = 1000; // Doubled gravity for faster fall
+    const damping = 0.6; // More energy loss on bounce
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      particles.forEach(particle => {
+        // Apply gravity
+        particle.vy += gravity * dt;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
+  // GRAVITY MODE
+  // ============================================================================
+
+  function enterGravityMode() {
+    if (gravityActive) return;
+    gravityActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "GRAVITY ON" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'GRAVITY ON';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#00bfff';
+    flashMessage.style.textShadow = '0 0 10px #00bfff, 0 0 20px #00bfff, 0 0 30px #00bfff, 0 0 40px #00bfff';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #00bfff';
+    flashMessage.style.boxShadow = '0 0 20px #00bfff, inset 0 0 20px rgba(0, 191, 255, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+    document.body.appendChild(flashMessage);
+
+    // Show for 1 second, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000); // Remove after fade completes
+    }, 1000);
+
+    // Initialize mouse position to null - don't apply forces until we know where mouse is
+    mouseX = null;
+    mouseY = null;
+    prevMouseX = null;
+    prevMouseY = null;
+
+    // Track mouse position
+    document.addEventListener('mousemove', (e) => {
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    const particles = [];
+
+    // Only collect text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Also collect glyphs and icons
+    const glyphs = document.querySelectorAll('i, svg');
+    glyphs.forEach(glyph => {
+      const rect = glyph.getBoundingClientRect();
+
+      // Skip if outside viewport or has no size
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.width === 0 || rect.height === 0) {
+        return;
+      }
+
+      // Clone the glyph
+      const clone = glyph.cloneNode(true);
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(glyph);
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Preserve dimensions
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.boxSizing = 'border-box';
+
+      // Position at exact location
+      clone.style.position = 'fixed';
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      glyph.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Start animation
+    startGravityAnimation(particles);
+  }
+
+  function startGravityAnimation(particles) {
+    let lastTime = performance.now();
+    const damping = 0.6; // Energy loss on bounce
+    const lambda = 150; // Falloff distance for exponential potential
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      particles.forEach(particle => {
+        // Only apply forces if we have a valid mouse position
+        if (mouseX !== null && mouseY !== null) {
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ)
+            // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
+            const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 5000;
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
+  // VACUUM MODE
+  // ============================================================================
+
+  function enterVacuumMode() {
+    if (vacuumActive) return;
+    vacuumActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "VACUUM MODE INITIATED" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'VACUUM MODE INITIATED';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#00ff00';
+    flashMessage.style.textShadow = '0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #00ff00';
+    flashMessage.style.boxShadow = '0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+    document.body.appendChild(flashMessage);
+
+    // Show for 1 second, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000); // Remove after fade completes
+    }, 1000);
+
+    // Initialize mouse position to null - don't apply forces until we know where mouse is
+    mouseX = null;
+    mouseY = null;
+    prevMouseX = null;
+    prevMouseY = null;
+
+    // Track mouse position
+    document.addEventListener('mousemove', (e) => {
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    const particles = [];
+
+    // Only collect text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Also collect glyphs and icons
+    const glyphs = document.querySelectorAll('i, svg');
+    glyphs.forEach(glyph => {
+      const rect = glyph.getBoundingClientRect();
+
+      // Skip if outside viewport or has no size
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.width === 0 || rect.height === 0) {
+        return;
+      }
+
+      // Clone the glyph
+      const clone = glyph.cloneNode(true);
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(glyph);
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Preserve dimensions
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.boxSizing = 'border-box';
+
+      // Position at exact location
+      clone.style.position = 'fixed';
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      glyph.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Start animation
+    startVacuumAnimation(particles);
+  }
+
+  function startVacuumAnimation(particles) {
+    let lastTime = performance.now();
+    const damping = 0.6; // Energy loss on bounce
+    const lambda = 300; // Falloff distance for exponential potential
+    const velocityDamping = 0.99; // Per-frame velocity damping
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      // Only check for particle removal if we have a valid mouse position
+      if (mouseX !== null && mouseY !== null && prevMouseX !== null && prevMouseY !== null) {
+        // Filter out particles that should be removed
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const particle = particles[i];
+
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          // Also check distance to line segment traced by mouse movement
+          const distToPath = distanceToLineSegment(centerX, centerY, prevMouseX, prevMouseY, mouseX, mouseY);
+
+          // Effective capture radius is proportional to particle size
+          const effectiveRadius = Math.min(particle.width, particle.height) / 2;
+
+          // Remove particle if within effective radius of current mouse position or path
+          if (dist < effectiveRadius || distToPath < effectiveRadius) {
+            particle.el.remove();
+            particles.splice(i, 1);
+            playRandomPop(); // Play pop sound
+            continue;
+          }
+        }
+      }
+
+      particles.forEach(particle => {
+        // Only apply forces if we have a valid mouse position
+        if (mouseX !== null && mouseY !== null) {
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ), 30x stronger than base
+            // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
+            const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 150000; // 30x force
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
+
+        // Apply velocity damping
+        particle.vx *= velocityDamping;
+        particle.vy *= velocityDamping;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      // Update previous mouse position for next frame
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
+  // PONG MODE
+  // ============================================================================
+
+  function enterPongMode() {
+    if (pongActive) return;
+    pongActive = true;
+
+    // Play ready set go sound immediately
+    const readyAudio = new Audio('/audio/chiptune_ready_set_go.mp3');
+    readyAudio.volume = 1.0;
+    readyAudio.play().catch(err => console.log('Ready audio play failed:', err));
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "METEOR SHOWER INCOMING" message
+    const flashMessage = document.createElement('div');
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#ff00ff';
+    flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #ff00ff';
+    flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+
+    const mainText = document.createElement('div');
+    mainText.textContent = 'METEOR SHOWER INCOMING';
+    mainText.style.fontSize = '64px';
+
+    const subText = document.createElement('div');
+    subText.textContent = '(GAME TO 10)';
+    subText.style.fontSize = '32px';
+    subText.style.marginTop = '10px';
+
+    flashMessage.appendChild(mainText);
+    flashMessage.appendChild(subText);
+    document.body.appendChild(flashMessage);
+
+    // Show for 2 seconds, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000);
+    }, 2000);
+
+    // Create score displays
+    const leftScoreContainer = document.createElement('div');
+    leftScoreContainer.style.position = 'fixed';
+    leftScoreContainer.style.top = '50px';
+    leftScoreContainer.style.left = '50px';
+    leftScoreContainer.style.zIndex = '99999';
+    leftScoreContainer.style.pointerEvents = 'none';
+    leftScoreContainer.style.textAlign = 'center';
+
+    const leftLabel = document.createElement('div');
+    leftLabel.textContent = 'THEM';
+    leftLabel.style.fontFamily = 'Courier New, monospace';
+    leftLabel.style.fontSize = '24px';
+    leftLabel.style.fontWeight = 'bold';
+    leftLabel.style.color = '#ff0000';
+    leftLabel.style.textShadow = '0 0 10px #ff0000';
+    leftLabel.style.marginBottom = '10px';
+
+    const leftScore = document.createElement('div');
+    leftScore.textContent = '0';
+    leftScore.style.fontFamily = 'Courier New, monospace';
+    leftScore.style.fontSize = '72px';
+    leftScore.style.fontWeight = 'bold';
+    leftScore.style.color = '#ff0000';
+    leftScore.style.textShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+
+    leftScoreContainer.appendChild(leftLabel);
+    leftScoreContainer.appendChild(leftScore);
+    document.body.appendChild(leftScoreContainer);
+
+    const rightScoreContainer = document.createElement('div');
+    rightScoreContainer.style.position = 'fixed';
+    rightScoreContainer.style.top = '50px';
+    rightScoreContainer.style.right = '50px';
+    rightScoreContainer.style.zIndex = '99999';
+    rightScoreContainer.style.pointerEvents = 'none';
+    rightScoreContainer.style.textAlign = 'center';
+
+    const rightLabel = document.createElement('div');
+    rightLabel.textContent = 'YOU';
+    rightLabel.style.fontFamily = 'Courier New, monospace';
+    rightLabel.style.fontSize = '24px';
+    rightLabel.style.fontWeight = 'bold';
+    rightLabel.style.color = '#00ff00';
+    rightLabel.style.textShadow = '0 0 10px #00ff00';
+    rightLabel.style.marginBottom = '10px';
+
+    const rightScore = document.createElement('div');
+    rightScore.textContent = '0';
+    rightScore.style.fontFamily = 'Courier New, monospace';
+    rightScore.style.fontSize = '72px';
+    rightScore.style.fontWeight = 'bold';
+    rightScore.style.color = '#00ff00';
+    rightScore.style.textShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+
+    rightScoreContainer.appendChild(rightLabel);
+    rightScoreContainer.appendChild(rightScore);
+    document.body.appendChild(rightScoreContainer);
+
+    // Create player paddle (right side, green)
+    const playerPaddle = document.createElement('div');
+    playerPaddle.style.position = 'fixed';
+    playerPaddle.style.right = '20px';
+    playerPaddle.style.width = '15px';
+    playerPaddle.style.height = '200px';
+    playerPaddle.style.backgroundColor = '#00ff00';
+    playerPaddle.style.boxShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+    playerPaddle.style.zIndex = '99999';
+    playerPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(playerPaddle);
+
+    // Create enemy paddle (left side, red, static)
+    const enemyPaddle = document.createElement('div');
+    enemyPaddle.style.position = 'fixed';
+    enemyPaddle.style.left = '20px';
+    enemyPaddle.style.width = '15px';
+    enemyPaddle.style.height = '200px';
+    enemyPaddle.style.backgroundColor = '#ff0000';
+    enemyPaddle.style.boxShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+    enemyPaddle.style.zIndex = '99999';
+    enemyPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(enemyPaddle);
+
+    // Paddle control state
+    let playerPaddleY = window.innerHeight / 2 - 100; // Center paddle
+    let enemyPaddleY = window.innerHeight / 2 - 100; // Center enemy paddle (static)
+    let lastMouseMoveTime = 0;
+    let mouseControlActive = false;
+    const paddleSpeed = 800; // px/s for keyboard control
+
+    // Update paddle positions
+    playerPaddle.style.top = playerPaddleY + 'px';
+    enemyPaddle.style.top = enemyPaddleY + 'px';
+
+    // Mouse control
+    document.addEventListener('mousemove', (e) => {
+      mouseControlActive = true;
+      lastMouseMoveTime = Date.now();
+      playerPaddleY = Math.max(0, Math.min(window.innerHeight - 200, e.clientY - 100));
+    });
+
+    // Keyboard control
+    const keys = {};
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+    });
+    document.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    let themScore = 0;
+    let youScore = 0;
+
+    const particles = [];
+
+    // Collect all text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height,
+        active: false,
+        trail: [] // Store last 15 positions for comet tail
+      });
+    });
+
+    // Activate one random letter every 2 seconds, starting after 3.5 second delay
+    let activationInterval;
+    setTimeout(() => {
+      activationInterval = setInterval(() => {
+        // Find all inactive particles
+        const inactiveParticles = particles.filter(p => !p.active);
+
+        if (inactiveParticles.length === 0) {
+          clearInterval(activationInterval);
+          return;
+        }
+
+        // Pick a random inactive particle
+        const randomParticle = inactiveParticles[Math.floor(Math.random() * inactiveParticles.length)];
+
+        // Give it velocity with guaranteed horizontal movement
+        const minVx = 200; // Minimum horizontal speed
+        const vxSign = Math.random() < 0.5 ? -1 : 1;
+        randomParticle.vx = vxSign * (minVx + Math.random() * 400); // 200-600 px/s
+        randomParticle.vy = (Math.random() - 0.5) * 600;
+        randomParticle.active = true;
+
+        // Create whitish-orange burst at launch position
+        const launchX = randomParticle.x + randomParticle.width / 2;
+        const launchY = randomParticle.y + randomParticle.height / 2;
+        createLaunchBurst(launchX, launchY);
+
+        // Play letter release buzz - create new Audio instance each time
+        const letterBuzz = new Audio('/audio/chiptune_buzz.wav');
+        letterBuzz.volume = 0.35;
+        letterBuzz.play().catch(err => console.log('Letter buzz play failed:', err));
+      }, 2000);
+    }, 3500);
+
+    // Game state
+    let blackHoleActive = false;
+    let blackHoleEl = null;
+    let gameOver = false;
+
+    // Start animation
+    startPongAnimation(particles, leftScore, rightScore, playerPaddle, enemyPaddle, () => playerPaddleY, (newY) => { playerPaddleY = newY; }, (newY) => { enemyPaddleY = newY; }, keys, () => mouseControlActive, () => blackHoleActive, (active) => { blackHoleActive = active; }, () => gameOver, (over) => { gameOver = over; });
+  }
+
+  function createBurst(x, y, color) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '80px';
+    burst.style.height = '80px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = color;
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.8';
+    burst.style.boxShadow = `0 0 40px ${color}, 0 0 80px ${color}`;
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.3s, transform 0.3s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      setTimeout(() => {
+        burst.remove();
+      }, 300);
+    }, 50);
+  }
+
+  function flashPaddle(paddleEl) {
+    let flashCount = 0;
+    const maxFlashes = 6; // 3 full on/off cycles
+    const flashInterval = setInterval(() => {
+      paddleEl.style.opacity = paddleEl.style.opacity === '0' ? '1' : '0';
+      flashCount++;
+      if (flashCount >= maxFlashes) {
+        clearInterval(flashInterval);
+        paddleEl.style.opacity = '1'; // Ensure it ends visible
+      }
+    }, 80); // Flash every 80ms
+  }
+
+  function createLaunchBurst(x, y) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '50px';
+    burst.style.height = '50px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = '#ffcc88'; // Whitish-orange
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.7';
+    burst.style.boxShadow = '0 0 20px #ffcc88, 0 0 40px #ffcc88';
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.25s, transform 0.25s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      setTimeout(() => {
+        burst.remove();
+      }, 250);
+    }, 50);
+  }
+
+  function startPongAnimation(particles, leftScoreEl, rightScoreEl, playerPaddleEl, enemyPaddleEl, getPlayerPaddleY, setPlayerPaddleY, setEnemyPaddleY, keys, getMouseActive, getBlackHoleActive, setBlackHoleActive, getGameOver, setGameOver) {
+    let lastTime = performance.now();
+    let themScore = 0;
+    let youScore = 0;
+    const paddleSpeed = 1152; // 20% faster than 960
+    let enemyPaddleSpeed = 540; // Slower than player
+    let enemyPaddleY = window.innerHeight / 2 - 100;
+    let blackHoleEl = null;
+    const paddleWidth = 15;
+    const paddleHeight = 200;
+    const leftPaddleX = 20;
+    const rightPaddleX = window.innerWidth - 20 - paddleWidth;
+
+    // Audio elements for paddle hits and game events
+    const blip1Audio = new Audio('/audio/pong_blip_1.mp3'); // YOU paddle
+    const blip2Audio = new Audio('/audio/pong_blip_2.mp3'); // THEM paddle
+    const damage1Audio = new Audio('/audio/chiptune_damage_1.mp3'); // YOU damaged
+    const damage2Audio = new Audio('/audio/chiptune_damage_2.mp3'); // THEM damaged
+    const victoryAudio = new Audio('/audio/chiptune_victory.mp3'); // Victory
+    const defeatAudio = new Audio('/audio/chiptune_defeat.mp3'); // Defeat
+
+    // AI state
+    const aiReactionDelay = 280; // ms
+    const aiRandomOffset = 35; // px
+    let lastAIUpdate = 0;
+    let aiTargetY = enemyPaddleY;
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+      dt = Math.min(dt, 0.033);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Update player paddle position with keyboard if mouse hasn't moved recently
+      if (Date.now() - performance.now() > 100 || !getMouseActive()) {
+        let paddleY = getPlayerPaddleY();
+        if (keys['ArrowUp'] || keys['w'] || keys['W']) {
+          paddleY -= paddleSpeed * dt;
+        }
+        if (keys['ArrowDown'] || keys['s'] || keys['S']) {
+          paddleY += paddleSpeed * dt;
+        }
+        paddleY = Math.max(0, Math.min(height - paddleHeight, paddleY));
+        setPlayerPaddleY(paddleY);
+      }
+
+      // Update enemy AI paddle
+      if (currentTime - lastAIUpdate > aiReactionDelay) {
+        lastAIUpdate = currentTime;
+
+        // Find the nearest threatening letter (moving left towards enemy paddle)
+        let closestThreat = null;
+        let minTime = Infinity;
+
+        particles.forEach(particle => {
+          if (particle.vx < 0 && particle.active) { // Moving left
+            const timeToReach = (particle.x - (leftPaddleX + paddleWidth)) / -particle.vx;
+            if (timeToReach > 0 && timeToReach < minTime) {
+              minTime = timeToReach;
+              // Predict where it will be
+              let predictedY = particle.y + particle.vy * timeToReach;
+
+              // Account for bounces off top/bottom
+              while (predictedY < 0 || predictedY + particle.height > height) {
+                if (predictedY < 0) {
+                  predictedY = -predictedY;
+                } else if (predictedY + particle.height > height) {
+                  predictedY = 2 * (height - particle.height) - predictedY;
+                }
+              }
+
+              closestThreat = predictedY + particle.height / 2; // Center of letter
+            }
+          }
+        });
+
+        if (closestThreat !== null) {
+          // Add random offset for imperfection
+          aiTargetY = closestThreat - paddleHeight / 2 + (Math.random() - 0.5) * aiRandomOffset;
+        } else {
+          // No threats, drift toward center
+          aiTargetY = height / 2 - paddleHeight / 2;
+        }
+      }
+
+      // Move enemy paddle smoothly towards target
+      if (enemyPaddleY < aiTargetY) {
+        enemyPaddleY = Math.min(aiTargetY, enemyPaddleY + enemyPaddleSpeed * dt);
+      } else if (enemyPaddleY > aiTargetY) {
+        enemyPaddleY = Math.max(aiTargetY, enemyPaddleY - enemyPaddleSpeed * dt);
+      }
+      enemyPaddleY = Math.max(0, Math.min(height - paddleHeight, enemyPaddleY));
+      setEnemyPaddleY(enemyPaddleY);
+
+      // Update paddle element positions
+      playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
+      enemyPaddleEl.style.top = enemyPaddleY + 'px';
+
+      // Update particles and check for scoring
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
+
+        // Apply black hole gravity if particle is active and black hole is active
+        if (particle.active && getBlackHoleActive()) {
+          const blackHoleX = width / 2;
+          const blackHoleY = height / 2;
+          const blackHoleLambda = 250;
+          const blackHoleForce = 750000; // 5x stronger than before
+
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = blackHoleX - centerX;
+          const dy = blackHoleY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ)
+            const forceMagnitude = (1 / blackHoleLambda) * Math.exp(-dist / blackHoleLambda) * blackHoleForce;
+            let fx = (dx / dist) * forceMagnitude;
+            let fy = (dy / dist) * forceMagnitude;
+
+            // Non-conservative in x-coordinate: if moving away from black hole in x, reduce force to 75%
+            if (particle.vx * dx < 0) { // Moving away in x (opposite signs)
+              fx *= 0.75;
+            }
+            // Y-component remains conservative (no adjustment)
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Check for player paddle collision (right side)
+        const playerPaddleY = getPlayerPaddleY();
+        if (particle.vx > 0 && // Moving right
+            particle.x + particle.width > rightPaddleX &&
+            particle.x < rightPaddleX + paddleWidth &&
+            particle.y + particle.height > playerPaddleY &&
+            particle.y < playerPaddleY + paddleHeight) {
+
+          // Play YOU paddle blip sound
+          blip1Audio.currentTime = 0;
+          blip1Audio.play().catch(err => console.log('Blip1 play failed:', err));
+
+          // Reflect and increase speed
+          particle.vx = -particle.vx * 1.1;
+
+          // Change y-velocity based on where it hit the paddle
+          const hitPosition = (particle.y + particle.height / 2 - playerPaddleY) / paddleHeight; // 0 to 1
+          const angle = (hitPosition - 0.5) * 2; // -1 to 1
+          particle.vy = angle * 400; // Max vy change of ±400
+
+          // Move particle out of paddle to prevent multiple collisions
+          particle.x = rightPaddleX - particle.width;
+        }
+
+        // Check for enemy paddle collision (left side)
+        if (particle.vx < 0 && // Moving left
+            particle.x < leftPaddleX + paddleWidth &&
+            particle.x + particle.width > leftPaddleX &&
+            particle.y + particle.height > enemyPaddleY &&
+            particle.y < enemyPaddleY + paddleHeight) {
+
+          // Play THEM paddle blip sound
+          blip2Audio.currentTime = 0;
+          blip2Audio.play().catch(err => console.log('Blip2 play failed:', err));
+
+          // Reflect and increase speed
+          particle.vx = -particle.vx * 1.1;
+
+          // Change y-velocity based on where it hit the paddle
+          const hitPosition = (particle.y + particle.height / 2 - enemyPaddleY) / paddleHeight; // 0 to 1
+          const angle = (hitPosition - 0.5) * 2; // -1 to 1
+          particle.vy = angle * 400; // Max vy change of ±400
+
+          // Move particle out of paddle to prevent multiple collisions
+          particle.x = leftPaddleX + paddleWidth;
+        }
+
+        // Check for left edge (YOU score - enemy missed)
+        if (particle.x + particle.width < 0) {
+          // Create red burst at contact point (you scored)
+          const contactY = particle.y + particle.height / 2;
+          createBurst(0, contactY, '#ff0000');
+
+          // Play THEM damage sound
+          damage2Audio.currentTime = 0;
+          damage2Audio.play().catch(err => console.log('Damage2 play failed:', err));
+
+          // Flash enemy paddle
+          flashPaddle(enemyPaddleEl);
+
+          particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
+          particles.splice(i, 1);
+
+          if (!getGameOver()) {
+            youScore++;
+            rightScoreEl.textContent = youScore.toString();
+
+            // Check for YOU reaching 10
+            if (youScore === 10 && !getBlackHoleActive()) {
+              activateBlackHole();
+            } else if (youScore === 20) {
+              endGame(true); // YOU win
+            }
+          }
+          continue;
+        }
+
+        // Check for right edge (THEM score - player missed)
+        if (particle.x > width) {
+          // Create green burst at contact point (they scored)
+          const contactY = particle.y + particle.height / 2;
+          createBurst(width, contactY, '#00ff00');
+
+          // Play YOU damage sound
+          damage1Audio.currentTime = 0;
+          damage1Audio.play().catch(err => console.log('Damage1 play failed:', err));
+
+          // Flash player paddle
+          flashPaddle(playerPaddleEl);
+
+          particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
+          particles.splice(i, 1);
+
+          if (!getGameOver()) {
+            themScore++;
+            leftScoreEl.textContent = themScore.toString();
+
+            // Check for THEM reaching 10
+            if (themScore === 10 && !getBlackHoleActive()) {
+              endGame(false); // YOU lose
+            } else if (themScore === 20) {
+              endGame(false); // YOU lose
+            }
+          }
+          continue;
+        }
+
+        // Bounce off top and bottom
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy;
+        } else if (particle.y + particle.height > height) {
+          particle.y = height - particle.height;
+          particle.vy = -particle.vy;
+        }
+
+        // Update trail (store last 15 positions)
+        if (particle.active) {
+          particle.trail.push({ x: particle.x, y: particle.y });
+          if (particle.trail.length > 15) {
+            // Remove oldest trail element if it exists
+            const oldest = particle.trail.shift();
+            if (oldest.el) {
+              oldest.el.remove();
+            }
+          }
+
+          // Create/update trail elements
+          particle.trail.forEach((trailPos, idx) => {
+            if (!trailPos.el) {
+              // Create new trail element
+              const trailEl = particle.el.cloneNode(true);
+              trailEl.style.pointerEvents = 'none';
+              document.body.appendChild(trailEl);
+              trailPos.el = trailEl;
+            }
+
+            // Update trail element position and style
+            const age = particle.trail.length - idx - 1; // 0 = newest, 14 = oldest
+            const opacity = 1 - (age + 1) / 16; // Fade from 0.94 to 0.06
+            const scale = 1 - (age + 1) * 0.05; // Scale from 0.95 to 0.25
+
+            trailPos.el.style.opacity = opacity.toString();
+            trailPos.el.style.transform = `translate(${trailPos.x - parseFloat(particle.el.style.left)}px, ${trailPos.y - parseFloat(particle.el.style.top)}px) scale(${scale})`;
+            trailPos.el.style.zIndex = (10000 - age - 1).toString(); // Behind main letter
+          });
+        }
+
+        // Apply transform to main particle
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Helper function to activate black hole
+    function activateBlackHole() {
+      setBlackHoleActive(true);
+
+      // Increase AI speed
+      enemyPaddleSpeed = 700;
+
+      // Create black hole element
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      blackHoleEl = document.createElement('div');
+      blackHoleEl.style.position = 'fixed';
+      blackHoleEl.style.left = (width / 2) + 'px';
+      blackHoleEl.style.top = (height / 2) + 'px';
+      blackHoleEl.style.width = '50px';
+      blackHoleEl.style.height = '50px';
+      blackHoleEl.style.marginLeft = '-25px';
+      blackHoleEl.style.marginTop = '-25px';
+      blackHoleEl.style.borderRadius = '50%';
+      blackHoleEl.style.backgroundColor = '#000000';
+      blackHoleEl.style.boxShadow = '0 0 30px 10px rgba(0, 0, 0, 0.8)';
+      blackHoleEl.style.zIndex = '9999';
+      blackHoleEl.style.pointerEvents = 'none';
+      document.body.appendChild(blackHoleEl);
+
+      // Animate the pulsing
+      let pulseTime = 0;
+      function pulseBlackHole() {
+        if (!getBlackHoleActive() || !blackHoleEl) return;
+        pulseTime += 0.05;
+        const size = 40 + 10 * Math.sin(pulseTime);
+        blackHoleEl.style.width = size + 'px';
+        blackHoleEl.style.height = size + 'px';
+        blackHoleEl.style.marginLeft = (-size / 2) + 'px';
+        blackHoleEl.style.marginTop = (-size / 2) + 'px';
+        requestAnimationFrame(pulseBlackHole);
+      }
+      pulseBlackHole();
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '20%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.opacity = '1';
+      flashMessage.style.transition = 'opacity 2s ease-out';
+
+      const mainText = document.createElement('div');
+      mainText.textContent = 'BLACK HOLE ACTIVATED';
+      mainText.style.fontSize = '64px';
+
+      const subText = document.createElement('div');
+      subText.textContent = '(GAME TO 20)';
+      subText.style.fontSize = '32px';
+      subText.style.marginTop = '10px';
+
+      flashMessage.appendChild(mainText);
+      flashMessage.appendChild(subText);
+      document.body.appendChild(flashMessage);
+
+      setTimeout(() => {
+        flashMessage.style.opacity = '0';
+        setTimeout(() => flashMessage.remove(), 2000);
+      }, 4000);
+    }
+
+    // Helper function to end the game
+    function endGame(playerWon) {
+      setGameOver(true);
+
+      // Play victory or defeat sound
+      if (playerWon) {
+        victoryAudio.currentTime = 0;
+        victoryAudio.play().catch(err => console.log('Victory play failed:', err));
+      } else {
+        defeatAudio.currentTime = 0;
+        defeatAudio.play().catch(err => console.log('Defeat play failed:', err));
+      }
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '50%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontSize = '96px';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.whiteSpace = 'nowrap';
+      flashMessage.textContent = playerWon ? 'VICTORY' : 'DEFEATED';
+      document.body.appendChild(flashMessage);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
+  // INITIALIZATION
+  // ============================================================================
+
+  // Track if text has been wrapped
+  let textWrapped = false;
+
+  // Wrap text lazily when first mode is activated
+  function ensureTextWrapped() {
+    if (textWrapped) return;
+    textWrapped = true;
+    wrapTextNodes(document.body);
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Add mysterious glyphs to navbar
+    const navList = document.querySelector('nav ul.navbar-nav');
+    if (navList) {
+      // Single question mark icon that randomly picks a mode
+      const mysteryLi = document.createElement('li');
+      mysteryLi.className = 'nav-item active';
+
+      const mysteryLink = document.createElement('a');
+      mysteryLink.className = 'nav-link';
+      mysteryLink.style.cursor = 'pointer';
+      mysteryLink.href = '#';
+
+      const mysteryIcon = document.createElement('i');
+      mysteryIcon.className = 'fas fa-question-circle';
+
+      mysteryLink.appendChild(mysteryIcon);
+      mysteryLi.appendChild(mysteryLink);
+
+      mysteryLink.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Check localStorage for click count
+        let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
+
+        // If user hasn't clicked 3 times yet, show warning and increment
+        if (clickCount < 3) {
+          const messages = ["Hey, stop that!", "Can't you read?", "I'm serious!"];
+          alert(messages[clickCount]);
+          clickCount++;
+          localStorage.setItem('mysteryButtonClicks', clickCount.toString());
+          return; // Don't activate mode
+        }
+
+        // After 3 clicks, relent and randomly choose a mode
+        // Splash is half as likely as the other modes
+        const randomChoice = Math.floor(Math.random() * 9);
+
+        switch(randomChoice) {
+          case 0:
+          case 1:
+            enterShatterMode();
+            break;
+          case 2:
+          case 3:
+            enterGravityMode();
+            break;
+          case 4:
+          case 5:
+            enterVacuumMode();
+            break;
+          case 6:
+          case 7:
+            enterPongMode();
+            break;
+          case 8:
+            window.location.href = '/splash/';
+            break;
+        }
+      });
+
+      navList.appendChild(mysteryLi);
+
+      /* DEBUG VERSION: Uncomment to show all five icons for debugging
+      // Shatter mode icon (question mark)
+      const shatterLi = document.createElement('li');
+      shatterLi.className = 'nav-item active';
+
+      const shatterLink = document.createElement('a');
+      shatterLink.className = 'nav-link';
+      shatterLink.style.cursor = 'pointer';
+      shatterLink.href = '#';
+
+      const shatterIcon = document.createElement('i');
+      shatterIcon.className = 'fas fa-question-circle';
+
+      shatterLink.appendChild(shatterIcon);
+      shatterLi.appendChild(shatterLink);
+
+      shatterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        enterShatterMode();
+      });
+
+      navList.appendChild(shatterLi);
+
+      // Gravity mode icon (magnet)
+      const gravityLi = document.createElement('li');
+      gravityLi.className = 'nav-item active';
+
+      const gravityLink = document.createElement('a');
+      gravityLink.className = 'nav-link';
+      gravityLink.style.cursor = 'pointer';
+      gravityLink.href = '#';
+
+      const gravityIcon = document.createElement('i');
+      gravityIcon.className = 'fas fa-magnet';
+
+      gravityLink.appendChild(gravityIcon);
+      gravityLi.appendChild(gravityLink);
+
+      gravityLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        enterGravityMode();
+      });
+
+      navList.appendChild(gravityLi);
+
+      // Vacuum mode icon (meteor)
+      const vacuumLi = document.createElement('li');
+      vacuumLi.className = 'nav-item active';
+
+      const vacuumLink = document.createElement('a');
+      vacuumLink.className = 'nav-link';
+      vacuumLink.style.cursor = 'pointer';
+      vacuumLink.href = '#';
+
+      const vacuumIcon = document.createElement('i');
+      vacuumIcon.className = 'fas fa-meteor';
+
+      vacuumLink.appendChild(vacuumIcon);
+      vacuumLi.appendChild(vacuumLink);
+
+      vacuumLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        enterVacuumMode();
+      });
+
+      navList.appendChild(vacuumLi);
+
+      // Splash page link icon (home)
+      const splashLi = document.createElement('li');
+      splashLi.className = 'nav-item active';
+
+      const splashLink = document.createElement('a');
+      splashLink.className = 'nav-link';
+      splashLink.style.cursor = 'pointer';
+      splashLink.href = '/splash/';
+
+      const splashIcon = document.createElement('i');
+      splashIcon.className = 'fas fa-home';
+
+      splashLink.appendChild(splashIcon);
+      splashLi.appendChild(splashLink);
+
+      navList.appendChild(splashLi);
+
+      // Pong mode icon (gamepad)
+      const pongLi = document.createElement('li');
+      pongLi.className = 'nav-item active';
+
+      const pongLink = document.createElement('a');
+      pongLink.className = 'nav-link';
+      pongLink.style.cursor = 'pointer';
+      pongLink.href = '#';
+
+      const pongIcon = document.createElement('i');
+      pongIcon.className = 'fas fa-gamepad';
+
+      pongLink.appendChild(pongIcon);
+      pongLi.appendChild(pongLink);
+
+      pongLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        enterPongMode();
+      });
+
+      navList.appendChild(pongLi);
+      */
+    }
+  });
+</script>
+
 
     <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
         <link rel="stylesheet" href="css/hover_effects.css">
 <style>
-  a:link {
-    color: #225599;
-    background-color: transparent;
-    text-decoration: none;
-  }
-
-  a:visited {
-    color: #552299;
-    background-color: transparent;
-    text-decoration: none;
-  }
-
-  .hr-thin {
-    border: none;
-    height: 1px;
-    color: #aaaaaa;
-    background-color: #aaaaaa;
-  }
-
-  .hr-thick {
-    border: none;
-    height: 2px;
-    color: #aaaaaa;
-    background-color: #aaaaaa;
-  }
-
-  .blurb {
-    font-size: 80%;
-  }
-
-  .paper-info {
-    font-size: 80%;
-    margin-top: -1em;
-  }
-
   .headshot-container {
     position: relative;
     display: inline-block;
-    margin-right: -15px;
     margin-top: 1em;
   }
 
   .headshot-container img {
-    width: 250px;
-    height: 250px;
+    width: 100%;
+    max-width: 250px;
+    aspect-ratio: 1;
     object-fit: cover;
     object-position: left 20%;
   }
@@ -161,15 +2125,9 @@
     width: 100%;
   }
 </style>
-<!-- <hr class="hr-thick"> -->
-<!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"><div class="hovereffect"><img class="img-responsive" src="/img/headshot.png" alt=""><div class="overlay"><a class="info" href="#">link here</a></div></div></div>
- -->
-<!-- <div class="container"><img src="https://mdbootstrap.com/img/Photos/Others/forest-sm.jpg" alt="Avatar" class="overlay-image"><div class="overlay"><div class="overlay-text">Hello World</div></div></div>
- -->
+
 <br>
 <div class="container">
-  <a name="about"></a>
-
   <div class="row">
     <div class="col-md-3">
       <div class="headshot-container">
@@ -182,1250 +2140,15 @@
 
     <div class="col-md-9">
       <h1>Jamie Simon</h1>
-      <p>I'm a scientist aiming to understand the training dynamics of deep neural networks. I currently run a small lab within the <a href="https://redwood.berkeley.edu/">Redwood Center</a> and am supported by <a href="https://imbue.com/">Imbue</a>, where I am a research fellow. I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="gravitrees.com">balancing things</a>.
-      <br>
-      <br>
-      A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing
-      [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>,<a href="https://arxiv.org/abs/2410.04642">5</a>].
-      Some of these ideas came about from quick initial conversations! If you've got a curious empirical phenomenon you're trying to explain, feel free to reach out :)
-  	  </p>
-  	  <p>
-  	  If you'd like get emailed when I post new blogposts, you can sign up <a href="https://forms.gle/mioQ8Rhb51JcGGSJ6">here.</a>
-  	  </p>
-    </div>
-
-  </div>
-
-  <hr class="hr-thin">
-  <a name="research"></a>
-  <h2>Research</h2>
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/hea_paper_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Predicting kernel regression learning curves from only raw data statistics</h3>
-      <p class="blurb"> [abstract to go here] </p>
-      <p class="paper-info">
-        <a href="https://arxiv.org/abs/2510.14878">[arXiv]</a>
+      <p>
+        Hi! I'm Jamie. I'm a scientist working on fundamental theory for deep learning. I run a small lab in the <a href="https://redwood.berkeley.edu/">Redwood Center</a> at UC Berkeley, graciously funded by <a href="https://imbue.com/">Imbue</a>, where I'm a research fellow. Reach out if you want to visit! I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I play music, <a href="/blog/fifty-states-roadtrip/">go into</a> <a href="/blog/boolpool-timelapse/">nature</a>, <a href="/blog/gravitrees/">balance</a> <a href="/blog/gravitree-update-2024/">things</a>, and <a href="/blog/egg/">catch eggs in my mouth</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/more_is_better_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>More is better: when infinite overparameterization is optimal and overfitting is obligatory</h3>
-      <strong>Explaining mysteries of modern ML with the toy model of RF regression</strong>
-      <p class="blurb"> We give a theory of the generalization of random feature models. We conclude they perform better with more parameters, more data, and less regularization, putting theoretical backing to these observations in modern ML. This gives a fairly solid mathematical picture to replace classical intuitions about the risks of overparameterization and overfitting. Our picture of the generalization of RF models takes the form of some nice closed-form equations we think can be used to answer lots of other questions. </p>
-      <p class="paper-info">
-        <strong>ICLR '24</strong>
-        <a href="https://tinyurl.com/more-is-better">[arXiv]</a>
+      <p>
+        You can read about my research <a href="/research/">here</a>. I write about science and other adventures over on my <a href="/blog/">blog</a>. I also make <a href="/puzzles/">puzzles</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/spectral_scaling_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>A spectral condition for feature learning</h3>
-      <strong> A simple picture of feature learning in wide nets </strong>
-      <p class="blurb"> We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the "mu-parameterization," this is probably the easiest place to start ca. 2024. </p>
-      <p class="paper-info">
-        <a href="https://tinyurl.com/feature-learning">[arXiv]</a>
+      <p>
+        If you'd like to chat about research or life, feel free to schedule something <a href="https://cal.com/james-simon-w26vvz">here</a>. Whether you're an old friend or a stranger, don't be shy. You can leave me anonymous feedback <a href="https://forms.gle/ZQ4fZEih46N6b4yv5">here</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/stepwise_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>On the stepwise nature of self-supervised learning</h3>
-      <strong>A theory of the training dynamics of contrastive learning</strong>
-      <p class="blurb"> We give a theory of the training dynamics of contrastive self-supervised learning and validate it empirically. We find that representations are learned <i> one dimension at a time in a stepwise fashion </i> -- that is, the rank of the model's final representations increases by one at each step. Our theory is derived for linearized models, but we clearly see our stepwise phenomenon even for ResNets trained on image data. Large-scale ML mostly uses unsupervised and self-supervised training these days, and we describe a behavior we think is fairly generic in SSL. </p>
-      <p class="paper-info">
-        <strong>ICML '23</strong>
-        <a href="https://tinyurl.com/stepwise-ssl">[arXiv]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/fedex_attack_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>You can just put up a poster at ICML and nobody will stop you</h3>
-      <strong>Exposing vulnerabilities in the conference review system</strong>
-      <p class="blurb"> A perennial problem in machine learning research has been how to most efficiently have a poster at ICML. In this work, we show that one can bypass OpenReview via a simple “FedEx trick," similar to yet entirely different from the kernel trick in machine learning. (I'm putting this here as an easter egg to see if people actually read these. If you see this and saw + were amused by the original poster, feel free to drop me a line :)) </p>
-      <p class="paper-info">
-        <strong>ICML '23</strong>
-        <a href="https://x.com/_dsevero/status/1684677903382982656">[viral tweet]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/eigenlearning_mainpage_figure.png" width=80%>
-    </div>
-    <div class="col-md-9">
-      <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
-      <p class="blurb"> We give a simple picture of the generalization of kernel ridge regression in terms of task eigenstructure and use it to solve some theoretical problems. </p>
-      <p class="paper-info">
-        <strong>TMLR</strong>
-        <a href="https://arxiv.org/abs/2110.03922">[arXiv]</a>
-        <a href="https://github.com/james-simon/eigenlearning">[code]</a>
-        <a href="https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/">[blog]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/shallow_learning_sketch.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Reverse engineering the neural tangent kernel</h3>
-      <strong>A first-principles method for the design of fully-connected architectures</strong>
-      <p class="blurb"> Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel regression.</i> Given a wide network architecture, it's well-known how to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In work with Sajant Anand, we <i>invert this mapping</i> for fully-connected nets (FCNs), allowing one to start from a desired rotation-invariant kernel and design a network (i.e. choose an activation function) to achieve it. Remarkably, achieving any such kernel requires only one hidden layer, raising questions about conventional wisdom on the benefits of depth. This allows surprising experiments, like designing a 1HL FCN that trains and generalizes like a deep ReLU FCN. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning. </p>
-      <p class="paper-info">
-        <strong>ICML '22</strong>
-        <a href="https://arxiv.org/abs/2106.03186">[arXiv]</a>
-        <a href="https://github.com/james-simon/reverse-engineering">[code]</a>
-        <a href="https://james-simon.github.io/blog/reverse-engineering/">[blog]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/tempered_overfitting.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Benign, tempered or catastrophic: a taxonomy of overfitting</h3>
-      <strong>How bad is neural network overfitting?</strong>
-      <p class="blurb"> Classical wisdom holds that overparameterization is harmful. Neural nets defy this wisdom, generalizing well despite their overparameterization and interpolation of the training data. How can we understand this discrepancy? Recent landmark papers have explored the concept of <i>benign overfitting</i> -- a phenomenon in which certain models can interpolate noisy data without harming generalization -- suggesting that that neural nets may fit benignly. In this work with <a href="https://mallinar.xyz/">Neil Mallinar</a>, <a href="https://preetum.nakkiran.org/">Preetum Nakkiran</a>, and others, we put this idea to the empirical test, giving a new characterization of neural network overfitting and noise sensitivity. We find that neural networks trained to interpolation do <i>not</i> overfit benignly, but neither do they exhibit the catastrophic overfitting foretold by classical wisdom: instead, they usually lie in a third, intermediate regime we call <i>tempered overfitting</i>. I found that we can understand these three regimes of overfitting analytically for kernel regression (a toy model for neural networks), and I proved a simple "trichotomy theorem" relating a kernel's eigenspectrum to its overfitting behavior. </p>
-      <p class="paper-info">
-        <strong>
-          <em>NeurIPS '22</em>
-        </strong>
-        <a href="https://arxiv.org/abs/2207.06569">[arXiv]</a>
-        <!-- <a href="https://github.com/james-simon/shallow-learning">[code]</a> -->
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/trajectories.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Critical point-finding methods reveal gradient-flat regions of deep network losses</h3>
-      <strong>Exposing flaws in widely-used critical-point-finding methods</strong>
-      <p class="blurb"> Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces. In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces. We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described. Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results. Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>. </p>
-      <p class="paper-info">
-        <strong>(2021)</strong>
-        <a href="https://direct.mit.edu/neco/article/33/6/1469/100574/Critical-Point-Finding-Methods-Reveal-Gradient">[Neural Computation]</a>
-        <a href="https://https://arxiv.org/abs/2003.10397">[arXiv]</a>
-        <a href="https://github.com/charlesfrye/autocrit">[code]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/jj.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits</h3>
-      <strong>A faster method to make Josephson junctions</strong>
-      <p class="blurb"> In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry. My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work. </p>
-      <p class="paper-info">
-        <strong>(2021)</strong>
-        <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">[Applied Physics Letters]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="/img/mainpage_figures/statediagram.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Fast noise-resistant control of donor nuclear spin qubits in silicon</h3>
-      <strong>Better control schemes for for spin qubits</strong>
-      <p class="blurb"> Qubits decohere and lose their quantum information when uncontrollably coupled to their environment. Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult. Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates. The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates. We also show two-qubit gates. </p>
-      <p class="paper-info">
-        <strong>(2020)</strong>
-        <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">[PRB]</a>
-        <a href="https://arxiv.org/pdf/2001.10029.pdf">[arXiv]</a>
-      </p>
-    </div>
-  </div>
-
-  <a name="puzzles"></a>
-  <h2>Puzzles</h2>
-  <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher. It became a university tradition, with the 2019-22 VT Hunts each drawing 1000-2000 participants and raising money for charities, and I've stayed involved as a mentor. I've also helped concoct six other puzzle events starting in high school. A few of my favorite puzzles I've made are below. They're roughly ordered from easiest to hardest, so you can pick where to start. </p>
-  <!--    
-   
-   
-   
-   
-   
-   <a href="/puzzles/90shades/">90 Shades of Black</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/addersmultiplying/">Adders Multiplying</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/coasters/">Coasters</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/couplets/">Name a More Iconic Set of Couplets</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/flags/">Flags</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/forestson/">Forest Son</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/maelstrom/">Maelstrom</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/mining/">Mining</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/topology/">Topology</a>
-   
-   
-   
-   
-   
-   
-   
-   
-   • <a href="/puzzles/transit/">Transit</a>
-   
-   
-   
-    -->
-  <style>
-    .center-cropped {
-      object-fit: cover;
-      /* Do not scale the image */
-      object-position: center;
-      /* Center the image within the element */
-      height: 200px;
-      width: 200px;
-    }
-  </style>
-  <div class="row justify-content-md-center">
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/coasters/coasters.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/coasters/">
-              <h4>COASTERS</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/flags/flags.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/flags/">
-              <h4>FLAGS</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/forestson/forestson.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/forestson/">
-              <h4>FOREST SON</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/addersmultiplying/addersmultiplying.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/addersmultiplying/">
-              <h4>ADDERS MULTIPLYING</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/90shades/90shadesofblack.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/90shades/">
-              <h4>90 SHADES OF BLACK</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/couplets/nameamoreiconicsetofcouplets.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/couplets/">
-              <h4>NAME A MORE ICONIC SET OF COUPLETS</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/topology/topology.jpg">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/topology/">
-              <h4>TOPOLOGY</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/mining/mining.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/mining/">
-              <h4>MINING</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/transit/transit.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/transit/">
-              <h4>TRANSIT</h4>
-            </a>
-          </div>
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/maelstrom/maelstrom.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/maelstrom/">
-              <h4>MAELSTROM</h4>
-            </a>
-          </div>
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-     </div>
-
-  <hr class="hr-thick">
-  <a name="posts"></a>
-  <h2>Blog</h2>
-  <hr>
-
-  <!-- Supercategory 1: Research essays and ML theory -->
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Essays</h4>
-          <!-- <li> -->
-<h6>
-⚗️ <a class="post-link" href="/blog/on-the-scientific-method/">On the scientific method and its application to the science of deep learning</a> <small>(Jul '25, 23m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 20, 2025-->
-<!-- </li> -->                                                    <!-- <li> -->
-<h6>
-🧠 <a class="post-link" href="/blog/neuro-learnings/">Reflections on introductory neuroscience reading</a> <small>(Mar '24, 22m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Mar 2, 2024-->
-<!-- </li> -->                                    
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Kernels and linear regression</h4>
-            <!-- <li> -->
-<h6>
-⬅️ <a class="post-link" href="/blog/backsolving-classical-bounds/">Backsolving classical generalization bounds from the modern kernel regression eigenframework</a> <small>(Apr '25, 4m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 9, 2025-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-🔀 <a class="post-link" href="/blog/one-kernel-many-eigensystems/">One kernel, many eigensystems</a> <small>(Apr '25, 6m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 7, 2025-->
-<!-- </li> -->      <!-- <li> -->
-<h6>
-🔔 <a class="post-link" href="/blog/gaussian-kernel-1d-eigendecomp/">The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure</a> <small>(Mar '25, 7m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Mar 18, 2025-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-👌 <a class="post-link" href="/blog/low-rank-linear-regression-sol/">The optimal low-rank solution for multivariate linear regression</a> <small>(Nov '24, 1m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Nov 6, 2024-->
-<!-- </li> -->                                                  <!-- <li> -->
-<h6>
-🔄 <a class="post-link" href="/blog/reverse-engineering/">Reverse engineering the NTK</a> <small>(Aug '22, 8m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Aug 23, 2022-->
-<!-- </li> -->        <!-- <li> -->
-<h6>
-🔨 <a class="post-link" href="/blog/eigenlearning/">A theory of generalization for wide neural nets</a> <small>(Oct '21, 7m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Oct 26, 2021-->
-<!-- </li> -->                      
-    </div>
-    <div class="col-md-6">
-      <h4>Science of deep learning</h4>
-                <!-- <li> -->
-<h6>
-🧮 <a class="post-link" href="/blog/the-expressivity-of-shallow-relu-nets/">A complete characterization of the expressivity of shallow, bias-free ReLU networks</a> <small>(Apr '25, 9m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 3, 2025-->
-<!-- </li> -->        <!-- <li> -->
-<h6>
-👺 <a class="post-link" href="/blog/autoencoders-are-cursed/">Infinite-width autoencoders are cursed</a> <small>(Oct '24, 12m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Oct 8, 2024-->
-<!-- </li> -->      <!-- <li> -->
-<h6>
-🤖 <a class="post-link" href="/blog/gpt2-positional-encs/">Insights into GPT-2's positional encodings</a> <small>(Aug '24, 11m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Aug 20, 2024-->
-<!-- </li> -->                  <!-- <li> -->
-<h6>
-📊 <a class="post-link" href="/blog/1nn-eigenframework/">An eigenframework for the generalization of 1NN on the torus</a> <small>(Jun '24, 6m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 5, 2024-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-📐 <a class="post-link" href="/blog/lets-solve-learning-rules/">Let's solve more learning rules</a> <small>(Jun '24, 6m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 5, 2024-->
-<!-- </li> -->                <!-- <li> -->
-<h6>
-🔏 <a class="post-link" href="/blog/llm-watermarking/">Creating and erasing AI watermarks</a> <small>(Mar '24, 9m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Mar 6, 2024-->
-<!-- </li> -->                          <!-- <li> -->
-<h6>
-✖️ <a class="post-link" href="/blog/multiplicative-neural-nets/">Multiplicative neural networks</a> <small>(Aug '20, 16m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Aug 31, 2020-->
-<!-- </li> -->              
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <!-- Supercategory 2: Mathematics and Physics -->
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Mathematics</h4>
-                        <!-- <li> -->
-<h6>
-📉 <a class="post-link" href="/blog/transforming-low-rank-matrices/">It's hard to turn a low-rank matrix into a high-rank matrix</a> <small>(Oct '24, 8m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Oct 4, 2024-->
-<!-- </li> -->      <!-- <li> -->
-<h6>
-🌀 <a class="post-link" href="/blog/fractals-in-iterated-maps/">Understanding fractals from iterated maps</a> <small>(Jul '24, 11m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 31, 2024-->
-<!-- </li> -->              <!-- <li> -->
-<h6>
-∇ <a class="post-link" href="/blog/the-laplacian-and-diffusion/">Using the Laplacian to take a local average of a function</a> <small>(Jun '24, 5m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 6, 2024-->
-<!-- </li> -->          <!-- <li> -->
-<h6>
-🌾 <a class="post-link" href="/blog/cropland-crystallography/">Number theory, fractals, and crystallography in rows of crops</a> <small>(Apr '24, 11m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 21, 2024-->
-<!-- </li> -->      <!-- <li> -->
-<h6>
-🌝 <a class="post-link" href="/blog/eclipse-baby/">How many babies were born during the 2024 eclipse?</a> <small>(Apr '24, 5m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 15, 2024-->
-<!-- </li> -->                                            
-      <hr>
-      <h4>Biology and chemistry</h4>
-                                    <!-- <li> -->
-<h6>
-🔬 <a class="post-link" href="/blog/household-microscopy/">Household microscopy</a> <small>(Jun '24, 2m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 11, 2024-->
-<!-- </li> -->            <!-- <li> -->
-<h6>
-💊 <a class="post-link" href="/blog/otc-pain-relievers/">Ibuprofen vs. aspirin vs naproxen vs acetaminophen</a> <small>(Jun '24, 3m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 1, 2024-->
-<!-- </li> -->                  <!-- <li> -->
-<h6>
-🧪 <a class="post-link" href="/blog/volumetric-reaction/">Can a chemical reaction measure the size of its container?</a> <small>(Oct '22, 15m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Oct 10, 2022-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-⚔️ <a class="post-link" href="/blog/cell-fight/">Simulating cells fighting to the death</a> <small>(Sep '22, 4m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Sep 24, 2022-->
-<!-- </li> -->                                <!-- <li> -->
-<h6>
-🦠 <a class="post-link" href="/blog/covid-calculation/">The expected cost of breaking quarantine</a> <small>(May '20, 12m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- May 17, 2020-->
-<!-- </li> -->  
-    </div>
-    <div class="col-md-6">
-      <h4>Physics</h4>
-                                <!-- <li> -->
-<h6>
-🧩 <a class="post-link" href="/blog/self-assembly/">Experiments in self-assembly</a> <small>(Jul '24, 7m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 3, 2024-->
-<!-- </li> -->                                    <!-- <li> -->
-<h6>
-⏪ <a class="post-link" href="/blog/time-reversed-random-walks/">Modeling time-reversed random walks</a> <small>(Sep '22, 16m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Sep 3, 2022-->
-<!-- </li> -->              <!-- <li> -->
-<h6>
-🚀 <a class="post-link" href="/blog/rocketball/">Could you propel a spacecraft using sports projectiles?</a> <small>(Nov '20, 10m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Nov 29, 2020-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-⚡ <a class="post-link" href="/blog/least_power_dissipation/">The principle of least power dissipation</a> <small>(Sep '20, 8m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Sep 6, 2020-->
-<!-- </li> -->      <!-- <li> -->
-<h6>
-🕯️ <a class="post-link" href="/blog/upside-down-candle/">How would an upside-down candle burn?</a> <small>(Aug '20, 4m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Aug 20, 2020-->
-<!-- </li> -->        <!-- <li> -->
-<h6>
-🐟 <a class="post-link" href="/blog/fish-planet/">What would happen if you made a planet out of fish?</a> <small>(Jun '20, 11m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 17, 2020-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-🐔 <a class="post-link" href="/blog/chicken-cooking/">How hard do you have to hit a chicken to cook it?</a> <small>(Jun '20, 1m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 17, 2020-->
-<!-- </li> -->    
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <!-- Supercategory 3: Art, Adventures, Poetry, Society -->
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Art</h4>
-                                  <!-- <li> -->
-<h6>
-🌲 <a class="post-link" href="/blog/gravitree-update-2024/">Gravitrees 2: Electric Boogaloo</a> <small>(Jun '24, 10m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 23, 2024-->
-<!-- </li> -->                                            <!-- <li> -->
-<h6>
-🌳 <a class="post-link" href="/blog/gravitrees/">The gravitree</a> <small>(Oct '21, 6m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Oct 11, 2021-->
-<!-- </li> -->                    
-      <hr>
-      <h4>Adventures</h4>
-                              <!-- <li> -->
-<h6>
-🥚 <a class="post-link" href="/blog/egg/">The time I caught an egg in my mouth</a> <small>(Jul '24, 1m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 5, 2024-->
-<!-- </li> -->          <!-- <li> -->
-<h6>
-🏔️ <a class="post-link" href="/blog/boolpool-timelapse/">The sixth lake</a> <small>(Jun '24, 2m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jun 10, 2024-->
-<!-- </li> -->                  <!-- <li> -->
-<h6>
-🗺️ <a class="post-link" href="/blog/fifty-states-roadtrip/">Reflections upon visiting all 50 states</a> <small>(Apr '24, 9m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 14, 2024-->
-<!-- </li> -->                                  <!-- <li> -->
-<h6>
-📮 <a class="post-link" href="/blog/mail-shenanigans/">Messing with the postal service</a> <small>(Jul '20, 4m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 12, 2020-->
-<!-- </li> -->          
-    </div>
-    <div class="col-md-6">
-      <h4>Poetry and performance</h4>
-        <!-- <li> -->
-<h6>
-🎨 <a class="post-link" href="/blog/on-novelty/">On novelty</a> <small>(Nov '25, 1m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Nov 17, 2025-->
-<!-- </li> -->                                            <!-- <li> -->
-<h6>
-📖 <a class="post-link" href="/blog/quotes-from-l-t-a-y-p/">Favorite quotes from <em>Letters to a Young Poet</em></a> <small>(Apr '24, 4m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 17, 2024-->
-<!-- </li> -->        <!-- <li> -->
-<h6>
-💬 <a class="post-link" href="/blog/why-i-talk-to-strangers/">Why I talk to strangers</a> <small>(Mar '24, 2m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Mar 15, 2024-->
-<!-- </li> -->                <!-- <li> -->
-<h6>
-🎤 <a class="post-link" href="/blog/bohr-v-einstein/">Einstein vs. Bohr rap battle</a> <small>(Jan '22, 5m watch)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jan 17, 2022-->
-<!-- </li> -->    <!-- <li> -->
-<h6>
-🎤 <a class="post-link" href="/blog/newton-v-leibniz/">Newton vs. Leibniz rap battle</a> <small>(Jan '22, 5m watch)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jan 17, 2022-->
-<!-- </li> -->                        
-      <hr>
-      <h4>Society</h4>
-                                                                                        <!-- <li> -->
-<h6>
-🤝 <a class="post-link" href="/blog/common-ground/">Common ground</a> <small>(Jul '20, 5m read)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jul 4, 2020-->
-<!-- </li> -->        
     </div>
   </div>
 </div>
@@ -1441,20 +2164,16 @@
   const photoSequence = [
     'me_at_collingwood_house_1.jpeg',
     'me_in_glacier.jpg',
-    // 'me_at_collingwood_house_2.jpg',
     'me_grinding.jpeg',
     'me_in_tux.jpeg',
     'me_with_lizard.jpeg',
     'baby_me.jpeg',
     'baby_me_in_goldfish.jpg',
     'me_with_gravitree.jpeg',
-    // 'me_pre_eclipse.jpeg',
     'me_walking_in_texas.jpeg',
     'dolly_spartan_me.jpeg',
     'me_on_ski_lift.jpeg',
     'me_in_sibley_volcanic.jpeg',
-    // 'me_in_utah_maybe.jpg',
-    // 'me_on_el_capitan.png',
     'me_on_rock.png',
     'me_on_mechanical_bull.gif',
   ];

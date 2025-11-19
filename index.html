@@ -4,51 +4,16 @@ layout: default
 
 <link rel="stylesheet" href="css/hover_effects.css">
 <style>
-  a:link {
-    color: #225599;
-    background-color: transparent;
-    text-decoration: none;
-  }
-
-  a:visited {
-    color: #552299;
-    background-color: transparent;
-    text-decoration: none;
-  }
-
-  .hr-thin {
-    border: none;
-    height: 1px;
-    color: #aaaaaa;
-    background-color: #aaaaaa;
-  }
-
-  .hr-thick {
-    border: none;
-    height: 2px;
-    color: #aaaaaa;
-    background-color: #aaaaaa;
-  }
-
-  .blurb {
-    font-size: 80%;
-  }
-
-  .paper-info {
-    font-size: 80%;
-    margin-top: -1em;
-  }
-
   .headshot-container {
     position: relative;
     display: inline-block;
-    margin-right: -15px;
     margin-top: 1em;
   }
 
   .headshot-container img {
-    width: 250px;
-    height: 250px;
+    width: 100%;
+    max-width: 250px;
+    aspect-ratio: 1;
     object-fit: cover;
     object-position: left 20%;
   }
@@ -84,15 +49,9 @@ layout: default
     width: 100%;
   }
 </style>
-<!-- <hr class="hr-thick"> -->
-<!-- <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"><div class="hovereffect"><img class="img-responsive" src="{{site.imgurl}}/headshot.png" alt=""><div class="overlay"><a class="info" href="#">link here</a></div></div></div>
- -->
-<!-- <div class="container"><img src="https://mdbootstrap.com/img/Photos/Others/forest-sm.jpg" alt="Avatar" class="overlay-image"><div class="overlay"><div class="overlay-text">Hello World</div></div></div>
- -->
+
 <br>
 <div class="container">
-  <a name="about"></a>
-
   <div class="row">
     <div class="col-md-3">
       <div class="headshot-container">
@@ -105,317 +64,15 @@ layout: default
 
     <div class="col-md-9">
       <h1>Jamie Simon</h1>
-      <p>I'm a scientist aiming to understand the training dynamics of deep neural networks. I currently run a small lab within the <a href="https://redwood.berkeley.edu/">Redwood Center</a> and am supported by <a href="https://imbue.com/">Imbue</a>, where I am a research fellow. I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I like running, puzzles, spending time in forests, and <a href="gravitrees.com">balancing things</a>.
-      <br>
-      <br>
-      A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing
-      [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>,<a href="https://arxiv.org/abs/2410.04642">5</a>].
-      Some of these ideas came about from quick initial conversations! If you've got a curious empirical phenomenon you're trying to explain, feel free to reach out :)
-  	  </p>
-  	  <p>
-  	  If you'd like get emailed when I post new blogposts, you can sign up <a href="https://forms.gle/mioQ8Rhb51JcGGSJ6">here.</a>
-  	  </p>
-    </div>
-
-  </div>
-
-  <hr class="hr-thin">
-  <a name="research"></a>
-  <h2>Research</h2>
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/hea_paper_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Predicting kernel regression learning curves from only raw data statistics</h3>
-      <p class="blurb"> [abstract to go here] </p>
-      <p class="paper-info">
-        <a href="https://arxiv.org/abs/2510.14878">[arXiv]</a>
+      <p>
+        Hi! I'm Jamie. I'm a scientist working on fundamental theory for deep learning. I run a small lab in the <a href="https://redwood.berkeley.edu/">Redwood Center</a> at UC Berkeley, graciously funded by <a href="https://imbue.com/">Imbue</a>, where I'm a research fellow. Reach out if you want to visit! I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I play music, <a href="{{site.baseurl}}/blog/fifty-states-roadtrip/">go into</a> <a href="{{site.baseurl}}/blog/boolpool-timelapse/">nature</a>, <a href="{{site.baseurl}}/blog/gravitrees/">balance</a> <a href="{{site.baseurl}}/blog/gravitree-update-2024/">things</a>, and <a href="{{site.baseurl}}/blog/egg/">catch eggs in my mouth</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/more_is_better_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>More is better: when infinite overparameterization is optimal and overfitting is obligatory</h3>
-      <strong>Explaining mysteries of modern ML with the toy model of RF regression</strong>
-      <p class="blurb"> We give a theory of the generalization of random feature models. We conclude they perform better with more parameters, more data, and less regularization, putting theoretical backing to these observations in modern ML. This gives a fairly solid mathematical picture to replace classical intuitions about the risks of overparameterization and overfitting. Our picture of the generalization of RF models takes the form of some nice closed-form equations we think can be used to answer lots of other questions. </p>
-      <p class="paper-info">
-        <strong>ICLR '24</strong>
-        <a href="https://tinyurl.com/more-is-better">[arXiv]</a>
+      <p>
+        You can read about my research <a href="{{site.baseurl}}/research/">here</a>. I write about science and other adventures over on my <a href="{{site.baseurl}}/blog/">blog</a>. I also make <a href="{{site.baseurl}}/puzzles/">puzzles</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/spectral_scaling_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>A spectral condition for feature learning</h3>
-      <strong> A simple picture of feature learning in wide nets </strong>
-      <p class="blurb"> We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the "mu-parameterization," this is probably the easiest place to start ca. 2024. </p>
-      <p class="paper-info">
-        <a href="https://tinyurl.com/feature-learning">[arXiv]</a>
+      <p>
+        If you'd like to chat about research or life, feel free to schedule something <a href="https://cal.com/james-simon-w26vvz">here</a>. Whether you're an old friend or a stranger, don't be shy. You can leave me anonymous feedback <a href="https://forms.gle/ZQ4fZEih46N6b4yv5">here</a>.
       </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/stepwise_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>On the stepwise nature of self-supervised learning</h3>
-      <strong>A theory of the training dynamics of contrastive learning</strong>
-      <p class="blurb"> We give a theory of the training dynamics of contrastive self-supervised learning and validate it empirically. We find that representations are learned <i> one dimension at a time in a stepwise fashion </i> -- that is, the rank of the model's final representations increases by one at each step. Our theory is derived for linearized models, but we clearly see our stepwise phenomenon even for ResNets trained on image data. Large-scale ML mostly uses unsupervised and self-supervised training these days, and we describe a behavior we think is fairly generic in SSL. </p>
-      <p class="paper-info">
-        <strong>ICML '23</strong>
-        <a href="https://tinyurl.com/stepwise-ssl">[arXiv]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/fedex_attack_mainpage_figure.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>You can just put up a poster at ICML and nobody will stop you</h3>
-      <strong>Exposing vulnerabilities in the conference review system</strong>
-      <p class="blurb"> A perennial problem in machine learning research has been how to most efficiently have a poster at ICML. In this work, we show that one can bypass OpenReview via a simple “FedEx trick," similar to yet entirely different from the kernel trick in machine learning. (I'm putting this here as an easter egg to see if people actually read these. If you see this and saw + were amused by the original poster, feel free to drop me a line :)) </p>
-      <p class="paper-info">
-        <strong>ICML '23</strong>
-        <a href="https://x.com/_dsevero/status/1684677903382982656">[viral tweet]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/eigenlearning_mainpage_figure.png" width=80%>
-    </div>
-    <div class="col-md-9">
-      <h3>The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks</h3>
-      <p class="blurb"> We give a simple picture of the generalization of kernel ridge regression in terms of task eigenstructure and use it to solve some theoretical problems. </p>
-      <p class="paper-info">
-        <strong>TMLR</strong>
-        <a href="https://arxiv.org/abs/2110.03922">[arXiv]</a>
-        <a href="https://github.com/james-simon/eigenlearning">[code]</a>
-        <a href="https://bair.berkeley.edu/blog/2021/10/25/eigenlearning/">[blog]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/shallow_learning_sketch.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Reverse engineering the neural tangent kernel</h3>
-      <strong>A first-principles method for the design of fully-connected architectures</strong>
-      <p class="blurb"> Much of our understanding of artificial neural networks stems from the fact that, in the infinite-width limit, they turn out to be equivalent to a class of simple models called <i>kernel regression.</i> Given a wide network architecture, it's well-known how to find the equivalent kernel method, allowing us to study popular models in the infinite-width limit. In work with Sajant Anand, we <i>invert this mapping</i> for fully-connected nets (FCNs), allowing one to start from a desired rotation-invariant kernel and design a network (i.e. choose an activation function) to achieve it. Remarkably, achieving any such kernel requires only one hidden layer, raising questions about conventional wisdom on the benefits of depth. This allows surprising experiments, like designing a 1HL FCN that trains and generalizes like a deep ReLU FCN. This ability to design nets with desired kernels is a step towards deriving good net architectures <i>from first principles</i>, a longtime dream of the field of machine learning. </p>
-      <p class="paper-info">
-        <strong>ICML '22</strong>
-        <a href="https://arxiv.org/abs/2106.03186">[arXiv]</a>
-        <a href="https://github.com/james-simon/reverse-engineering">[code]</a>
-        <a href="https://james-simon.github.io/blog/reverse-engineering/">[blog]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/tempered_overfitting.png" width=100%>
-    </div>
-    <div class="col-md-9">
-      <h3>Benign, tempered or catastrophic: a taxonomy of overfitting</h3>
-      <strong>How bad is neural network overfitting?</strong>
-      <p class="blurb"> Classical wisdom holds that overparameterization is harmful. Neural nets defy this wisdom, generalizing well despite their overparameterization and interpolation of the training data. How can we understand this discrepancy? Recent landmark papers have explored the concept of <i>benign overfitting</i> -- a phenomenon in which certain models can interpolate noisy data without harming generalization -- suggesting that that neural nets may fit benignly. In this work with <a href="https://mallinar.xyz/">Neil Mallinar</a>, <a href="https://preetum.nakkiran.org/">Preetum Nakkiran</a>, and others, we put this idea to the empirical test, giving a new characterization of neural network overfitting and noise sensitivity. We find that neural networks trained to interpolation do <i>not</i> overfit benignly, but neither do they exhibit the catastrophic overfitting foretold by classical wisdom: instead, they usually lie in a third, intermediate regime we call <i>tempered overfitting</i>. I found that we can understand these three regimes of overfitting analytically for kernel regression (a toy model for neural networks), and I proved a simple "trichotomy theorem" relating a kernel's eigenspectrum to its overfitting behavior. </p>
-      <p class="paper-info">
-        <strong>
-          <em>NeurIPS '22</em>
-        </strong>
-        <a href="https://arxiv.org/abs/2207.06569">[arXiv]</a>
-        <!-- <a href="https://github.com/james-simon/shallow-learning">[code]</a> -->
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/trajectories.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Critical point-finding methods reveal gradient-flat regions of deep network losses</h3>
-      <strong>Exposing flaws in widely-used critical-point-finding methods</strong>
-      <p class="blurb"> Despite how common and useful neural networks are, there are still basic mysteries about how they work, many related to properties of their loss surfaces. In this project, led by <a href="https://charlesfrye.github.io/">Charles Frye</a>, we tested Newton methods (common tools for optimization and exploring function structure) on loss surfaces. We found that, as opposed to finding critical points as designed, in practice Newton methods almost always converged to a different, spurious class of points which we described. Giving simple visualizable examples to illustrate the problem, we showed that some major studies using Newton methods on loss surfaces probably misinterpreted their results. Our paper is <a href="https://arxiv.org/pdf/2003.10397.pdf">here</a>. </p>
-      <p class="paper-info">
-        <strong>(2021)</strong>
-        <a href="https://direct.mit.edu/neco/article/33/6/1469/100574/Critical-Point-Finding-Methods-Reveal-Gradient">[Neural Computation]</a>
-        <a href="https://https://arxiv.org/abs/2003.10397">[arXiv]</a>
-        <a href="https://github.com/charlesfrye/autocrit">[code]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/jj.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Simplified Josephson-junction fabrication process for reproducibly high-performance superconducting qubits</h3>
-      <strong>A faster method to make Josephson junctions</strong>
-      <p class="blurb"> In the spring and summer of 2019 I worked in the lab of Prof. <a href="http://www.chalmers.se/en/staff/Pages/per-delsing.aspx">Per Delsing</a> developing nanofabrication methods for Josephson junctions, ubiquitous components in superconducting circuitry. My main project was a study of how junctions age in the months after fabrication, but my biggest contribution was elsewhere: Anita Fadavi, Amr Osman and I developed a junction design that is faster to fabricate by one lithography step, or potentially several days of work. </p>
-      <p class="paper-info">
-        <strong>(2021)</strong>
-        <a href="https://aip.scitation.org/doi/full/10.1063/5.0037093">[Applied Physics Letters]</a>
-      </p>
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-  <div class="row">
-    <div class="col-md-3">
-      <img class="mr-4" src="{{site.baseurl}}/img/mainpage_figures/statediagram.png" width="100%">
-    </div>
-    <div class="col-md-9">
-      <h3>Fast noise-resistant control of donor nuclear spin qubits in silicon</h3>
-      <strong>Better control schemes for for spin qubits</strong>
-      <p class="blurb"> Qubits decohere and lose their quantum information when uncontrollably coupled to their environment. Nuclear spin qubits in silicon are extremely weakly coupled to their environment, giving them long coherence times (up to minutes), but that same weak coupling makes quickly controlling them difficult. Advised by Prof. <a href="http://www1.phys.vt.edu/~economou/index.html">Sophia Economou</a>, I came up with schemes for driving nuclear spin qubits that give fast, noise-resistant arbitrary single-qubit gates. The most important gate is a long sweep that effectively turns uncertainty in electric field (charge noise) into uncertainty in time, which can be accounted for by corrective gates. We also show two-qubit gates. </p>
-      <p class="paper-info">
-        <strong>(2020)</strong>
-        <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.101.205307">[PRB]</a>
-        <a href="https://arxiv.org/pdf/2001.10029.pdf">[arXiv]</a>
-      </p>
-    </div>
-  </div>
-
-  <a name="puzzles"></a>
-  <h2>Puzzles</h2>
-  <p>While a senior in undergrad, I started a puzzlehunt called the <a href="vthunt.com">VT Hunt</a> with Bennett Witcher. It became a university tradition, with the 2019-22 VT Hunts each drawing 1000-2000 participants and raising money for charities, and I've stayed involved as a mentor. I've also helped concoct six other puzzle events starting in high school. A few of my favorite puzzles I've made are below. They're roughly ordered from easiest to hardest, so you can pick where to start. </p>
-  <!--    {% assign npzls = 0 %}
-   {% for doc in site.puzzles %}
-   {% if doc.type == "puzzle" %}
-   {% if npzls == 0 %}
-   <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', '' }}">{{ doc.title }}</a>
-   {% else %}
-   • <a href="{{ site.baseurl }}{{ doc.url | replace: '.html', ''}}">{{ doc.title }}</a>
-   {% endif %}
-   {% assign npzls = npzls | plus:1 %}
-   {% endif %}
-   {% endfor %} -->
-  <style>
-    .center-cropped {
-      object-fit: cover;
-      /* Do not scale the image */
-      object-position: center;
-      /* Center the image within the element */
-      height: 200px;
-      width: 200px;
-    }
-  </style>
-  <div class="row justify-content-md-center">
-    {% for diff in (1..10) %}
-      {% for doc in site.puzzles %}
-        {% if doc.type == "puzzle" and doc.difficulty == diff %}
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            {% assign slug = doc.url | split: '/' %}
-            {% assign filename = doc.title | replace: ' ', '' | downcase %}
-            {% if doc.title == "Topology" %}
-              <img class="center-cropped" src="{{ site.baseurl }}/img/{{ slug[2] }}/{{ filename }}.jpg">
-            {% else %}
-              <img class="center-cropped" src="{{ site.baseurl }}/img/{{ slug[2] }}/{{ filename }}.png">
-            {% endif %}
-            <div class="tint"></div>
-            <a class="hoverinfo" href="{{ doc.url }}">
-              <h4>{{ doc.title | upcase }}</h4>
-            </a>
-          </div>
-        {% endif %}
-      {% endfor %}
-    {% endfor %} </div>
-
-  <hr class="hr-thick">
-  <a name="posts"></a>
-  <h2>Blog</h2>
-  <hr>
-
-  <!-- Supercategory 1: Research essays and ML theory -->
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Essays</h4>
-      {% for post in site.posts %} {% if post.category contains "essays" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Kernels and linear regression</h4>
-      {% for post in site.posts %} {% if post.category contains "kernels" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-    <div class="col-md-6">
-      <h4>Science of deep learning</h4>
-      {% for post in site.posts %} {% if post.category contains "dl-science" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <!-- Supercategory 2: Mathematics and Physics -->
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Mathematics</h4>
-      {% for post in site.posts %} {% if post.category contains "mathematics" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <hr>
-      <h4>Biology and chemistry</h4>
-      {% for post in site.posts %} {% if post.category contains "biology" or post.category contains "chemistry" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-    <div class="col-md-6">
-      <h4>Physics</h4>
-      {% for post in site.posts %} {% if post.category contains "physics" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-  </div>
-
-  <hr class="hr-thick">
-
-  <!-- Supercategory 3: Art, Adventures, Poetry, Society -->
-  <div class="row">
-    <div class="col-md-6">
-      <h4>Art</h4>
-      {% for post in site.posts %} {% if post.category contains "art" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <hr>
-      <h4>Adventures</h4>
-      {% for post in site.posts %} {% if post.category contains "adventures" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-    </div>
-    <div class="col-md-6">
-      <h4>Poetry and performance</h4>
-      {% for post in site.posts %} {% if post.category contains "poetry" %} {% include make_post_link.html %} {% endif %} {% endfor %}
-      <hr>
-      <h4>Society</h4>
-      {% for post in site.posts %} {% if post.category contains "society" %} {% include make_post_link.html %} {% endif %} {% endfor %}
     </div>
   </div>
 </div>
@@ -431,20 +88,16 @@ layout: default
   const photoSequence = [
     'me_at_collingwood_house_1.jpeg',
     'me_in_glacier.jpg',
-    // 'me_at_collingwood_house_2.jpg',
     'me_grinding.jpeg',
     'me_in_tux.jpeg',
     'me_with_lizard.jpeg',
     'baby_me.jpeg',
     'baby_me_in_goldfish.jpg',
     'me_with_gravitree.jpeg',
-    // 'me_pre_eclipse.jpeg',
     'me_walking_in_texas.jpeg',
     'dolly_spartan_me.jpeg',
     'me_on_ski_lift.jpeg',
     'me_in_sibley_volcanic.jpeg',
-    // 'me_in_utah_maybe.jpg',
-    // 'me_on_el_capitan.png',
     'me_on_rock.png',
     'me_on_mechanical_bull.gif',
   ];

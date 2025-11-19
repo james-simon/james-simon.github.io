@@ -1,0 +1,561 @@
+---
+layout: default
+permalink: /birdmode/
+---
+
+<link rel="stylesheet" href="css/hover_effects.css">
+<style>
+  .headshot-container {
+    position: relative;
+    display: inline-block;
+    margin-right: -15px;
+    margin-top: 1em;
+  }
+
+  .headshot-container img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    object-position: left 20%;
+  }
+
+  .loading-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .loading-bar.visible {
+    opacity: 1;
+  }
+
+  .loading-bar-fill {
+    height: 100%;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: width 3s linear;
+  }
+
+  .loading-bar.no-transition .loading-bar-fill {
+    transition: none;
+  }
+
+  .loading-bar.active .loading-bar-fill {
+    width: 100%;
+  }
+
+  .char {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+  }
+
+  .char-particle {
+    position: fixed;
+    margin: 0;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  #bird-mode-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+
+  #bird-mode-button:hover {
+    transform: scale(1.05);
+  }
+
+  .bird-locked {
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+  }
+</style>
+
+<br>
+<button id="bird-mode-button">START BIRD MODE 🐦</button>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="headshot-container">
+        <img id="headshot" src="{{site.baseurl}}/img/pictures_of_me/me_at_collingwood_house_1.jpeg">
+        <div class="loading-bar">
+          <div class="loading-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <h1>Jamie Simon 🐦 🦅 🦜</h1>
+      <p>
+        Hi! I'm Jamie 🦆. I'm a scientist working on fundamental theory for deep learning 🧠. I run a small lab in the <a href="https://redwood.berkeley.edu/">Redwood Center</a> at UC Berkeley, graciously funded by <a href="https://imbue.com/">Imbue</a>, where I'm a research fellow 🦉. Reach out if you want to visit! I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I play music 🎵, <a href="{{site.baseurl}}/blog/fifty-states-roadtrip/">go into</a> <a href="{{site.baseurl}}/blog/boolpool-timelapse/">nature</a> 🌲, <a href="{{site.baseurl}}/blog/gravitrees/">balance</a> <a href="{{site.baseurl}}/blog/gravitree-update-2024/">things</a> ⚖️, and <a href="{{site.baseurl}}/blog/egg/">catch eggs in my mouth</a> 🥚.
+      </p>
+      <p>
+        You can read about my research <a href="{{site.baseurl}}/research/">here</a> 📚. I write about science and other adventures over on my <a href="{{site.baseurl}}/blog/">blog</a> 🪶. I also make <a href="{{site.baseurl}}/puzzles/">puzzles</a> 🧩.
+      </p>
+      <p>
+        If you'd like to chat about research or life 🦢, feel free to schedule something <a href="https://cal.com/james-simon-w26vvz">here</a>. Whether you're an old friend or a stranger 🐧, don't be shy. You can leave me anonymous feedback <a href="https://forms.gle/ZQ4fZEih46N6b4yv5">here</a> 🦚.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const headshot = document.getElementById('headshot');
+  const container = document.querySelector('.headshot-container');
+  const loadingBar = document.querySelector('.loading-bar');
+
+  // Edit this list to change the photo sequence!
+  // Add or remove filenames from img/pictures_of_me/
+  const photoSequence = [
+    'me_at_collingwood_house_1.jpeg',
+    'me_in_glacier.jpg',
+    'me_grinding.jpeg',
+    'me_in_tux.jpeg',
+    'me_with_lizard.jpeg',
+    'baby_me.jpeg',
+    'baby_me_in_goldfish.jpg',
+    'me_with_gravitree.jpeg',
+    'me_walking_in_texas.jpeg',
+    'dolly_spartan_me.jpeg',
+    'me_on_ski_lift.jpeg',
+    'me_in_sibley_volcanic.jpeg',
+    'me_on_rock.png',
+    'me_on_mechanical_bull.gif',
+  ];
+
+  // Build full paths
+  const images = photoSequence.map(function(filename) {
+    return '{{site.baseurl}}/img/pictures_of_me/' + filename;
+  });
+
+  // Set initial image to first in sequence
+  headshot.src = images[0];
+
+  let currentIndex = 0;
+  let timeout = null;
+  let isLoading = false;
+  let isHovering = false;
+
+  function startLoading() {
+    if (isLoading) return;
+
+    isLoading = true;
+
+    // Show and start loading bar animation
+    loadingBar.classList.add('visible');
+    // Small delay to ensure visibility is set before animation starts
+    setTimeout(function() {
+      loadingBar.classList.add('active');
+    }, 10);
+
+    // Set timeout to switch image after 3 seconds
+    timeout = setTimeout(function() {
+      // Toggle to next image
+      currentIndex = (currentIndex + 1) % images.length;
+      headshot.src = images[currentIndex];
+
+      // Reset loading bar without transition
+      loadingBar.classList.add('no-transition');
+      loadingBar.classList.remove('active');
+      loadingBar.classList.remove('visible');
+
+      // Force reflow to apply the reset
+      void loadingBar.offsetWidth;
+
+      // Re-enable transitions
+      loadingBar.classList.remove('no-transition');
+
+      // Reset loading state
+      isLoading = false;
+      timeout = null;
+
+      // If still hovering, start next cycle
+      if (isHovering) {
+        setTimeout(startLoading, 100);
+      }
+    }, 3000);
+  }
+
+  container.addEventListener('mouseenter', function() {
+    isHovering = true;
+    startLoading();
+  });
+
+  container.addEventListener('mouseleave', function() {
+    isHovering = false;
+
+    // Only reset if we haven't completed the load
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+      isLoading = false;
+
+      // Hide and reset loading bar without transition
+      loadingBar.classList.add('no-transition');
+      loadingBar.classList.remove('visible');
+      loadingBar.classList.remove('active');
+
+      // Force reflow to reset animation
+      void loadingBar.offsetWidth;
+
+      // Re-enable transitions
+      loadingBar.classList.remove('no-transition');
+    }
+  });
+})();
+
+// ============================================================================
+// BIRD MODE - Boid flocking simulation
+// ============================================================================
+
+(function() {
+  let birdModeActive = false;
+  let textWrapped = false;
+  let animationFrameId = null;
+  let boids = [];
+
+  // Boid constants
+  const MAX_SPEED = 200; // pixels per second
+  const MAX_FORCE = 150; // steering force limit
+  const R_SEPARATION = 50; // separation radius
+  const R_ALIGNMENT = 80; // alignment radius
+  const R_COHESION = 100; // cohesion radius
+  const W_SEPARATION = 1.5; // separation weight
+  const W_ALIGNMENT = 1.0; // alignment weight
+  const W_COHESION = 1.0; // cohesion weight
+  const W_EDGE = 0.8; // edge avoidance weight
+  const EDGE_MARGIN = 100; // pixels from edge to start avoiding
+
+  function wrapTextNodes(node) {
+    // Skip the h1 title
+    if (node.tagName === 'H1') {
+      return;
+    }
+
+    // Skip if already wrapped
+    if (node.classList && node.classList.contains('char')) {
+      return;
+    }
+
+    // If it's a text node, wrap each character
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim().length === 0) return;
+
+      const fragment = document.createDocumentFragment();
+      const chars = Array.from(text);
+      for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
+        if (char === ' ') {
+          fragment.appendChild(document.createTextNode(' '));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = char;
+          fragment.appendChild(span);
+        }
+      }
+      node.parentNode.replaceChild(fragment, node);
+    }
+    // Recursively process child nodes
+    else if (node.nodeType === Node.ELEMENT_NODE) {
+      const children = Array.from(node.childNodes);
+      children.forEach(child => wrapTextNodes(child));
+    }
+  }
+
+  function ensureTextWrapped() {
+    if (textWrapped) return;
+    textWrapped = true;
+    wrapTextNodes(document.body);
+  }
+
+  function limitMagnitude(vec, maxMag) {
+    const mag = Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+    if (mag > maxMag && mag > 0) {
+      vec.x = (vec.x / mag) * maxMag;
+      vec.y = (vec.y / mag) * maxMag;
+    }
+    return vec;
+  }
+
+  function normalize(vec) {
+    const mag = Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+    if (mag > 0) {
+      return { x: vec.x / mag, y: vec.y / mag };
+    }
+    return { x: 0, y: 0 };
+  }
+
+  function distance(boid1, boid2) {
+    const dx = boid1.x - boid2.x;
+    const dy = boid1.y - boid2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function computeSteering(boid, neighbors) {
+    let separation = { x: 0, y: 0 };
+    let alignment = { x: 0, y: 0 };
+    let cohesion = { x: 0, y: 0 };
+    let sepCount = 0;
+    let alignCount = 0;
+    let cohCount = 0;
+
+    // Process all neighbors
+    for (let other of neighbors) {
+      if (other === boid) continue;
+
+      const dist = distance(boid, other);
+
+      // Separation
+      if (dist < R_SEPARATION && dist > 0) {
+        const dx = boid.x - other.x;
+        const dy = boid.y - other.y;
+        separation.x += dx / dist;
+        separation.y += dy / dist;
+        sepCount++;
+      }
+
+      // Alignment
+      if (dist < R_ALIGNMENT) {
+        alignment.x += other.vx;
+        alignment.y += other.vy;
+        alignCount++;
+      }
+
+      // Cohesion
+      if (dist < R_COHESION) {
+        cohesion.x += other.x;
+        cohesion.y += other.y;
+        cohCount++;
+      }
+    }
+
+    // Average and compute steering forces
+    let steer = { x: 0, y: 0 };
+
+    if (sepCount > 0) {
+      separation.x /= sepCount;
+      separation.y /= sepCount;
+      separation = normalize(separation);
+      steer.x += separation.x * W_SEPARATION;
+      steer.y += separation.y * W_SEPARATION;
+    }
+
+    if (alignCount > 0) {
+      alignment.x /= alignCount;
+      alignment.y /= alignCount;
+      alignment.x -= boid.vx;
+      alignment.y -= boid.vy;
+      steer.x += alignment.x * W_ALIGNMENT;
+      steer.y += alignment.y * W_ALIGNMENT;
+    }
+
+    if (cohCount > 0) {
+      cohesion.x /= cohCount;
+      cohesion.y /= cohCount;
+      cohesion.x -= boid.x;
+      cohesion.y -= boid.y;
+      cohesion = normalize(cohesion);
+      steer.x += cohesion.x * W_COHESION;
+      steer.y += cohesion.y * W_COHESION;
+    }
+
+    // Edge avoidance
+    const edgeForce = { x: 0, y: 0 };
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    if (boid.x < EDGE_MARGIN) {
+      edgeForce.x += (EDGE_MARGIN - boid.x) / EDGE_MARGIN;
+    } else if (boid.x > width - EDGE_MARGIN) {
+      edgeForce.x -= (boid.x - (width - EDGE_MARGIN)) / EDGE_MARGIN;
+    }
+
+    if (boid.y < EDGE_MARGIN) {
+      edgeForce.y += (EDGE_MARGIN - boid.y) / EDGE_MARGIN;
+    } else if (boid.y > height - EDGE_MARGIN) {
+      edgeForce.y -= (boid.y - (height - EDGE_MARGIN)) / EDGE_MARGIN;
+    }
+
+    steer.x += edgeForce.x * W_EDGE;
+    steer.y += edgeForce.y * W_EDGE;
+
+    return limitMagnitude(steer, MAX_FORCE);
+  }
+
+  function updateBoids(dt) {
+    // Compute steering for each boid (O(N²) for now)
+    for (let boid of boids) {
+      const steer = computeSteering(boid, boids);
+
+      // Update velocity
+      boid.vx += steer.x * dt;
+      boid.vy += steer.y * dt;
+
+      // Limit speed
+      const vel = { x: boid.vx, y: boid.vy };
+      const limited = limitMagnitude(vel, MAX_SPEED);
+      boid.vx = limited.x;
+      boid.vy = limited.y;
+
+      // Update position
+      boid.x += boid.vx * dt;
+      boid.y += boid.vy * dt;
+
+      // Update DOM element
+      boid.el.style.left = boid.x + 'px';
+      boid.el.style.top = boid.y + 'px';
+    }
+  }
+
+  let lastTime = null;
+
+  function animate(currentTime) {
+    if (!birdModeActive) return;
+
+    if (lastTime === null) {
+      lastTime = currentTime;
+    }
+
+    const dt = Math.min((currentTime - lastTime) / 1000, 0.1); // Cap dt to avoid huge jumps
+    lastTime = currentTime;
+
+    updateBoids(dt);
+
+    animationFrameId = requestAnimationFrame(animate);
+  }
+
+  function enterBirdMode() {
+    if (birdModeActive) return;
+    birdModeActive = true;
+
+    // Wrap text
+    ensureTextWrapped();
+
+    // Lock body
+    const scrollY = window.scrollY;
+    document.body.classList.add('bird-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Update button
+    const button = document.getElementById('bird-mode-button');
+    button.textContent = 'STOP BIRD MODE 🛑';
+
+    // Collect all characters except h1
+    const chars = document.querySelectorAll('.char');
+    boids = [];
+
+    chars.forEach(char => {
+      // Skip if it's inside an h1
+      if (char.closest('h1')) return;
+
+      const rect = char.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      // Clone character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '9999';
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+
+      document.body.appendChild(clone);
+      char.style.visibility = 'hidden';
+
+      // Create boid with small random initial velocity
+      boids.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: (Math.random() - 0.5) * 100,
+        vy: (Math.random() - 0.5) * 100
+      });
+    });
+
+    // Start animation
+    lastTime = null;
+    animationFrameId = requestAnimationFrame(animate);
+  }
+
+  function exitBirdMode() {
+    if (!birdModeActive) return;
+    birdModeActive = false;
+
+    // Cancel animation
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+
+    // Remove boid particles
+    boids.forEach(boid => {
+      boid.el.remove();
+    });
+    boids = [];
+
+    // Restore original characters
+    document.querySelectorAll('.char').forEach(char => {
+      char.style.visibility = '';
+    });
+
+    // Unlock body
+    const scrollY = Math.abs(parseInt(document.body.style.top || '0'));
+    document.body.classList.remove('bird-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollY);
+
+    // Update button
+    const button = document.getElementById('bird-mode-button');
+    button.textContent = 'START BIRD MODE 🐦';
+  }
+
+  // Button click handler
+  document.getElementById('bird-mode-button').addEventListener('click', function() {
+    if (birdModeActive) {
+      exitBirdMode();
+    } else {
+      enterBirdMode();
+    }
+  });
+
+  // ESC key to exit
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && birdModeActive) {
+      exitBirdMode();
+    }
+  });
+})();
+</script>

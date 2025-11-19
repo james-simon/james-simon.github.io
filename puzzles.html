@@ -1,0 +1,67 @@
+---
+layout: default
+permalink: /puzzles/
+nav_order: 3
+---
+
+<link rel="stylesheet" href="{{site.baseurl}}/css/hover_effects.css">
+
+<style>
+  h1 {
+    margin-top: 1.5em;
+  }
+
+  .hr-thick {
+    border: none;
+    height: 2px;
+    color: #aaaaaa;
+    background-color: #aaaaaa;
+  }
+
+  .center-cropped {
+    object-fit: cover;
+    object-position: center;
+    height: 200px;
+    width: 200px;
+  }
+
+  .puzzle-intro {
+    margin-bottom: 2em;
+  }
+</style>
+
+<div class="container">
+  <h1><i class="fab fa-laravel"></i> Puzzles</h1>
+  <hr class="hr-thick">
+
+  <div class="puzzle-intro">
+    <p>
+      You know that feeling when life is easy and your problems yield at the slightest touch? Yeah, the things on this page aren't like that. If you like a challenge, you'll probably like some of these puzzles.
+    </p>
+    <p>
+      I've been making puzzle hunts since high school. As a senior at Virginia Tech, I started the <a href="vthunt.com">VT Hunt</a>, which grew into a (still ongoing!) university tradition, with later Hunts drawing >1000 participants. A few of my favorite puzzles I've made are below. They're roughly ordered from easiest to hardest, so you can pick where to start.
+    </p>
+  </div>
+
+  <div class="row justify-content-md-center">
+    {% for diff in (1..10) %}
+      {% for doc in site.puzzles %}
+        {% if doc.type == "puzzle" and doc.difficulty == diff %}
+          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
+            {% assign slug = doc.url | split: '/' %}
+            {% assign filename = doc.title | replace: ' ', '' | downcase %}
+            {% if doc.title == "Topology" %}
+              <img class="center-cropped" src="{{ site.baseurl }}/img/{{ slug[2] }}/{{ filename }}.jpg">
+            {% else %}
+              <img class="center-cropped" src="{{ site.baseurl }}/img/{{ slug[2] }}/{{ filename }}.png">
+            {% endif %}
+            <div class="tint"></div>
+            <a class="hoverinfo" href="{{ doc.url }}">
+              <h4>{{ doc.title | upcase }}</h4>
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>

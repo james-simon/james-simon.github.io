@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>JS</title>
+    <title>Jamie Simon</title>
     <description></description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 17 Nov 2025 22:49:04 -0800</pubDate>
-    <lastBuildDate>Mon, 17 Nov 2025 22:49:04 -0800</lastBuildDate>
+    <link>http://james-simon.github.io/</link>
+    <atom:link href="http://james-simon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 19 Nov 2025 13:34:44 -0800</pubDate>
+    <lastBuildDate>Wed, 19 Nov 2025 13:34:44 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -19,8 +19,8 @@ and put together in new configurations aacdeeekllmmrssvyy&lt;br /&gt;
 in an ever-changing dance of parts deeeikllmmoorsstttuuwyy&lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Nov 2025 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/on-novelty/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-novelty/</guid>
+        <link>http://james-simon.github.io/blog/on-novelty/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/on-novelty/</guid>
         
         
         <category>poetry</category>
@@ -150,8 +150,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 20 Jul 2025 02:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/on-the-scientific-method/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-the-scientific-method/</guid>
+        <link>http://james-simon.github.io/blog/on-the-scientific-method/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/on-the-scientific-method/</guid>
         
         
         <category>essays</category>
@@ -224,8 +224,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;p&gt;That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.&lt;/p&gt;
 </description>
         <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
+        <link>http://james-simon.github.io/blog/backsolving-classical-bounds/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/backsolving-classical-bounds/</guid>
         
         
         <category>kernels</category>
@@ -361,8 +361,8 @@ We also of course require that the measure we find from the above is normalized 
 &lt;/div&gt;
 </description>
         <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
+        <link>http://james-simon.github.io/blog/one-kernel-many-eigensystems/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/one-kernel-many-eigensystems/</guid>
         
         
         <category>kernels</category>
@@ -533,8 +533,8 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
 &lt;/div&gt;
 </description>
         <pubDate>Thu, 03 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</guid>
+        <link>http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</guid>
         
         
         <category>dl-science</category>
@@ -706,8 +706,8 @@ is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
 &lt;p&gt;What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentially realistic) high-dimensional data.&lt;/p&gt;
 </description>
         <pubDate>Tue, 18 Mar 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</guid>
+        <link>http://james-simon.github.io/blog/gaussian-kernel-1d-eigendecomp/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/gaussian-kernel-1d-eigendecomp/</guid>
         
         
         <category>kernels</category>
@@ -736,8 +736,8 @@ is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 06 Nov 2024 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/low-rank-linear-regression-sol/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/low-rank-linear-regression-sol/</guid>
+        <link>http://james-simon.github.io/blog/low-rank-linear-regression-sol/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/low-rank-linear-regression-sol/</guid>
         
         
         <category>kernels</category>
@@ -931,8 +931,8 @@ e^t
 &lt;/div&gt;
 </description>
         <pubDate>Tue, 08 Oct 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/autoencoders-are-cursed/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/autoencoders-are-cursed/</guid>
+        <link>http://james-simon.github.io/blog/autoencoders-are-cursed/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/autoencoders-are-cursed/</guid>
         
         
         <category>dl-science</category>
@@ -1030,8 +1030,8 @@ e^t
 &lt;/div&gt;
 </description>
         <pubDate>Fri, 04 Oct 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
+        <link>http://james-simon.github.io/blog/transforming-low-rank-matrices/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/transforming-low-rank-matrices/</guid>
         
         
         <category>mathematics</category>
@@ -1198,8 +1198,8 @@ Observations like this feel to me like puzzle pieces, and if we get enough on th
 &lt;/div&gt;
 </description>
         <pubDate>Tue, 20 Aug 2024 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
+        <link>http://james-simon.github.io/blog/gpt2-positional-encs/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/gpt2-positional-encs/</guid>
         
         
         <category>dl-science</category>

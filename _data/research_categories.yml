@@ -1,0 +1,29 @@
+- id: kernel-regression
+  title: Developing + using the theory of kernel regression
+  description: Kernel ridge regression (KRR) is a primitive learning algorithm that looks a lot like deep learning in some ways (e.g., as a model of overparameterized optimization). It's strictly simpler, and any question you can't answer for KRR, you can't answer for deep learning, so you should ask your questions about KRR first to get your thinking straight. I've done a lot of that. KRR is the only learning algorithm for which we have a simple, general, and verifiable theory of generalization. I've helped build this hammer and hit a lot of nails with it.
+  order: 1
+
+- id: stepwise-learning
+  title: Stepwise learning dynamics
+  description: In certain regimes, neural nets show staircase-like loss curves over the course of optimization, with plateaus punctuated by sudden drops. This sort of dynamics is called "stepwise," "<a href=\"https://arxiv.org/abs/2505.21722\">saddle-to-saddle</a>," or "incremental" learning, and it has the flavor of greedy low-rank optimization. The dynamics in these cases is often easier to understand than in more traditional regimes, so it's worth understanding what's going on to look for generalizing insights.
+  order: 2
+
+- id: scaling-dynamics
+  title: Scaling dynamics and hyperparameters of feature learning
+  description: A central tenet of the developing science of deep learning is that you should study your hyperparameters, because if you don't control for them, they'll confound whatever conclusion you're attempted to draw. In these papers, we study hyperparameters related to feature learning. These scaling relationships help lay down foundations for future science.
+  order: 3
+
+- id: thesis
+  title: My thesis
+  description: ""
+  order: 4
+
+- id: other-ml-theory
+  title: Other machine learning theory
+  description: Odds and ends.
+  order: 5
+
+- id: physics
+  title: My past life as a physicist
+  description: My academic roots are in physics, and that still informs how I see the world and the development of human knowledge.
+  order: 6

@@ -4,6 +4,7 @@ title: "Simulating cells fighting to the death"
 date: 2022-09-24
 category: biology
 emoji: ⚔️
+favorite: true
 ---
 
 

@@ -151,8 +151,10 @@
       if (text.trim().length === 0) return; // Skip whitespace-only nodes
 
       const fragment = document.createDocumentFragment();
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
+      // Use Array.from to properly handle multi-byte characters like emojis
+      const chars = Array.from(text);
+      for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
         if (char === ' ') {
           // Preserve spaces as regular text nodes
           fragment.appendChild(document.createTextNode(' '));
@@ -207,19 +209,32 @@
 
       // Copy computed styles
       const computedStyle = window.getComputedStyle(element);
-      clone.style.fontFamily = computedStyle.fontFamily;
-      clone.style.fontSize = computedStyle.fontSize;
-      clone.style.fontWeight = computedStyle.fontWeight;
-      clone.style.color = computedStyle.color;
-      clone.style.backgroundColor = computedStyle.backgroundColor;
-      clone.style.border = computedStyle.border;
-      clone.style.borderRadius = computedStyle.borderRadius;
-      clone.style.padding = computedStyle.padding;
 
-      // Preserve dimensions for all elements to prevent shrinking
-      clone.style.width = rect.width + 'px';
-      clone.style.height = rect.height + 'px';
-      clone.style.boxSizing = 'border-box';
+      // For icon elements (i, svg), copy minimal styles to avoid interfering with pseudo-elements
+      if (element.tagName === 'I' || element.tagName === 'SVG') {
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.color = computedStyle.color;
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      } else {
+        // For other elements, copy full styles
+        // Ensure emoji fonts are preserved by adding them to the font stack
+        const fontFamily = computedStyle.fontFamily;
+        clone.style.fontFamily = fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.fontWeight = computedStyle.fontWeight;
+        clone.style.color = computedStyle.color;
+        clone.style.backgroundColor = computedStyle.backgroundColor;
+        clone.style.border = computedStyle.border;
+        clone.style.borderRadius = computedStyle.borderRadius;
+        clone.style.padding = computedStyle.padding;
+
+        // Preserve dimensions for all elements to prevent shrinking
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      }
 
       // Set z-index: text always on top, then smaller elements in front
       if (isText) {
@@ -255,6 +270,88 @@
       });
     }
 
+    // Helper function to shatter images into pieces
+    // COMMENTED OUT - uncomment to enable image shattering
+    /*
+    function shatterImage(imgElement, rect) {
+      if (rect.width === 0 || rect.height === 0) return;
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) return;
+
+      // Get the image source
+      let imageSrc = imgElement.src;
+
+      // If it's an element with background-image, get that instead
+      const computedStyle = window.getComputedStyle(imgElement);
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        const match = bgImage.match(/url\(["']?([^"']*)["']?\)/);
+        if (match) imageSrc = match[1];
+      }
+
+      // Generate random cut positions with average spacing of ~50px
+      const avgSize = 50;
+      const variance = 25; // ±25px variation
+
+      // Generate vertical cut positions (x coordinates)
+      const xCuts = [0];
+      let x = 0;
+      while (x < rect.width) {
+        x += avgSize + (Math.random() - 0.5) * variance * 2;
+        if (x < rect.width) xCuts.push(Math.round(x));
+      }
+      xCuts.push(rect.width);
+
+      // Generate horizontal cut positions (y coordinates)
+      const yCuts = [0];
+      let y = 0;
+      while (y < rect.height) {
+        y += avgSize + (Math.random() - 0.5) * variance * 2;
+        if (y < rect.height) yCuts.push(Math.round(y));
+      }
+      yCuts.push(rect.height);
+
+      // Create pieces based on irregular grid
+      for (let row = 0; row < yCuts.length - 1; row++) {
+        for (let col = 0; col < xCuts.length - 1; col++) {
+          const pieceX = xCuts[col];
+          const pieceY = yCuts[row];
+          const pieceWidth = xCuts[col + 1] - xCuts[col];
+          const pieceHeight = yCuts[row + 1] - yCuts[row];
+
+          const piece = document.createElement('div');
+          piece.style.position = 'fixed';
+          piece.style.width = pieceWidth + 'px';
+          piece.style.height = pieceHeight + 'px';
+          piece.style.left = (rect.left + pieceX) + 'px';
+          piece.style.top = (rect.top + pieceY) + 'px';
+          piece.style.backgroundImage = `url(${imageSrc})`;
+          piece.style.backgroundPosition = `-${pieceX}px -${pieceY}px`;
+          piece.style.backgroundSize = `${rect.width}px ${rect.height}px`;
+          piece.style.backgroundRepeat = 'no-repeat';
+          piece.style.transform = 'translate(0, 0)';
+          piece.style.zIndex = '9000';
+
+          document.body.appendChild(piece);
+
+          // Add to particles array with random velocity
+          particles.push({
+            el: piece,
+            x: rect.left + pieceX,
+            y: rect.top + pieceY,
+            vx: (Math.random() - 0.5) * 800,
+            vy: (Math.random() - 0.5) * 800 - 200,
+            width: pieceWidth,
+            height: pieceHeight
+          });
+        }
+      }
+
+      // Hide original image
+      imgElement.style.visibility = 'hidden';
+    }
+    */
+
     // Collect all .char elements (text)
     const chars = document.querySelectorAll('.char');
     chars.forEach(char => {
@@ -262,8 +359,17 @@
       createParticle(char, rect, true); // isText = true
     });
 
+    // Shatter all images - COMMENTED OUT
+    /*
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      const rect = img.getBoundingClientRect();
+      shatterImage(img, rect);
+    });
+    */
+
     // Collect all other shatterable elements
-    const elements = document.querySelectorAll('img, button, .styled-box, h1, h2, h3, h4, h5, h6, blockquote, a, svg, i, nav span, nav div');
+    const elements = document.querySelectorAll('img, button, .styled-box, h1, h2, h3, h4, h5, h6, blockquote, svg, i, nav span, nav div');
     elements.forEach(el => {
       // Skip if it's the overlay blocker
       if (el.id === 'shatter-overlay-blocker') return;
@@ -460,7 +566,7 @@
 
       // Copy computed styles
       const computedStyle = window.getComputedStyle(char);
-      clone.style.fontFamily = computedStyle.fontFamily;
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
       clone.style.fontSize = computedStyle.fontSize;
       clone.style.fontWeight = computedStyle.fontWeight;
       clone.style.color = computedStyle.color;
@@ -704,7 +810,7 @@
 
       // Copy computed styles
       const computedStyle = window.getComputedStyle(char);
-      clone.style.fontFamily = computedStyle.fontFamily;
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
       clone.style.fontSize = computedStyle.fontSize;
       clone.style.fontWeight = computedStyle.fontWeight;
       clone.style.color = computedStyle.color;
@@ -910,6 +1016,11 @@
     if (pongActive) return;
     pongActive = true;
 
+    // Play ready set go sound immediately
+    const readyAudio = new Audio('{{site.baseurl}}/audio/chiptune_ready_set_go.mp3');
+    readyAudio.volume = 1.0;
+    readyAudio.play().catch(err => console.log('Ready audio play failed:', err));
+
     // Wrap text on first activation
     ensureTextWrapped();
 
@@ -922,12 +1033,10 @@
 
     // Create flashy "METEOR SHOWER INCOMING" message
     const flashMessage = document.createElement('div');
-    flashMessage.textContent = 'METEOR SHOWER INCOMING';
     flashMessage.style.position = 'fixed';
     flashMessage.style.top = '50%';
     flashMessage.style.left = '50%';
     flashMessage.style.transform = 'translate(-50%, -50%)';
-    flashMessage.style.fontSize = '64px';
     flashMessage.style.fontFamily = 'Courier New, monospace';
     flashMessage.style.fontWeight = 'bold';
     flashMessage.style.letterSpacing = '4px';
@@ -942,15 +1051,27 @@
     flashMessage.style.textAlign = 'center';
     flashMessage.style.opacity = '1';
     flashMessage.style.transition = 'opacity 2s';
+
+    const mainText = document.createElement('div');
+    mainText.textContent = 'METEOR SHOWER INCOMING';
+    mainText.style.fontSize = '64px';
+
+    const subText = document.createElement('div');
+    subText.textContent = '(GAME TO 10)';
+    subText.style.fontSize = '32px';
+    subText.style.marginTop = '10px';
+
+    flashMessage.appendChild(mainText);
+    flashMessage.appendChild(subText);
     document.body.appendChild(flashMessage);
 
-    // Show for 1 second, then fade out over 2 seconds
+    // Show for 2 seconds, then fade out over 2 seconds
     setTimeout(() => {
       flashMessage.style.opacity = '0';
       setTimeout(() => {
         flashMessage.remove();
       }, 2000);
-    }, 1000);
+    }, 2000);
 
     // Create score displays
     const leftScoreContainer = document.createElement('div');
@@ -1010,38 +1131,6 @@
     rightScoreContainer.appendChild(rightLabel);
     rightScoreContainer.appendChild(rightScore);
     document.body.appendChild(rightScoreContainer);
-
-    // Create black hole in center
-    const blackHole = document.createElement('div');
-    blackHole.style.position = 'fixed';
-    blackHole.style.left = '50%';
-    blackHole.style.top = '50%';
-    blackHole.style.width = '40px';
-    blackHole.style.height = '40px';
-    blackHole.style.borderRadius = '50%';
-    blackHole.style.backgroundColor = '#000';
-    blackHole.style.transform = 'translate(-50%, -50%)';
-    blackHole.style.zIndex = '99998';
-    blackHole.style.pointerEvents = 'none';
-    blackHole.style.boxShadow = '0 0 20px 10px rgba(0, 0, 0, 0.3), 0 0 40px 20px rgba(0, 0, 0, 0.2), 0 0 60px 30px rgba(0, 0, 0, 0.1)';
-    blackHole.style.transition = 'width 3s ease-in-out, height 3s ease-in-out, box-shadow 3s ease-in-out';
-    document.body.appendChild(blackHole);
-
-    // Pulse black hole
-    let blackHolePulseDirection = 1;
-    setInterval(() => {
-      if (blackHolePulseDirection === 1) {
-        blackHole.style.width = '60px';
-        blackHole.style.height = '60px';
-        blackHole.style.boxShadow = '0 0 30px 15px rgba(0, 0, 0, 0.3), 0 0 60px 30px rgba(0, 0, 0, 0.2), 0 0 90px 45px rgba(0, 0, 0, 0.1)';
-        blackHolePulseDirection = -1;
-      } else {
-        blackHole.style.width = '40px';
-        blackHole.style.height = '40px';
-        blackHole.style.boxShadow = '0 0 20px 10px rgba(0, 0, 0, 0.3), 0 0 40px 20px rgba(0, 0, 0, 0.2), 0 0 60px 30px rgba(0, 0, 0, 0.1)';
-        blackHolePulseDirection = 1;
-      }
-    }, 3000);
 
     // Create player paddle (right side, green)
     const playerPaddle = document.createElement('div');
@@ -1117,7 +1206,7 @@
 
       // Copy computed styles
       const computedStyle = window.getComputedStyle(char);
-      clone.style.fontFamily = computedStyle.fontFamily;
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
       clone.style.fontSize = computedStyle.fontSize;
       clone.style.fontWeight = computedStyle.fontWeight;
       clone.style.color = computedStyle.color;
@@ -1148,29 +1237,47 @@
       });
     });
 
-    // Activate one random letter every second
-    const activationInterval = setInterval(() => {
-      // Find all inactive particles
-      const inactiveParticles = particles.filter(p => !p.active);
+    // Activate one random letter every 2 seconds, starting after 3.5 second delay
+    let activationInterval;
+    setTimeout(() => {
+      activationInterval = setInterval(() => {
+        // Find all inactive particles
+        const inactiveParticles = particles.filter(p => !p.active);
 
-      if (inactiveParticles.length === 0) {
-        clearInterval(activationInterval);
-        return;
-      }
+        if (inactiveParticles.length === 0) {
+          clearInterval(activationInterval);
+          return;
+        }
 
-      // Pick a random inactive particle
-      const randomParticle = inactiveParticles[Math.floor(Math.random() * inactiveParticles.length)];
+        // Pick a random inactive particle
+        const randomParticle = inactiveParticles[Math.floor(Math.random() * inactiveParticles.length)];
 
-      // Give it velocity with guaranteed horizontal movement
-      const minVx = 200; // Minimum horizontal speed
-      const vxSign = Math.random() < 0.5 ? -1 : 1;
-      randomParticle.vx = vxSign * (minVx + Math.random() * 400); // 200-600 px/s
-      randomParticle.vy = (Math.random() - 0.5) * 600;
-      randomParticle.active = true;
-    }, 1000);
+        // Give it velocity with guaranteed horizontal movement
+        const minVx = 200; // Minimum horizontal speed
+        const vxSign = Math.random() < 0.5 ? -1 : 1;
+        randomParticle.vx = vxSign * (minVx + Math.random() * 400); // 200-600 px/s
+        randomParticle.vy = (Math.random() - 0.5) * 600;
+        randomParticle.active = true;
+
+        // Create whitish-orange burst at launch position
+        const launchX = randomParticle.x + randomParticle.width / 2;
+        const launchY = randomParticle.y + randomParticle.height / 2;
+        createLaunchBurst(launchX, launchY);
+
+        // Play letter release buzz - create new Audio instance each time
+        const letterBuzz = new Audio('{{site.baseurl}}/audio/chiptune_buzz.wav');
+        letterBuzz.volume = 0.35;
+        letterBuzz.play().catch(err => console.log('Letter buzz play failed:', err));
+      }, 2000);
+    }, 3500);
+
+    // Game state
+    let blackHoleActive = false;
+    let blackHoleEl = null;
+    let gameOver = false;
 
     // Start animation
-    startPongAnimation(particles, leftScore, rightScore, () => themScore++, () => youScore++, playerPaddle, enemyPaddle, () => playerPaddleY, (newY) => { playerPaddleY = newY; }, () => enemyPaddleY, keys, () => mouseControlActive);
+    startPongAnimation(particles, leftScore, rightScore, playerPaddle, enemyPaddle, () => playerPaddleY, (newY) => { playerPaddleY = newY; }, (newY) => { enemyPaddleY = newY; }, keys, () => mouseControlActive, () => blackHoleActive, (active) => { blackHoleActive = active; }, () => gameOver, (over) => { gameOver = over; });
   }
 
   function createBurst(x, y, color) {
@@ -1200,21 +1307,70 @@
     }, 50);
   }
 
-  function startPongAnimation(particles, leftScoreEl, rightScoreEl, incrementThem, incrementYou, playerPaddleEl, enemyPaddleEl, getPlayerPaddleY, setPlayerPaddleY, getEnemyPaddleY, keys, getMouseActive) {
+  function flashPaddle(paddleEl) {
+    let flashCount = 0;
+    const maxFlashes = 6; // 3 full on/off cycles
+    const flashInterval = setInterval(() => {
+      paddleEl.style.opacity = paddleEl.style.opacity === '0' ? '1' : '0';
+      flashCount++;
+      if (flashCount >= maxFlashes) {
+        clearInterval(flashInterval);
+        paddleEl.style.opacity = '1'; // Ensure it ends visible
+      }
+    }, 80); // Flash every 80ms
+  }
+
+  function createLaunchBurst(x, y) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '50px';
+    burst.style.height = '50px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = '#ffcc88'; // Whitish-orange
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.7';
+    burst.style.boxShadow = '0 0 20px #ffcc88, 0 0 40px #ffcc88';
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.25s, transform 0.25s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      setTimeout(() => {
+        burst.remove();
+      }, 250);
+    }, 50);
+  }
+
+  function startPongAnimation(particles, leftScoreEl, rightScoreEl, playerPaddleEl, enemyPaddleEl, getPlayerPaddleY, setPlayerPaddleY, setEnemyPaddleY, keys, getMouseActive, getBlackHoleActive, setBlackHoleActive, getGameOver, setGameOver) {
     let lastTime = performance.now();
     let themScore = 0;
     let youScore = 0;
-    const paddleSpeed = 800;
-    const enemyPaddleSpeed = 600; // Slower than player
+    const paddleSpeed = 1152; // 20% faster than 960
+    let enemyPaddleSpeed = 540; // Slower than player
+    let enemyPaddleY = window.innerHeight / 2 - 100;
+    let blackHoleEl = null;
     const paddleWidth = 15;
     const paddleHeight = 200;
     const leftPaddleX = 20;
     const rightPaddleX = window.innerWidth - 20 - paddleWidth;
 
+    // Audio elements for paddle hits and game events
+    const blip1Audio = new Audio('{{site.baseurl}}/audio/pong_blip_1.mp3'); // YOU paddle
+    const blip2Audio = new Audio('{{site.baseurl}}/audio/pong_blip_2.mp3'); // THEM paddle
+    const damage1Audio = new Audio('{{site.baseurl}}/audio/chiptune_damage_1.mp3'); // YOU damaged
+    const damage2Audio = new Audio('{{site.baseurl}}/audio/chiptune_damage_2.mp3'); // THEM damaged
+    const victoryAudio = new Audio('{{site.baseurl}}/audio/chiptune_victory.mp3'); // Victory
+    const defeatAudio = new Audio('{{site.baseurl}}/audio/chiptune_defeat.mp3'); // Defeat
+
     // AI state
-    let enemyPaddleY = getEnemyPaddleY();
-    const aiReactionDelay = 200; // ms
-    const aiRandomOffset = 20; // px
+    const aiReactionDelay = 280; // ms
+    const aiRandomOffset = 35; // px
     let lastAIUpdate = 0;
     let aiTargetY = enemyPaddleY;
 
@@ -1285,23 +1441,23 @@
         enemyPaddleY = Math.max(aiTargetY, enemyPaddleY - enemyPaddleSpeed * dt);
       }
       enemyPaddleY = Math.max(0, Math.min(height - paddleHeight, enemyPaddleY));
+      setEnemyPaddleY(enemyPaddleY);
 
       // Update paddle element positions
       playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
       enemyPaddleEl.style.top = enemyPaddleY + 'px';
 
-      // Black hole gravity parameters
-      const blackHoleX = width / 2;
-      const blackHoleY = height / 2;
-      const blackHoleLambda = 250; // Larger radius of effect
-      const blackHoleForce = 150000; // 10x stronger force
-
       // Update particles and check for scoring
       for (let i = particles.length - 1; i >= 0; i--) {
         const particle = particles[i];
 
-        // Apply black hole gravity if particle is active
-        if (particle.active) {
+        // Apply black hole gravity if particle is active and black hole is active
+        if (particle.active && getBlackHoleActive()) {
+          const blackHoleX = width / 2;
+          const blackHoleY = height / 2;
+          const blackHoleLambda = 250;
+          const blackHoleForce = 750000; // 5x stronger than before
+
           const centerX = particle.x + particle.width / 2;
           const centerY = particle.y + particle.height / 2;
           const dx = blackHoleX - centerX;
@@ -1311,8 +1467,14 @@
           if (dist > 0) {
             // Force from potential V(r) = -exp(-r/λ)
             const forceMagnitude = (1 / blackHoleLambda) * Math.exp(-dist / blackHoleLambda) * blackHoleForce;
-            const fx = (dx / dist) * forceMagnitude;
-            const fy = (dy / dist) * forceMagnitude;
+            let fx = (dx / dist) * forceMagnitude;
+            let fy = (dy / dist) * forceMagnitude;
+
+            // Non-conservative in x-coordinate: if moving away from black hole in x, reduce force to 75%
+            if (particle.vx * dx < 0) { // Moving away in x (opposite signs)
+              fx *= 0.75;
+            }
+            // Y-component remains conservative (no adjustment)
 
             // Apply force as acceleration
             particle.vx += fx * dt;
@@ -1331,6 +1493,10 @@
             particle.x < rightPaddleX + paddleWidth &&
             particle.y + particle.height > playerPaddleY &&
             particle.y < playerPaddleY + paddleHeight) {
+
+          // Play YOU paddle blip sound
+          blip1Audio.currentTime = 0;
+          blip1Audio.play().catch(err => console.log('Blip1 play failed:', err));
 
           // Reflect and increase speed
           particle.vx = -particle.vx * 1.1;
@@ -1351,6 +1517,10 @@
             particle.y + particle.height > enemyPaddleY &&
             particle.y < enemyPaddleY + paddleHeight) {
 
+          // Play THEM paddle blip sound
+          blip2Audio.currentTime = 0;
+          blip2Audio.play().catch(err => console.log('Blip2 play failed:', err));
+
           // Reflect and increase speed
           particle.vx = -particle.vx * 1.1;
 
@@ -1369,12 +1539,29 @@
           const contactY = particle.y + particle.height / 2;
           createBurst(0, contactY, '#ff0000');
 
+          // Play THEM damage sound
+          damage2Audio.currentTime = 0;
+          damage2Audio.play().catch(err => console.log('Damage2 play failed:', err));
+
+          // Flash enemy paddle
+          flashPaddle(enemyPaddleEl);
+
           particle.el.remove();
           // Remove trail elements
           particle.trail.forEach(t => t.el.remove());
           particles.splice(i, 1);
-          youScore++;
-          rightScoreEl.textContent = youScore.toString();
+
+          if (!getGameOver()) {
+            youScore++;
+            rightScoreEl.textContent = youScore.toString();
+
+            // Check for YOU reaching 10
+            if (youScore === 10 && !getBlackHoleActive()) {
+              activateBlackHole();
+            } else if (youScore === 20) {
+              endGame(true); // YOU win
+            }
+          }
           continue;
         }
 
@@ -1384,12 +1571,29 @@
           const contactY = particle.y + particle.height / 2;
           createBurst(width, contactY, '#00ff00');
 
+          // Play YOU damage sound
+          damage1Audio.currentTime = 0;
+          damage1Audio.play().catch(err => console.log('Damage1 play failed:', err));
+
+          // Flash player paddle
+          flashPaddle(playerPaddleEl);
+
           particle.el.remove();
           // Remove trail elements
           particle.trail.forEach(t => t.el.remove());
           particles.splice(i, 1);
-          themScore++;
-          leftScoreEl.textContent = themScore.toString();
+
+          if (!getGameOver()) {
+            themScore++;
+            leftScoreEl.textContent = themScore.toString();
+
+            // Check for THEM reaching 10
+            if (themScore === 10 && !getBlackHoleActive()) {
+              endGame(false); // YOU lose
+            } else if (themScore === 20) {
+              endGame(false); // YOU lose
+            }
+          }
           continue;
         }
 
@@ -1441,6 +1645,122 @@
       requestAnimationFrame(animate);
     }
 
+    // Helper function to activate black hole
+    function activateBlackHole() {
+      setBlackHoleActive(true);
+
+      // Increase AI speed
+      enemyPaddleSpeed = 700;
+
+      // Create black hole element
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      blackHoleEl = document.createElement('div');
+      blackHoleEl.style.position = 'fixed';
+      blackHoleEl.style.left = (width / 2) + 'px';
+      blackHoleEl.style.top = (height / 2) + 'px';
+      blackHoleEl.style.width = '50px';
+      blackHoleEl.style.height = '50px';
+      blackHoleEl.style.marginLeft = '-25px';
+      blackHoleEl.style.marginTop = '-25px';
+      blackHoleEl.style.borderRadius = '50%';
+      blackHoleEl.style.backgroundColor = '#000000';
+      blackHoleEl.style.boxShadow = '0 0 30px 10px rgba(0, 0, 0, 0.8)';
+      blackHoleEl.style.zIndex = '9999';
+      blackHoleEl.style.pointerEvents = 'none';
+      document.body.appendChild(blackHoleEl);
+
+      // Animate the pulsing
+      let pulseTime = 0;
+      function pulseBlackHole() {
+        if (!getBlackHoleActive() || !blackHoleEl) return;
+        pulseTime += 0.05;
+        const size = 40 + 10 * Math.sin(pulseTime);
+        blackHoleEl.style.width = size + 'px';
+        blackHoleEl.style.height = size + 'px';
+        blackHoleEl.style.marginLeft = (-size / 2) + 'px';
+        blackHoleEl.style.marginTop = (-size / 2) + 'px';
+        requestAnimationFrame(pulseBlackHole);
+      }
+      pulseBlackHole();
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '20%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.opacity = '1';
+      flashMessage.style.transition = 'opacity 2s ease-out';
+
+      const mainText = document.createElement('div');
+      mainText.textContent = 'BLACK HOLE ACTIVATED';
+      mainText.style.fontSize = '64px';
+
+      const subText = document.createElement('div');
+      subText.textContent = '(GAME TO 20)';
+      subText.style.fontSize = '32px';
+      subText.style.marginTop = '10px';
+
+      flashMessage.appendChild(mainText);
+      flashMessage.appendChild(subText);
+      document.body.appendChild(flashMessage);
+
+      setTimeout(() => {
+        flashMessage.style.opacity = '0';
+        setTimeout(() => flashMessage.remove(), 2000);
+      }, 4000);
+    }
+
+    // Helper function to end the game
+    function endGame(playerWon) {
+      setGameOver(true);
+
+      // Play victory or defeat sound
+      if (playerWon) {
+        victoryAudio.currentTime = 0;
+        victoryAudio.play().catch(err => console.log('Victory play failed:', err));
+      } else {
+        defeatAudio.currentTime = 0;
+        defeatAudio.play().catch(err => console.log('Defeat play failed:', err));
+      }
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '50%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontSize = '96px';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.whiteSpace = 'nowrap';
+      flashMessage.textContent = playerWon ? 'VICTORY' : 'DEFEATED';
+      document.body.appendChild(flashMessage);
+    }
+
     requestAnimationFrame(animate);
   }
 
@@ -1463,6 +1783,66 @@
     // Add mysterious glyphs to navbar
     const navList = document.querySelector('nav ul.navbar-nav');
     if (navList) {
+      // Single question mark icon that randomly picks a mode
+      const mysteryLi = document.createElement('li');
+      mysteryLi.className = 'nav-item active';
+
+      const mysteryLink = document.createElement('a');
+      mysteryLink.className = 'nav-link';
+      mysteryLink.style.cursor = 'pointer';
+      mysteryLink.href = '#';
+
+      const mysteryIcon = document.createElement('i');
+      mysteryIcon.className = 'fas fa-question-circle';
+
+      mysteryLink.appendChild(mysteryIcon);
+      mysteryLi.appendChild(mysteryLink);
+
+      mysteryLink.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Check localStorage for click count
+        let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
+
+        // If user hasn't clicked 3 times yet, show warning and increment
+        if (clickCount < 3) {
+          const messages = ["Hey, stop that!", "Can't you read?", "I'm serious!"];
+          alert(messages[clickCount]);
+          clickCount++;
+          localStorage.setItem('mysteryButtonClicks', clickCount.toString());
+          return; // Don't activate mode
+        }
+
+        // After 3 clicks, relent and randomly choose a mode
+        // Splash is half as likely as the other modes
+        const randomChoice = Math.floor(Math.random() * 9);
+
+        switch(randomChoice) {
+          case 0:
+          case 1:
+            enterShatterMode();
+            break;
+          case 2:
+          case 3:
+            enterGravityMode();
+            break;
+          case 4:
+          case 5:
+            enterVacuumMode();
+            break;
+          case 6:
+          case 7:
+            enterPongMode();
+            break;
+          case 8:
+            window.location.href = '{{site.baseurl}}/splash/';
+            break;
+        }
+      });
+
+      navList.appendChild(mysteryLi);
+
+      /* DEBUG VERSION: Uncomment to show all five icons for debugging
       // Shatter mode icon (question mark)
       const shatterLi = document.createElement('li');
       shatterLi.className = 'nav-item active';
@@ -1567,6 +1947,7 @@
       });
 
       navList.appendChild(pongLi);
+      */
     }
   });
 </script>

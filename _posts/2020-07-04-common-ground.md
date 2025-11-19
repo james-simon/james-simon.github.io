@@ -4,6 +4,7 @@ title:	"Common ground"
 date:	2020-07-04
 category: society
 emoji: 🤝
+favorite: true
 ---
 <!-- ![grid26] -->
 {: style="text-align: center"}

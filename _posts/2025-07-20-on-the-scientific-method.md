@@ -4,6 +4,7 @@ title: "On the scientific method and its application to the science of deep lear
 date: 2025-07-20 02:00
 category: essays
 emoji: ⚗️
+favorite: true
 ---
 
 
