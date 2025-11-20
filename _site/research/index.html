@@ -3853,13 +3853,8 @@ function processAuthors() {
     // Match pattern: space + single capital letter + period + space
     text = text.replace(/ [A-Z]\. /g, ' ');
 
-    // Convert asterisks to superscripts and move them before commas
-    // Handle ",*" -> "<sup>*</sup>,"
-    text = text.replace(/,\*/g, '<sup>*</sup>,');
-    // Handle remaining asterisks not followed by commas
-    text = text.replace(/\*([^,])/g, '<sup>*</sup>$1');
-    // Handle asterisks at end of string
-    text = text.replace(/\*$/g, '<sup>*</sup>');
+    // Convert all asterisks to superscripts
+    text = text.replace(/\*/g, '<sup>*</sup>');
 
     div.innerHTML = text;
   });
