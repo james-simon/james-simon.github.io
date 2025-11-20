@@ -2454,6 +2454,57 @@
             hawkForceY += (dy / nearestBoid.dist) * F_ATTR_HAWK;
           }
 
+          // Repulsion from nearest k hawks
+          const K_HAWKS = 3;
+          const HAWK_REPULSION_DIST = 50;  // px
+          const F_HAWK_REPULSION = 0.5;  // Mild repulsion strength
+
+          // Find all other active hawks
+          const otherHawks = [];
+          particles.forEach((other, j) => {
+            if (i === j || !other.isActive || !other.isHawk) return;
+            const otherCenterX = other.x + other.width / 2;
+            const otherCenterY = other.y + other.height / 2;
+            const dx = otherCenterX - centerX;
+            const dy = otherCenterY - centerY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < HAWK_REPULSION_DIST) {
+              otherHawks.push({ x: otherCenterX, y: otherCenterY, dist: dist });
+            }
+          });
+
+          if (otherHawks.length > 0) {
+            // Sort by distance and take k nearest
+            otherHawks.sort((a, b) => a.dist - b.dist);
+            const nearestKHawks = otherHawks.slice(0, K_HAWKS);
+
+            // Calculate average position
+            let avgHawkX = 0, avgHawkY = 0;
+            nearestKHawks.forEach(h => {
+              avgHawkX += h.x;
+              avgHawkY += h.y;
+            });
+            avgHawkX /= nearestKHawks.length;
+            avgHawkY /= nearestKHawks.length;
+
+            // Calculate average distance
+            let avgDist = 0;
+            nearestKHawks.forEach(h => avgDist += h.dist);
+            avgDist /= nearestKHawks.length;
+
+            // Apply repulsive force (drops off linearly)
+            if (avgDist > 0) {
+              const repulsionStrength = F_HAWK_REPULSION * (1 - avgDist / HAWK_REPULSION_DIST);
+              const dx = centerX - avgHawkX;
+              const dy = centerY - avgHawkY;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist > 0) {
+                hawkForceX += (dx / dist) * repulsionStrength;
+                hawkForceY += (dy / dist) * repulsionStrength;
+              }
+            }
+          }
+
           // Wall repulsion forces (stronger and longer range for hawks)
           const width = window.innerWidth;
           const height = window.innerHeight;
