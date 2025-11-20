@@ -149,7 +149,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   category: scaling-dynamics
   year: 2023
   venue: ""
-  description: We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the <code>$\mu$-parameterization</code>, this is probably the easiest place to start.
+  description: We give a simple scaling treatment of feature learning in wide networks in terms of the spectral norm of weight matrices. If you want to understand the $\mu$-parameterization, this is probably the easiest place to start.
   image: spectral_scaling_mainpage_figure.png
   links:
     - type: arXiv
