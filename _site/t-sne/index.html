@@ -159,6 +159,15 @@
     width: 100%;
   }
 
+  body.bird-locked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
   #shatter-overlay-blocker {
     position: fixed;
     inset: 0;
@@ -178,6 +187,10 @@
 <audio id="pop-2" preload="auto" src="/audio/pop_2.mp3"></audio>
 <audio id="pop-3" preload="auto" src="/audio/pop_3.mp3"></audio>
 <audio id="pop-4" preload="auto" src="/audio/pop_4.mp3"></audio>
+<!-- Bird mode audio -->
+<audio id="goose-honk" src="/audio/bird_sounds/goose_honk.mp3" preload="auto"></audio>
+<audio id="goose-yell" src="/audio/bird_sounds/goose_yell.mp3" preload="auto"></audio>
+<audio id="hawk-call" src="/audio/bird_sounds/hawk_call.mp3" preload="auto"></audio>
 
 <script>
   // ============================================================================
@@ -194,6 +207,7 @@
   let gravityActive = false;
   let vacuumActive = false;
   let pongActive = false;
+  let birdModeActive = false;
   let mouseX = 0;
   let mouseY = 0;
   let prevMouseX = 0;
@@ -301,6 +315,14 @@
   // SHATTER MODE
   // ============================================================================
 
+  // Gaussian random number generator (Box-Muller transform)
+  function gaussianRandom(mean = 0, stdDev = 1) {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    return z0 * stdDev + mean;
+  }
+
   function enterShatterMode() {
     if (shatterActive) return;
     shatterActive = true;
@@ -381,13 +403,13 @@
       // Hide original
       element.style.visibility = 'hidden';
 
-      // Add to particles array with random velocity
+      // Add to particles array with Gaussian random velocity
       particles.push({
         el: clone,
         x: rect.left,
         y: rect.top,
-        vx: (Math.random() - 0.5) * 800,
-        vy: (Math.random() - 0.5) * 800 - 200,
+        vx: gaussianRandom(0, 230),
+        vy: gaussianRandom(-200, 230),
         width: rect.width,
         height: rect.height
       });
@@ -457,13 +479,13 @@
 
           document.body.appendChild(piece);
 
-          // Add to particles array with random velocity
+          // Add to particles array with Gaussian random velocity
           particles.push({
             el: piece,
             x: rect.left + pieceX,
             y: rect.top + pieceY,
-            vx: (Math.random() - 0.5) * 800,
-            vy: (Math.random() - 0.5) * 800 - 200,
+            vx: gaussianRandom(0, 230),
+            vy: gaussianRandom(-200, 230),
             width: pieceWidth,
             height: pieceHeight
           });
@@ -525,13 +547,13 @@
       // Hide original
       br.style.visibility = 'hidden';
 
-      // Add to particles array with random velocity
+      // Add to particles array with Gaussian random velocity
       particles.push({
         el: line,
         x: rect.left,
         y: rect.top,
-        vx: (Math.random() - 0.5) * 800,
-        vy: (Math.random() - 0.5) * 800 - 200,
+        vx: gaussianRandom(0, 230),
+        vy: gaussianRandom(-200, 230),
         width: 20,
         height: 2
       });
@@ -1888,6 +1910,868 @@
   }
 
   // ============================================================================
+  // BIRD MODE
+  // ============================================================================
+
+  function enterBirdMode() {
+    if (birdModeActive) return;
+    birdModeActive = true;
+
+    try {
+      console.log('Starting bird mode...');
+
+      // Create flashy "BIRD MODE ACTIVATED" message FIRST (before laggy operations)
+      const flashMessage = document.createElement('div');
+      flashMessage.textContent = 'BIRD MODE ACTIVATED';
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '50%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontSize = '64px';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff6b9d';
+      flashMessage.style.textShadow = '0 0 10px #ff6b9d, 0 0 20px #ff6b9d, 0 0 30px #ff6b9d, 0 0 40px #ff6b9d';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff6b9d';
+      flashMessage.style.boxShadow = '0 0 20px #ff6b9d, inset 0 0 20px rgba(255, 107, 157, 0.2)';
+      flashMessage.style.zIndex = '100000';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.opacity = '1';
+      flashMessage.style.transition = 'opacity 2s';
+      document.body.appendChild(flashMessage);
+
+      // Show for 1 second, then fade out over 2 seconds
+      setTimeout(() => {
+        flashMessage.style.opacity = '0';
+        setTimeout(() => {
+          flashMessage.remove();
+        }, 2000);
+      }, 1000);
+
+      // Wait 50ms to ensure banner renders before starting laggy operations
+      setTimeout(() => {
+        // Wrap text
+        ensureTextWrapped();
+
+        // Lock body
+        const scrollY = window.scrollY;
+        document.body.classList.add('bird-locked');
+        document.body.style.top = `-${scrollY}px`;
+
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+
+        const particles = [];
+        const MAX_BIRD_COUNT = 1000;
+
+        // Find all h1 characters to make them hawks
+        const h1 = document.querySelector('h1');
+        let h1Chars = [];
+        if (h1) {
+          h1Chars = Array.from(h1.querySelectorAll('.char'));
+        }
+
+        // Collect all character and glyph elements with their data
+        // Separate hawks (always keep) from non-hawks (randomly select)
+        const hawkElements = [];
+        const nonHawkElements = [];
+
+        // Collect all characters
+        const chars = document.querySelectorAll('.char');
+        chars.forEach(char => {
+          const rect = char.getBoundingClientRect();
+
+          // Skip if outside viewport
+          if (rect.bottom < 0 || rect.top > window.innerHeight ||
+              rect.right < 0 || rect.left > window.innerWidth) {
+            return;
+          }
+
+          const hawkIndex = h1Chars.indexOf(char);
+          const isHawk = hawkIndex !== -1;
+
+          const elem = {
+            original: char,
+            rect: rect,
+            isChar: true,
+            isHawk: isHawk,
+            hawkIndex: hawkIndex,
+            randomOrder: Math.random()  // For shuffling
+          };
+
+          if (isHawk) {
+            hawkElements.push(elem);
+          } else {
+            nonHawkElements.push(elem);
+          }
+        });
+
+        // Also collect glyphs and icons (all non-hawks)
+        const glyphs = document.querySelectorAll('i, svg');
+        glyphs.forEach(glyph => {
+          const rect = glyph.getBoundingClientRect();
+
+          // Skip if outside viewport or has no size
+          if (rect.bottom < 0 || rect.top > window.innerHeight ||
+              rect.right < 0 || rect.left > window.innerWidth ||
+              rect.width === 0 || rect.height === 0) {
+            return;
+          }
+
+          nonHawkElements.push({
+            original: glyph,
+            rect: rect,
+            isChar: false,
+            isHawk: false,
+            hawkIndex: -1,
+            randomOrder: Math.random()  // For shuffling
+          });
+        });
+
+        // Randomly shuffle non-hawks
+        nonHawkElements.sort((a, b) => a.randomOrder - b.randomOrder);
+
+        // Select non-hawks up to MAX_BIRD_COUNT - number of hawks
+        const maxNonHawks = MAX_BIRD_COUNT - hawkElements.length;
+        const selectedNonHawks = nonHawkElements.slice(0, maxNonHawks);
+        const fadedNonHawks = nonHawkElements.slice(maxNonHawks);
+
+        // Combine: all hawks + selected non-hawks become birds
+        const birdElements = [...hawkElements, ...selectedNonHawks];
+
+        // Process bird elements (become birds)
+        birdElements.forEach((elem) => {
+          const rect = elem.rect;
+          const original = elem.original;
+
+          // Clone the element
+          const clone = original.cloneNode(true);
+          if (elem.isChar) {
+            clone.classList.remove('char');
+          }
+          clone.classList.add('char-particle');
+
+          // Copy computed styles
+          const computedStyle = window.getComputedStyle(original);
+          if (elem.isChar) {
+            clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+          }
+          clone.style.fontSize = computedStyle.fontSize;
+          clone.style.fontWeight = computedStyle.fontWeight;
+          clone.style.color = computedStyle.color;
+          clone.style.zIndex = '10000';
+
+          if (!elem.isChar) {
+            // Preserve dimensions for glyphs
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+            clone.style.boxSizing = 'border-box';
+            clone.style.position = 'fixed';
+          }
+
+          // Position at exact location
+          clone.style.left = rect.left + 'px';
+          clone.style.top = rect.top + 'px';
+          clone.style.transform = 'translate(0, 0)';
+
+          // Append to body
+          document.body.appendChild(clone);
+
+          // Hide original
+          original.style.visibility = 'hidden';
+
+          // Add to particles array (all bird elements become birds)
+          particles.push({
+            el: clone,
+            x: rect.left,
+            y: rect.top,
+            vx: elem.isHawk ? (Math.random() - 0.5) * 2 : 0,  // Hawks get tiny random velocity
+            vy: elem.isHawk ? (Math.random() - 0.5) * 2 : 0,
+            width: rect.width,
+            height: rect.height,
+            isHawk: elem.isHawk,
+            hawkIndex: elem.hawkIndex,  // -1 for non-hawks, 0+ for hawks
+            isActive: !elem.isHawk,  // Hawks start dormant, boids start active
+            originalX: rect.left,  // Store original position for dormant hawks
+            originalY: rect.top
+          });
+        });
+
+        // Process faded elements (fade out smoothly)
+        fadedNonHawks.forEach((elem) => {
+          const rect = elem.rect;
+          const original = elem.original;
+
+          // Clone the element
+          const clone = original.cloneNode(true);
+          if (elem.isChar) {
+            clone.classList.remove('char');
+          }
+          clone.classList.add('char-particle');
+
+          // Copy computed styles
+          const computedStyle = window.getComputedStyle(original);
+          if (elem.isChar) {
+            clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+          }
+          clone.style.fontSize = computedStyle.fontSize;
+          clone.style.fontWeight = computedStyle.fontWeight;
+          clone.style.color = computedStyle.color;
+          clone.style.zIndex = '10000';
+
+          if (!elem.isChar) {
+            // Preserve dimensions for glyphs
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+            clone.style.boxSizing = 'border-box';
+            clone.style.position = 'fixed';
+          }
+
+          // Position at exact location
+          clone.style.left = rect.left + 'px';
+          clone.style.top = rect.top + 'px';
+          clone.style.transform = 'translate(0, 0)';
+
+          // Append to body
+          document.body.appendChild(clone);
+
+          // Hide original
+          original.style.visibility = 'hidden';
+
+          // Fade out this element smoothly
+          clone.style.transition = 'opacity 3s ease-out';
+          setTimeout(() => {
+            clone.style.opacity = '0';
+            setTimeout(() => {
+              clone.remove();
+            }, 3000);
+          }, 10);
+        });
+
+        // Start animation
+        // Create trajectory ray for hawk
+        const trajectoryRay = document.createElement('div');
+        trajectoryRay.id = 'hawk-trajectory-ray';
+        trajectoryRay.style.position = 'fixed';
+        trajectoryRay.style.height = '2px';
+        trajectoryRay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+        trajectoryRay.style.transformOrigin = '0 0';
+        trajectoryRay.style.pointerEvents = 'none';
+        trajectoryRay.style.zIndex = '9998';
+        trajectoryRay.style.display = 'none';
+        document.body.appendChild(trajectoryRay);
+
+        // Create perpendicular lines container (SVG for efficient line drawing)
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.id = 'fear-lines-svg';
+        svg.style.position = 'fixed';
+        svg.style.top = '0';
+        svg.style.left = '0';
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        svg.style.pointerEvents = 'none';
+        svg.style.zIndex = '9997';
+        document.body.appendChild(svg);
+
+        console.log('Starting animation with', particles.length, 'particles');
+        startBirdAnimation(particles, trajectoryRay, svg);
+      }, 50);  // End of 50ms setTimeout
+    } catch (error) {
+      console.error('Error in enterBirdMode:', error);
+      birdModeActive = false;
+      alert('Error starting bird mode: ' + error.message);
+    }
+  }
+
+  function startBirdAnimation(particles, trajectoryRay, fearLinesSvg) {
+    let lastTime = performance.now();
+    let hawkInfos = [];  // Store all active hawks' positions and velocities for fear calculations
+
+    const FORCE_MULTIPLIER = 25;  // Global force multiplication factor
+    const MAX_SPEED = 400;   // Maximum speed
+    const F_MAX = 10;  // Maximum force magnitude before clamping
+
+    // Repulsion parameters
+    const LENGTH_SCALE = 20;  // px
+    const R_REPULSION = 1 * LENGTH_SCALE;  // 20px
+    const F_REPULSION = 5;  // Repulsion strength
+
+    // Speed stabilization parameters
+    const TARGET_SPEED = 15;  // px/s
+    const TARGET_SPEED_HAWK = 50;  // px/s
+    const F_SPEEDSTABILITY = 5;
+    const F_SPEEDSTABILITY_HAWK = 2;
+
+    // Alignment parameters
+    const F_ALIGN = 2;
+
+    // Wall repulsion parameters
+    const WALL_REPULSION_DIST = 5 * LENGTH_SCALE;  // 100px
+    const F_WALL_REPULSION = 4;
+
+    // Hawk-specific wall repulsion (2x distance and magnitude)
+    const WALL_REPULSION_DIST_HAWK = 1 * WALL_REPULSION_DIST;  // 200px
+    const F_WALL_REPULSION_HAWK = .5 * F_WALL_REPULSION;  // 8
+
+    // Hawk attraction parameters
+    const F_ATTR_HAWK = 0.3;
+
+    // Fear parameters
+    const F_FEAR = 3;
+    const FEAR_DIST = 15 * LENGTH_SCALE;  // 300px
+
+    // Spatial grid parameters
+    const CELL_SIZE = 2 * LENGTH_SCALE;  // 60px
+
+    // Hawk release tracking
+    let nextHawkIndex = 0;
+    let nextHawkReleaseTime = 20.0;  // First hawk at 20 seconds (wall time)
+    let elapsedTime = 0;  // Wall time in seconds
+
+    function releaseHawk(hawk) {
+      hawk.isActive = true;
+      hawk.releaseTime = elapsedTime;  // Track when hawk was released
+
+      // Play hawk call at 30% volume
+      const hawkAudio = document.getElementById('hawk-call');
+      if (hawkAudio) {
+        hawkAudio.volume = 0.3;
+        hawkAudio.currentTime = 0;
+        hawkAudio.play().catch(e => console.log('Audio play failed:', e));
+      }
+
+      // Create big brown burst
+      const burstX = hawk.x + hawk.width / 2;
+      const burstY = hawk.y + hawk.height / 2;
+      const burst = document.createElement('div');
+
+      burst.style.position = 'fixed';
+      burst.style.left = burstX + 'px';
+      burst.style.top = burstY + 'px';
+      burst.style.width = '0px';
+      burst.style.height = '0px';
+      burst.style.borderRadius = '50%';
+      burst.style.backgroundColor = 'rgba(139, 69, 19, 0.6)';  // Brown color
+      burst.style.transform = 'translate(-50%, -50%)';
+      burst.style.pointerEvents = 'none';
+      burst.style.zIndex = '9999';
+      document.body.appendChild(burst);
+
+      // Animate burst (much bigger)
+      setTimeout(() => {
+        burst.style.transition = 'all 0.6s ease-out';
+        burst.style.width = '200px';
+        burst.style.height = '200px';
+        burst.style.backgroundColor = 'rgba(139, 69, 19, 0)';
+      }, 10);
+
+      setTimeout(() => burst.remove(), 650);
+    }
+
+    function animate(currentTime) {
+      if (!birdModeActive) return;
+
+      let dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+      dt = Math.min(dt, 0.033);
+
+      // Update elapsed time (wall time in real seconds)
+      elapsedTime += dt;
+
+      // Simulation runs at 4x speed
+      const simulationDt = dt * 4;
+
+      // Clear hawk infos from previous frame
+      hawkInfos = [];
+
+      // Check if it's time to release the next hawk
+      if (elapsedTime >= nextHawkReleaseTime) {
+        // Find the hawk with hawkIndex === nextHawkIndex
+        const hawkToRelease = particles.find(p => p.hawkIndex === nextHawkIndex);
+        if (hawkToRelease && !hawkToRelease.isActive) {
+          releaseHawk(hawkToRelease);
+          nextHawkIndex++;
+          // First hawk at 20s, then every 60s thereafter
+          nextHawkReleaseTime += 60.0;
+        }
+      }
+
+      // Build spatial grid (only for active, non-hawk particles)
+      const grid = new Map();
+      particles.forEach((particle, i) => {
+        if (!particle.isActive || particle.isHawk) return;
+
+        const centerX = particle.x + particle.width / 2;
+        const centerY = particle.y + particle.height / 2;
+        const cellX = Math.floor(centerX / CELL_SIZE);
+        const cellY = Math.floor(centerY / CELL_SIZE);
+        const key = `${cellX},${cellY}`;
+
+        if (!grid.has(key)) {
+          grid.set(key, []);
+        }
+        grid.get(key).push(i);
+      });
+
+      // Check for hawk overlaps and hide captured particles
+      particles.forEach((hawk, i) => {
+        if (!hawk.isHawk || !hawk.isActive) return;
+
+        // Hawks can't capture during their 2-second frozen period
+        const timeSinceRelease = elapsedTime - (hawk.releaseTime || 0);
+        if (timeSinceRelease < 2.0) return;
+
+        particles.forEach((boid, j) => {
+          if (i === j || !boid.isActive || boid.isHawk) return;
+
+          // Check bounding box overlap
+          if (hawk.x < boid.x + boid.width &&
+              hawk.x + hawk.width > boid.x &&
+              hawk.y < boid.y + boid.height &&
+              hawk.y + hawk.height > boid.y) {
+            // Overlap! Hide boid and create burst
+            boid.isActive = false;
+            boid.el.remove();
+
+            // Play goose sound (75% honk, 25% yell)
+            const soundId = Math.random() < 0.75 ? 'goose-honk' : 'goose-yell';
+            const audio = document.getElementById(soundId);
+            if (audio) {
+              audio.currentTime = 0;
+              audio.play().catch(e => console.log('Audio play failed:', e));
+            }
+
+            // Create colorful burst
+            const burstX = boid.x + boid.width / 2;
+            const burstY = boid.y + boid.height / 2;
+            const burst = document.createElement('div');
+
+            // Random hue, high saturation, high lightness
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = 70 + Math.floor(Math.random() * 20); // 70-90%
+            const lightness = 60; // Medium-bright
+
+            burst.style.position = 'fixed';
+            burst.style.left = burstX + 'px';
+            burst.style.top = burstY + 'px';
+            burst.style.width = '0px';
+            burst.style.height = '0px';
+            burst.style.borderRadius = '50%';
+            burst.style.backgroundColor = `hsla(${hue}, ${saturation}%, ${lightness}%, 0.6)`;
+            burst.style.transform = 'translate(-50%, -50%)';
+            burst.style.pointerEvents = 'none';
+            burst.style.zIndex = '9999';
+            document.body.appendChild(burst);
+
+            // Animate burst
+            setTimeout(() => {
+              burst.style.transition = 'all 0.4s ease-out';
+              burst.style.width = '60px';
+              burst.style.height = '60px';
+              burst.style.backgroundColor = `hsla(${hue}, ${saturation}%, ${lightness}%, 0)`;
+            }, 10);
+
+            setTimeout(() => burst.remove(), 450);
+          }
+        });
+      });
+
+      // Apply forces to each particle
+      particles.forEach((particle, i) => {
+        if (!particle.isActive) return;  // Skip inactive particles
+
+        // Hawks have their own forces
+        if (particle.isHawk) {
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+
+          // Keep hawk stationary for 2 seconds after release (for suspense)
+          const timeSinceRelease = elapsedTime - (particle.releaseTime || 0);
+          if (timeSinceRelease < 2.0) {
+            // Hawk is frozen - keep it in place
+            particle.vx = 0;
+            particle.vy = 0;
+            particle.x = particle.originalX;
+            particle.y = particle.originalY;
+            particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+
+            // Still store hawk info for fear calculations
+            hawkInfos.push({
+              x: centerX,
+              y: centerY,
+              vx: 0,
+              vy: 0,
+              speed: 0
+            });
+            return;  // Skip rest of hawk physics
+          }
+
+          let hawkForceX = 0;
+          let hawkForceY = 0;
+
+          // Speed stabilization force (weaker than boids, higher target speed)
+          const currentSpeed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+          if (currentSpeed > 0) {
+            const speedRatio = 1 - currentSpeed / TARGET_SPEED_HAWK;
+            const speedForceMag = F_SPEEDSTABILITY_HAWK * Math.pow(speedRatio, 3);
+            hawkForceX += (particle.vx / currentSpeed) * speedForceMag;
+            hawkForceY += (particle.vy / currentSpeed) * speedForceMag;
+          }
+
+          // Attraction to nearest boid
+          let nearestBoid = null;
+          let nearestDist = Infinity;
+          particles.forEach((other, j) => {
+            if (i === j || !other.isActive || other.isHawk) return;
+            const otherCenterX = other.x + other.width / 2;
+            const otherCenterY = other.y + other.height / 2;
+            const dx = otherCenterX - centerX;
+            const dy = otherCenterY - centerY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < nearestDist) {
+              nearestDist = dist;
+              nearestBoid = { x: otherCenterX, y: otherCenterY, dist: dist };
+            }
+          });
+
+          if (nearestBoid && nearestBoid.dist > 0) {
+            const dx = nearestBoid.x - centerX;
+            const dy = nearestBoid.y - centerY;
+            hawkForceX += (dx / nearestBoid.dist) * F_ATTR_HAWK;
+            hawkForceY += (dy / nearestBoid.dist) * F_ATTR_HAWK;
+          }
+
+          // Wall repulsion forces (stronger and longer range for hawks)
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+
+          // Left wall
+          const distLeft = centerX;
+          if (distLeft < WALL_REPULSION_DIST_HAWK) {
+            const wallForceMag = F_WALL_REPULSION_HAWK * (1 - distLeft / WALL_REPULSION_DIST_HAWK);
+            hawkForceX += wallForceMag;  // Push right
+          }
+
+          // Right wall
+          const distRight = width - centerX;
+          if (distRight < WALL_REPULSION_DIST_HAWK) {
+            const wallForceMag = F_WALL_REPULSION_HAWK * (1 - distRight / WALL_REPULSION_DIST_HAWK);
+            hawkForceX -= wallForceMag;  // Push left
+          }
+
+          // Top wall
+          const distTop = centerY;
+          if (distTop < WALL_REPULSION_DIST_HAWK) {
+            const wallForceMag = F_WALL_REPULSION_HAWK * (1 - distTop / WALL_REPULSION_DIST_HAWK);
+            hawkForceY += wallForceMag;  // Push down
+          }
+
+          // Bottom wall
+          const distBottom = height - centerY;
+          if (distBottom < WALL_REPULSION_DIST_HAWK) {
+            const wallForceMag = F_WALL_REPULSION_HAWK * (1 - distBottom / WALL_REPULSION_DIST_HAWK);
+            hawkForceY -= wallForceMag;  // Push up
+          }
+
+          // Clamp force to F_MAX
+          const hawkForceMag = Math.sqrt(hawkForceX * hawkForceX + hawkForceY * hawkForceY);
+          if (hawkForceMag > F_MAX) {
+            hawkForceX = (hawkForceX / hawkForceMag) * F_MAX;
+            hawkForceY = (hawkForceY / hawkForceMag) * F_MAX;
+          }
+
+          // Apply forces
+          particle.vx += hawkForceX * FORCE_MULTIPLIER * simulationDt;
+          particle.vy += hawkForceY * FORCE_MULTIPLIER * simulationDt;
+
+          // Update position
+          particle.x += particle.vx * simulationDt;
+          particle.y += particle.vy * simulationDt;
+
+          // Bounce off walls (width and height already declared above)
+          if (particle.x < 0) {
+            particle.x = 0;
+            particle.vx = -particle.vx;
+          } else if (particle.x + particle.width > width) {
+            particle.x = width - particle.width;
+            particle.vx = -particle.vx;
+          }
+
+          if (particle.y < 0) {
+            particle.y = 0;
+            particle.vy = -particle.vy;
+          } else if (particle.y + particle.height > height) {
+            particle.y = height - particle.height;
+            particle.vy = -particle.vy;
+          }
+
+          // Update visual position
+          particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+
+          // Store hawk info for fear calculations
+          hawkInfos.push({
+            x: centerX,
+            y: centerY,
+            vx: particle.vx,
+            vy: particle.vy,
+            speed: currentSpeed
+          });
+
+          return;  // Skip boid forces
+        }
+
+        const centerX = particle.x + particle.width / 2;
+        const centerY = particle.y + particle.height / 2;
+
+        // Accumulate total force
+        let totalForceX = 0;
+        let totalForceY = 0;
+
+        // Fear force from all hawks
+        let isFearful = false;
+        hawkInfos.forEach(hawkInfo => {
+          if (hawkInfo.speed > 0) {
+            const toHawkX = hawkInfo.x - centerX;
+            const toHawkY = hawkInfo.y - centerY;
+            const distToHawk = Math.sqrt(toHawkX * toHawkX + toHawkY * toHawkY);
+
+            // Check if boid is in front of hawk (dot product > 0)
+            const toBoidX = centerX - hawkInfo.x;
+            const toBoidY = centerY - hawkInfo.y;
+            const dotProduct = toBoidX * hawkInfo.vx + toBoidY * hawkInfo.vy;
+
+            if (distToHawk < FEAR_DIST && dotProduct > 0) {
+              // Boid feels fear!
+              isFearful = true;
+
+              // Calculate perpendicular direction away from ray
+              const dirX = hawkInfo.vx / hawkInfo.speed;
+              const dirY = hawkInfo.vy / hawkInfo.speed;
+
+              // Project boid position onto ray
+              const projection = toBoidX * dirX + toBoidY * dirY;
+              const rayPointX = hawkInfo.x + projection * dirX;
+              const rayPointY = hawkInfo.y + projection * dirY;
+
+              // Direction from ray to boid (perpendicular escape direction)
+              const perpX = centerX - rayPointX;
+              const perpY = centerY - rayPointY;
+              const perpDist = Math.sqrt(perpX * perpX + perpY * perpY);
+
+              if (perpDist > 0) {
+                const fearMagnitude = F_FEAR * (1 - distToHawk / FEAR_DIST);
+
+                // Blend perpendicular direction with "away from hawk" for 70 degree angle
+                const perpNormX = perpX / perpDist;
+                const perpNormY = perpY / perpDist;
+                const awayNormX = -dirX;  // Opposite of hawk direction
+                const awayNormY = -dirY;
+
+                // sin(70°) ≈ 0.94, cos(70°) ≈ 0.34
+                const fearDirX = 0.94 * perpNormX + 0.34 * awayNormX;
+                const fearDirY = 0.94 * perpNormY + 0.34 * awayNormY;
+
+                // Normalize the blended direction
+                const fearDirMag = Math.sqrt(fearDirX * fearDirX + fearDirY * fearDirY);
+                if (fearDirMag > 0) {
+                  totalForceX += (fearDirX / fearDirMag) * fearMagnitude;
+                  totalForceY += (fearDirY / fearDirMag) * fearMagnitude;
+                }
+              }
+            }
+          }
+        });
+
+        // Get particle's grid cell
+        const cellX = Math.floor(centerX / CELL_SIZE);
+        const cellY = Math.floor(centerY / CELL_SIZE);
+
+        // Find distances to particles in nearby cells (3x3 neighborhood)
+        const distances = [];
+        for (let dx = -1; dx <= 1; dx++) {
+          for (let dy = -1; dy <= 1; dy++) {
+            const key = `${cellX + dx},${cellY + dy}`;
+            const cellParticles = grid.get(key);
+            if (!cellParticles) continue;
+
+            cellParticles.forEach(j => {
+              if (i === j) return;
+
+              const other = particles[j];
+              const otherCenterX = other.x + other.width / 2;
+              const otherCenterY = other.y + other.height / 2;
+              const deltaX = otherCenterX - centerX;
+              const deltaY = otherCenterY - centerY;
+              const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+              distances.push({
+                index: j,
+                dist: dist,
+                dx: deltaX,
+                dy: deltaY,
+                x: otherCenterX,
+                y: otherCenterY
+              });
+
+              // Repulsion force (only for close neighbors) - 1/r form with offset
+              if (dist <= R_REPULSION && dist > 0) {
+                const normalizedDist = dist / LENGTH_SCALE;
+                const repulsionMag = F_REPULSION * (1 - normalizedDist);
+                totalForceX -= (deltaX / dist) * repulsionMag;  // Negative = repulsion
+                totalForceY -= (deltaY / dist) * repulsionMag;
+              }
+            });
+          }
+        }
+
+        // Sort by distance and take 5 nearest
+        distances.sort((a, b) => a.dist - b.dist);
+        const nearest5 = distances.slice(0, 5);
+
+        // Calculate average position of 5 nearest neighbors
+        let avgX = 0, avgY = 0;
+        nearest5.forEach(n => {
+          avgX += n.x;
+          avgY += n.y;
+        });
+        avgX /= nearest5.length;
+        avgY /= nearest5.length;
+
+        // Cohesion force: magnitude 1 towards average position
+        const dx = avgX - centerX;
+        const dy = avgY - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 0) {
+          totalForceX += (dx / dist) * 1.0;
+          totalForceY += (dy / dist) * 1.0;
+        }
+
+        // Alignment force: magnitude F_ALIGN in direction of average velocity
+        let avgVx = 0, avgVy = 0;
+        nearest5.forEach(n => {
+          const neighbor = particles[n.index];
+          avgVx += neighbor.vx;
+          avgVy += neighbor.vy;
+        });
+        avgVx /= nearest5.length;
+        avgVy /= nearest5.length;
+
+        const avgVelMag = Math.sqrt(avgVx * avgVx + avgVy * avgVy);
+        if (avgVelMag > 0) {
+          totalForceX += (avgVx / avgVelMag) * F_ALIGN;
+          totalForceY += (avgVy / avgVelMag) * F_ALIGN;
+        }
+
+        // Speed stabilization force
+        const currentSpeed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+        if (currentSpeed > 0) {
+          const speedRatio = 1 - currentSpeed / TARGET_SPEED;
+          const speedForceMag = F_SPEEDSTABILITY * Math.pow(speedRatio, 3);
+          totalForceX += (particle.vx / currentSpeed) * speedForceMag;
+          totalForceY += (particle.vy / currentSpeed) * speedForceMag;
+        }
+
+        // Wall repulsion forces
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left wall
+        const distLeft = centerX;
+        if (distLeft < WALL_REPULSION_DIST) {
+          const wallForceMag = F_WALL_REPULSION * (1 - distLeft / WALL_REPULSION_DIST);
+          totalForceX += wallForceMag;  // Push right
+        }
+
+        // Right wall
+        const distRight = width - centerX;
+        if (distRight < WALL_REPULSION_DIST) {
+          const wallForceMag = F_WALL_REPULSION * (1 - distRight / WALL_REPULSION_DIST);
+          totalForceX -= wallForceMag;  // Push left
+        }
+
+        // Top wall
+        const distTop = centerY;
+        if (distTop < WALL_REPULSION_DIST) {
+          const wallForceMag = F_WALL_REPULSION * (1 - distTop / WALL_REPULSION_DIST);
+          totalForceY += wallForceMag;  // Push down
+        }
+
+        // Bottom wall
+        const distBottom = height - centerY;
+        if (distBottom < WALL_REPULSION_DIST) {
+          const wallForceMag = F_WALL_REPULSION * (1 - distBottom / WALL_REPULSION_DIST);
+          totalForceY -= wallForceMag;  // Push up
+        }
+
+        // Clamp force to F_MAX
+        const totalForceMag = Math.sqrt(totalForceX * totalForceX + totalForceY * totalForceY);
+        if (totalForceMag > F_MAX) {
+          totalForceX = (totalForceX / totalForceMag) * F_MAX;
+          totalForceY = (totalForceY / totalForceMag) * F_MAX;
+        }
+
+        // Apply total force with global multiplier
+        particle.vx += totalForceX * FORCE_MULTIPLIER * simulationDt;
+        particle.vy += totalForceY * FORCE_MULTIPLIER * simulationDt;
+
+        // Limit speed
+        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+        if (speed > MAX_SPEED) {
+          particle.vx = (particle.vx / speed) * MAX_SPEED;
+          particle.vy = (particle.vy / speed) * MAX_SPEED;
+        }
+
+        // Update position
+        particle.x += particle.vx * simulationDt;
+        particle.y += particle.vy * simulationDt;
+
+        // Bounce off edges with perfect reflection (no energy loss)
+        // (width and height already declared above for wall repulsion)
+
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx;
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx;
+        }
+
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy;
+        } else if (particle.y + particle.height > height + 7) {
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy;
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      // Keep dormant hawks at their original position
+      particles.forEach(particle => {
+        if (particle.isHawk && !particle.isActive) {
+          particle.x = particle.originalX;
+          particle.y = particle.originalY;
+          particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
   // INITIALIZATION
   // ============================================================================
 
@@ -1937,25 +2821,28 @@
         }
 
         // After 3 clicks, relent and randomly choose a mode
-        // Splash is half as likely as the other modes
+        // Shatter, Gravity, and Splash are half as likely as the other modes
         const randomChoice = Math.floor(Math.random() * 9);
 
         switch(randomChoice) {
           case 0:
-          case 1:
             enterShatterMode();
+            break;
+          case 1:
+            enterGravityMode();
             break;
           case 2:
           case 3:
-            enterGravityMode();
+            enterVacuumMode();
             break;
           case 4:
           case 5:
-            enterVacuumMode();
+            enterPongMode();
             break;
           case 6:
           case 7:
-            enterPongMode();
+            // BIRD MODE
+            enterBirdMode();
             break;
           case 8:
             window.location.href = '/splash/';
@@ -2191,7 +3078,7 @@
 </style>
 
 <div class="container">
-  <h1>A T-SNE viz of my blog</h1>
+  <h1>A t-SNE viz of my blog</h1>
   <p>Calculated from embeddings generated by OpenAI's <code>text-embedding-3-small</code>.</p>
 
   <div id="controls">

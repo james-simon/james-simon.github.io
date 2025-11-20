@@ -10,7 +10,7 @@
 
 - id: scaling-dynamics
   title: Scaling dynamics and hyperparameters of feature learning
-  description: A central tenet of the developing science of deep learning is that you should study your hyperparameters, because if you don't control for them, they'll confound whatever conclusion you're attempted to draw. In these papers, we study hyperparameters related to feature learning. These scaling relationships help lay down foundations for future science.
+  description: A central tenet of the developing science of deep learning is that you should study your hyperparameters, because if you don't control for them, they'll confound whatever conclusion you're attempting to draw. In these papers, we study hyperparameters related to feature learning. These scaling relationships help lay down foundations for future science.
   order: 3
 
 - id: thesis

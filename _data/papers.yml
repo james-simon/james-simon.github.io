@@ -208,7 +208,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
 - id: sgd-large-lr-local-maxima
   title: "SGD with a constant large learning rate can converge to local maxima"
   authors: "Liu Ziyin, Botao Li, James B. Simon, Masahito Ueda"
-  category: scaling-dynamics
+  category: other-ml-theory
   year: 2022
   venue: ICLR 2022
   description: A cute observation about pathological cases of SGD loss landscapes.
