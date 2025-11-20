@@ -1848,11 +1848,17 @@
         const particles = [];
         const MAX_BIRD_COUNT = 1000;
 
-        // Find all h1 characters to make them hawks
-        const h1 = document.querySelector('h1');
+        // Find header characters to make them hawks (h1, or h2, or h3 if no h1)
+        let headerElement = document.querySelector('h1');
+        if (!headerElement) {
+          headerElement = document.querySelector('h2');
+        }
+        if (!headerElement) {
+          headerElement = document.querySelector('h3');
+        }
         let h1Chars = [];
-        if (h1) {
-          h1Chars = Array.from(h1.querySelectorAll('.char'));
+        if (headerElement) {
+          h1Chars = Array.from(headerElement.querySelectorAll('.char'));
         }
 
         // Collect all character and glyph elements with their data
