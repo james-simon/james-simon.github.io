@@ -3085,6 +3085,11 @@
     width: 100%;
     height: auto;
   }
+
+  /* Tighten spacing between superscript asterisk and comma */
+  .tight-comma {
+    margin-left: -0.15em;
+  }
 </style>
 
 <div class="container">
@@ -3853,7 +3858,9 @@ function processAuthors() {
     // Match pattern: space + single capital letter + period + space
     text = text.replace(/ [A-Z]\. /g, ' ');
 
-    // Convert all asterisks to superscripts
+    // Convert asterisks to superscripts and tighten commas after them
+    text = text.replace(/\*,/g, '<sup>*</sup><span class="tight-comma">,</span>');
+    // Handle any remaining asterisks not followed by commas
     text = text.replace(/\*/g, '<sup>*</sup>');
 
     div.innerHTML = text;
