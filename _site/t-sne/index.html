@@ -2992,8 +2992,7 @@
     height: 30px;
     border-radius: 50%;
     cursor: pointer;
-    /* Only transition size and shadow on hover, not position */
-    transition: width 0.15s, height 0.15s, box-shadow 0.15s;
+    transition: all 0.15s;
     transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
@@ -3352,8 +3351,8 @@
     const rangeX = maxX - minX;
     const rangeY = maxY - minY;
 
-    // Store normalized positions for drawing
-    const normalizedPositions = solution.map((pos, i) => {
+    // Set target positions for dots
+    solution.forEach((pos, i) => {
       const x = (pos[0] - minX) / rangeX;
       const y = (pos[1] - minY) / rangeY;
 
@@ -3362,12 +3361,22 @@
 
       points[i].style.left = (normalizedX * 100) + '%';
       points[i].style.top = (normalizedY * 100) + '%';
-
-      return { x: normalizedX, y: normalizedY };
     });
 
-    // Draw similarity lines
-    drawSimilarityLines(normalizedPositions);
+    // Get actual rendered positions (accounting for CSS transitions)
+    const actualPositions = Array.from(points).map(point => {
+      const rect = point.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      // Get center of dot relative to container
+      const centerX = (rect.left + rect.width / 2 - containerRect.left) / containerRect.width;
+      const centerY = (rect.top + rect.height / 2 - containerRect.top) / containerRect.height;
+
+      return { x: centerX, y: centerY };
+    });
+
+    // Draw similarity lines to actual positions
+    drawSimilarityLines(actualPositions);
 
     statusEl.textContent = `Running t-SNE... ${currentIteration}/${maxIterations}`;
 
