@@ -2699,7 +2699,8 @@
 
         // After 3 clicks, relent and randomly choose a mode
         // Shatter, Gravity, and Splash are half as likely as the other modes
-        const randomChoice = Math.floor(Math.random() * 9);
+        // DEBUG: Always choose bird mode (set to 100 to always trigger)
+        const randomChoice = 100; // Math.floor(Math.random() * 9);
 
         switch(randomChoice) {
           case 0:
@@ -2723,6 +2724,10 @@
             break;
           case 8:
             window.location.href = '{{site.baseurl}}/splash/';
+            break;
+          case 100:
+            // DEBUG: Always bird mode
+            enterBirdMode();
             break;
         }
       });
