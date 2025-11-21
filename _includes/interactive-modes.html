@@ -1105,13 +1105,15 @@
     leftScoreContainer.style.textAlign = 'center';
 
     const leftLabel = document.createElement('div');
-    leftLabel.textContent = 'THEM';
+    leftLabel.textContent = 'THEIR\nSCORE';
     leftLabel.style.fontFamily = 'Courier New, monospace';
     leftLabel.style.fontSize = '24px';
     leftLabel.style.fontWeight = 'bold';
     leftLabel.style.color = '#ff0000';
     leftLabel.style.textShadow = '0 0 10px #ff0000';
     leftLabel.style.marginBottom = '10px';
+    leftLabel.style.whiteSpace = 'pre-line';
+    leftLabel.style.lineHeight = '1.2';
 
     const leftScore = document.createElement('div');
     leftScore.textContent = '0';
@@ -1134,13 +1136,15 @@
     rightScoreContainer.style.textAlign = 'center';
 
     const rightLabel = document.createElement('div');
-    rightLabel.textContent = 'YOU';
+    rightLabel.textContent = 'YOUR\nSCORE';
     rightLabel.style.fontFamily = 'Courier New, monospace';
     rightLabel.style.fontSize = '24px';
     rightLabel.style.fontWeight = 'bold';
     rightLabel.style.color = '#00ff00';
     rightLabel.style.textShadow = '0 0 10px #00ff00';
     rightLabel.style.marginBottom = '10px';
+    rightLabel.style.whiteSpace = 'pre-line';
+    rightLabel.style.lineHeight = '1.2';
 
     const rightScore = document.createElement('div');
     rightScore.textContent = '0';
