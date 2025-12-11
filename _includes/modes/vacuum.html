@@ -197,7 +197,7 @@
     const lambda = 300; // Falloff distance for exponential potential
     const velocityDamping = 0.99; // Per-frame velocity damping
     const WAIT_TIME = 5; // seconds to wait before burp mode
-    const V_BURP = 500; // pixels per second
+    const V_BURP = 1000; // pixels per second
     const BURP_RATE = 30; // chars per second
     let allParticlesGoneTime = null;
     let burpAudio = null;
@@ -452,25 +452,46 @@
         }
       }
 
-      // Animate burped particles
+      // Animate burped particles with gravity and bouncing
       if (burpStarted && burpedParticles.length > 0) {
+        const gravity = 1000; // Same as shatter mode
+        const bounceDamping = 0.6; // Energy loss on bounce
+
         for (let i = burpedParticles.length - 1; i >= 0; i--) {
           const particle = burpedParticles[i];
+
+          // Apply gravity
+          particle.vy += gravity * dt;
 
           // Update position
           particle.x += particle.vx * dt;
           particle.y += particle.vy * dt;
 
-          // Check if out of bounds
+          // Bounce off edges with energy loss (same as shatter mode)
           const width = window.innerWidth;
           const height = window.innerHeight;
 
-          if (particle.x < -particle.width || particle.x > width ||
-              particle.y < -particle.height || particle.y > height) {
-            // Remove particle
-            particle.el.remove();
-            burpedParticles.splice(i, 1);
-            continue;
+          // Left and right edges
+          if (particle.x < 0) {
+            particle.x = 0;
+            particle.vx = -particle.vx * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          } else if (particle.x + particle.width > width) {
+            particle.x = width - particle.width;
+            particle.vx = -particle.vx * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          }
+
+          // Top and bottom edges
+          if (particle.y < 0) {
+            particle.y = 0;
+            particle.vy = -particle.vy * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          } else if (particle.y + particle.height > height + 7) {
+            // Keep character visible - allow a bit past the bottom (7px lower)
+            particle.y = height - particle.height + 7;
+            particle.vy = -particle.vy * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
           }
 
           // Update transform

@@ -47,8 +47,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/">
-  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
+  <link rel="canonical" href="http://james-simon.github.io/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
 
   <style>
     body {
@@ -1003,7 +1003,7 @@
     const lambda = 300; // Falloff distance for exponential potential
     const velocityDamping = 0.99; // Per-frame velocity damping
     const WAIT_TIME = 5; // seconds to wait before burp mode
-    const V_BURP = 500; // pixels per second
+    const V_BURP = 1000; // pixels per second
     const BURP_RATE = 30; // chars per second
     let allParticlesGoneTime = null;
     let burpAudio = null;
@@ -1258,25 +1258,46 @@
         }
       }
 
-      // Animate burped particles
+      // Animate burped particles with gravity and bouncing
       if (burpStarted && burpedParticles.length > 0) {
+        const gravity = 1000; // Same as shatter mode
+        const bounceDamping = 0.6; // Energy loss on bounce
+
         for (let i = burpedParticles.length - 1; i >= 0; i--) {
           const particle = burpedParticles[i];
+
+          // Apply gravity
+          particle.vy += gravity * dt;
 
           // Update position
           particle.x += particle.vx * dt;
           particle.y += particle.vy * dt;
 
-          // Check if out of bounds
+          // Bounce off edges with energy loss (same as shatter mode)
           const width = window.innerWidth;
           const height = window.innerHeight;
 
-          if (particle.x < -particle.width || particle.x > width ||
-              particle.y < -particle.height || particle.y > height) {
-            // Remove particle
-            particle.el.remove();
-            burpedParticles.splice(i, 1);
-            continue;
+          // Left and right edges
+          if (particle.x < 0) {
+            particle.x = 0;
+            particle.vx = -particle.vx * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          } else if (particle.x + particle.width > width) {
+            particle.x = width - particle.width;
+            particle.vx = -particle.vx * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          }
+
+          // Top and bottom edges
+          if (particle.y < 0) {
+            particle.y = 0;
+            particle.vy = -particle.vy * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
+          } else if (particle.y + particle.height > height + 7) {
+            // Keep character visible - allow a bit past the bottom (7px lower)
+            particle.y = height - particle.height + 7;
+            particle.vy = -particle.vy * bounceDamping;
+            particle.vx *= 0.97; // Apply friction
           }
 
           // Update transform
@@ -3540,9 +3561,40 @@
           return; // Don't activate mode
         }
 
-        // After 3 clicks, relent and randomly choose a mode
-        // Shatter, Gravity, Splash, and Panic are half as likely as the other modes
-        const randomChoice = Math.floor(Math.random() * 10);
+        // After 3 clicks, cycle through modes sequentially
+        // Define the rotation order
+        const modeSequence = ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
+
+        // Get current mode index with error handling
+        let modeIndex = 0;
+        try {
+          const storedIndex = localStorage.getItem('mysteryModeIndex');
+          if (storedIndex !== null) {
+            const parsed = parseInt(storedIndex);
+            // Validate the index is within bounds
+            if (!isNaN(parsed) && parsed >= 0 && parsed < modeSequence.length) {
+              modeIndex = parsed;
+            } else {
+              // Invalid index, reset to 0
+              console.warn('Invalid mysteryModeIndex, resetting to 0');
+              modeIndex = 0;
+            }
+          }
+        } catch (e) {
+          console.error('Error reading mysteryModeIndex:', e);
+          modeIndex = 0;
+        }
+
+        // Get the current mode
+        const currentMode = modeSequence[modeIndex];
+
+        // Increment and save the next index (with wraparound)
+        const nextIndex = (modeIndex + 1) % modeSequence.length;
+        try {
+          localStorage.setItem('mysteryModeIndex', nextIndex.toString());
+        } catch (e) {
+          console.error('Error saving mysteryModeIndex:', e);
+        }
 
         // Reset button appearance (remove hover state)
         mysteryLink.blur();
@@ -3550,31 +3602,59 @@
         mysteryLink.style.setProperty('color', '', 'important');
         mysteryIcon.style.setProperty('color', 'black', 'important');
 
-        switch(randomChoice) {
-          case 0:
-            enterShatterMode();
-            break;
-          case 1:
-            enterGravityMode();
-            break;
-          case 2:
-          case 3:
-            enterVacuumMode();
-            break;
-          case 4:
-          case 5:
-            enterPongMode();
-            break;
-          case 6:
-          case 7:
-            enterBirdMode();
-            break;
-          case 8:
-            enterPanicMode();
-            break;
-          case 9:
-            window.location.href = '/splash/';
-            break;
+        // Activate the selected mode with error handling
+        try {
+          switch(currentMode) {
+            case 'shatter':
+              if (typeof enterShatterMode === 'function') {
+                enterShatterMode();
+              } else {
+                console.error('enterShatterMode is not defined');
+              }
+              break;
+            case 'gravity':
+              if (typeof enterGravityMode === 'function') {
+                enterGravityMode();
+              } else {
+                console.error('enterGravityMode is not defined');
+              }
+              break;
+            case 'bird':
+              if (typeof enterBirdMode === 'function') {
+                enterBirdMode();
+              } else {
+                console.error('enterBirdMode is not defined');
+              }
+              break;
+            case 'splash':
+              window.location.href = '/splash/';
+              break;
+            case 'vacuum':
+              if (typeof enterVacuumMode === 'function') {
+                enterVacuumMode();
+              } else {
+                console.error('enterVacuumMode is not defined');
+              }
+              break;
+            case 'panic':
+              if (typeof enterPanicMode === 'function') {
+                enterPanicMode();
+              } else {
+                console.error('enterPanicMode is not defined');
+              }
+              break;
+            case 'pong':
+              if (typeof enterPongMode === 'function') {
+                enterPongMode();
+              } else {
+                console.error('enterPongMode is not defined');
+              }
+              break;
+            default:
+              console.error('Unknown mode:', currentMode);
+          }
+        } catch (e) {
+          console.error('Error activating mode:', currentMode, e);
         }
       });
 
