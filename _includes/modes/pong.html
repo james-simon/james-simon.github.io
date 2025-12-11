@@ -1,0 +1,762 @@
+<script>
+  function enterPongMode() {
+    if (pongActive) return;
+    pongActive = true;
+
+    // Play ready set go sound immediately
+    const readyAudio = new Audio('{{site.baseurl}}/audio/chiptune_ready_set_go.mp3');
+    readyAudio.volume = 1.0;
+    readyAudio.play().catch(err => console.log('Ready audio play failed:', err));
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "METEOR SHOWER INCOMING" message
+    const flashMessage = document.createElement('div');
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#ff00ff';
+    flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #ff00ff';
+    flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+
+    const mainText = document.createElement('div');
+    mainText.textContent = 'METEOR SHOWER INCOMING';
+    mainText.style.fontSize = '64px';
+
+    const subText = document.createElement('div');
+    subText.textContent = '(GAME TO 10)';
+    subText.style.fontSize = '32px';
+    subText.style.marginTop = '10px';
+
+    flashMessage.appendChild(mainText);
+    flashMessage.appendChild(subText);
+    document.body.appendChild(flashMessage);
+
+    // Show for 2 seconds, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000);
+    }, 2000);
+
+    // Create score displays
+    const leftScoreContainer = document.createElement('div');
+    leftScoreContainer.style.position = 'fixed';
+    leftScoreContainer.style.top = '50px';
+    leftScoreContainer.style.left = '50px';
+    leftScoreContainer.style.zIndex = '99999';
+    leftScoreContainer.style.pointerEvents = 'none';
+    leftScoreContainer.style.textAlign = 'center';
+
+    const leftLabel = document.createElement('div');
+    leftLabel.textContent = 'THEIR\nSCORE';
+    leftLabel.style.fontFamily = 'Courier New, monospace';
+    leftLabel.style.fontSize = '24px';
+    leftLabel.style.fontWeight = 'bold';
+    leftLabel.style.color = '#ff0000';
+    leftLabel.style.textShadow = '0 0 10px #ff0000';
+    leftLabel.style.marginBottom = '10px';
+    leftLabel.style.whiteSpace = 'pre-line';
+    leftLabel.style.lineHeight = '1.2';
+
+    const leftScore = document.createElement('div');
+    leftScore.textContent = '0';
+    leftScore.style.fontFamily = 'Courier New, monospace';
+    leftScore.style.fontSize = '72px';
+    leftScore.style.fontWeight = 'bold';
+    leftScore.style.color = '#ff0000';
+    leftScore.style.textShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+
+    leftScoreContainer.appendChild(leftLabel);
+    leftScoreContainer.appendChild(leftScore);
+    document.body.appendChild(leftScoreContainer);
+
+    const rightScoreContainer = document.createElement('div');
+    rightScoreContainer.style.position = 'fixed';
+    rightScoreContainer.style.top = '50px';
+    rightScoreContainer.style.right = '50px';
+    rightScoreContainer.style.zIndex = '99999';
+    rightScoreContainer.style.pointerEvents = 'none';
+    rightScoreContainer.style.textAlign = 'center';
+
+    const rightLabel = document.createElement('div');
+    rightLabel.textContent = 'YOUR\nSCORE';
+    rightLabel.style.fontFamily = 'Courier New, monospace';
+    rightLabel.style.fontSize = '24px';
+    rightLabel.style.fontWeight = 'bold';
+    rightLabel.style.color = '#00ff00';
+    rightLabel.style.textShadow = '0 0 10px #00ff00';
+    rightLabel.style.marginBottom = '10px';
+    rightLabel.style.whiteSpace = 'pre-line';
+    rightLabel.style.lineHeight = '1.2';
+
+    const rightScore = document.createElement('div');
+    rightScore.textContent = '0';
+    rightScore.style.fontFamily = 'Courier New, monospace';
+    rightScore.style.fontSize = '72px';
+    rightScore.style.fontWeight = 'bold';
+    rightScore.style.color = '#00ff00';
+    rightScore.style.textShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+
+    rightScoreContainer.appendChild(rightLabel);
+    rightScoreContainer.appendChild(rightScore);
+    document.body.appendChild(rightScoreContainer);
+
+    // Create player paddle (right side, green)
+    const playerPaddle = document.createElement('div');
+    playerPaddle.style.position = 'fixed';
+    playerPaddle.style.right = '20px';
+    playerPaddle.style.width = '15px';
+    playerPaddle.style.height = '200px';
+    playerPaddle.style.backgroundColor = '#00ff00';
+    playerPaddle.style.boxShadow = '0 0 20px #00ff00, 0 0 40px #00ff00';
+    playerPaddle.style.zIndex = '99999';
+    playerPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(playerPaddle);
+
+    // Create enemy paddle (left side, red, static)
+    const enemyPaddle = document.createElement('div');
+    enemyPaddle.style.position = 'fixed';
+    enemyPaddle.style.left = '20px';
+    enemyPaddle.style.width = '15px';
+    enemyPaddle.style.height = '200px';
+    enemyPaddle.style.backgroundColor = '#ff0000';
+    enemyPaddle.style.boxShadow = '0 0 20px #ff0000, 0 0 40px #ff0000';
+    enemyPaddle.style.zIndex = '99999';
+    enemyPaddle.style.pointerEvents = 'none';
+    document.body.appendChild(enemyPaddle);
+
+    // Paddle control state
+    let playerPaddleY = window.innerHeight / 2 - 100; // Center paddle
+    let enemyPaddleY = window.innerHeight / 2 - 100; // Center enemy paddle (static)
+    let lastMouseMoveTime = 0;
+    let mouseControlActive = false;
+    const paddleSpeed = 800; // px/s for keyboard control
+
+    // Update paddle positions
+    playerPaddle.style.top = playerPaddleY + 'px';
+    enemyPaddle.style.top = enemyPaddleY + 'px';
+
+    // Mouse control
+    document.addEventListener('mousemove', (e) => {
+      mouseControlActive = true;
+      lastMouseMoveTime = Date.now();
+      playerPaddleY = Math.max(0, Math.min(window.innerHeight - 200, e.clientY - 100));
+    });
+
+    // Keyboard control
+    const keys = {};
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+    });
+    document.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    let themScore = 0;
+    let youScore = 0;
+
+    const particles = [];
+
+    // Collect all text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height,
+        active: false,
+        trail: [] // Store last 15 positions for comet tail
+      });
+    });
+
+    // Activate one random letter every 2 seconds, starting after 3.5 second delay
+    let activationInterval;
+    setTimeout(() => {
+      activationInterval = setInterval(() => {
+        // Find all inactive particles
+        const inactiveParticles = particles.filter(p => !p.active);
+
+        if (inactiveParticles.length === 0) {
+          clearInterval(activationInterval);
+          return;
+        }
+
+        // Pick a random inactive particle
+        const randomParticle = inactiveParticles[Math.floor(Math.random() * inactiveParticles.length)];
+
+        // Give it velocity with guaranteed horizontal movement
+        const minVx = 200; // Minimum horizontal speed
+        const vxSign = Math.random() < 0.5 ? -1 : 1;
+        randomParticle.vx = vxSign * (minVx + Math.random() * 400); // 200-600 px/s
+        randomParticle.vy = (Math.random() - 0.5) * 600;
+        randomParticle.active = true;
+
+        // Create whitish-orange burst at launch position
+        const launchX = randomParticle.x + randomParticle.width / 2;
+        const launchY = randomParticle.y + randomParticle.height / 2;
+        createLaunchBurst(launchX, launchY);
+
+        // Play letter release buzz - create new Audio instance each time
+        const letterBuzz = new Audio('{{site.baseurl}}/audio/chiptune_buzz.wav');
+        letterBuzz.volume = 0.35;
+        letterBuzz.play().catch(err => console.log('Letter buzz play failed:', err));
+      }, 2000);
+    }, 3500);
+
+    // Game state
+    let blackHoleActive = false;
+    let blackHoleEl = null;
+    let gameOver = false;
+
+    // Start animation
+    startPongAnimation(particles, leftScore, rightScore, playerPaddle, enemyPaddle, () => playerPaddleY, (newY) => { playerPaddleY = newY; }, (newY) => { enemyPaddleY = newY; }, keys, () => mouseControlActive, () => blackHoleActive, (active) => { blackHoleActive = active; }, () => gameOver, (over) => { gameOver = over; });
+  }
+
+  function createBurst(x, y, color) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '80px';
+    burst.style.height = '80px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = color;
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.8';
+    burst.style.boxShadow = `0 0 40px ${color}, 0 0 80px ${color}`;
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.3s, transform 0.3s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      setTimeout(() => {
+        burst.remove();
+      }, 300);
+    }, 50);
+  }
+
+  function flashPaddle(paddleEl) {
+    let flashCount = 0;
+    const maxFlashes = 6; // 3 full on/off cycles
+    const flashInterval = setInterval(() => {
+      paddleEl.style.opacity = paddleEl.style.opacity === '0' ? '1' : '0';
+      flashCount++;
+      if (flashCount >= maxFlashes) {
+        clearInterval(flashInterval);
+        paddleEl.style.opacity = '1'; // Ensure it ends visible
+      }
+    }, 80); // Flash every 80ms
+  }
+
+  function createLaunchBurst(x, y) {
+    const burst = document.createElement('div');
+    burst.style.position = 'fixed';
+    burst.style.left = x + 'px';
+    burst.style.top = y + 'px';
+    burst.style.width = '50px';
+    burst.style.height = '50px';
+    burst.style.borderRadius = '50%';
+    burst.style.backgroundColor = '#ffcc88'; // Whitish-orange
+    burst.style.transform = 'translate(-50%, -50%)';
+    burst.style.opacity = '0.7';
+    burst.style.boxShadow = '0 0 20px #ffcc88, 0 0 40px #ffcc88';
+    burst.style.zIndex = '99998';
+    burst.style.pointerEvents = 'none';
+    burst.style.transition = 'opacity 0.25s, transform 0.25s';
+    document.body.appendChild(burst);
+
+    // Animate burst
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      setTimeout(() => {
+        burst.remove();
+      }, 250);
+    }, 50);
+  }
+
+  function startPongAnimation(particles, leftScoreEl, rightScoreEl, playerPaddleEl, enemyPaddleEl, getPlayerPaddleY, setPlayerPaddleY, setEnemyPaddleY, keys, getMouseActive, getBlackHoleActive, setBlackHoleActive, getGameOver, setGameOver) {
+    let lastTime = performance.now();
+    let themScore = 0;
+    let youScore = 0;
+    const paddleSpeed = 1152; // 20% faster than 960
+    let enemyPaddleSpeed = 540; // Slower than player
+    let enemyPaddleY = window.innerHeight / 2 - 100;
+    let blackHoleEl = null;
+    const paddleWidth = 15;
+    const paddleHeight = 200;
+    const leftPaddleX = 20;
+    const rightPaddleX = window.innerWidth - 20 - paddleWidth;
+
+    // Audio elements for paddle hits and game events
+    const blip1Audio = new Audio('{{site.baseurl}}/audio/pong_blip_1.mp3'); // YOU paddle
+    const blip2Audio = new Audio('{{site.baseurl}}/audio/pong_blip_2.mp3'); // THEM paddle
+    const damage1Audio = new Audio('{{site.baseurl}}/audio/chiptune_damage_1.mp3'); // YOU damaged
+    const damage2Audio = new Audio('{{site.baseurl}}/audio/chiptune_damage_2.mp3'); // THEM damaged
+    const victoryAudio = new Audio('{{site.baseurl}}/audio/chiptune_victory.mp3'); // Victory
+    const defeatAudio = new Audio('{{site.baseurl}}/audio/chiptune_defeat.mp3'); // Defeat
+
+    // AI state
+    const aiReactionDelay = 280; // ms
+    const aiRandomOffset = 35; // px
+    let lastAIUpdate = 0;
+    let aiTargetY = enemyPaddleY;
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+      dt = Math.min(dt, 0.033);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Update player paddle position with keyboard if mouse hasn't moved recently
+      if (Date.now() - performance.now() > 100 || !getMouseActive()) {
+        let paddleY = getPlayerPaddleY();
+        if (keys['ArrowUp'] || keys['w'] || keys['W']) {
+          paddleY -= paddleSpeed * dt;
+        }
+        if (keys['ArrowDown'] || keys['s'] || keys['S']) {
+          paddleY += paddleSpeed * dt;
+        }
+        paddleY = Math.max(0, Math.min(height - paddleHeight, paddleY));
+        setPlayerPaddleY(paddleY);
+      }
+
+      // Update enemy AI paddle
+      if (currentTime - lastAIUpdate > aiReactionDelay) {
+        lastAIUpdate = currentTime;
+
+        // Find the nearest threatening letter (moving left towards enemy paddle)
+        let closestThreat = null;
+        let minTime = Infinity;
+
+        particles.forEach(particle => {
+          if (particle.vx < 0 && particle.active) { // Moving left
+            const timeToReach = (particle.x - (leftPaddleX + paddleWidth)) / -particle.vx;
+            if (timeToReach > 0 && timeToReach < minTime) {
+              minTime = timeToReach;
+              // Predict where it will be
+              let predictedY = particle.y + particle.vy * timeToReach;
+
+              // Account for bounces off top/bottom
+              while (predictedY < 0 || predictedY + particle.height > height) {
+                if (predictedY < 0) {
+                  predictedY = -predictedY;
+                } else if (predictedY + particle.height > height) {
+                  predictedY = 2 * (height - particle.height) - predictedY;
+                }
+              }
+
+              closestThreat = predictedY + particle.height / 2; // Center of letter
+            }
+          }
+        });
+
+        if (closestThreat !== null) {
+          // Add random offset for imperfection
+          aiTargetY = closestThreat - paddleHeight / 2 + (Math.random() - 0.5) * aiRandomOffset;
+        } else {
+          // No threats, drift toward center
+          aiTargetY = height / 2 - paddleHeight / 2;
+        }
+      }
+
+      // Move enemy paddle smoothly towards target
+      if (enemyPaddleY < aiTargetY) {
+        enemyPaddleY = Math.min(aiTargetY, enemyPaddleY + enemyPaddleSpeed * dt);
+      } else if (enemyPaddleY > aiTargetY) {
+        enemyPaddleY = Math.max(aiTargetY, enemyPaddleY - enemyPaddleSpeed * dt);
+      }
+      enemyPaddleY = Math.max(0, Math.min(height - paddleHeight, enemyPaddleY));
+      setEnemyPaddleY(enemyPaddleY);
+
+      // Update paddle element positions
+      playerPaddleEl.style.top = getPlayerPaddleY() + 'px';
+      enemyPaddleEl.style.top = enemyPaddleY + 'px';
+
+      // Update particles and check for scoring
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
+
+        // Apply black hole gravity if particle is active and black hole is active
+        if (particle.active && getBlackHoleActive()) {
+          const blackHoleX = width / 2;
+          const blackHoleY = height / 2;
+          const blackHoleLambda = 250;
+          const blackHoleForce = 750000; // 5x stronger than before
+
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = blackHoleX - centerX;
+          const dy = blackHoleY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ)
+            const forceMagnitude = (1 / blackHoleLambda) * Math.exp(-dist / blackHoleLambda) * blackHoleForce;
+            let fx = (dx / dist) * forceMagnitude;
+            let fy = (dy / dist) * forceMagnitude;
+
+            // Non-conservative in x-coordinate: if moving away from black hole in x, reduce force to 75%
+            if (particle.vx * dx < 0) { // Moving away in x (opposite signs)
+              fx *= 0.75;
+            }
+            // Y-component remains conservative (no adjustment)
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Check for player paddle collision (right side)
+        const playerPaddleY = getPlayerPaddleY();
+        if (particle.vx > 0 && // Moving right
+            particle.x + particle.width > rightPaddleX &&
+            particle.x < rightPaddleX + paddleWidth &&
+            particle.y + particle.height > playerPaddleY &&
+            particle.y < playerPaddleY + paddleHeight) {
+
+          // Play YOU paddle blip sound
+          blip1Audio.currentTime = 0;
+          blip1Audio.play().catch(err => console.log('Blip1 play failed:', err));
+
+          // Reflect and increase speed
+          particle.vx = -particle.vx * 1.1;
+
+          // Change y-velocity based on where it hit the paddle
+          const hitPosition = (particle.y + particle.height / 2 - playerPaddleY) / paddleHeight; // 0 to 1
+          const angle = (hitPosition - 0.5) * 2; // -1 to 1
+          particle.vy = angle * 400; // Max vy change of ±400
+
+          // Move particle out of paddle to prevent multiple collisions
+          particle.x = rightPaddleX - particle.width;
+        }
+
+        // Check for enemy paddle collision (left side)
+        if (particle.vx < 0 && // Moving left
+            particle.x < leftPaddleX + paddleWidth &&
+            particle.x + particle.width > leftPaddleX &&
+            particle.y + particle.height > enemyPaddleY &&
+            particle.y < enemyPaddleY + paddleHeight) {
+
+          // Play THEM paddle blip sound
+          blip2Audio.currentTime = 0;
+          blip2Audio.play().catch(err => console.log('Blip2 play failed:', err));
+
+          // Reflect and increase speed
+          particle.vx = -particle.vx * 1.1;
+
+          // Change y-velocity based on where it hit the paddle
+          const hitPosition = (particle.y + particle.height / 2 - enemyPaddleY) / paddleHeight; // 0 to 1
+          const angle = (hitPosition - 0.5) * 2; // -1 to 1
+          particle.vy = angle * 400; // Max vy change of ±400
+
+          // Move particle out of paddle to prevent multiple collisions
+          particle.x = leftPaddleX + paddleWidth;
+        }
+
+        // Check for left edge (YOU score - enemy missed)
+        if (particle.x + particle.width < 0) {
+          // Create red burst at contact point (you scored)
+          const contactY = particle.y + particle.height / 2;
+          createBurst(0, contactY, '#ff0000');
+
+          // Play THEM damage sound
+          damage2Audio.currentTime = 0;
+          damage2Audio.play().catch(err => console.log('Damage2 play failed:', err));
+
+          // Flash enemy paddle
+          flashPaddle(enemyPaddleEl);
+
+          particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
+          particles.splice(i, 1);
+
+          if (!getGameOver()) {
+            youScore++;
+            rightScoreEl.textContent = youScore.toString();
+
+            // Check for YOU reaching 10
+            if (youScore === 10 && !getBlackHoleActive()) {
+              activateBlackHole();
+            } else if (youScore === 20) {
+              endGame(true); // YOU win
+            }
+          }
+          continue;
+        }
+
+        // Check for right edge (THEM score - player missed)
+        if (particle.x > width) {
+          // Create green burst at contact point (they scored)
+          const contactY = particle.y + particle.height / 2;
+          createBurst(width, contactY, '#00ff00');
+
+          // Play YOU damage sound
+          damage1Audio.currentTime = 0;
+          damage1Audio.play().catch(err => console.log('Damage1 play failed:', err));
+
+          // Flash player paddle
+          flashPaddle(playerPaddleEl);
+
+          particle.el.remove();
+          // Remove trail elements
+          particle.trail.forEach(t => t.el.remove());
+          particles.splice(i, 1);
+
+          if (!getGameOver()) {
+            themScore++;
+            leftScoreEl.textContent = themScore.toString();
+
+            // Check for THEM reaching 10
+            if (themScore === 10 && !getBlackHoleActive()) {
+              endGame(false); // YOU lose
+            } else if (themScore === 20) {
+              endGame(false); // YOU lose
+            }
+          }
+          continue;
+        }
+
+        // Bounce off top and bottom
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy;
+        } else if (particle.y + particle.height > height) {
+          particle.y = height - particle.height;
+          particle.vy = -particle.vy;
+        }
+
+        // Update trail (store last 15 positions)
+        if (particle.active) {
+          particle.trail.push({ x: particle.x, y: particle.y });
+          if (particle.trail.length > 15) {
+            // Remove oldest trail element if it exists
+            const oldest = particle.trail.shift();
+            if (oldest.el) {
+              oldest.el.remove();
+            }
+          }
+
+          // Create/update trail elements
+          particle.trail.forEach((trailPos, idx) => {
+            if (!trailPos.el) {
+              // Create new trail element
+              const trailEl = particle.el.cloneNode(true);
+              trailEl.style.pointerEvents = 'none';
+              document.body.appendChild(trailEl);
+              trailPos.el = trailEl;
+            }
+
+            // Update trail element position and style
+            const age = particle.trail.length - idx - 1; // 0 = newest, 14 = oldest
+            const opacity = 1 - (age + 1) / 16; // Fade from 0.94 to 0.06
+            const scale = 1 - (age + 1) * 0.05; // Scale from 0.95 to 0.25
+
+            trailPos.el.style.opacity = opacity.toString();
+            trailPos.el.style.transform = `translate(${trailPos.x - parseFloat(particle.el.style.left)}px, ${trailPos.y - parseFloat(particle.el.style.top)}px) scale(${scale})`;
+            trailPos.el.style.zIndex = (10000 - age - 1).toString(); // Behind main letter
+          });
+        }
+
+        // Apply transform to main particle
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Helper function to activate black hole
+    function activateBlackHole() {
+      setBlackHoleActive(true);
+
+      // Increase AI speed
+      enemyPaddleSpeed = 700;
+
+      // Create black hole element
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      blackHoleEl = document.createElement('div');
+      blackHoleEl.style.position = 'fixed';
+      blackHoleEl.style.left = (width / 2) + 'px';
+      blackHoleEl.style.top = (height / 2) + 'px';
+      blackHoleEl.style.width = '50px';
+      blackHoleEl.style.height = '50px';
+      blackHoleEl.style.marginLeft = '-25px';
+      blackHoleEl.style.marginTop = '-25px';
+      blackHoleEl.style.borderRadius = '50%';
+      blackHoleEl.style.backgroundColor = '#000000';
+      blackHoleEl.style.boxShadow = '0 0 30px 10px rgba(0, 0, 0, 0.8)';
+      blackHoleEl.style.zIndex = '9999';
+      blackHoleEl.style.pointerEvents = 'none';
+      document.body.appendChild(blackHoleEl);
+
+      // Animate the pulsing
+      let pulseTime = 0;
+      function pulseBlackHole() {
+        if (!getBlackHoleActive() || !blackHoleEl) return;
+        pulseTime += 0.05;
+        const size = 40 + 10 * Math.sin(pulseTime);
+        blackHoleEl.style.width = size + 'px';
+        blackHoleEl.style.height = size + 'px';
+        blackHoleEl.style.marginLeft = (-size / 2) + 'px';
+        blackHoleEl.style.marginTop = (-size / 2) + 'px';
+        requestAnimationFrame(pulseBlackHole);
+      }
+      pulseBlackHole();
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '20%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.opacity = '1';
+      flashMessage.style.transition = 'opacity 2s ease-out';
+
+      const mainText = document.createElement('div');
+      mainText.textContent = 'BLACK HOLE ACTIVATED';
+      mainText.style.fontSize = '64px';
+
+      const subText = document.createElement('div');
+      subText.textContent = '(GAME TO 20)';
+      subText.style.fontSize = '32px';
+      subText.style.marginTop = '10px';
+
+      flashMessage.appendChild(mainText);
+      flashMessage.appendChild(subText);
+      document.body.appendChild(flashMessage);
+
+      setTimeout(() => {
+        flashMessage.style.opacity = '0';
+        setTimeout(() => flashMessage.remove(), 2000);
+      }, 4000);
+    }
+
+    // Helper function to end the game
+    function endGame(playerWon) {
+      setGameOver(true);
+
+      // Play victory or defeat sound
+      if (playerWon) {
+        victoryAudio.currentTime = 0;
+        victoryAudio.play().catch(err => console.log('Victory play failed:', err));
+      } else {
+        defeatAudio.currentTime = 0;
+        defeatAudio.play().catch(err => console.log('Defeat play failed:', err));
+      }
+
+      // Display message
+      const flashMessage = document.createElement('div');
+      flashMessage.style.position = 'fixed';
+      flashMessage.style.top = '50%';
+      flashMessage.style.left = '50%';
+      flashMessage.style.transform = 'translate(-50%, -50%)';
+      flashMessage.style.fontFamily = 'Courier New, monospace';
+      flashMessage.style.fontSize = '96px';
+      flashMessage.style.fontWeight = 'bold';
+      flashMessage.style.letterSpacing = '4px';
+      flashMessage.style.color = '#ff00ff';
+      flashMessage.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff';
+      flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      flashMessage.style.padding = '30px 50px';
+      flashMessage.style.border = '4px solid #ff00ff';
+      flashMessage.style.boxShadow = '0 0 20px #ff00ff, inset 0 0 20px rgba(255, 0, 255, 0.2)';
+      flashMessage.style.zIndex = '10001';
+      flashMessage.style.pointerEvents = 'none';
+      flashMessage.style.textAlign = 'center';
+      flashMessage.style.whiteSpace = 'nowrap';
+      flashMessage.textContent = playerWon ? 'VICTORY' : 'DEFEATED';
+      document.body.appendChild(flashMessage);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // ============================================================================
+  // BIRD MODE
+  // ============================================================================
+
+</script>

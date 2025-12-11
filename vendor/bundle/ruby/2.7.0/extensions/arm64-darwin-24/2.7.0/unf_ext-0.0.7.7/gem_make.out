@@ -1,0 +1,18 @@
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+/Users/jamie/.rbenv/versions/2.7.8/bin/ruby -I /Users/jamie/.rbenv/versions/2.7.8/lib/ruby/2.7.0 -r ./siteconf20251126-94650-eksqgb.rb extconf.rb
+checking for -lstdc++... yes
+creating Makefile
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR=" clean
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR="
+compiling unf.cc
+linking shared-object unf_ext.bundle
+ld: warning: -multiply_defined is obsolete
+ld: warning: ignoring duplicate libraries: '-lc++', '-lruby.2.7'
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 unf_ext.bundle ./.gem.20251126-94650-nv5dkf

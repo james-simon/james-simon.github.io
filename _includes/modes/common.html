@@ -1,0 +1,217 @@
+<style>
+  .char {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    line-height: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    font-family: inherit;
+    color: inherit;
+    white-space: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-decoration: inherit;
+    text-transform: inherit;
+    background: transparent;
+  }
+
+  .char-particle {
+    position: fixed;
+    margin: 0;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  body.shatter-locked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  body.bird-locked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  body.panic-locked {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #shatter-overlay-blocker {
+    position: fixed;
+    inset: 0;
+    pointer-events: auto;
+    z-index: 9999;
+    display: none;
+  }
+
+  body.shatter-locked #shatter-overlay-blocker {
+    display: block;
+  }
+</style>
+
+<div id="shatter-overlay-blocker"></div>
+<audio id="shatter-audio" preload="auto" src="{{site.baseurl}}/audio/glass_bottle_breaking.mp3"></audio>
+<audio id="pop-1" preload="auto" src="{{site.baseurl}}/audio/pop_1.mp3"></audio>
+<audio id="pop-2" preload="auto" src="{{site.baseurl}}/audio/pop_2.mp3"></audio>
+<audio id="pop-3" preload="auto" src="{{site.baseurl}}/audio/pop_3.mp3"></audio>
+<audio id="pop-4" preload="auto" src="{{site.baseurl}}/audio/pop_4.mp3"></audio>
+<!-- Bird mode audio -->
+<audio id="goose-honk" src="{{site.baseurl}}/audio/bird_sounds/goose_honk.mp3" preload="auto"></audio>
+<audio id="goose-yell" src="{{site.baseurl}}/audio/bird_sounds/goose_yell.mp3" preload="auto"></audio>
+<audio id="hawk-call" src="{{site.baseurl}}/audio/bird_sounds/hawk_call.mp3" preload="auto"></audio>
+<!-- Panic mode audio -->
+<audio id="panic-alarm" preload="auto" src="{{site.baseurl}}/audio/alarm.mp3"></audio>
+<audio id="panic-scream" preload="auto" src="{{site.baseurl}}/audio/crowd_scream.mp3"></audio>
+
+<script>
+  // ============================================================================
+  // SHARED STATE AND UTILITIES FOR INTERACTIVE MODES
+  // ============================================================================
+
+  // Global state
+  let shatterActive = false;
+  let gravityActive = false;
+  let vacuumActive = false;
+  let pongActive = false;
+  let birdModeActive = false;
+  let panicActive = false;
+  let mouseX = 0;
+  let mouseY = 0;
+  let prevMouseX = 0;
+  let prevMouseY = 0;
+
+  // ============================================================================
+  // UTILITY FUNCTIONS
+  // ============================================================================
+
+  function playRandomPop() {
+    const popIndex = Math.floor(Math.random() * 4) + 1;
+    const audio = document.getElementById(`pop-${popIndex}`);
+    if (audio) {
+      audio.volume = 0.3; // Quieter pops
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log('Pop sound failed:', err));
+    }
+  }
+
+  // Check if a point is close to a line segment
+  function distanceToLineSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const lengthSquared = dx * dx + dy * dy;
+
+    if (lengthSquared === 0) {
+      // Line segment is a point
+      const distX = px - x1;
+      const distY = py - y1;
+      return Math.sqrt(distX * distX + distY * distY);
+    }
+
+    // Project point onto line segment
+    let t = ((px - x1) * dx + (py - y1) * dy) / lengthSquared;
+    t = Math.max(0, Math.min(1, t)); // Clamp to [0, 1]
+
+    const closestX = x1 + t * dx;
+    const closestY = y1 + t * dy;
+
+    const distX = px - closestX;
+    const distY = py - closestY;
+    return Math.sqrt(distX * distX + distY * distY);
+  }
+
+  function wrapTextNodes(node) {
+    // Skip script, style, and interactive mode elements
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName;
+      const elemId = node.id;
+
+      // Skip these elements entirely
+      if (tagName === 'SCRIPT' || tagName === 'STYLE' ||
+          tagName === 'CODE' || tagName === 'PRE' ||
+          tagName === 'KBD' || tagName === 'SAMP' ||
+          tagName === 'TEXTAREA' || tagName === 'INPUT' ||
+          tagName === 'SELECT' || tagName === 'BUTTON' ||
+          elemId === 'shatter-overlay-blocker' ||
+          elemId === 'shatter-audio' ||
+          elemId === 'panic-button' ||
+          elemId?.startsWith('pop-')) {
+        return;
+      }
+
+      // Skip fixed/absolute positioned elements (like nav, modals, etc.)
+      const style = window.getComputedStyle(node);
+      if (style.position === 'fixed' || style.position === 'absolute') {
+        return;
+      }
+
+      // Skip elements that are hidden
+      if (style.display === 'none' || style.visibility === 'hidden') {
+        return;
+      }
+    }
+
+    // If it's a text node, wrap each character
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim().length === 0) return; // Skip whitespace-only nodes
+
+      const fragment = document.createDocumentFragment();
+      // Use Array.from to properly handle multi-byte characters like emojis
+      const chars = Array.from(text);
+      for (let i = 0; i < chars.length; i++) {
+        const char = chars[i];
+        if (char === ' ') {
+          // Preserve spaces as regular text nodes
+          fragment.appendChild(document.createTextNode(' '));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.textContent = char;
+          fragment.appendChild(span);
+        }
+      }
+      node.parentNode.replaceChild(fragment, node);
+    }
+    // Recursively process child nodes
+    else if (node.nodeType === Node.ELEMENT_NODE) {
+      const children = Array.from(node.childNodes);
+      children.forEach(child => wrapTextNodes(child));
+    }
+  }
+
+  // Gaussian random number generator (Box-Muller transform)
+  function gaussianRandom(mean = 0, stdDev = 1) {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    return z0 * stdDev + mean;
+  }
+
+  // Track if text has been wrapped
+  let textWrapped = false;
+
+  // Wrap text lazily when first mode is activated
+  function ensureTextWrapped() {
+    if (textWrapped) return;
+    textWrapped = true;
+    wrapTextNodes(document.body);
+  }
+</script>

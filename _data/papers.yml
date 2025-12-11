@@ -66,7 +66,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
       url: https://arxiv.org/abs/2209.01691
 
 - id: eigenlearning
-  title: "The eigenlearning framework: A conservation law perspective on kernel regression and wide neural networks"
+  title: "The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks"
   authors: "James B. Simon, Madeline Dickens, Dhruva Karkada, Michael R. DeWeese"
   category: kernel-regression
   year: 2023
@@ -106,7 +106,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
       url: https://arxiv.org/abs/2506.06489
 
 - id: saddle-to-saddle
-  title: "Saddle-To-Saddle Dynamics in Deep ReLU Networks: Low-Rank Bias in the First Saddle Escape"
+  title: "Saddle-to-saddle dynamics in deep ReLU networks: low-rank bias in the first saddle escape"
   authors: "Ioannis Bantzis, James B. Simon, Arthur Jacot"
   category: stepwise-learning
   year: 2025
@@ -229,18 +229,6 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
     - type: arXiv
       url: https://arxiv.org/abs/2003.10397
 
-- id: nuclear-spin-qubits
-  title: Fast noise-resistant control of donor nuclear spin qubits in silicon
-  authors: "James Simon, F. A. Calderon-Vargas, Edwin Barnes, Sophia E. Economou"
-  category: physics
-  year: 2020
-  venue: PRB 2020
-  description: ""
-  image: statediagram.png
-  links:
-    - type: arXiv
-      url: https://arxiv.org/abs/2001.10029
-
 - id: electro-optic-dual-comb
   title: Interleaved electro-optic dual comb generation to expand bandwidth and scan rate for molecular spectroscopy and dynamics studies near 1.6 µm
   authors: "Jasper R. Stroud, James B. Simon, Gerd A. Wagner, David F. Plusquellic"
@@ -264,3 +252,15 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   links:
     - type: arXiv
       url: https://arxiv.org/abs/2011.05230
+
+- id: nuclear-spin-qubits
+  title: Fast noise-resistant control of donor nuclear spin qubits in silicon
+  authors: "James Simon, F. A. Calderon-Vargas, Edwin Barnes, Sophia E. Economou"
+  category: physics
+  year: 2020
+  venue: PRB 2020
+  description: ""
+  image: statediagram.png
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2001.10029

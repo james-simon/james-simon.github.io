@@ -1,0 +1,163 @@
+---
+layout: default
+---
+
+<style>
+  .catchme-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+  }
+
+  .begin-button {
+    font-family: 'Courier New', monospace;
+    font-size: 48px;
+    font-weight: bold;
+    padding: 30px 60px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .begin-button:hover {
+    background-color: #555;
+    transform: scale(1.05);
+  }
+
+  .reset-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    overflow: hidden;
+    display: none;
+    background-color: white;
+  }
+
+  .reset-link {
+    display: inline-block;
+    padding: 2px 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .reset-link:hover {
+    color: #000;
+  }
+
+  .floating-button {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    background-color: magenta;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+
+  .floating-button:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+<div class="catchme-container">
+  <button class="begin-button">begin</button>
+</div>
+
+<div class="reset-overlay" id="resetOverlay"></div>
+
+<script>
+  const beginButton = document.querySelector('.begin-button');
+  const container = document.querySelector('.catchme-container');
+  const resetOverlay = document.getElementById('resetOverlay');
+
+  beginButton.addEventListener('click', () => {
+    // Hide the begin button and container
+    container.style.display = 'none';
+
+    // Show reset overlay
+    resetOverlay.style.display = 'block';
+
+    // Tile the page with RESET links (much denser)
+    const tilesWide = Math.ceil(window.innerWidth / 50);
+    const tilesHigh = Math.ceil(window.innerHeight / 10);
+
+    for (let i = 0; i < tilesWide * tilesHigh; i++) {
+      const link = document.createElement('a');
+      link.className = 'reset-link';
+      link.textContent = 'RESET';
+      link.href = '#';
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        location.reload();
+      });
+      resetOverlay.appendChild(link);
+    }
+
+    // Create floating question mark button
+    const floatingButton = document.createElement('button');
+    floatingButton.className = 'floating-button';
+    floatingButton.innerHTML = '?';
+    floatingButton.addEventListener('click', () => {
+      window.location.href = 'https://en.wikipedia.org/wiki/Jamie_Dimon';
+    });
+    document.body.appendChild(floatingButton);
+
+    // Bouncing animation (faster and more erratic)
+    let x = Math.random() * (window.innerWidth - 50);
+    let y = Math.random() * (window.innerHeight - 50);
+    let vx = (Math.random() - 0.5) * 8;
+    let vy = (Math.random() - 0.5) * 8;
+
+    function animate() {
+      // Add random acceleration for erratic movement
+      vx += (Math.random() - 0.5) * 0.5;
+      vy += (Math.random() - 0.5) * 0.5;
+
+      // Cap max speed
+      const maxSpeed = 10;
+      const speed = Math.sqrt(vx * vx + vy * vy);
+      if (speed > maxSpeed) {
+        vx = (vx / speed) * maxSpeed;
+        vy = (vy / speed) * maxSpeed;
+      }
+
+      x += vx;
+      y += vy;
+
+      // Bounce off walls with slight randomness
+      if (x <= 0 || x >= window.innerWidth - 50) {
+        vx = -vx * (0.9 + Math.random() * 0.2);
+        x = Math.max(0, Math.min(window.innerWidth - 50, x));
+      }
+      if (y <= 0 || y >= window.innerHeight - 50) {
+        vy = -vy * (0.9 + Math.random() * 0.2);
+        y = Math.max(0, Math.min(window.innerHeight - 50, y));
+      }
+
+      floatingButton.style.left = x + 'px';
+      floatingButton.style.top = y + 'px';
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  });
+</script>

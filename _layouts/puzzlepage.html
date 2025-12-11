@@ -20,7 +20,10 @@ layout: default
       {% if page.coauthor %}
         Made in collaboration with {{ page.coauthor }}.
       {% endif %}
-      The answer is an English word. You'll know it's right when you have it. To check your answer, remove the trailing slash from this page's URL and add &quot;-xxxxx&quot;, where &quot;xxxxx&quot; is the answer in all lowercase. If you've tried it and are really stuck, the <a href="{{site.baseurl}}{{page.url | append: "zzz" | replace: "/zzz", "" }}-{{page.answer}}" style="font-size:16px">solution</a> is here, though I'd ask that you feel slightly sheepish when clicking the link.</p>
+      {% if page.footer_note %}
+        {{ page.footer_note }}
+      {% endif %}
+      The answer is one word. You'll know it's right when you have it. To check your answer, remove the trailing slash from this page's URL and add &quot;-xxxxx&quot;, where &quot;xxxxx&quot; is the answer in all lowercase. If you've tried it and are really stuck, the <a href="{{site.baseurl}}{{page.url | append: "zzz" | replace: "/zzz", "" }}-{{page.answer}}" style="font-size:16px">solution</a> is here, though I'd ask that you feel slightly sheepish when clicking the link.</p>
   </div>
 
 </article>

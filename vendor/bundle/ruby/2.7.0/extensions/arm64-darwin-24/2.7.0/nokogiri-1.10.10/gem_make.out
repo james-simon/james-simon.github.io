@@ -1,0 +1,43 @@
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/nokogiri-1.10.10/ext/nokogiri
+/Users/jamie/.rbenv/versions/2.7.8/bin/ruby -I /Users/jamie/.rbenv/versions/2.7.8/lib/ruby/2.7.0 -r ./siteconf20251126-96926-15edj9l.rb extconf.rb --use-system-libraries
+checking if the C compiler accepts  -I /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2... yes
+checking if the C compiler accepts -Wno-error=unused-command-line-argument-hard-error-in-future... no
+Building nokogiri using system libraries.
+checking for xmlParseDoc() in libxml/parser.h... yes
+checking for xsltParseStylesheetDoc() in libxslt/xslt.h... yes
+checking for exsltFuncRegister() in libexslt/exslt.h... yes
+checking for xmlHasFeature()... yes
+checking for xmlFirstElementChild()... yes
+checking for xmlRelaxNGSetParserStructuredErrors()... yes
+checking for xmlRelaxNGSetParserStructuredErrors()... yes
+checking for xmlRelaxNGSetValidStructuredErrors()... yes
+checking for xmlSchemaSetValidStructuredErrors()... yes
+checking for xmlSchemaSetParserStructuredErrors()... yes
+creating Makefile
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/nokogiri-1.10.10/ext/nokogiri
+make "DESTDIR=" clean
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.7.0/gems/nokogiri-1.10.10/ext/nokogiri
+make "DESTDIR="
+compiling html_document.c
+compiling html_element_description.c
+compiling html_entity_lookup.c
+compiling html_sax_parser_context.c
+compiling html_sax_push_parser.c
+compiling nokogiri.c
+compiling xml_attr.c
+compiling xml_attribute_decl.c
+compiling xml_cdata.c
+compiling xml_comment.c
+compiling xml_document.c
+xml_document.c:49:25: error: incompatible function pointer types passing 'int (xmlNodePtr, xmlNodePtr, xmlDocPtr)' (aka 'int (struct _xmlNode *, struct _xmlNode *, struct _xmlDoc *)') to parameter of type 'st_foreach_callback_func *' (aka 'int (*)(unsigned long, unsigned long, unsigned long)') [-Wincompatible-function-pointer-types]
+   49 |   st_foreach(node_hash, dealloc_node_i, (st_data_t)doc);
+      |                         ^~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.7.8/include/ruby-2.7.0/ruby/st.h:141:57: note: passing argument to parameter here
+  141 | int rb_st_foreach(st_table *, st_foreach_callback_func *, st_data_t);
+      |                                                         ^
+1 error generated.
+make: *** [xml_document.o] Error 1
+
+make failed, exit code 2

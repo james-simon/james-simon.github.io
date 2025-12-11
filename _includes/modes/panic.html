@@ -1,0 +1,350 @@
+<script>
+  // ============================================================================
+  // PANIC MODE
+  // ============================================================================
+
+  let panicTextWrapped = false;
+  let alarmAudio = null;
+  let screamAudio = null;
+
+  function enterPanicMode() {
+    if (panicActive) return;
+    panicActive = true;
+
+    // Wrap text if not already wrapped by other modes
+    if (!textWrapped && !panicTextWrapped) {
+      panicTextWrapped = true;
+      wrapTextNodes(document.body);
+    }
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('panic-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Start alarm sound immediately
+    const alarm = document.getElementById('panic-alarm');
+    if (alarm) {
+      alarmAudio = alarm;
+      alarmAudio.loop = true;
+      alarmAudio.currentTime = 0;
+      alarmAudio.play();
+    }
+
+    // Start crowd scream after 2 seconds (when movement begins)
+    setTimeout(() => {
+      if (panicActive) {
+        const scream = document.getElementById('panic-scream');
+        if (scream) {
+          screamAudio = scream;
+          screamAudio.loop = true;
+          screamAudio.currentTime = 0;
+          screamAudio.play();
+        }
+      }
+    }, 2000);
+
+    // Create persistent flashing "PANIC MODE" text
+    const panicLabel = document.createElement('div');
+    panicLabel.id = 'panic-mode-label';
+    panicLabel.textContent = 'PANIC MODE';
+    panicLabel.style.position = 'fixed';
+    panicLabel.style.top = '50%';
+    panicLabel.style.left = '50%';
+    panicLabel.style.transform = 'translate(-50%, -50%)';
+    panicLabel.style.fontSize = '48px';
+    panicLabel.style.fontFamily = 'Courier New, monospace';
+    panicLabel.style.fontWeight = 'bold';
+    panicLabel.style.letterSpacing = '4px';
+    panicLabel.style.color = '#ff0000';
+    panicLabel.style.textShadow = '0 0 10px #ff0000, 0 0 20px #ff0000';
+    panicLabel.style.zIndex = '99999';
+    panicLabel.style.pointerEvents = 'none';
+    panicLabel.style.textAlign = 'center';
+    document.body.appendChild(panicLabel);
+
+    // Flash on/off every 0.51 seconds
+    const flashInterval = setInterval(() => {
+      if (!panicActive) {
+        clearInterval(flashInterval);
+        panicLabel.remove();
+        return;
+      }
+      panicLabel.style.visibility = panicLabel.style.visibility === 'hidden' ? 'visible' : 'hidden';
+    }, 510);
+
+    const particles = [];
+
+    // Collect all .char elements (text)
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.willChange = 'transform';
+      clone.style.pointerEvents = 'none';
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Sample epicycle parameters
+      const PATH_LENGTH_SCALE = 200; // px
+      const MAX_FREQ = 10;
+      const radii = [];
+      const thetas = [];
+      const signs = []; // Random ±1 for each frequency component
+      let offset_x = 0;
+      let offset_y = 0;
+
+      for (let j = 1; j <= MAX_FREQ; j++) {
+        const r_j = Math.abs(gaussianRandom(0, PATH_LENGTH_SCALE / j));
+        const theta_j = Math.random() * 2 * Math.PI;
+        const sign_j = Math.random() < 0.5 ? 1 : -1;
+        radii.push(r_j);
+        thetas.push(theta_j);
+        signs.push(sign_j);
+
+        // Accumulate offsets so path starts at origin
+        offset_x += r_j * Math.cos(theta_j);
+        offset_y += r_j * Math.sin(theta_j);
+      }
+
+      // Add to particles array with epicycle parameters
+      particles.push({
+        el: clone,
+        x0: rect.left,  // Original x position
+        y0: rect.top,   // Original y position
+        radii: radii,
+        thetas: thetas,
+        signs: signs,   // Rotation direction for each component
+        offset_x: offset_x,
+        offset_y: offset_y,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Also collect glyphs and icons
+    const glyphs = document.querySelectorAll('i, svg');
+    glyphs.forEach(glyph => {
+      const rect = glyph.getBoundingClientRect();
+
+      // Skip if outside viewport or has no size
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.width === 0 || rect.height === 0) {
+        return;
+      }
+
+      // Clone the glyph
+      const clone = glyph.cloneNode(true);
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(glyph);
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.color = computedStyle.color;
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.willChange = 'transform';
+      clone.style.pointerEvents = 'none';
+      clone.style.zIndex = '10000';
+
+      // Preserve dimensions
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.boxSizing = 'border-box';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      glyph.style.visibility = 'hidden';
+
+      // Sample epicycle parameters
+      const PATH_LENGTH_SCALE = 200; // px
+      const MAX_FREQ = 10;
+      const radii = [];
+      const thetas = [];
+      const signs = []; // Random ±1 for each frequency component
+      let offset_x = 0;
+      let offset_y = 0;
+
+      for (let j = 1; j <= MAX_FREQ; j++) {
+        const r_j = Math.abs(gaussianRandom(0, PATH_LENGTH_SCALE / j));
+        const theta_j = Math.random() * 2 * Math.PI;
+        const sign_j = Math.random() < 0.5 ? 1 : -1;
+        radii.push(r_j);
+        thetas.push(theta_j);
+        signs.push(sign_j);
+
+        // Accumulate offsets so path starts at origin
+        offset_x += r_j * Math.cos(theta_j);
+        offset_y += r_j * Math.sin(theta_j);
+      }
+
+      // Add to particles array with epicycle parameters
+      particles.push({
+        el: clone,
+        x0: rect.left,  // Original x position
+        y0: rect.top,   // Original y position
+        radii: radii,
+        thetas: thetas,
+        signs: signs,   // Rotation direction for each component
+        offset_x: offset_x,
+        offset_y: offset_y,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Start animation
+    startPanicAnimation(particles, scrollY);
+  }
+
+  function startPanicAnimation(particles, originalScrollY) {
+    const DELAY_TIME = 2000; // 2 seconds delay before movement
+    const MOVEMENT_TIME = 7800; // 7.8 seconds of movement
+    const TOTAL_TIME = DELAY_TIME + MOVEMENT_TIME; // 9.8 seconds total
+    const startTime = performance.now();
+
+    function animate(currentTime) {
+      if (!panicActive) return;
+
+      // Calculate elapsed time in milliseconds
+      const elapsed = currentTime - startTime;
+
+      // Check if 9.8 seconds have elapsed
+      if (elapsed >= TOTAL_TIME) {
+        exitPanicMode(particles, originalScrollY);
+        return;
+      }
+
+      // Calculate t as fraction of movement time (0 to 1)
+      // During the first 2 seconds (delay), t = 0 (no movement)
+      let t = 0;
+      if (elapsed > DELAY_TIME) {
+        t = (elapsed - DELAY_TIME) / MOVEMENT_TIME;
+      }
+
+      particles.forEach(particle => {
+        // Epicycle parameterization: sum of circles at different frequencies
+        // x(t) = sum_j r_j * cos(2π * j * t + theta_j) - offset_x
+        // y(t) = sum_j r_j * sin(2π * j * t + theta_j) - offset_y
+        let dx = 0;
+        let dy = 0;
+
+        for (let j = 0; j < particle.radii.length; j++) {
+          const freq = j + 1; // Frequency is 1, 2, 3, ...
+          const angle = 2 * Math.PI * freq * t * particle.signs[j] + particle.thetas[j];
+          dx += particle.radii[j] * Math.cos(angle);
+          dy += particle.radii[j] * Math.sin(angle);
+        }
+
+        // Subtract offsets to ensure path starts at origin
+        dx -= particle.offset_x;
+        dy -= particle.offset_y;
+
+        // Apply radial coefficient to make letters drift farther over time
+        // radial_coeff = max(1, elapsed_in_seconds + 2 - TOTAL_TIME_in_seconds)
+        const elapsed_seconds = elapsed / 1000;
+        const total_seconds = TOTAL_TIME / 1000;
+        const radial_coeff = Math.max(1, elapsed_seconds + 2 - total_seconds);
+        dx *= radial_coeff;
+        dy *= radial_coeff;
+
+        // Calculate current position (original position + offset)
+        const x = particle.x0 + dx;
+        const y = particle.y0 + dy;
+
+        // Apply transform (relative to the element's original left/top)
+        particle.el.style.transform = `translate(${x - parseFloat(particle.el.style.left)}px, ${y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  function exitPanicMode(particles, originalScrollY) {
+    panicActive = false;
+
+    // Stop and clean up audio
+    if (alarmAudio) {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      alarmAudio = null;
+    }
+    if (screamAudio) {
+      screamAudio.pause();
+      screamAudio.currentTime = 0;
+      screamAudio = null;
+    }
+
+    // Remove all particles
+    particles.forEach(particle => {
+      particle.el.remove();
+    });
+
+    // Remove flashing label
+    const panicLabel = document.getElementById('panic-mode-label');
+    if (panicLabel) {
+      panicLabel.remove();
+    }
+
+    // Restore original characters
+    document.querySelectorAll('.char').forEach(char => {
+      char.style.visibility = '';
+    });
+
+    // Restore original glyphs
+    document.querySelectorAll('i, svg').forEach(glyph => {
+      glyph.style.visibility = '';
+    });
+
+    // Unlock body
+    document.body.classList.remove('panic-locked');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.overflow = '';
+    document.body.style.width = '';
+    window.scrollTo(0, originalScrollY);
+  }
+</script>

@@ -1,0 +1,486 @@
+<script>
+  // ============================================================================
+  // VACUUM MODE
+  // ============================================================================
+
+  function enterVacuumMode() {
+    if (vacuumActive) return;
+    vacuumActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "VACUUM MODE INITIATED" message
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'VACUUM MODE INITIATED';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#00ff00';
+    flashMessage.style.textShadow = '0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #00ff00';
+    flashMessage.style.boxShadow = '0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+    document.body.appendChild(flashMessage);
+
+    // Show for 1 second, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000); // Remove after fade completes
+    }, 1000);
+
+    // Initialize mouse position to null - don't apply forces until we know where mouse is
+    mouseX = null;
+    mouseY = null;
+    prevMouseX = null;
+    prevMouseY = null;
+
+    // Keep a history of 15 mouse positions for smoother direction calculation
+    const mouseHistory = [];
+    const HISTORY_LENGTH = 15;
+
+    // Store vacuumed particles in order for burping
+    const vacuumedParticles = [];
+
+    // Track mouse position and update history
+    document.addEventListener('mousemove', (e) => {
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      // Only add to history if mouse actually moved
+      if (prevMouseX !== null && prevMouseY !== null) {
+        const dx = mouseX - prevMouseX;
+        const dy = mouseY - prevMouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 0.1) { // Only count as movement if moved enough
+          mouseHistory.push({x: mouseX, y: mouseY});
+
+          // Keep only last 5 positions
+          if (mouseHistory.length > HISTORY_LENGTH) {
+            mouseHistory.shift();
+          }
+        }
+      }
+    });
+
+    const particles = [];
+
+    // Only collect text characters
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+
+      // Skip if outside viewport or has no width (e.g., newlines)
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.width === 0 || rect.height === 0) {
+        return;
+      }
+
+      // Clone the character
+      const clone = char.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(char);
+      clone.style.fontFamily = computedStyle.fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.fontWeight = computedStyle.fontWeight;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      char.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Also collect glyphs and icons
+    const glyphs = document.querySelectorAll('i, svg');
+    glyphs.forEach(glyph => {
+      const rect = glyph.getBoundingClientRect();
+
+      // Skip if outside viewport or has no size
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth ||
+          rect.width === 0 || rect.height === 0) {
+        return;
+      }
+
+      // Clone the glyph
+      const clone = glyph.cloneNode(true);
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(glyph);
+      clone.style.fontSize = computedStyle.fontSize;
+      clone.style.color = computedStyle.color;
+      clone.style.zIndex = '10000';
+
+      // Preserve dimensions
+      clone.style.width = rect.width + 'px';
+      clone.style.height = rect.height + 'px';
+      clone.style.boxSizing = 'border-box';
+
+      // Position at exact location
+      clone.style.position = 'fixed';
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      glyph.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    // Start animation
+    startVacuumAnimation(particles, vacuumedParticles, mouseHistory);
+  }
+
+  function startVacuumAnimation(particles, vacuumedParticles, mouseHistory) {
+    let lastTime = performance.now();
+    const damping = 0.6; // Energy loss on bounce
+    const lambda = 300; // Falloff distance for exponential potential
+    const velocityDamping = 0.99; // Per-frame velocity damping
+    const WAIT_TIME = 5; // seconds to wait before burp mode
+    const V_BURP = 500; // pixels per second
+    const BURP_RATE = 30; // chars per second
+    let allParticlesGoneTime = null;
+    let burpAudio = null;
+    let burpStarted = false;
+    const burpedParticles = []; // Active burped particles
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      // Only check for particle removal if we have a valid mouse position
+      if (mouseX !== null && mouseY !== null && prevMouseX !== null && prevMouseY !== null) {
+        // Filter out particles that should be removed
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const particle = particles[i];
+
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          // Also check distance to line segment traced by mouse movement
+          const distToPath = distanceToLineSegment(centerX, centerY, prevMouseX, prevMouseY, mouseX, mouseY);
+
+          // Effective capture radius is proportional to particle size
+          const effectiveRadius = Math.min(particle.width, particle.height) / 2;
+
+          // Remove particle if within effective radius of current mouse position or path
+          if (dist < effectiveRadius || distToPath < effectiveRadius) {
+            // Store particle info for burping later
+            vacuumedParticles.push({
+              el: particle.el,
+              x: particle.x,
+              y: particle.y,
+              vx: particle.vx,
+              vy: particle.vy,
+              width: particle.width,
+              height: particle.height
+            });
+
+            // Hide but don't remove from DOM yet (we'll reuse it for burping)
+            particle.el.style.display = 'none';
+            particles.splice(i, 1);
+            playRandomPop(); // Play pop sound
+            continue;
+          }
+        }
+      }
+
+      particles.forEach(particle => {
+        // Only apply forces if we have a valid mouse position
+        if (mouseX !== null && mouseY !== null) {
+          // Calculate distance from particle center to mouse
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > 0) {
+            // Force from potential V(r) = -exp(-r/λ), 30x stronger than base
+            // F = -∇V = -(1/λ)exp(-r/λ) * (direction towards mouse)
+            const forceMagnitude = (1 / lambda) * Math.exp(-dist / lambda) * 150000; // 30x force
+            const fx = (dx / dist) * forceMagnitude;
+            const fy = (dy / dist) * forceMagnitude;
+
+            // Apply force as acceleration
+            particle.vx += fx * dt;
+            particle.vy += fy * dt;
+          }
+        }
+
+        // Apply velocity damping
+        particle.vx *= velocityDamping;
+        particle.vy *= velocityDamping;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      // Update previous mouse position for next frame
+      prevMouseX = mouseX;
+      prevMouseY = mouseY;
+
+      // Check if all particles are gone
+      if (particles.length === 0 && allParticlesGoneTime === null) {
+        allParticlesGoneTime = currentTime;
+
+        // Create BURP INCOMING flash message
+        const burpWarning = document.createElement('div');
+        burpWarning.id = 'burp-warning';
+        burpWarning.textContent = 'BURP INCOMING';
+        burpWarning.style.position = 'fixed';
+        burpWarning.style.top = '50%';
+        burpWarning.style.left = '50%';
+        burpWarning.style.transform = 'translate(-50%, -50%)';
+        burpWarning.style.fontSize = '64px';
+        burpWarning.style.fontFamily = 'Courier New, monospace';
+        burpWarning.style.fontWeight = 'bold';
+        burpWarning.style.letterSpacing = '4px';
+        burpWarning.style.color = '#00ff00';
+        burpWarning.style.textShadow = '0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00';
+        burpWarning.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        burpWarning.style.padding = '30px 50px';
+        burpWarning.style.border = '4px solid #00ff00';
+        burpWarning.style.boxShadow = '0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2)';
+        burpWarning.style.zIndex = '100000';
+        burpWarning.style.pointerEvents = 'none';
+        burpWarning.style.textAlign = 'center';
+        burpWarning.style.display = 'none';
+        document.body.appendChild(burpWarning);
+
+        // Flash with 0.5s on, 0.5s off starting at 3 seconds (last 2 seconds before burp)
+        let flashStartTime = null;
+
+        function flashBurpWarning(time) {
+          const elapsed = (time - allParticlesGoneTime) / 1000;
+
+          if (elapsed >= 3 && elapsed < WAIT_TIME) {
+            if (flashStartTime === null) flashStartTime = time;
+            const flashElapsed = (time - flashStartTime) / 1000;
+            const cycleTime = flashElapsed % 1.0; // 1 second cycle
+
+            if (cycleTime < 0.5) {
+              burpWarning.style.display = 'block';
+            } else {
+              burpWarning.style.display = 'none';
+            }
+
+            requestAnimationFrame(flashBurpWarning);
+          } else if (elapsed >= WAIT_TIME) {
+            // Remove warning when burp starts
+            burpWarning.remove();
+          } else if (elapsed < 3) {
+            // Keep flashing until we reach 3 seconds
+            requestAnimationFrame(flashBurpWarning);
+          }
+        }
+
+        requestAnimationFrame(flashBurpWarning);
+      }
+
+      // Start burp mode after WAIT_TIME
+      if (allParticlesGoneTime !== null && burpAudio === null) {
+        const elapsed = (currentTime - allParticlesGoneTime) / 1000;
+
+        if (elapsed >= WAIT_TIME && !burpStarted) {
+          burpStarted = true;
+
+          burpAudio = new Audio('{{site.baseurl}}/audio/burp_loop.mp3');
+          burpAudio.loop = true;
+          burpAudio.volume = 0.5;
+          burpAudio.play();
+
+          // Start burping particles at BURP_RATE
+          let lastBurpTime = currentTime;
+          const burpInterval = 1000 / BURP_RATE; // ms between burps
+
+          function burpParticle() {
+            if (vacuumedParticles.length > 0) {
+              // Get current mouse direction
+              let dirX = 0, dirY = 1; // Default down
+              if (mouseHistory.length >= 2) {
+                const oldest = mouseHistory[0];
+                const newest = mouseHistory[mouseHistory.length - 1];
+                const histDx = newest.x - oldest.x;
+                const histDy = newest.y - oldest.y;
+                const histDist = Math.sqrt(histDx * histDx + histDy * histDy);
+
+                if (histDist > 0.01) {
+                  // Direction is same as mouse movement
+                  dirX = histDx / histDist;
+                  dirY = histDy / histDist;
+                }
+              }
+
+              // Pop from end (reverse order)
+              const particle = vacuumedParticles.pop();
+
+              // Reset particle position to mouse (centered on particle)
+              particle.x = mouseX - particle.width / 2;
+              particle.y = mouseY - particle.height / 2;
+
+              // Add Gaussian angular jitter (mean 0, stdev 3 degrees)
+              const jitterAngle = gaussianRandom(0, 3) * Math.PI / 180; // Convert to radians
+              const currentAngle = Math.atan2(dirY, dirX);
+              const newAngle = currentAngle + jitterAngle;
+              const jitteredDirX = Math.cos(newAngle);
+              const jitteredDirY = Math.sin(newAngle);
+
+              particle.vx = jitteredDirX * V_BURP;
+              particle.vy = jitteredDirY * V_BURP;
+
+              // Show particle again
+              particle.el.style.display = 'block';
+              particle.el.style.left = particle.x + 'px';
+              particle.el.style.top = particle.y + 'px';
+
+              burpedParticles.push(particle);
+            }
+
+            // Schedule next burp if more particles remain
+            if (vacuumedParticles.length > 0) {
+              setTimeout(burpParticle, burpInterval);
+            } else {
+              // All particles burped out, stop the audio
+              if (burpAudio) {
+                burpAudio.pause();
+                burpAudio.currentTime = 0;
+              }
+            }
+          }
+
+          // Start burping
+          burpParticle();
+        }
+      }
+
+      // Animate burped particles
+      if (burpStarted && burpedParticles.length > 0) {
+        for (let i = burpedParticles.length - 1; i >= 0; i--) {
+          const particle = burpedParticles[i];
+
+          // Update position
+          particle.x += particle.vx * dt;
+          particle.y += particle.vy * dt;
+
+          // Check if out of bounds
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+
+          if (particle.x < -particle.width || particle.x > width ||
+              particle.y < -particle.height || particle.y > height) {
+            // Remove particle
+            particle.el.remove();
+            burpedParticles.splice(i, 1);
+            continue;
+          }
+
+          // Update transform
+          particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+</script>

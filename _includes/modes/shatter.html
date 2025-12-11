@@ -1,0 +1,218 @@
+<script>
+  // ============================================================================
+  // SHATTER MODE
+  // ============================================================================
+
+  function enterShatterMode() {
+    if (shatterActive) return;
+    shatterActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    const particles = [];
+
+    // Helper function to create particle from element
+    function createParticle(element, rect, isText = false) {
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the element
+      const clone = element.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(element);
+
+      // For icon elements (i, svg), copy minimal styles to avoid interfering with pseudo-elements
+      if (element.tagName === 'I' || element.tagName === 'SVG') {
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.color = computedStyle.color;
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      } else {
+        // For other elements, copy full styles
+        // Ensure emoji fonts are preserved by adding them to the font stack
+        const fontFamily = computedStyle.fontFamily;
+        clone.style.fontFamily = fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.fontWeight = computedStyle.fontWeight;
+        clone.style.color = computedStyle.color;
+        clone.style.backgroundColor = computedStyle.backgroundColor;
+        clone.style.border = computedStyle.border;
+        clone.style.borderRadius = computedStyle.borderRadius;
+        clone.style.padding = computedStyle.padding;
+
+        // Preserve dimensions for all elements to prevent shrinking
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      }
+
+      // Set z-index: text always on top, then smaller elements in front
+      if (isText) {
+        clone.style.zIndex = '10000';
+      } else {
+        // Calculate area and set z-index inversely (smaller = higher z)
+        const area = rect.width * rect.height;
+        // Map area to z-index range 1000-9999 (larger area = lower z)
+        const zIndex = Math.max(1000, Math.min(9999, 9999 - Math.floor(area / 10)));
+        clone.style.zIndex = zIndex.toString();
+      }
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      element.style.visibility = 'hidden';
+
+      // Add to particles array with Gaussian random velocity
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: gaussianRandom(0, 230),
+        vy: gaussianRandom(-200, 230),
+        width: rect.width,
+        height: rect.height
+      });
+    }
+
+    // Collect all .char elements (text)
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+      createParticle(char, rect, true); // isText = true
+    });
+
+    // Collect all other shatterable elements
+    const elements = document.querySelectorAll('img, button, .styled-box, h1, h2, h3, h4, h5, h6, blockquote, svg, i, nav span, nav div');
+    elements.forEach(el => {
+      // Skip if it's the overlay blocker
+      if (el.id === 'shatter-overlay-blocker') return;
+
+      // Skip empty elements or elements with no visible content
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      createParticle(el, rect);
+    });
+
+    // Collect line breaks and render them as small horizontal lines
+    const lineBreaks = document.querySelectorAll('br');
+    lineBreaks.forEach(br => {
+      const rect = br.getBoundingClientRect();
+
+      // Create a visible line element for the br
+      const line = document.createElement('div');
+      line.style.width = '20px';
+      line.style.height = '2px';
+      line.style.backgroundColor = '#999';
+      line.style.position = 'fixed';
+      line.style.left = rect.left + 'px';
+      line.style.top = rect.top + 'px';
+      line.classList.add('char-particle');
+
+      // Add to body
+      document.body.appendChild(line);
+
+      // Hide original
+      br.style.visibility = 'hidden';
+
+      // Add to particles array with Gaussian random velocity
+      particles.push({
+        el: line,
+        x: rect.left,
+        y: rect.top,
+        vx: gaussianRandom(0, 230),
+        vy: gaussianRandom(-200, 230),
+        width: 20,
+        height: 2
+      });
+    });
+
+    // Play shatter sound after text wrapping and particle collection
+    const audio = document.getElementById('shatter-audio');
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(err => console.log('Audio play failed:', err));
+    }
+
+    // Start animation
+    startShatterAnimation(particles);
+  }
+
+  function startShatterAnimation(particles) {
+    let lastTime = performance.now();
+    const gravity = 1000; // Doubled gravity for faster fall
+    const damping = 0.6; // More energy loss on bounce
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      particles.forEach(particle => {
+        // Apply gravity
+        particle.vy += gravity * dt;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+</script>

@@ -1,0 +1,168 @@
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.6.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+/Users/jamie/.rbenv/versions/2.6.10/bin/ruby -I /Users/jamie/.rbenv/versions/2.6.10/lib/ruby/2.6.0 -r ./siteconf20251126-35029-1ooejp5.rb extconf.rb
+checking for -lstdc++... yes
+creating Makefile
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.6.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR=" clean
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.6.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR="
+compiling unf.cc
+In file included from unf.cc:1:
+In file included from ./unf/normalizer.hh:8:
+In file included from ./unf/trie/searcher.hh:4:
+./unf/trie/char_stream.hh:52:56: warning: implicit conversion loses integer precision: 'long' to 'unsigned int' [-Wshorten-64-to-32]
+   52 |       unsigned offset() const { return cur1-beg1 + cur2-beg2; }
+      |                                 ~~~~~~ ~~~~~~~~~~~~~~~~^~~~~
+./unf/trie/char_stream.hh:89:25: warning: implicit conversion loses integer precision: 'size_type' (aka 'unsigned long') to 'unsigned int' [-Wshorten-64-to-32]
+   89 |         skipped_tail = skipped.size();
+      |                      ~ ~~~~~~~~^~~~~~
+In file included from unf.cc:1:
+In file included from ./unf/normalizer.hh:8:
+./unf/trie/searcher.hh:49:25: warning: implicit conversion loses integer precision: 'long' to 'unsigned int' [-Wshorten-64-to-32]
+   49 |         unsigned beg = in.cur()-str;
+      |                  ~~~   ~~~~~~~~^~~~
+./unf/trie/searcher.hh:59:27: warning: implicit conversion loses integer precision: 'long' to 'unsigned int' [-Wshorten-64-to-32]
+   59 |               sort_end = in.cur()-str;
+      |                        ~ ~~~~~~~~^~~~
+In file included from unf.cc:1:
+./unf/normalizer.hh:60:27: warning: implicit conversion loses integer precision: 'size_type' (aka 'unsigned long') to 'unsigned int' [-Wshorten-64-to-32]
+   60 |       unsigned last = buf.size();
+      |                ~~~~   ~~~~^~~~~~
+In file included from unf.cc:3:
+In file included from /Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby.h:33:
+In file included from /Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:2111:
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/intern.h:56:19: warning: 'register' storage class specifier is deprecated and incompatible with C++17 [-Wdeprecated-register]
+   56 | void rb_mem_clear(register VALUE*, register long);
+      |                   ^~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/intern.h:56:36: warning: 'register' storage class specifier is deprecated and incompatible with C++17 [-Wdeprecated-register]
+   56 | void rb_mem_clear(register VALUE*, register long);
+      |                                    ^~~~~~~~
+unf.cc:27:16: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   27 |     FORM_NFD = rb_intern("nfd");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:23: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                       ^
+unf.cc:27:16: note: '{' token is here
+   27 |     FORM_NFD = rb_intern("nfd");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1811:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1811 |     {                                                   \
+      |     ^
+unf.cc:27:16: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   27 |     FORM_NFD = rb_intern("nfd");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1816:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1816 |     }
+      |     ^
+unf.cc:27:16: note: ')' token is here
+   27 |     FORM_NFD = rb_intern("nfd");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:56: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                                                        ^
+unf.cc:28:16: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   28 |     FORM_NFC = rb_intern("nfc");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:23: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                       ^
+unf.cc:28:16: note: '{' token is here
+   28 |     FORM_NFC = rb_intern("nfc");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1811:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1811 |     {                                                   \
+      |     ^
+unf.cc:28:16: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   28 |     FORM_NFC = rb_intern("nfc");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1816:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1816 |     }
+      |     ^
+unf.cc:28:16: note: ')' token is here
+   28 |     FORM_NFC = rb_intern("nfc");
+      |                ^~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:56: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                                                        ^
+unf.cc:29:16: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   29 |     FORM_NFKD= rb_intern("nfkd");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:23: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                       ^
+unf.cc:29:16: note: '{' token is here
+   29 |     FORM_NFKD= rb_intern("nfkd");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1811:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1811 |     {                                                   \
+      |     ^
+unf.cc:29:16: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   29 |     FORM_NFKD= rb_intern("nfkd");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1816:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1816 |     }
+      |     ^
+unf.cc:29:16: note: ')' token is here
+   29 |     FORM_NFKD= rb_intern("nfkd");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:56: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                                                        ^
+unf.cc:30:16: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   30 |     FORM_NFKC= rb_intern("nfkc");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:23: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                       ^
+unf.cc:30:16: note: '{' token is here
+   30 |     FORM_NFKC= rb_intern("nfkc");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1811:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1811 |     {                                                   \
+      |     ^
+unf.cc:30:16: warning: '}' and ')' tokens terminating statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
+   30 |     FORM_NFKC= rb_intern("nfkc");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:24: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1816:5: note: expanded from macro 'RUBY_CONST_ID_CACHE'
+ 1816 |     }
+      |     ^
+unf.cc:30:16: note: ')' token is here
+   30 |     FORM_NFKC= rb_intern("nfkc");
+      |                ^~~~~~~~~~~~~~~~~
+/Users/jamie/.rbenv/versions/2.6.10/include/ruby-2.6.0/ruby/ruby.h:1826:56: note: expanded from macro 'rb_intern'
+ 1826 |         __extension__ (RUBY_CONST_ID_CACHE((ID), (str))) : \
+      |                                                        ^
+15 warnings generated.
+linking shared-object unf_ext.bundle
+ld: warning: ignoring duplicate libraries: '-lc++'
+
+current directory: /Users/jamie/Projects/james-simon.github.io/vendor/bundle/ruby/2.6.0/gems/unf_ext-0.0.7.7/ext/unf_ext
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 unf_ext.bundle ./.gem.20251126-35029-1vj41rb
