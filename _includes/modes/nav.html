@@ -26,6 +26,15 @@
       mysteryLink.addEventListener('click', (e) => {
         e.preventDefault();
 
+        // Check if on mobile device
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        const isSmallScreen = window.innerWidth < 1024;
+
+        if (isTouchDevice && isSmallScreen) {
+          alert("The mystery button is not supported on mobile. Try on a computer!");
+          return;
+        }
+
         // Check localStorage for click count
         let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
 
