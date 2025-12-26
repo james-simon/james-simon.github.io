@@ -47,8 +47,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://james-simon.github.io/puzzles/snowflake-blue/">
-  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/puzzles/snowflake-blue/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
     body {
@@ -3549,6 +3549,15 @@
       mysteryLink.addEventListener('click', (e) => {
         e.preventDefault();
 
+        // Check if on mobile device
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        const isSmallScreen = window.innerWidth < 1024;
+
+        if (isTouchDevice && isSmallScreen) {
+          alert("The mystery button is not supported on mobile. Try on a computer!");
+          return;
+        }
+
         // Check localStorage for click count
         let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
 
@@ -3829,19 +3838,6 @@
         <p class="text-center">
           <i class="fas fa-graduation-cap"></i>
           <a href=https://scholar.google.com/citations?user=zjGfh3sAAAAJ&hl=en>gScholar</a>
-        </p>
-      </div>
-
-      <div class="col-2">
-        <p class="text-center">
-          <i class="fab fa-instagram"></i>
-          <a href="https://instagram.com/sam.simon17">sam.simon17</a>
-        </p>
-      </div>
-
-      <div class="col-2">
-        <p class="text-center">
-          SSN: 314-15-9265
         </p>
       </div>
 
