@@ -64,4 +64,20 @@ nav_order: 3
       {% endfor %}
     {% endfor %}
   </div>
+
+  <h2 style="margin-top: 2em;"><i class="fas fa-project-diagram"></i> Network Puzzles</h2>
+  <hr class="hr-thick">
+
+  <ul>
+    {% for diff in (1..10) %}
+      {% for doc in site.puzzles %}
+        {% if doc.type == "network_puzzle" and doc.difficulty == diff %}
+          <li style="margin-bottom: 0.5em;">
+            <a href="{{ doc.url }}">{{ doc.title }}</a>
+            {% if doc.origin %} &ndash; {{ doc.origin }}{% endif %}
+          </li>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </ul>
 </div>

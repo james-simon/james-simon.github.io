@@ -1,11 +1,9 @@
 ---
 layout: default
-title: Snowflake
-permalink: /snowflake/
 ---
 
 <div class="container">
-  <h1 style="margin-top: 1em;">Network Puzzle Visualizer</h1>
+  <h1 style="margin-top: 1em;">{{ page.title }}</h1>
 
   <!-- Debug elements (hidden) -->
   <div id="phaseIndicator" style="display: none; font-family: 'Gill Sans', sans-serif; font-size: 20px; font-weight: bold; margin-bottom: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">Phase: Initializing...</div>
@@ -52,10 +50,10 @@ permalink: /snowflake/
     };
   }
 
-  // Parse the snowflake.txt file
+  // Parse the network puzzle data file
   function loadAndDrawGraph() {
     // Embed the file content directly via Jekyll
-    const text = `{% include_relative _puzzles/network_puzzles/snowflake.txt %}`;
+    const text = `{% include_relative {{ page.data_file }} %}`;
 
     // Parse the file
     const lines = text.trim().split('\n');
@@ -63,7 +61,7 @@ permalink: /snowflake/
     const nodes = new Set();
     let givenWords = [];
     let randomSeed = 42; // Default seed
-    let puzzleName = 'Network Puzzle'; // Default name
+    let puzzleName = '{{ page.title }}'; // Default from page front matter
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
@@ -82,7 +80,7 @@ permalink: /snowflake/
         return;
       }
 
-      // Check if this is the "name:" line
+      // Check if this is the "name:" line (can override page title)
       if (trimmedLine.startsWith('name:')) {
         const nameString = trimmedLine.substring(5).trim(); // Remove "name:"
         puzzleName = nameString;
@@ -143,7 +141,7 @@ permalink: /snowflake/
     const seededRandom = createSeededRandom(randomSeed);
     const normalRandom = createNormalRandom(seededRandom);
 
-    // Update page title with puzzle name
+    // Update page title with puzzle name (if overridden in data file)
     const titleElement = document.querySelector('h1');
     if (titleElement) {
       titleElement.textContent = puzzleName;
@@ -179,17 +177,27 @@ permalink: /snowflake/
         }
       });
     } else {
-      // Add only specified given words
-      givenWords.forEach(word => guessedWords.add(word));
+      // Add only specified given words that actually exist in the graph
+      const nodeSet = new Set(nodeArray);
+      givenWords.forEach(word => {
+        if (nodeSet.has(word)) {
+          guessedWords.add(word);
+        }
+      });
     }
 
     // Load saved progress from localStorage
-    const STORAGE_KEY = 'puzzle_snowflake_guessed';
+    const STORAGE_KEY = 'network_puzzle_{{ page.title }}_guessed';
     try {
       const savedProgress = localStorage.getItem(STORAGE_KEY);
       if (savedProgress) {
         const savedWords = JSON.parse(savedProgress);
-        savedWords.forEach(word => guessedWords.add(word));
+        const nodeSet = new Set(nodeArray);
+        savedWords.forEach(word => {
+          if (nodeSet.has(word)) {
+            guessedWords.add(word);
+          }
+        });
       }
     } catch (e) {
       console.error('Error loading saved progress:', e);
@@ -289,6 +297,15 @@ permalink: /snowflake/
       return Math.abs(hash);
     }
 
+    // Check if a node is a given word
+    function isGivenWord(node) {
+      if (allWordsGiven) return true;
+      if (leavesGiven) {
+        return adjacencyList[node].size === 1;
+      }
+      return givenWords.includes(node);
+    }
+
     // Get color for a node
     function getNodeColor(node) {
       // If [all] was given, all words are white
@@ -296,16 +313,8 @@ permalink: /snowflake/
         return '#ffffff'; // White
       }
 
-      // If [leaves] was given, check if this node is a leaf
-      let isGivenWord = false;
-      if (leavesGiven) {
-        isGivenWord = adjacencyList[node].size === 1;
-      } else {
-        isGivenWord = givenWords.includes(node);
-      }
-
       // Check if this word was guessed (and not a given word)
-      if (guessedWords.has(node) && !isGivenWord) {
+      if (guessedWords.has(node) && !isGivenWord(node)) {
         // Generate deterministic hue from word hash
         const hash = hashString(node);
         const hue = (hash % 360) / 360; // Convert to [0, 1] range
@@ -455,6 +464,7 @@ permalink: /snowflake/
     const PHASE_2_STEPS = 5000;  // 1 second total (phase 2 is 0.5 seconds)
     const PHASE_3_STEPS = 10000; // 2 seconds total (phase 3 is 1 second - annealing/dancing)
     const PERTURBATION_STDDEV = 0.5;
+    const MAX_VELOCITY = 100;
 
     let currentIteration = 0;
     let physicsStepCount = 0;
@@ -478,9 +488,47 @@ permalink: /snowflake/
       maxInitialZ = Math.max(maxInitialZ, Math.abs(z));
     });
 
+    // Sound system - structured to easily replace with audio files later
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(word, isAlreadyRevealed = false) {
+      // For now, generate beeps - later replace with audio file loading
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      if (isAlreadyRevealed) {
+        // Fixed low pitch for already revealed
+        oscillator.frequency.value = 220; // A3
+      } else {
+        // Random pitch based on word hash (same as color)
+        const hash = hashString(word);
+        // Map to musical notes between C4 (261.63) and C6 (1046.50)
+        const minFreq = 261.63;
+        const maxFreq = 1046.50;
+        oscillator.frequency.value = minFreq + (hash % 1000) / 1000 * (maxFreq - minFreq);
+      }
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Short beep
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.15);
+    }
+
     // Set up guess input
     const guessInput = document.getElementById('guessInput');
     const feedbackEl = document.getElementById('feedback');
+
+    // Resume AudioContext on first interaction to avoid delay
+    guessInput.addEventListener('focus', () => {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }, { once: true });
 
     guessInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
@@ -526,6 +574,9 @@ permalink: /snowflake/
           pos.vx += (seededRandom() * 2 * a) - a;
           pos.vy += (seededRandom() * 2 * a) - a;
 
+          // Play sound
+          playSound(foundNode, alreadyRevealed);
+
           // Check if all words are now guessed (victory!)
           if (found && guessedWords.size === nodeArray.length) {
             // Play Chopin Nocturne
@@ -533,6 +584,9 @@ permalink: /snowflake/
             victoryAudio.volume = 0.5;
             victoryAudio.play().catch(err => console.log('Victory audio play failed:', err));
           }
+        } else {
+          // Wrong guess - play low pitch sound
+          playSound('', true);
         }
 
         // Create new feedback message
@@ -542,12 +596,95 @@ permalink: /snowflake/
         if (found) {
           message.textContent = `✓ ${guess}`;
           message.style.color = '#2a9d8f';
+        } else if (alreadyRevealed) {
+          message.textContent = `${guess} (already revealed)`;
+          message.style.color = '#888';
         } else {
           message.textContent = `✗ ${guess}`;
           message.style.color = '#e63946';
         }
 
         feedbackEl.prepend(message);
+      }
+    });
+
+    // Set up drag functionality
+    let draggedNode = null;
+
+    canvas.addEventListener('mousedown', (e) => {
+      // Only allow dragging in phase 4
+      if (physicsStepCount < PHASE_3_STEPS) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      // Check if clicking on a box
+      for (const node of nodeArray) {
+        const pos = nodePositions[node];
+        const box = getBoxDimensions(node);
+
+        if (Math.abs(mouseX - pos.x) <= box.width / 2 &&
+            Math.abs(mouseY - pos.y) <= box.height / 2) {
+          draggedNode = node;
+          canvas.style.cursor = 'grabbing';
+
+          // Play sound when clicking on a box
+          // Colored (guessed, not given) words get random pitch
+          // White (given) words or blank boxes get fixed low pitch
+          if (guessedWords.has(node) && !isGivenWord(node)) {
+            playSound(node, false); // Random pitch for colored words
+          } else {
+            playSound(node, true); // Fixed low pitch for white/blank
+          }
+
+          break;
+        }
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      if (draggedNode) {
+        // Update dragged node position
+        const pos = nodePositions[draggedNode];
+        pos.x = mouseX;
+        pos.y = mouseY;
+      } else {
+        // Show grab cursor when hovering over a box in phase 4
+        if (physicsStepCount >= PHASE_3_STEPS) {
+          let hovering = false;
+          for (const node of nodeArray) {
+            const pos = nodePositions[node];
+            const box = getBoxDimensions(node);
+
+            if (Math.abs(mouseX - pos.x) <= box.width / 2 &&
+                Math.abs(mouseY - pos.y) <= box.height / 2) {
+              hovering = true;
+              break;
+            }
+          }
+          canvas.style.cursor = hovering ? 'grab' : 'default';
+        }
+      }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      if (!draggedNode) return;
+
+      // Release with zero velocity
+      draggedNode = null;
+      canvas.style.cursor = 'default';
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      if (draggedNode) {
+        // Release with zero velocity
+        draggedNode = null;
+        canvas.style.cursor = 'default';
       }
     });
 
@@ -635,7 +772,7 @@ permalink: /snowflake/
             let forceMagnitude = REPULSION_FACTOR * Math.exp(-edgeDist / LENGTH_SCALE) * (LENGTH_SCALE + edgeDist) / ((edgeDist + 0.01) * (edgeDist + 0.01));
 
             // Cap the force to prevent blowup at small distances
-            forceMagnitude = Math.min(forceMagnitude, REPULSION_FACTOR * 20);
+            forceMagnitude = Math.min(forceMagnitude, REPULSION_FACTOR);
 
             const fx = (dx / centerDist) * forceMagnitude;
             const fy = (dy / centerDist) * forceMagnitude;
@@ -652,8 +789,8 @@ permalink: /snowflake/
       }
 
       // Attraction along edges (in 3D)
-      // Energy: U_a = ATTRACTION_FACTOR * (distance / LENGTH_SCALE)^2
-      // Force magnitude: F_a = 2 * ATTRACTION_FACTOR * distance / LENGTH_SCALE^2
+      // Energy: U_a = ATTRACTION_FACTOR * (distance / LENGTH_SCALE)^1.5
+      // Force magnitude: F_a = 1.5 * ATTRACTION_FACTOR * sqrt(distance) / LENGTH_SCALE^1.5
       edges.forEach(edge => {
         const pos1 = nodePositions[edge.from];
         const pos2 = nodePositions[edge.to];
@@ -663,7 +800,7 @@ permalink: /snowflake/
         const dz = pos2.z - pos1.z;
         const dist = Math.sqrt(dx * dx + dy * dy + dz * dz + 0.01);
 
-        const forceMagnitude = 2 * ATTRACTION_FACTOR * dist / (LENGTH_SCALE * LENGTH_SCALE);
+        const forceMagnitude = 1.5 * ATTRACTION_FACTOR * Math.sqrt(dist) / Math.pow(LENGTH_SCALE, 1.5);
         const fx = (dx / dist) * forceMagnitude;
         const fy = (dy / dist) * forceMagnitude;
         const fz = (dz / dist) * forceMagnitude;
@@ -679,6 +816,14 @@ permalink: /snowflake/
         // Update positions
         nodeArray.forEach(node => {
           const pos = nodePositions[node];
+
+          // Skip position update for dragged node (it's controlled by mouse)
+          if (node === draggedNode) {
+            // Still zero out velocity so it doesn't accumulate
+            pos.vx = 0;
+            pos.vy = 0;
+            return;
+          }
 
           if (inPhase3 || inPhase4) {
             // Phase 3 & 4: Pure 2D, z = 0
@@ -703,6 +848,13 @@ permalink: /snowflake/
               }
             }
 
+            // Clamp velocity to max
+            const speed = Math.sqrt(pos.vx * pos.vx + pos.vy * pos.vy);
+            if (speed > MAX_VELOCITY) {
+              pos.vx = (pos.vx / speed) * MAX_VELOCITY;
+              pos.vy = (pos.vy / speed) * MAX_VELOCITY;
+            }
+
             pos.x += pos.vx * DT;
             pos.y += pos.vy * DT;
           } else {
@@ -710,6 +862,15 @@ permalink: /snowflake/
             pos.vx = (pos.vx + pos.fx) * (1 - DAMPING);
             pos.vy = (pos.vy + pos.fy) * (1 - DAMPING);
             pos.vz = (pos.vz + pos.fz) * (1 - DAMPING);
+
+            // Clamp velocity to max
+            const speed = Math.sqrt(pos.vx * pos.vx + pos.vy * pos.vy + pos.vz * pos.vz);
+            if (speed > MAX_VELOCITY) {
+              pos.vx = (pos.vx / speed) * MAX_VELOCITY;
+              pos.vy = (pos.vy / speed) * MAX_VELOCITY;
+              pos.vz = (pos.vz / speed) * MAX_VELOCITY;
+            }
+
             pos.x += pos.vx * DT;
             pos.y += pos.vy * DT;
             pos.z += pos.vz * DT;
@@ -844,6 +1005,13 @@ permalink: /snowflake/
 
         // If direction === 'none', no circles are drawn
       });
+
+      // Draw instruction text in bottom right
+      ctx.font = '18px "Gill Sans", sans-serif';
+      ctx.fillStyle = '#999';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('click and drag to adjust the graph', width - 10, height - 10);
 
       currentIteration++;
       const frameEnd = performance.now();

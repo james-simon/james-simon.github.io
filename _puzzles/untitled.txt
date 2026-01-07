@@ -67,7 +67,19 @@ alarm<-car
 
 signal<-traffic
 signal<-turn
-signal<-distress
+signal<-warning
+
+traffic->jam
+traffic->circle
+traffic<-air
+
+turn->pike
+turn->around
+turn<-right
+
+warning->light
+warning<-tornado
+warning->shot
 
 half->time
 half<-other
@@ -96,6 +108,6 @@ car->seat
 
 given: [leaves]
 
-random seed: 19
+random seed: 42
 
-name: Snowflake #2
+name: Untitled
