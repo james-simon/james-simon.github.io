@@ -1,0 +1,339 @@
+<script>
+  // ============================================================================
+  // BOMB MODE
+  // ============================================================================
+
+  function enterBombMode() {
+    if (bombActive) return;
+    bombActive = true;
+
+    // Wrap text on first activation
+    ensureTextWrapped();
+
+    // Record scroll position
+    const scrollY = window.scrollY;
+
+    // Lock body in place
+    document.body.classList.add('shatter-locked');
+    document.body.style.top = `-${scrollY}px`;
+
+    // Create flashy "CLICK TO DETONATE" message (grey style)
+    const flashMessage = document.createElement('div');
+    flashMessage.textContent = 'CLICK TO DETONATE';
+    flashMessage.style.position = 'fixed';
+    flashMessage.style.top = '50%';
+    flashMessage.style.left = '50%';
+    flashMessage.style.transform = 'translate(-50%, -50%)';
+    flashMessage.style.fontSize = '64px';
+    flashMessage.style.fontFamily = 'Courier New, monospace';
+    flashMessage.style.fontWeight = 'bold';
+    flashMessage.style.letterSpacing = '4px';
+    flashMessage.style.color = '#b0b0b0';
+    flashMessage.style.textShadow = '0 0 10px #b0b0b0, 0 0 20px #b0b0b0, 0 0 30px #b0b0b0, 0 0 40px #b0b0b0';
+    flashMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    flashMessage.style.padding = '30px 50px';
+    flashMessage.style.border = '4px solid #b0b0b0';
+    flashMessage.style.boxShadow = '0 0 20px #b0b0b0, inset 0 0 20px rgba(176, 176, 176, 0.2)';
+    flashMessage.style.zIndex = '100000';
+    flashMessage.style.pointerEvents = 'none';
+    flashMessage.style.textAlign = 'center';
+    flashMessage.style.opacity = '1';
+    flashMessage.style.transition = 'opacity 2s';
+    document.body.appendChild(flashMessage);
+
+    // Show steady for 1 second, then fade out over 2 seconds
+    setTimeout(() => {
+      flashMessage.style.opacity = '0';
+      setTimeout(() => {
+        flashMessage.remove();
+      }, 2000); // Remove after fade completes
+    }, 1000);
+
+    const particles = [];
+
+    // Helper function to create particle from element
+    function createParticle(element, rect, isText = false) {
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Clone the element
+      const clone = element.cloneNode(true);
+      clone.classList.remove('char');
+      clone.classList.add('char-particle');
+
+      // Copy computed styles
+      const computedStyle = window.getComputedStyle(element);
+
+      // For icon elements (i, svg), copy minimal styles to avoid interfering with pseudo-elements
+      if (element.tagName === 'I' || element.tagName === 'SVG') {
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.color = computedStyle.color;
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      } else {
+        // For other elements, copy full styles
+        // Ensure emoji fonts are preserved by adding them to the font stack
+        const fontFamily = computedStyle.fontFamily;
+        clone.style.fontFamily = fontFamily + ', "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+        clone.style.fontSize = computedStyle.fontSize;
+        clone.style.fontWeight = computedStyle.fontWeight;
+        clone.style.color = computedStyle.color;
+        clone.style.backgroundColor = computedStyle.backgroundColor;
+        clone.style.border = computedStyle.border;
+        clone.style.borderRadius = computedStyle.borderRadius;
+        clone.style.padding = computedStyle.padding;
+
+        // Preserve dimensions for all elements to prevent shrinking
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.boxSizing = 'border-box';
+      }
+
+      // Set z-index: text always on top, then smaller elements in front
+      if (isText) {
+        clone.style.zIndex = '10000';
+      } else {
+        // Calculate area and set z-index inversely (smaller = higher z)
+        const area = rect.width * rect.height;
+        // Map area to z-index range 1000-9999 (larger area = lower z)
+        const zIndex = Math.max(1000, Math.min(9999, 9999 - Math.floor(area / 10)));
+        clone.style.zIndex = zIndex.toString();
+      }
+
+      // Position at exact location
+      clone.style.left = rect.left + 'px';
+      clone.style.top = rect.top + 'px';
+      clone.style.transform = 'translate(0, 0)';
+
+      // Append to body
+      document.body.appendChild(clone);
+
+      // Hide original
+      element.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity (frozen until blasted)
+      particles.push({
+        el: clone,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: rect.width,
+        height: rect.height,
+        active: false // Not yet blasted
+      });
+    }
+
+    // Collect all .char elements (text)
+    const chars = document.querySelectorAll('.char');
+    chars.forEach(char => {
+      const rect = char.getBoundingClientRect();
+      createParticle(char, rect, true); // isText = true
+    });
+
+    // Collect all other shatterable elements
+    // Don't collect h1-h6 since their text is already wrapped in .char and we'll collect icons separately
+    const elements = document.querySelectorAll('img, button, .styled-box, blockquote, svg, i');
+    elements.forEach(el => {
+      // Skip if it's the overlay blocker
+      if (el.id === 'shatter-overlay-blocker') return;
+
+      // Skip empty elements or elements with no visible content
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      createParticle(el, rect);
+    });
+
+    // Collect line breaks and render them as small horizontal lines
+    const lineBreaks = document.querySelectorAll('br');
+    lineBreaks.forEach(br => {
+      const rect = br.getBoundingClientRect();
+
+      // Skip if outside viewport
+      if (rect.bottom < 0 || rect.top > window.innerHeight ||
+          rect.right < 0 || rect.left > window.innerWidth) {
+        return;
+      }
+
+      // Create a visible line element for the br
+      const line = document.createElement('div');
+      line.style.width = '20px';
+      line.style.height = '2px';
+      line.style.backgroundColor = '#999';
+      line.style.position = 'fixed';
+      line.style.left = rect.left + 'px';
+      line.style.top = rect.top + 'px';
+      line.classList.add('char-particle');
+
+      // Add to body
+      document.body.appendChild(line);
+
+      // Hide original
+      br.style.visibility = 'hidden';
+
+      // Add to particles array with zero initial velocity (frozen until blasted)
+      particles.push({
+        el: line,
+        x: rect.left,
+        y: rect.top,
+        vx: 0,
+        vy: 0,
+        width: 20,
+        height: 2,
+        active: false // Not yet blasted
+      });
+    });
+
+    // Don't play sound initially - will play on each blast
+
+    // Start animation
+    startBombAnimation(particles);
+  }
+
+  function createBlastCircle(x, y, radius) {
+    const circle = document.createElement('div');
+    circle.style.position = 'fixed';
+    circle.style.left = x + 'px';
+    circle.style.top = y + 'px';
+    circle.style.width = '20px';
+    circle.style.height = '20px';
+    circle.style.borderRadius = '50%';
+    circle.style.backgroundColor = 'rgba(255, 140, 0, 0.4)'; // Translucent orange
+    circle.style.border = '2px solid rgba(255, 140, 0, 0.6)';
+    circle.style.transform = 'translate(-50%, -50%)';
+    circle.style.opacity = '0.8';
+    circle.style.boxShadow = '0 0 20px rgba(255, 140, 0, 0.5), 0 0 40px rgba(255, 140, 0, 0.3)';
+    circle.style.zIndex = '99998';
+    circle.style.pointerEvents = 'none';
+    circle.style.transition = 'opacity 0.4s, transform 0.4s, width 0.4s, height 0.4s';
+    document.body.appendChild(circle);
+
+    // Animate circle expanding to blast radius
+    setTimeout(() => {
+      const diameter = radius * 2;
+      circle.style.opacity = '0';
+      circle.style.width = diameter + 'px';
+      circle.style.height = diameter + 'px';
+      setTimeout(() => {
+        circle.remove();
+      }, 400);
+    }, 50);
+  }
+
+  function startBombAnimation(particles) {
+    let lastTime = performance.now();
+    const gravity = 1000; // Doubled gravity for faster fall
+    const damping = 0.6; // More energy loss on bounce
+    const R_BLAST = 200; // Blast radius in pixels
+
+    // Add click listener to detonate bombs
+    document.addEventListener('click', (e) => {
+      // Ignore clicks on nav elements (mystery button, etc.)
+      if (e.target.closest('nav')) {
+        return;
+      }
+
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+
+      // Find all particles within blast radius and activate them
+      let blastCount = 0;
+      particles.forEach(particle => {
+        if (!particle.active) {
+          // Calculate distance from click to particle center
+          const centerX = particle.x + particle.width / 2;
+          const centerY = particle.y + particle.height / 2;
+          const dx = centerX - clickX; // Reversed: particle TO click (for outward direction)
+          const dy = centerY - clickY; // Reversed: particle TO click (for outward direction)
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < R_BLAST) {
+            // Activate particle and give it velocity radiating outward from blast
+            particle.active = true;
+            blastCount++;
+
+            // Calculate direction away from blast center (outward)
+            const angle = Math.atan2(dy, dx);
+            const speed = 400; // Base blast speed
+
+            // Add some randomness to the blast
+            const jitter = (Math.random() - 0.5) * 0.5; // ±0.25 radians
+            const finalAngle = angle + jitter;
+            const speedVariation = 0.8 + Math.random() * 0.4; // 0.8x to 1.2x speed
+
+            particle.vx = Math.cos(finalAngle) * speed * speedVariation;
+            particle.vy = Math.sin(finalAngle) * speed * speedVariation;
+          }
+        }
+      });
+
+      // Always show blast circle and play sound (even if no particles hit)
+      createBlastCircle(clickX, clickY, R_BLAST);
+
+      const audio = document.getElementById('bomb-audio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(err => console.log('Audio play failed:', err));
+      }
+    });
+
+    function animate(currentTime) {
+      let dt = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Cap dt to prevent huge jumps when tab becomes inactive
+      dt = Math.min(dt, 0.033); // Max ~30fps worth of time
+
+      particles.forEach(particle => {
+        // Only animate active particles
+        if (!particle.active) return;
+
+        // Apply gravity
+        particle.vy += gravity * dt;
+
+        // Update position
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+
+        // Bounce off edges - check full bounding box
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Left and right edges
+        if (particle.x < 0) {
+          particle.x = 0;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.x + particle.width > width) {
+          particle.x = width - particle.width;
+          particle.vx = -particle.vx * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Top and bottom edges
+        if (particle.y < 0) {
+          particle.y = 0;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        } else if (particle.y + particle.height > height + 7) {
+          // Keep character visible - allow a bit past the bottom (7px lower)
+          particle.y = height - particle.height + 7;
+          particle.vy = -particle.vy * damping;
+          particle.vx *= 0.97; // Apply friction
+        }
+
+        // Apply transform
+        particle.el.style.transform = `translate(${particle.x - parseFloat(particle.el.style.left)}px, ${particle.y - parseFloat(particle.el.style.top)}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  }
+</script>
