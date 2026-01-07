@@ -1,13 +1,868 @@
 ---
 layout: default
-title: Test
-permalink: /test/
+title: Snowflake
+permalink: /snowflake/
 ---
 
 <div class="container">
-  <h1>Test Page</h1>
+  <h1 style="margin-top: 1em;">Network Puzzle Visualizer</h1>
 
-  <p>
-    <a href="tel:7039759853">Click here to call 703-975-9853</a>
-  </p>
+  <!-- Debug elements (hidden) -->
+  <div id="phaseIndicator" style="display: none; font-family: 'Gill Sans', sans-serif; font-size: 20px; font-weight: bold; margin-bottom: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">Phase: Initializing...</div>
+
+  <div style="position: relative; width: 100%; max-width: 1200px;">
+    <button id="resetButton" style="position: absolute; top: -45px; right: 0; padding: 6px 14px; font-family: 'Gill Sans', sans-serif; font-size: 16px; background-color: white; color: black; border: 2px solid #ccc; border-radius: 4px; cursor: pointer;">reset</button>
+    <canvas id="graphCanvas" width="1200" height="800" style="border: 1px solid #ccc; display: block; width: 100%;"></canvas>
+  </div>
+  <div id="frameCounter" style="display: none; position: absolute; top: 100px; left: 20px; font-family: 'Gill Sans', sans-serif; font-size: 16px; background: rgba(255,255,255,0.7); padding: 5px;">Frame: 0</div>
+
+  <div style="margin-top: 20px;">
+    <input type="text" id="guessInput" placeholder="Type a guess and press Enter" style="width: 400px; padding: 10px; font-size: 16px; font-family: 'Gill Sans', sans-serif;">
+    <div id="feedback" style="margin-top: 10px; font-size: 16px; font-family: 'Gill Sans', sans-serif;"></div>
+  </div>
 </div>
+
+<script>
+  // Seeded random number generator (mulberry32)
+  function createSeededRandom(seed) {
+    return function() {
+      seed |= 0;
+      seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // Box-Muller transform for normal distribution
+  function createNormalRandom(randomFunc) {
+    let spare = null;
+    return function(mean = 0, stddev = 1) {
+      if (spare !== null) {
+        const result = spare * stddev + mean;
+        spare = null;
+        return result;
+      }
+      const u1 = randomFunc();
+      const u2 = randomFunc();
+      const r = Math.sqrt(-2 * Math.log(u1));
+      const theta = 2 * Math.PI * u2;
+      spare = r * Math.sin(theta);
+      return r * Math.cos(theta) * stddev + mean;
+    };
+  }
+
+  // Parse the snowflake.txt file
+  function loadAndDrawGraph() {
+    // Embed the file content directly via Jekyll
+    const text = `{% include_relative _puzzles/network_puzzles/snowflake.txt %}`;
+
+    // Parse the file
+    const lines = text.trim().split('\n');
+    const edges = [];
+    const nodes = new Set();
+    let givenWords = [];
+    let randomSeed = 42; // Default seed
+    let puzzleName = 'Network Puzzle'; // Default name
+
+    lines.forEach(line => {
+      const trimmedLine = line.trim();
+
+      // Check if this is the "given:" line
+      if (trimmedLine.startsWith('given:')) {
+        const wordsString = trimmedLine.substring(6).trim(); // Remove "given:"
+        givenWords = wordsString.split(',').map(w => w.trim());
+        return;
+      }
+
+      // Check if this is the "random seed:" line
+      if (trimmedLine.startsWith('random seed:')) {
+        const seedString = trimmedLine.substring(12).trim(); // Remove "random seed:"
+        randomSeed = parseInt(seedString, 10);
+        return;
+      }
+
+      // Check if this is the "name:" line
+      if (trimmedLine.startsWith('name:')) {
+        const nameString = trimmedLine.substring(5).trim(); // Remove "name:"
+        puzzleName = nameString;
+        return;
+      }
+
+      // Skip empty lines
+      if (trimmedLine === '') return;
+
+      // Parse edge with direction indicator
+      let word1, word2, direction;
+
+      if (trimmedLine.includes('<->')) {
+        // Bidirectional
+        const parts = trimmedLine.split('<->');
+        word1 = parts[0].trim();
+        word2 = parts[1].trim();
+        direction = 'bidirectional';
+      } else if (trimmedLine.includes('->')) {
+        // Forward arrow
+        const parts = trimmedLine.split('->');
+        word1 = parts[0].trim();
+        word2 = parts[1].trim();
+        direction = 'forward';
+      } else if (trimmedLine.includes('<-')) {
+        // Backward arrow
+        const parts = trimmedLine.split('<-');
+        word1 = parts[0].trim();
+        word2 = parts[1].trim();
+        direction = 'backward';
+      } else if (trimmedLine.includes('-')) {
+        // Undirected (hyphen separator)
+        const parts = trimmedLine.split('-');
+        word1 = parts[0].trim();
+        word2 = parts[1].trim();
+        direction = 'none';
+      } else {
+        // Undirected (space separator)
+        const parts = trimmedLine.split(' ');
+        if (parts.length >= 2) {
+          let splitIndex = parts.length - 1;
+          word1 = parts.slice(0, splitIndex).join(' ');
+          word2 = parts[splitIndex];
+          direction = 'none';
+        } else {
+          return; // Invalid format
+        }
+      }
+
+      if (word1 && word2) {
+        nodes.add(word1);
+        nodes.add(word2);
+        edges.push({ from: word1, to: word2, direction: direction });
+      }
+    });
+
+    // Create seeded random function
+    const seededRandom = createSeededRandom(randomSeed);
+    const normalRandom = createNormalRandom(seededRandom);
+
+    // Update page title with puzzle name
+    const titleElement = document.querySelector('h1');
+    if (titleElement) {
+      titleElement.textContent = puzzleName;
+    }
+
+    // Convert nodes to array and assign random initial positions
+    const nodeArray = Array.from(nodes);
+    const nodePositions = {};
+
+    // Build adjacency list for connectedness calculation (needed before checking leaves)
+    const adjacencyList = {};
+    nodeArray.forEach(node => {
+      adjacencyList[node] = new Set();
+    });
+    edges.forEach(edge => {
+      adjacencyList[edge.from].add(edge.to);
+      adjacencyList[edge.to].add(edge.from); // Undirected for color purposes
+    });
+
+    // Check if [all] or [leaves] was specified in given words
+    const guessedWords = new Set();
+    const allWordsGiven = (givenWords.length === 1 && givenWords[0] === '[all]');
+    const leavesGiven = (givenWords.length === 1 && givenWords[0] === '[leaves]');
+
+    if (allWordsGiven) {
+      // Add all nodes as given words
+      nodeArray.forEach(node => guessedWords.add(node));
+    } else if (leavesGiven) {
+      // Add only leaf nodes (nodes with exactly one connection) as given words
+      nodeArray.forEach(node => {
+        if (adjacencyList[node].size === 1) {
+          guessedWords.add(node);
+        }
+      });
+    } else {
+      // Add only specified given words
+      givenWords.forEach(word => guessedWords.add(word));
+    }
+
+    // Load saved progress from localStorage
+    const STORAGE_KEY = 'puzzle_snowflake_guessed';
+    try {
+      const savedProgress = localStorage.getItem(STORAGE_KEY);
+      if (savedProgress) {
+        const savedWords = JSON.parse(savedProgress);
+        savedWords.forEach(word => guessedWords.add(word));
+      }
+    } catch (e) {
+      console.error('Error loading saved progress:', e);
+    }
+    const canvas = document.getElementById('graphCanvas');
+    const width = canvas.width;
+    const height = canvas.height;
+    const margin = 50;
+
+    // Calculate average number of neighbors
+    const q = nodeArray.reduce((sum, node) => sum + adjacencyList[node].size, 0) / nodeArray.length;
+
+    // Calculate connectedness factor for each node
+    const connectednessFactors = {};
+    const neighborCounts = {};
+    nodeArray.forEach(node => {
+      // Primary neighbors (1-hop)
+      const primary = adjacencyList[node];
+      const primaryCount = primary.size;
+
+      // Secondary neighbors (2-hop)
+      const secondary = new Set();
+      primary.forEach(neighbor => {
+        adjacencyList[neighbor].forEach(n => {
+          if (n !== node && !primary.has(n)) {
+            secondary.add(n);
+          }
+        });
+      });
+      const secondaryCount = secondary.size;
+
+      // Tertiary neighbors (3-hop)
+      const tertiary = new Set();
+      secondary.forEach(neighbor => {
+        adjacencyList[neighbor].forEach(n => {
+          if (n !== node && !primary.has(n) && !secondary.has(n)) {
+            tertiary.add(n);
+          }
+        });
+      });
+      const tertiaryCount = tertiary.size;
+
+      // Store neighbor counts for debugging
+      neighborCounts[node] = {
+        primary: primaryCount,
+        secondary: secondaryCount,
+        tertiary: tertiaryCount
+      };
+
+      // Calculate connectedness factor
+      connectednessFactors[node] =
+        primaryCount / q +
+        secondaryCount * 0.5 / (q * q) +
+        tertiaryCount * 0.2 / (q * q * q);
+    });
+
+    // Normalize connectedness factors to [0, 1]
+    const cfValues = Object.values(connectednessFactors);
+    const minCF = Math.min(...cfValues);
+    const maxCF = Math.max(...cfValues);
+    const cfRange = maxCF - minCF;
+
+    const normalizedCF = {};
+    nodeArray.forEach(node => {
+      normalizedCF[node] = cfRange > 0 ? (connectednessFactors[node] - minCF) / cfRange : 0;
+    });
+
+    // HSV to RGB conversion
+    function hsvToRgb(h, s, v) {
+      const c = v * s;
+      const x = c * (1 - Math.abs((h * 6) % 2 - 1));
+      const m = v - c;
+
+      let r, g, b;
+      if (h < 1/6) { r = c; g = x; b = 0; }
+      else if (h < 2/6) { r = x; g = c; b = 0; }
+      else if (h < 3/6) { r = 0; g = c; b = x; }
+      else if (h < 4/6) { r = 0; g = x; b = c; }
+      else if (h < 5/6) { r = x; g = 0; b = c; }
+      else { r = c; g = 0; b = x; }
+
+      return {
+        r: Math.round((r + m) * 255),
+        g: Math.round((g + m) * 255),
+        b: Math.round((b + m) * 255)
+      };
+    }
+
+    // Hash function for strings (simple but deterministic)
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return Math.abs(hash);
+    }
+
+    // Get color for a node
+    function getNodeColor(node) {
+      // If [all] was given, all words are white
+      if (allWordsGiven) {
+        return '#ffffff'; // White
+      }
+
+      // If [leaves] was given, check if this node is a leaf
+      let isGivenWord = false;
+      if (leavesGiven) {
+        isGivenWord = adjacencyList[node].size === 1;
+      } else {
+        isGivenWord = givenWords.includes(node);
+      }
+
+      // Check if this word was guessed (and not a given word)
+      if (guessedWords.has(node) && !isGivenWord) {
+        // Generate deterministic hue from word hash
+        const hash = hashString(node);
+        const hue = (hash % 360) / 360; // Convert to [0, 1] range
+        const rgb = hsvToRgb(hue, 0.3, 1.0); // Pastel: low saturation, high value
+        return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      } else {
+        return '#ffffff'; // White
+      }
+    }
+
+    // Calculate scale factor based on number of words
+    const numWords = nodeArray.length;
+    let scaleFactor = 1;
+    if (numWords > 40) {
+      scaleFactor = Math.sqrt(40 / numWords);
+    }
+
+    // Calculate uniform box size based on longest word and individual sizes
+    const ctx = canvas.getContext('2d');
+    const baseFontSize = 24;
+    const fontSize = Math.round(baseFontSize * scaleFactor);
+    ctx.font = `${fontSize}px "Gill Sans", sans-serif`;
+    let maxTextWidth = 0;
+    const nodeTextWidths = {};
+    nodeArray.forEach(node => {
+      const textWidth = ctx.measureText(node).width;
+      nodeTextWidths[node] = textWidth;
+      if (textWidth > maxTextWidth) maxTextWidth = textWidth;
+    });
+    const UNIFORM_BOX_WIDTH = maxTextWidth * 0.7 + 16 * scaleFactor;
+    const UNIFORM_BOX_HEIGHT = 36 * scaleFactor;
+    const BOX_PADDING = 16 * scaleFactor;
+    const BOX_HEIGHT = 36 * scaleFactor;
+
+    // Function to get box dimensions for a node
+    function getBoxDimensions(node) {
+      if (guessedWords.has(node)) {
+        return {
+          width: nodeTextWidths[node] + BOX_PADDING,
+          height: BOX_HEIGHT
+        };
+      } else {
+        return {
+          width: UNIFORM_BOX_WIDTH,
+          height: UNIFORM_BOX_HEIGHT
+        };
+      }
+    }
+
+    // Function to calculate minimum distance between two rectangles in 3D
+    // Rectangles are flat (2D) but embedded in 3D space
+    function rectToRectDistance3D(x1, y1, z1, w1, h1, x2, y2, z2, w2, h2) {
+      const hw1 = w1 / 2;
+      const hh1 = h1 / 2;
+      const hw2 = w2 / 2;
+      const hh2 = h2 / 2;
+
+      // Distance between edges in 2D plane
+      const dx2D = Math.max(0, Math.abs(x2 - x1) - (hw1 + hw2));
+      const dy2D = Math.max(0, Math.abs(y2 - y1) - (hh1 + hh2));
+      const dist2D = Math.sqrt(dx2D * dx2D + dy2D * dy2D);
+
+      // Add z-distance
+      const dz = z2 - z1;
+
+      return Math.sqrt(dist2D * dist2D + dz * dz);
+    }
+
+    // Function to calculate line-rectangle intersection
+    function lineRectIntersection(fromX, fromY, toX, toY, rectCenterX, rectCenterY, rectWidth, rectHeight) {
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const hw = rectWidth / 2;
+      const hh = rectHeight / 2;
+
+      let tMin = Infinity;
+      let intersectX = toX;
+      let intersectY = toY;
+
+      // Check all four edges
+      // Left edge
+      if (dx !== 0) {
+        const t = (rectCenterX - hw - fromX) / dx;
+        if (t > 0) {
+          const y = fromY + t * dy;
+          if (y >= rectCenterY - hh && y <= rectCenterY + hh && t < tMin) {
+            tMin = t;
+            intersectX = rectCenterX - hw;
+            intersectY = y;
+          }
+        }
+      }
+
+      // Right edge
+      if (dx !== 0) {
+        const t = (rectCenterX + hw - fromX) / dx;
+        if (t > 0) {
+          const y = fromY + t * dy;
+          if (y >= rectCenterY - hh && y <= rectCenterY + hh && t < tMin) {
+            tMin = t;
+            intersectX = rectCenterX + hw;
+            intersectY = y;
+          }
+        }
+      }
+
+      // Top edge
+      if (dy !== 0) {
+        const t = (rectCenterY - hh - fromY) / dy;
+        if (t > 0) {
+          const x = fromX + t * dx;
+          if (x >= rectCenterX - hw && x <= rectCenterX + hw && t < tMin) {
+            tMin = t;
+            intersectX = x;
+            intersectY = rectCenterY - hh;
+          }
+        }
+      }
+
+      // Bottom edge
+      if (dy !== 0) {
+        const t = (rectCenterY + hh - fromY) / dy;
+        if (t > 0) {
+          const x = fromX + t * dx;
+          if (x >= rectCenterX - hw && x <= rectCenterX + hw && t < tMin) {
+            tMin = t;
+            intersectX = x;
+            intersectY = rectCenterY + hh;
+          }
+        }
+      }
+
+      return { x: intersectX, y: intersectY };
+    }
+
+    // Force-directed layout parameters
+    const REPULSION_FACTOR = 0.1;
+    const ATTRACTION_FACTOR = .5;
+    const LENGTH_SCALE = 80 * scaleFactor;
+    const MAX_REPULSION_DISTANCE = 3 * LENGTH_SCALE;
+    const DT = 10;
+    const DAMPING = 0.05;
+    const PHYSICS_STEPS_PER_FRAME = 100;
+    const TARGET_FPS = 50;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS; // ~33.33ms
+    const PHASE_1_STEPS = 2500;  // 0.5 seconds at 50fps * 100 steps/frame = 2500 steps
+    const PHASE_2_STEPS = 5000;  // 1 second total (phase 2 is 0.5 seconds)
+    const PHASE_3_STEPS = 10000; // 2 seconds total (phase 3 is 1 second - annealing/dancing)
+    const PERTURBATION_STDDEV = 0.5;
+
+    let currentIteration = 0;
+    let physicsStepCount = 0;
+    let maxInitialZ = 0;  // Track max |z| for bounding box squeeze
+    const frameCounterEl = document.getElementById('frameCounter');
+    const phaseIndicatorEl = document.getElementById('phaseIndicator');
+    let lastFrameTime = null;
+    let lastRenderTime = null;
+
+    // Initialize node positions with random z-coordinates
+    nodeArray.forEach(node => {
+      const z = (seededRandom() - 0.5) * 2 * LENGTH_SCALE;  // Random z in [-80, 80]
+      nodePositions[node] = {
+        x: margin + seededRandom() * (width - 2 * margin),
+        y: margin + seededRandom() * (height - 2 * margin),
+        z: z,
+        vx: 0,
+        vy: 0,
+        vz: 0
+      };
+      maxInitialZ = Math.max(maxInitialZ, Math.abs(z));
+    });
+
+    // Set up guess input
+    const guessInput = document.getElementById('guessInput');
+    const feedbackEl = document.getElementById('feedback');
+
+    guessInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const guess = guessInput.value.trim().toLowerCase();
+        guessInput.value = '';
+
+        if (guess === '') return;
+
+        // Check if guess matches any word
+        let found = false;
+        let foundNode = null;
+        nodeArray.forEach(node => {
+          if (node.toLowerCase() === guess && !guessedWords.has(node)) {
+            guessedWords.add(node);
+            found = true;
+            foundNode = node;
+          }
+        });
+
+        // Save progress to localStorage
+        if (found) {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(guessedWords)));
+          } catch (e) {
+            console.error('Error saving progress:', e);
+          }
+        }
+
+        // If found, add random velocity perturbation (uniform distribution)
+        if (found && foundNode) {
+          const pos = nodePositions[foundNode];
+          // For uniform distribution with stddev σ, use uniform[-a, a] where a = σ√3
+          // Scale perturbation by scaleFactor for larger puzzles
+          const a = PERTURBATION_STDDEV * scaleFactor * Math.sqrt(3);
+          pos.vx += (seededRandom() * 2 * a) - a;
+          pos.vy += (seededRandom() * 2 * a) - a;
+
+          // Check if all words are now guessed (victory!)
+          if (guessedWords.size === nodeArray.length) {
+            // Play Chopin Nocturne
+            const victoryAudio = new Audio('{{site.baseurl}}/audio/chopin_nocturne.mp3');
+            victoryAudio.volume = 0.5;
+            victoryAudio.play().catch(err => console.log('Victory audio play failed:', err));
+          }
+        }
+
+        // Create new feedback message
+        const message = document.createElement('div');
+        message.style.marginBottom = '5px';
+
+        if (found) {
+          message.textContent = `✓ ${guess}`;
+          message.style.color = '#2a9d8f';
+        } else {
+          message.textContent = `✗ ${guess}`;
+          message.style.color = '#e63946';
+        }
+
+        feedbackEl.prepend(message);
+      }
+    });
+
+    // Animation loop
+    function animate() {
+      const frameStart = performance.now();
+
+      // Throttle to target FPS
+      if (lastRenderTime !== null && (frameStart - lastRenderTime) < FRAME_INTERVAL) {
+        requestAnimationFrame(animate);
+        return;
+      }
+      lastRenderTime = frameStart;
+
+      let fps = 0;
+      if (lastFrameTime !== null) {
+        fps = 1000 / (frameStart - lastFrameTime);
+      }
+      lastFrameTime = frameStart;
+
+      // Update phase indicator
+      let currentPhase = 1;
+      if (physicsStepCount >= PHASE_3_STEPS) {
+        currentPhase = 4;
+        phaseIndicatorEl.textContent = 'Phase 4: Steady State';
+      } else if (physicsStepCount >= PHASE_2_STEPS) {
+        currentPhase = 3;
+        phaseIndicatorEl.textContent = 'Phase 3: Annealing';
+      } else if (physicsStepCount >= PHASE_1_STEPS) {
+        currentPhase = 2;
+        phaseIndicatorEl.textContent = 'Phase 2: Squeezing to 2D';
+      } else {
+        currentPhase = 1;
+        phaseIndicatorEl.textContent = 'Phase 1: 3D Dynamics';
+      }
+
+      // Determine current phase
+      const inPhase1 = physicsStepCount < PHASE_1_STEPS;
+      const inPhase2 = physicsStepCount >= PHASE_1_STEPS && physicsStepCount < PHASE_2_STEPS;
+      const inPhase3 = physicsStepCount >= PHASE_2_STEPS && physicsStepCount < PHASE_3_STEPS;
+      const inPhase4 = physicsStepCount >= PHASE_3_STEPS;
+
+      // Adjust physics steps per frame based on phase (slower in phase 4)
+      const stepsThisFrame = inPhase4 ? PHYSICS_STEPS_PER_FRAME / 20 : PHYSICS_STEPS_PER_FRAME;
+
+      // Run multiple physics steps per render frame
+      for (let step = 0; step < stepsThisFrame; step++) {
+        physicsStepCount++;
+
+        // Reset forces
+        nodeArray.forEach(node => {
+          nodePositions[node].fx = 0;
+          nodePositions[node].fy = 0;
+          nodePositions[node].fz = 0;
+        });
+
+      // Repulsion between all nodes
+      // Energy: U_r = REPULSION_FACTOR * exp(-distance / LENGTH_SCALE) * LENGTH_SCALE / distance
+      // Force magnitude: F_r = REPULSION_FACTOR * exp(-distance / LENGTH_SCALE) * (LENGTH_SCALE + distance) / distance²
+      // Zero if distance > MAX_REPULSION_DISTANCE
+      // Distance is edge-to-edge between rectangles
+      for (let i = 0; i < nodeArray.length; i++) {
+        for (let j = i + 1; j < nodeArray.length; j++) {
+          const node1 = nodeArray[i];
+          const node2 = nodeArray[j];
+          const pos1 = nodePositions[node1];
+          const pos2 = nodePositions[node2];
+
+          // Get box dimensions
+          const box1 = getBoxDimensions(node1);
+          const box2 = getBoxDimensions(node2);
+
+          // Calculate edge-to-edge distance in 3D
+          const edgeDist = rectToRectDistance3D(pos1.x, pos1.y, pos1.z, box1.width, box1.height,
+                                                pos2.x, pos2.y, pos2.z, box2.width, box2.height);
+
+          // Direction from center to center in 3D
+          const dx = pos2.x - pos1.x;
+          const dy = pos2.y - pos1.y;
+          const dz = pos2.z - pos1.z;
+          const centerDist = Math.sqrt(dx * dx + dy * dy + dz * dz + 0.01);
+
+          // Only apply repulsion if within max distance
+          if (edgeDist <= MAX_REPULSION_DISTANCE) {
+            let forceMagnitude = REPULSION_FACTOR * Math.exp(-edgeDist / LENGTH_SCALE) * (LENGTH_SCALE + edgeDist) / ((edgeDist + 0.01) * (edgeDist + 0.01));
+
+            // Cap the force to prevent blowup at small distances
+            forceMagnitude = Math.min(forceMagnitude, REPULSION_FACTOR * 20);
+
+            const fx = (dx / centerDist) * forceMagnitude;
+            const fy = (dy / centerDist) * forceMagnitude;
+            const fz = (dz / centerDist) * forceMagnitude;
+
+            pos1.fx -= fx;
+            pos1.fy -= fy;
+            pos1.fz -= fz;
+            pos2.fx += fx;
+            pos2.fy += fy;
+            pos2.fz += fz;
+          }
+        }
+      }
+
+      // Attraction along edges (in 3D)
+      // Energy: U_a = ATTRACTION_FACTOR * (distance / LENGTH_SCALE)^2
+      // Force magnitude: F_a = 2 * ATTRACTION_FACTOR * distance / LENGTH_SCALE^2
+      edges.forEach(edge => {
+        const pos1 = nodePositions[edge.from];
+        const pos2 = nodePositions[edge.to];
+
+        const dx = pos2.x - pos1.x;
+        const dy = pos2.y - pos1.y;
+        const dz = pos2.z - pos1.z;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz + 0.01);
+
+        const forceMagnitude = 2 * ATTRACTION_FACTOR * dist / (LENGTH_SCALE * LENGTH_SCALE);
+        const fx = (dx / dist) * forceMagnitude;
+        const fy = (dy / dist) * forceMagnitude;
+        const fz = (dz / dist) * forceMagnitude;
+
+        pos1.fx += fx;
+        pos1.fy += fy;
+        pos1.fz += fz;
+        pos2.fx -= fx;
+        pos2.fy -= fy;
+        pos2.fz -= fz;
+      });
+
+        // Update positions
+        nodeArray.forEach(node => {
+          const pos = nodePositions[node];
+
+          if (inPhase3 || inPhase4) {
+            // Phase 3 & 4: Pure 2D, z = 0
+            pos.z = 0;
+            pos.vz = 0;
+            pos.vx = (pos.vx + pos.fx) * (1 - DAMPING);
+            pos.vy = (pos.vy + pos.fy) * (1 - DAMPING);
+
+            if (inPhase3) {
+              // Phase 3: Annealing - always add dancing perturbation
+              const danceStddev = PERTURBATION_STDDEV / 30;
+              const aDance = danceStddev * Math.sqrt(3);
+              pos.vx += (seededRandom() * 2 * aDance) - aDance;
+              pos.vy += (seededRandom() * 2 * aDance) - aDance;
+            } else if (inPhase4) {
+              // Phase 4: Steady state - only dance if puzzle is complete
+              if (guessedWords.size === nodeArray.length) {
+                const danceStddev = PERTURBATION_STDDEV / 300;
+                const aDance = danceStddev * Math.sqrt(3);
+                pos.vx += (seededRandom() * 2 * aDance) - aDance;
+                pos.vy += (seededRandom() * 2 * aDance) - aDance;
+              }
+            }
+
+            pos.x += pos.vx * DT;
+            pos.y += pos.vy * DT;
+          } else {
+            // Phase 1 & 2: 3D dynamics
+            pos.vx = (pos.vx + pos.fx) * (1 - DAMPING);
+            pos.vy = (pos.vy + pos.fy) * (1 - DAMPING);
+            pos.vz = (pos.vz + pos.fz) * (1 - DAMPING);
+            pos.x += pos.vx * DT;
+            pos.y += pos.vy * DT;
+            pos.z += pos.vz * DT;
+
+            // Phase 2: Linear squeeze to 2D
+            if (inPhase2) {
+              const progress = (physicsStepCount - PHASE_1_STEPS) / (PHASE_2_STEPS - PHASE_1_STEPS);
+              const maxZ = maxInitialZ * (1 - progress);
+
+              pos.z = Math.max(-maxZ, Math.min(maxZ, pos.z));
+
+              // If we hit the boundary, zero out z-velocity
+              if (Math.abs(pos.z) >= maxZ - 0.01) {
+                pos.vz = 0;
+              }
+            }
+          }
+
+          // Keep within bounds (x, y only)
+          pos.x = Math.max(margin, Math.min(width - margin, pos.x));
+          pos.y = Math.max(margin, Math.min(height - margin, pos.y));
+        });
+
+        // Center correction: calculate average position and shift to center
+        let avgX = 0;
+        let avgY = 0;
+        nodeArray.forEach(node => {
+          avgX += nodePositions[node].x;
+          avgY += nodePositions[node].y;
+        });
+        avgX /= nodeArray.length;
+        avgY /= nodeArray.length;
+
+        // Calculate center of canvas
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        // Shift all nodes to center
+        const shiftX = centerX - avgX;
+        const shiftY = centerY - avgY;
+        nodeArray.forEach(node => {
+          nodePositions[node].x += shiftX;
+          nodePositions[node].y += shiftY;
+        });
+      } // End physics steps loop
+
+      // Draw the graph (once per frame)
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw "annealing..." text if not in steady state
+      if (!inPhase4) {
+        ctx.font = '20px "Gill Sans", sans-serif';
+        ctx.fillStyle = '#888';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('annealing...', 10, 10);
+      }
+
+      // Draw edges (arrows)
+      ctx.strokeStyle = '#000';
+      ctx.fillStyle = '#000';
+      ctx.lineWidth = 3;
+
+      edges.forEach(edge => {
+        const from = nodePositions[edge.from];
+        const to = nodePositions[edge.to];
+
+        // Get box dimensions
+        const fromBox = getBoxDimensions(edge.from);
+        const toBox = getBoxDimensions(edge.to);
+
+        // Find intersection points with boxes
+        const fromIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, from.x, from.y, fromBox.width, fromBox.height);
+        const toIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, to.x, to.y, toBox.width, toBox.height);
+
+        // Draw line from edge to edge
+        ctx.beginPath();
+        ctx.moveTo(fromIntersect.x, fromIntersect.y);
+        ctx.lineTo(toIntersect.x, toIntersect.y);
+        ctx.stroke();
+      });
+
+      // Draw nodes (rectangles)
+      ctx.font = `${fontSize}px "Gill Sans", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      nodeArray.forEach(node => {
+        const pos = nodePositions[node];
+        const box = getBoxDimensions(node);
+
+        // Draw rectangle (colored fill, black outline)
+        ctx.fillStyle = getNodeColor(node);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.fillRect(pos.x - box.width/2, pos.y - box.height/2, box.width, box.height);
+        ctx.strokeRect(pos.x - box.width/2, pos.y - box.height/2, box.width, box.height);
+
+        // Draw label if guessed
+        if (guessedWords.has(node)) {
+          ctx.fillStyle = '#000';
+          ctx.fillText(node, pos.x, pos.y);
+        }
+      });
+
+      // Draw circles on top of everything based on edge direction
+      ctx.fillStyle = '#000';
+      edges.forEach(edge => {
+        const from = nodePositions[edge.from];
+        const to = nodePositions[edge.to];
+
+        // Get box dimensions
+        const fromBox = getBoxDimensions(edge.from);
+        const toBox = getBoxDimensions(edge.to);
+
+        // Draw circles based on direction
+        if (edge.direction === 'forward' || edge.direction === 'bidirectional') {
+          // Draw circle at 'to' end
+          const toIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, to.x, to.y, toBox.width, toBox.height);
+          ctx.beginPath();
+          ctx.arc(toIntersect.x, toIntersect.y, 5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+
+        if (edge.direction === 'backward' || edge.direction === 'bidirectional') {
+          // Draw circle at 'from' end
+          const fromIntersect = lineRectIntersection(to.x, to.y, from.x, from.y, from.x, from.y, fromBox.width, fromBox.height);
+          ctx.beginPath();
+          ctx.arc(fromIntersect.x, fromIntersect.y, 5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+
+        // If direction === 'none', no circles are drawn
+      });
+
+      currentIteration++;
+      const frameEnd = performance.now();
+      const frameTime = frameEnd - frameStart;
+      frameCounterEl.textContent = `Frame: ${currentIteration} | FPS: ${fps.toFixed(1)} | Time: ${frameTime.toFixed(1)}ms`;
+
+      // Continue animation
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate();
+
+    // Set up reset button
+    const resetButton = document.getElementById('resetButton');
+    resetButton.addEventListener('click', () => {
+      if (confirm('delete puzzle progress?')) {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        } catch (e) {
+          console.error('Error resetting progress:', e);
+        }
+      }
+    });
+  }
+
+  // Load when page is ready
+  loadAndDrawGraph();
+</script>
