@@ -490,33 +490,56 @@ layout: default
 
     // Sound system - structured to easily replace with audio files later
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const NEUTRAL_PITCH = 220; // A3
 
-    function playSound(word, isAlreadyRevealed = false) {
-      // For now, generate beeps - later replace with audio file loading
+    function playSound(word, type = 'neutral') {
+      // type can be: 'neutral', 'positive', 'negative'
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
-      if (isAlreadyRevealed) {
-        // Fixed low pitch for already revealed
-        oscillator.frequency.value = 220; // A3
-      } else {
-        // Random pitch based on word hash (same as color)
-        const hash = hashString(word);
-        // Map to musical notes between C4 (261.63) and C6 (1046.50)
-        const minFreq = 261.63;
-        const maxFreq = 1046.50;
-        oscillator.frequency.value = minFreq + (hash % 1000) / 1000 * (maxFreq - minFreq);
-      }
 
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // Short beep
-      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+      const startTime = audioContext.currentTime;
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.15);
+      if (type === 'neutral') {
+        // Neutral: single tone
+        oscillator.frequency.value = NEUTRAL_PITCH;
+
+        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.15);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.15);
+
+      } else if (type === 'positive') {
+        // Positive: fixed pitch, jump up a perfect fourth to one octave above neutral after 0.15s
+        const endFreq = NEUTRAL_PITCH * 2; // One octave above neutral = 440 Hz
+        const startFreq = endFreq / Math.pow(2, 5/12); // Perfect fourth below
+
+        oscillator.frequency.setValueAtTime(startFreq, startTime);
+        oscillator.frequency.setValueAtTime(endFreq, startTime + 0.15);
+
+        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.4);
+
+      } else if (type === 'negative') {
+        // Negative: half step above neutral, jump down to neutral after 0.25s
+        const startFreq = NEUTRAL_PITCH * Math.pow(2, 1/12); // Half step up
+        const endFreq = NEUTRAL_PITCH;
+
+        oscillator.frequency.setValueAtTime(startFreq, startTime);
+        oscillator.frequency.setValueAtTime(endFreq, startTime + 0.25);
+
+        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.5);
+      }
     }
 
     // Set up guess input
@@ -575,7 +598,11 @@ layout: default
           pos.vy += (seededRandom() * 2 * a) - a;
 
           // Play sound
-          playSound(foundNode, alreadyRevealed);
+          if (alreadyRevealed) {
+            playSound(foundNode, 'neutral');
+          } else {
+            playSound(foundNode, 'positive');
+          }
 
           // Check if all words are now guessed (victory!)
           if (found && guessedWords.size === nodeArray.length) {
@@ -585,8 +612,8 @@ layout: default
             victoryAudio.play().catch(err => console.log('Victory audio play failed:', err));
           }
         } else {
-          // Wrong guess - play low pitch sound
-          playSound('', true);
+          // Wrong guess - play negative sound
+          playSound('', 'negative');
         }
 
         // Create new feedback message
@@ -629,14 +656,8 @@ layout: default
           draggedNode = node;
           canvas.style.cursor = 'grabbing';
 
-          // Play sound when clicking on a box
-          // Colored (guessed, not given) words get random pitch
-          // White (given) words or blank boxes get fixed low pitch
-          if (guessedWords.has(node) && !isGivenWord(node)) {
-            playSound(node, false); // Random pitch for colored words
-          } else {
-            playSound(node, true); // Fixed low pitch for white/blank
-          }
+          // Play neutral sound when clicking on any box
+          playSound(node, 'neutral');
 
           break;
         }
