@@ -202,6 +202,10 @@ layout: default
     } catch (e) {
       console.error('Error loading saved progress:', e);
     }
+
+    // Track if puzzle was already complete on page load
+    const wasAlreadyComplete = guessedWords.size === nodeArray.length;
+
     const canvas = document.getElementById('graphCanvas');
     const width = canvas.width;
     const height = canvas.height;
@@ -488,11 +492,88 @@ layout: default
       maxInitialZ = Math.max(maxInitialZ, Math.abs(z));
     });
 
+    // Ripple effect
+    const JUMP_TIME = 0.2;
+
+    function startRipple(startNode) {
+      // Each ripple gets its own visited set
+      const visited = new Set();
+      visited.add(startNode);
+
+      // Get neighbors and schedule ripple
+      const neighbors = Array.from(adjacencyList[startNode] || []);
+      neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          // Random delay between JUMP_TIME/2 and JUMP_TIME
+          const delay = (JUMP_TIME / 2 + Math.random() * (JUMP_TIME / 2)) * 1000; // Convert to ms
+          setTimeout(() => {
+            rippleToNode(neighbor, visited);
+          }, delay);
+        }
+      });
+    }
+
+    function rippleToNode(node, visited) {
+      // Check if already rippled in this wave (race condition guard)
+      if (visited.has(node)) return;
+
+      // Add to this ripple's visited set
+      visited.add(node);
+
+      // Apply perturbation (0.25x of original)
+      const pos = nodePositions[node];
+      const perturbationStddev = PERTURBATION_STDDEV * 0.25;
+      const a = perturbationStddev * scaleFactor * Math.sqrt(3);
+      pos.vx += (seededRandom() * 2 * a) - a;
+      pos.vy += (seededRandom() * 2 * a) - a;
+
+      // Play tone at 1/4 volume (windchimes effect)
+      // Only revealed (non-given) words ring during ripple
+      if (guessedWords.has(node) && !isGivenWord(node)) {
+        playSound(node, 'positive', 0.05); // 1/4 of 0.2
+      }
+      // Given and unrevealed words stay silent during ripple
+
+      // Propagate to neighbors
+      const neighbors = Array.from(adjacencyList[node] || []);
+      neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          const delay = (JUMP_TIME / 2 + Math.random() * (JUMP_TIME / 2)) * 1000;
+          setTimeout(() => {
+            rippleToNode(neighbor, visited);
+          }, delay);
+        }
+      });
+    }
+
     // Sound system - structured to easily replace with audio files later
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const NEUTRAL_PITCH = 220; // A3
+    const NEUTRAL_PITCH = 155.56; // Eb3 (change this single value to shift all tones)
 
-    function playSound(word, type = 'neutral') {
+    // Get a word's positive tone from its hash
+    // Returns one of 11 tones: neutral, 1 octave up, 2 octaves up,
+    // or major pentatonic scale (0, 2, 4, 7, 9 semitones) within these
+    function getWordPitch(word) {
+      const hash = hashString(word);
+      const index = hash % 11;
+
+      // Major pentatonic intervals: 0, 2, 4, 7, 9 semitones
+      const pentatonicIntervals = [0, 2, 4, 7, 9];
+
+      // Map index to pitch:
+      // 0-4: pentatonic at base octave (NEUTRAL_PITCH)
+      // 5-9: pentatonic at 1 octave up (NEUTRAL_PITCH * 2)
+      // 10: 2 octaves up (NEUTRAL_PITCH * 4)
+      if (index < 5) {
+        return NEUTRAL_PITCH * Math.pow(2, pentatonicIntervals[index] / 12);
+      } else if (index < 10) {
+        return NEUTRAL_PITCH * 2 * Math.pow(2, pentatonicIntervals[index - 5] / 12);
+      } else {
+        return NEUTRAL_PITCH * 4;
+      }
+    }
+
+    function playSound(word, type = 'neutral', volume = 0.2) {
       // type can be: 'neutral', 'positive', 'negative'
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -506,25 +587,35 @@ layout: default
         // Neutral: single tone
         oscillator.frequency.value = NEUTRAL_PITCH;
 
-        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.setValueAtTime(volume, startTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.15);
 
         oscillator.start(startTime);
         oscillator.stop(startTime + 0.15);
 
       } else if (type === 'positive') {
-        // Positive: fixed pitch, jump up a perfect fourth to one octave above neutral after 0.15s
+        // Positive: word's unique tone from major pentatonic
+        oscillator.frequency.value = getWordPitch(word);
+
+        gainNode.gain.setValueAtTime(volume, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.4);
+
+        /* Perfect fourth positive tone (nice! keeping for reference)
         const endFreq = NEUTRAL_PITCH * 2; // One octave above neutral = 440 Hz
         const startFreq = endFreq / Math.pow(2, 5/12); // Perfect fourth below
 
         oscillator.frequency.setValueAtTime(startFreq, startTime);
         oscillator.frequency.setValueAtTime(endFreq, startTime + 0.15);
 
-        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.setValueAtTime(volume, startTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
 
         oscillator.start(startTime);
         oscillator.stop(startTime + 0.4);
+        */
 
       } else if (type === 'negative') {
         // Negative: half step above neutral, jump down to neutral after 0.25s
@@ -534,7 +625,7 @@ layout: default
         oscillator.frequency.setValueAtTime(startFreq, startTime);
         oscillator.frequency.setValueAtTime(endFreq, startTime + 0.25);
 
-        gainNode.gain.setValueAtTime(0.2, startTime);
+        gainNode.gain.setValueAtTime(volume, startTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
 
         oscillator.start(startTime);
@@ -547,11 +638,23 @@ layout: default
     const feedbackEl = document.getElementById('feedback');
 
     // Resume AudioContext on first interaction to avoid delay
-    guessInput.addEventListener('focus', () => {
+    // Also play victory music if puzzle was already complete
+    const handleFirstInteraction = () => {
       if (audioContext.state === 'suspended') {
         audioContext.resume();
       }
-    }, { once: true });
+
+      // Play victory music if puzzle was complete on page load
+      if (wasAlreadyComplete) {
+        const victoryAudio = new Audio('{{site.baseurl}}/audio/chopin_nocturne.mp3');
+        victoryAudio.volume = 0.5;
+        victoryAudio.play().catch(err => console.log('Victory audio play failed:', err));
+      }
+    };
+
+    // Listen for any click on the document
+    document.addEventListener('click', handleFirstInteraction, { once: true });
+    guessInput.addEventListener('focus', handleFirstInteraction, { once: true });
 
     guessInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
@@ -591,8 +694,8 @@ layout: default
           const pos = nodePositions[foundNode];
           // For uniform distribution with stddev σ, use uniform[-a, a] where a = σ√3
           // Scale perturbation by scaleFactor for larger puzzles
-          // Use half perturbation for already-revealed words
-          const perturbationStddev = alreadyRevealed ? PERTURBATION_STDDEV / 2 : PERTURBATION_STDDEV;
+          // Use half perturbation for already-revealed words, 1.5x for new reveals
+          const perturbationStddev = alreadyRevealed ? PERTURBATION_STDDEV / 2 : PERTURBATION_STDDEV * 1.5;
           const a = perturbationStddev * scaleFactor * Math.sqrt(3);
           pos.vx += (seededRandom() * 2 * a) - a;
           pos.vy += (seededRandom() * 2 * a) - a;
@@ -602,6 +705,8 @@ layout: default
             playSound(foundNode, 'neutral');
           } else {
             playSound(foundNode, 'positive');
+            // Start ripple effect for new reveals
+            startRipple(foundNode);
           }
 
           // Check if all words are now guessed (victory!)
@@ -656,8 +761,13 @@ layout: default
           draggedNode = node;
           canvas.style.cursor = 'grabbing';
 
-          // Play neutral sound when clicking on any box
-          playSound(node, 'neutral');
+          // Play sound when clicking on a box
+          // Revealed (non-given) words play their positive tone, others play neutral
+          if (guessedWords.has(node) && !isGivenWord(node)) {
+            playSound(node, 'positive');
+          } else {
+            playSound(node, 'neutral');
+          }
 
           break;
         }
@@ -1027,12 +1137,24 @@ layout: default
         // If direction === 'none', no circles are drawn
       });
 
-      // Draw instruction text in bottom right
-      ctx.font = '18px "Gill Sans", sans-serif';
-      ctx.fillStyle = '#999';
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText('click and drag to adjust the graph', width - 10, height - 10);
+      // Draw instruction text in bottom right (only on non-mobile)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (!isMobile) {
+        ctx.font = '18px "Gill Sans", sans-serif';
+        ctx.fillStyle = '#999';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('click and drag to adjust the graph', width - 10, height - 10);
+      }
+
+      // Draw song name in bottom left when puzzle is complete
+      if (guessedWords.size === nodeArray.length) {
+        ctx.font = '18px "Gill Sans", sans-serif';
+        ctx.fillStyle = '#999';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('Chopin - Nocturne in E Flat Major', 10, height - 10);
+      }
 
       currentIteration++;
       const frameEnd = performance.now();
