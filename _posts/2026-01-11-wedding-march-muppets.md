@@ -15,4 +15,4 @@ Two friends asked me to play Mendelssohn's Wedding March from *A Midsummer Night
 
 ***
 
-*Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the seven voices are saying `do`, `re`, `mi`, `fa`, `sol`, `la`, and `ti`.*
+*Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are saying `do`, `re`, `mi`, `fa`, `sol`, `la`, and `ti`.*
