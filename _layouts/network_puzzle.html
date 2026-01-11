@@ -702,7 +702,12 @@ layout: default
 
           // Play sound
           if (alreadyRevealed) {
-            playSound(foundNode, 'neutral');
+            // If it's a revealed word that wasn't given, play its positive tone
+            if (isGivenWord(foundNode)) {
+              playSound(foundNode, 'neutral');
+            } else {
+              playSound(foundNode, 'positive');
+            }
           } else {
             playSound(foundNode, 'positive');
             // Start ripple effect for new reveals

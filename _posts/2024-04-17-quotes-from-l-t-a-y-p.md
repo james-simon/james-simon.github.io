@@ -17,7 +17,7 @@ blockquote {
 }
 </style>
 
-Rainier Maria Rilke's *Letters to a Young Poet* is a short and singular book, consisting of a sequence of ten letters written by the famous poet and novelist to an aspiring young poet who initiated their correspondence in search of advice in poetry. Rilke's letters are remarkable for their candor and sincerity and depth of feeling: hilke's advice extends beyond the question of how to compose literature to the question of how to live.
+Rainier Maria Rilke's *Letters to a Young Poet* is a short and singular book, consisting of a sequence of ten letters written by the famous poet and novelist to an aspiring young poet who initiated their correspondence in search of advice in poetry. Rilke's letters are remarkable for their candor and sincerity and depth of feeling: Rilke's advice extends beyond the question of how to compose literature to the question of how to live.
 
 I read this collection at a time in which I'm trying to work out how best to express some artistic tendencies of mine, and it was useful to hear Rilke's thoughts on artistic authenticity and power. Here are some of my favorite quotes.
 
