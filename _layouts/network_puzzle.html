@@ -59,17 +59,17 @@ layout: default
     const lines = text.trim().split('\n');
     const edges = [];
     const nodes = new Set();
-    let givenWords = [];
+    let givenWordsRaw = ''; // Store raw string for processing later
     let randomSeed = 42; // Default seed
     let puzzleName = '{{ page.title }}'; // Default from page front matter
+    let gimmick = ''; // Store gimmick type
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
 
       // Check if this is the "given:" line
       if (trimmedLine.startsWith('given:')) {
-        const wordsString = trimmedLine.substring(6).trim(); // Remove "given:"
-        givenWords = wordsString.split(',').map(w => w.trim());
+        givenWordsRaw = trimmedLine.substring(6).trim(); // Remove "given:" and store raw
         return;
       }
 
@@ -84,6 +84,12 @@ layout: default
       if (trimmedLine.startsWith('name:')) {
         const nameString = trimmedLine.substring(5).trim(); // Remove "name:"
         puzzleName = nameString;
+        return;
+      }
+
+      // Check if this is the "gimmick:" line
+      if (trimmedLine.startsWith('gimmick:')) {
+        gimmick = trimmedLine.substring(8).trim(); // Remove "gimmick:"
         return;
       }
 
@@ -161,23 +167,38 @@ layout: default
       adjacencyList[edge.to].add(edge.from); // Undirected for color purposes
     });
 
-    // Check if [all] or [leaves] was specified in given words
+    // Process given words specification
     const guessedWords = new Set();
-    const allWordsGiven = (givenWords.length === 1 && givenWords[0] === '[all]');
-    const leavesGiven = (givenWords.length === 1 && givenWords[0] === '[leaves]');
+    let allWordsGiven = false;
+    let leavesGiven = false;
+    let givenWords = [];
 
-    if (allWordsGiven) {
+    if (givenWordsRaw === '[all]') {
       // Add all nodes as given words
+      allWordsGiven = true;
       nodeArray.forEach(node => guessedWords.add(node));
-    } else if (leavesGiven) {
+    } else if (givenWordsRaw === '[leaves]') {
       // Add only leaf nodes (nodes with exactly one connection) as given words
+      leavesGiven = true;
       nodeArray.forEach(node => {
         if (adjacencyList[node].size === 1) {
           guessedWords.add(node);
         }
       });
+    } else if (givenWordsRaw.startsWith('[all] -')) {
+      // [all] minus excluded words: "[all] - word1, word2, word3"
+      const excludedPart = givenWordsRaw.substring(7).trim(); // Remove "[all] -"
+      const excludedWords = new Set(excludedPart.split(',').map(w => w.trim()));
+      nodeArray.forEach(node => {
+        if (!excludedWords.has(node)) {
+          guessedWords.add(node);
+        }
+      });
+      // Store the actual given words for isGivenWord checks
+      givenWords = nodeArray.filter(node => !excludedWords.has(node));
     } else {
-      // Add only specified given words that actually exist in the graph
+      // Parse as comma-separated list of specific words
+      givenWords = givenWordsRaw.split(',').map(w => w.trim());
       const nodeSet = new Set(nodeArray);
       givenWords.forEach(word => {
         if (nodeSet.has(word)) {
@@ -331,9 +352,9 @@ layout: default
 
     // Calculate scale factor based on number of words
     const numWords = nodeArray.length;
-    let scaleFactor = 1;
-    if (numWords > 40) {
-      scaleFactor = Math.sqrt(40 / numWords);
+    let scaleFactor = 1.4;
+    if (numWords > 20) {
+      scaleFactor = 1.4 * Math.sqrt(20 / numWords);
     }
 
     // Calculate uniform box size based on longest word and individual sizes
@@ -348,10 +369,10 @@ layout: default
       nodeTextWidths[node] = textWidth;
       if (textWidth > maxTextWidth) maxTextWidth = textWidth;
     });
-    const UNIFORM_BOX_WIDTH = maxTextWidth * 0.7 + 16 * scaleFactor;
-    const UNIFORM_BOX_HEIGHT = 36 * scaleFactor;
-    const BOX_PADDING = 16 * scaleFactor;
     const BOX_HEIGHT = 36 * scaleFactor;
+    const BOX_PADDING = 16 * scaleFactor;
+    const UNIFORM_BOX_HEIGHT = BOX_HEIGHT;
+    const UNIFORM_BOX_WIDTH = UNIFORM_BOX_HEIGHT * 2.5; // Fixed aspect ratio of 2.5:1
 
     // Function to get box dimensions for a node
     function getBoxDimensions(node) {
@@ -1071,6 +1092,15 @@ layout: default
       ctx.lineWidth = 3;
 
       edges.forEach(edge => {
+        // Check if connection should be visible (for invisible_connections gimmick)
+        const invisibleConnections = (gimmick === 'invisible_connections');
+        const bothRevealed = guessedWords.has(edge.from) && guessedWords.has(edge.to);
+
+        // Skip drawing line if invisible_connections gimmick and both endpoints not revealed
+        if (invisibleConnections && !bothRevealed) {
+          return;
+        }
+
         const from = nodePositions[edge.from];
         const to = nodePositions[edge.to];
 
