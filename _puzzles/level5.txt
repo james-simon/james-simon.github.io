@@ -6,7 +6,7 @@ rain->coat
 winter->break
 bathroom->break
 break->fast
-break->water
+break<->water
 rain->water
 winter->storm
 rain->bow

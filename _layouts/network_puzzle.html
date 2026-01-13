@@ -99,7 +99,13 @@ layout: default
       // Parse edge with direction indicator
       let word1, word2, direction;
 
-      if (trimmedLine.includes('<->')) {
+      if (trimmedLine.includes('~')) {
+        // Anagram (bidirectional, special drawing)
+        const parts = trimmedLine.split('~');
+        word1 = parts[0].trim();
+        word2 = parts[1].trim();
+        direction = 'anagram';
+      } else if (trimmedLine.includes('<->')) {
         // Bidirectional
         const parts = trimmedLine.split('<->');
         word1 = parts[0].trim();
@@ -185,6 +191,29 @@ layout: default
           guessedWords.add(node);
         }
       });
+      // Store all given words for isGivenWord checks
+      givenWords = Array.from(guessedWords);
+    } else if (givenWordsRaw.startsWith('[leaves] +')) {
+      // [leaves] plus additional words: "[leaves] + word1, word2, word3"
+      leavesGiven = true;
+      const additionalPart = givenWordsRaw.substring(11).trim(); // Remove "[leaves] +"
+      const additionalWords = additionalPart.split(',').map(w => w.trim());
+      const nodeSet = new Set(nodeArray);
+
+      nodeArray.forEach(node => {
+        if (adjacencyList[node].size === 1) {
+          guessedWords.add(node);
+        }
+      });
+
+      additionalWords.forEach(word => {
+        if (nodeSet.has(word)) {
+          guessedWords.add(word);
+        }
+      });
+
+      // Store all given words for isGivenWord checks
+      givenWords = Array.from(guessedWords);
     } else if (givenWordsRaw.startsWith('[all] -')) {
       // [all] minus excluded words: "[all] - word1, word2, word3"
       const excludedPart = givenWordsRaw.substring(7).trim(); // Remove "[all] -"
@@ -325,9 +354,7 @@ layout: default
     // Check if a node is a given word
     function isGivenWord(node) {
       if (allWordsGiven) return true;
-      if (leavesGiven) {
-        return adjacencyList[node].size === 1;
-      }
+      // Check the givenWords array (covers all cases including [leaves] + additions)
       return givenWords.includes(node);
     }
 
@@ -1108,15 +1135,87 @@ layout: default
         const fromBox = getBoxDimensions(edge.from);
         const toBox = getBoxDimensions(edge.to);
 
-        // Find intersection points with boxes
-        const fromIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, from.x, from.y, fromBox.width, fromBox.height);
-        const toIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, to.x, to.y, toBox.width, toBox.height);
+        // Draw line
+        if (edge.direction === 'anagram') {
+          // Draw red sine wave for anagram edges
+          ctx.strokeStyle = '#ff0000';
 
-        // Draw line from edge to edge
-        ctx.beginPath();
-        ctx.moveTo(fromIntersect.x, fromIntersect.y);
-        ctx.lineTo(toIntersect.x, toIntersect.y);
-        ctx.stroke();
+          const dx = to.x - from.x;
+          const dy = to.y - from.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // Sine wave parameters
+          const wavelength = LENGTH_SCALE / 4;
+          const amplitude = wavelength / 4;
+
+          // Direction vectors
+          const dirX = dx / distance;
+          const dirY = dy / distance;
+          const perpX = -dirY;  // Perpendicular (for wave oscillation)
+          const perpY = dirX;
+
+          // Generate all sine wave points
+          const numSegments = Math.max(50, Math.floor(distance / 2));
+          const points = [];
+          for (let i = 0; i <= numSegments; i++) {
+            const t = i / numSegments;
+            const baseX = from.x + t * dx;
+            const baseY = from.y + t * dy;
+
+            // Sine wave offset perpendicular to line
+            const phase = (t * distance / wavelength) * 2 * Math.PI;
+            const offset = amplitude * Math.sin(phase);
+
+            const x = baseX + offset * perpX;
+            const y = baseY + offset * perpY;
+            points.push({ x, y });
+          }
+
+          // Find first point outside "from" box, then go one more back to connect
+          let startIdx = 0;
+          for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            if (Math.abs(p.x - from.x) > fromBox.width / 2 ||
+                Math.abs(p.y - from.y) > fromBox.height / 2) {
+              startIdx = Math.max(0, i - 1); // Go one point back
+              break;
+            }
+          }
+
+          // Find last point outside "to" box, then go one more forward to connect
+          let endIdx = points.length - 1;
+          for (let i = points.length - 1; i >= 0; i--) {
+            const p = points[i];
+            if (Math.abs(p.x - to.x) > toBox.width / 2 ||
+                Math.abs(p.y - to.y) > toBox.height / 2) {
+              endIdx = Math.min(points.length - 1, i + 1); // Go one point forward
+              break;
+            }
+          }
+
+          // Draw the trimmed sine wave
+          ctx.beginPath();
+          for (let i = startIdx; i <= endIdx; i++) {
+            if (i === startIdx) {
+              ctx.moveTo(points[i].x, points[i].y);
+            } else {
+              ctx.lineTo(points[i].x, points[i].y);
+            }
+          }
+          ctx.stroke();
+
+          // Reset stroke style for next edges
+          ctx.strokeStyle = '#000';
+        } else {
+          // Draw normal straight line (edge to edge)
+          const fromIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, from.x, from.y, fromBox.width, fromBox.height);
+          const toIntersect = lineRectIntersection(from.x, from.y, to.x, to.y, to.x, to.y, toBox.width, toBox.height);
+
+          ctx.beginPath();
+          ctx.moveTo(fromIntersect.x, fromIntersect.y);
+          ctx.lineTo(toIntersect.x, toIntersect.y);
+          ctx.stroke();
+        }
       });
 
       // Draw nodes (rectangles)
@@ -1145,6 +1244,11 @@ layout: default
       // Draw circles on top of everything based on edge direction
       ctx.fillStyle = '#000';
       edges.forEach(edge => {
+        // Skip circles for anagram edges
+        if (edge.direction === 'anagram') {
+          return;
+        }
+
         const from = nodePositions[edge.from];
         const to = nodePositions[edge.to];
 
