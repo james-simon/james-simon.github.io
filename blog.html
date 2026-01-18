@@ -30,6 +30,40 @@ nav_order: 2
   .blog-category h4 {
     margin-bottom: 0.5em;
   }
+
+  .recency-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .recency-list li {
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #eeeeee;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .recency-list .post-date {
+    color: #888;
+    font-size: 0.9em;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .recency-list .post-title {
+    flex-grow: 1;
+    margin-right: 1em;
+  }
+
+  .recency-list .post-category {
+    color: #888;
+    font-size: 0.85em;
+    font-style: italic;
+    width: 250px;
+    text-align: right;
+    flex-shrink: 0;
+  }
 </style>
 
 <div class="container">
@@ -38,10 +72,12 @@ nav_order: 2
 
   <p>I started to put my writing on this website early in my PhD. I've found it very useful, and it serves a few purposes: it's a repository of research ideas and intuitions not quite baked enough for a paper; it's a way of sharing thoughts and updates about other parts of my life; it's a place to put fun writing; it's a reason to write at all, and writing teaches one how to think clearly.</p>
 
-  <p>Recommended or favorite blogposts are marked with a ⭐. You can also explore my blog visually through a <a href="{{site.baseurl}}/t-sne/">t-SNE embedding</a>.</p>
+  <p>Recommended or favorite blogposts are marked with a ⭐. To view posts <span id="toggle-text">ordered by recency</span>, click <a href="#" id="toggle-link" onclick="toggleView(); return false;">here</a>. You can also explore my blog visually through a <a href="{{site.baseurl}}/t-sne/">t-SNE embedding</a>.</p>
 
   <hr class="hr-thick">
 
+  <!-- Category View -->
+  <div id="category-view">
   <!-- Essays -->
   <div class="row">
     <div class="col-md-12">
@@ -160,4 +196,103 @@ nav_order: 2
       </div>
     </div>
   </div>
+  </div>
+  <!-- End Category View -->
+
+  <!-- Recency View -->
+  <div id="recency-view" style="display: none;">
+    <ul class="recency-list">
+      {% for post in site.posts %}
+        <li>
+          <span class="post-date">{{ post.date | date: "%b %Y" }}</span>
+          <span class="post-title">
+            {% if post.emoji %}{{ post.emoji }} {% endif %}<a href="{{site.baseurl}}{{ post.url }}">{{ post.title }}</a>
+          </span>
+          <span class="post-category">
+            {% assign category_names = "" %}
+            {% for cat in post.category %}
+              {% case cat %}
+                {% when "essays" %}
+                  {% assign cat_name = "Essays" %}
+                {% when "kernels" %}
+                  {% assign cat_name = "Kernels and linear regression" %}
+                {% when "dl-science" %}
+                  {% assign cat_name = "Science of deep learning" %}
+                {% when "mathematics" %}
+                  {% assign cat_name = "Mathematics" %}
+                {% when "physics" %}
+                  {% assign cat_name = "Physics" %}
+                {% when "biology" %}
+                  {% assign cat_name = "Biology and chemistry" %}
+                {% when "chemistry" %}
+                  {% assign cat_name = "Biology and chemistry" %}
+                {% when "art" %}
+                  {% assign cat_name = "Art" %}
+                {% when "adventures" %}
+                  {% assign cat_name = "Adventures" %}
+                {% when "poetry" %}
+                  {% assign cat_name = "Poetry, music and performance" %}
+                {% when "music" %}
+                  {% assign cat_name = "Poetry, music and performance" %}
+                {% when "society" %}
+                  {% assign cat_name = "Society" %}
+                {% else %}
+                  {% assign cat_name = cat %}
+              {% endcase %}
+              {% if category_names != "" %}
+                {% assign category_names = category_names | append: ", " %}
+              {% endif %}
+              {% assign category_names = category_names | append: cat_name %}
+            {% endfor %}
+            {{ category_names }}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <!-- End Recency View -->
 </div>
+
+<script>
+let showingCategory = true;
+
+function toggleView() {
+  if (showingCategory) {
+    // Switch to recency view
+    showRecencyView();
+    // Update URL
+    const url = new URL(window.location);
+    url.searchParams.set('sort', 'date');
+    window.history.pushState({}, '', url);
+  } else {
+    // Switch to category view
+    showCategoryView();
+    // Update URL
+    const url = new URL(window.location);
+    url.searchParams.delete('sort');
+    window.history.pushState({}, '', url);
+  }
+}
+
+function showCategoryView() {
+  document.getElementById('category-view').style.display = 'block';
+  document.getElementById('recency-view').style.display = 'none';
+  document.getElementById('toggle-text').textContent = 'ordered by recency';
+  showingCategory = true;
+}
+
+function showRecencyView() {
+  document.getElementById('category-view').style.display = 'none';
+  document.getElementById('recency-view').style.display = 'block';
+  document.getElementById('toggle-text').textContent = 'grouped by category';
+  showingCategory = false;
+}
+
+// On page load, check URL parameter
+window.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('sort') === 'date') {
+    showRecencyView();
+  }
+});
+</script>
