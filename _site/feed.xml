@@ -5,9 +5,80 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 07 Jan 2026 12:50:46 -0500</pubDate>
-    <lastBuildDate>Wed, 07 Jan 2026 12:50:46 -0500</lastBuildDate>
+    <pubDate>Sun, 18 Jan 2026 20:03:08 -0500</pubDate>
+    <lastBuildDate>Sun, 18 Jan 2026 20:03:08 -0500</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The Ballad of the Crane Breeder</title>
+        <description>&lt;p&gt;My brother’s girlfriend’s dad, Tom Zimmer, had the craziest job out of high school I’ve ever heard of.
+He shipped up to a wildlife preserve in Wisconsin and there found his job was to &lt;em&gt;artificially inseminate cranes.&lt;/em&gt;
+They wouldn’t breed in captivity, so he had to go to their pens — the male first, then the female — to collect and deposit the necessary genetic material.
+One hitch: they’re such violent birds (especially the males) that they’ll peck the hell out of you before you can get the goods, so he’d cover the backs of his calves with cardboard for armor, catch them between his legs when they ran at him, and do what he came to do.
+This is apparently a legitimate technique in crane husbandry.&lt;/p&gt;
+
+&lt;p&gt;Of course, a man with a story like that is in desperate need of a songwriter, and I decided I fit the bill.
+Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
+
+&lt;audio controls=&quot;&quot; style=&quot;width: 100%; margin: 1.5em 0;&quot;&gt;
+  &lt;source src=&quot;/audio/crane_luv.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament and my uncle Kevin Simon for help with the “bugle” solo.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 18 Jan 2026 07:00:00 -0500</pubDate>
+        <link>http://localhost:4000/blog/ballad-of-the-crane-breeder/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/ballad-of-the-crane-breeder/</guid>
+        
+        
+        <category>music</category>
+        
+      </item>
+    
+      <item>
+        <title>Reharmonizing Ode to Joy</title>
+        <description>&lt;p&gt;I find it beautiful and fascinating how a melody can be changed or enhanced by an artistic choice of the underlying chords. As a study in chord choice, I spent an afternoon reharmonizing Ode to Joy. Here’s my finished product.&lt;/p&gt;
+
+&lt;audio controls=&quot;&quot; style=&quot;width: 100%; margin: 1.5em 0;&quot;&gt;
+  &lt;source src=&quot;/audio/ode_to_joy.m4a&quot; type=&quot;audio/mp4&quot; /&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;
+
+&lt;p&gt;Even though it’s really short, this was a lot of fun to work on. It was really satisfying to see how adding sevenths to chords made the progression feel jazzier, and how throwing in unusual chords like major thirds and sixths made it feel more tangy and colorful, and how bringing it back to the tonic at the end makes it feel like you’ve wandered afield and come back home. I really had no feel for chord progressions before starting to teach myself music theory some two years ago, but playing around with different ideas and listening very closely to the results in this and known songs and a lot of improvisation has really helped. It’s wonderful to see that there are deeper ideas in music besides the notes, behind the notes, and the structure there is really magical to see and feel.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 11 Jan 2026 05:00:00 -0500</pubDate>
+        <link>http://localhost:4000/blog/reharmonizing-ode-to-joy/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/reharmonizing-ode-to-joy/</guid>
+        
+        
+        <category>music</category>
+        
+      </item>
+    
+      <item>
+        <title>The Wedding March (Muppets version)</title>
+        <description>&lt;p&gt;Two friends asked me to play Mendelssohn’s Wedding March from &lt;em&gt;A Midsummer Night’s Dream&lt;/em&gt; at their ceremony. After a day learning the piece and a few hours in GarageBand, I sent them this and told them they’d be getting the Muppets version.&lt;/p&gt;
+
+&lt;audio controls=&quot;&quot; style=&quot;width: 100%; margin: 1.5em 0;&quot;&gt;
+  &lt;source src=&quot;/audio/wedding_march_muppets.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are singing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;re&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mi&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fa&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sol&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;la&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ti&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 11 Jan 2026 04:00:00 -0500</pubDate>
+        <link>http://localhost:4000/blog/wedding-march-muppets/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/wedding-march-muppets/</guid>
+        
+        
+        <category>music</category>
+        
+      </item>
     
       <item>
         <title>On novelty</title>
@@ -741,468 +812,6 @@ is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
         
         
         <category>kernels</category>
-        
-      </item>
-    
-      <item>
-        <title>Infinite-width autoencoders are cursed</title>
-        <description>&lt;p&gt;&lt;strong&gt;In this blogpost, I show that infinite-width neural networks with a finite-width layer in the middle are cursed: they can’t be parameterized so that, when trained with gradient descent, they (a) train in finite time and (b) have their weight tensors undergo alignment as prescribed by $\mu$P. I conclude by describing two modifications that fix this problem.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;em&gt;Autoencoder? I hardly know her!&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;~ Traditional San Francisco saying&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;how-do-you-width-scale-an-autoencoder&quot;&gt;How do you width-scale an autoencoder?&lt;/h2&gt;
-
-&lt;p&gt;Autoencoders are neural networks designed to extract (comparatively) low-dimensional representations from high-dimensional data. They’re widely-used tools for dimensionality reduction, and in the form of &lt;a href=&quot;https://en.wikipedia.org/wiki/Variational_autoencoder&quot;&gt;VAEs&lt;/a&gt;, data &lt;em&gt;generation&lt;/em&gt;. The classic autoencoder design looks like an hourglass: the input layer is the widest, subsequent layers have fewer and fewer layers until they reach a narrowest “bottleneck” layer, and then the sequence is repeated in reverse.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_diagram.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;An autoencoder is usually trained with a reconstruction objective — that is, with the goal of learning the identity function $f: x \mapsto x$ on the data.&lt;/p&gt;
-
-&lt;p&gt;Autoencoders are interesting from a scaling perspective because they represent a case where finite width is desirable, at least in one layer. They won’t learn interesting representations if every hidden layer is wide. That said, a predominant lesson from the last few years of deep learning is that, insofar as network architecture is concerned, &lt;a href=&quot;https://proceedings.mlr.press/v139/yang21c.html&quot;&gt;wider&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2203.15556&quot;&gt;is&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2303.08774&quot;&gt;always&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2311.14646&quot;&gt;better&lt;/a&gt; so long as your hyperparameters are properly tuned. In what sense will this also be true of autoencoders?&lt;/p&gt;
-
-&lt;p&gt;Asked from another direction: &lt;em&gt;how should you take the large-width limit of an autoencoder?&lt;/em&gt; Which layers in the hourglass above do you take to be infinite width? All of them &lt;em&gt;except&lt;/em&gt; the input, bottleneck, and output? Do you preserve the hourglass taper, jumping up to a large width $N$ at the second layer but then gradually &lt;em&gt;decreasing&lt;/em&gt; width down to a constant-width bottleneck? If so, do you taper width down by a constant factor $C$ per layer so the width at layer $\ell$ is $C^{-\ell}N$? Do you take widths $N^{-\alpha(\ell)}$ with $\alpha(\ell)$ interpolating from $1 \rightarrow 0$? It’s unclear!&lt;/p&gt;
-
-&lt;p&gt;In this blogpost, I will show that the answer is that, with the standard notion of neural network parameterization, &lt;strong&gt;you cannot.&lt;/strong&gt; There is no consistent way to take an infinite-width limit such that the net satisfies typical notions of layer alignment and feature learning. I’ll demonstrate this by examining a two-layer slice of a deep net, aiming to convey the general problem by means of this example. I’ll then give some solutions.&lt;/p&gt;
-
-&lt;h2 id=&quot;example-a-width-one-bottleneck&quot;&gt;Example: a width-one bottleneck&lt;/h2&gt;
-
-&lt;p&gt;Consider a deep network which has hidden width $n_k = N$ at most layers but one bottleneck layer $\ell$ with width $n_\ell = 1$. Suppose there is no nonlinearity at the bottleneck layer or adjacent layers. For the weights before and after the bottleneck, let us adopt the shorthand $\mathbf{u}^\top = \mathbf{W}_{\ell-1}$ and $\mathbf{v} = \mathbf{W}_\ell$, with $\mathbf{u}, \mathbf{v} \in \mathbb{R}^N$. Let us write $\mathbf{M} = \mathbf{v}\mathbf{u}^\top \in \mathbb{R}^{N \times N}$ for the full rank-one parameter block comprised of these two weight matrices.&lt;/p&gt;
-
-&lt;p&gt;We will consider training these two weight matrices through several steps of SGD on a single example $x$. Let us denote the hidden vector passed into this bottleneck block by $\mathbf{h} = \mathbf{h}(x) \in \mathbb{R}^N$, denote the output of the block by $\tilde{\mathbf{h}} = \tilde{\mathbf{h}}(x) \in \mathbb{R}^N$, and denote the gradient backpropagated into this block by $\mathbf{g} = -\nabla_{\tilde{\mathbf{h}}} \mathcal{L}$, where $\mathcal{L}$ is our global loss. We will assume for simplicity that $\mathbf{h}$ and $\mathbf{g}$ do not change for these steps. Note that the parameter gradient applied to the whole matrix is $\nabla_\mathbf{M} \mathcal{L} = \mathbf{g} \mathbf{h}^\top$. The following figure illustrates our notation:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_slice.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h3 id=&quot;key-feature-learning-desideratum-weight-alignment&quot;&gt;Key feature learning desideratum: weight alignment&lt;/h3&gt;
-
-&lt;p&gt;Suppose that we have just randomly initialized the parameters $\mathbf{u}, \mathbf{v}$ and will proceed to train for several steps with fixed learning rates. Let us denote the &lt;em&gt;alignment&lt;/em&gt; between the weight vectors and their corresponding signal vectors by&lt;/p&gt;
-
-\[\mathcal{A}_{\text{in}} = \frac{\mathbf{u}^\top \mathbf{h}}{|\!| \mathbf{u} |\!| |\!| \mathbf{h} |\!|},
-\quad
-\mathcal{A}_{\text{out}} = \frac{\mathbf{v}^\top \mathbf{g}}{|\!| \mathbf{v} |\!| |\!| \mathbf{g} |\!|}.\]
-
-&lt;p&gt;At initialization, when $\mathbf{u}, \mathbf{v}$ are random vectors, we have that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(N^{-1/2})$.&lt;/p&gt;
-
-&lt;p&gt;Under the precepts of $\mu$P, we desire the following two natural conditions of feature learning:&lt;/p&gt;
-
-&lt;p style=&quot;padding: 10px; border: 2px solid black;&quot;&gt;
-&lt;strong&gt;Weight alignment desideratum.&lt;/strong&gt; After $O(1)$ steps of training, we desire that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(1)$.
-&lt;br /&gt;&lt;br /&gt;
-&lt;strong&gt;No-blowup desideratum.&lt;/strong&gt; After a handful of steps of training, the norms of each weight matrix should have reached their final size, scaling wise. That is, $\frac{|\!| \mathbf{u}_{t+1} |\!|}{|\!| \mathbf{u}_t |\!|} = \Theta(1)$ and likewise for $\mathbf{v}$.
-&lt;/p&gt;
-
-&lt;p&gt;The first desideratum captures the intuitive notion that weight matrices should align to (the top singular directions of) their gradients upon proper feature learning. In conventional parlance, feature evolution is about leading-order change in the &lt;em&gt;activations&lt;/em&gt;, not the &lt;em&gt;weight tensors,&lt;/em&gt; but these are in fact two sides of the same coin, as one finds upon a &lt;a href=&quot;https://arxiv.org/abs/2310.17813&quot;&gt;spectral-norm analysis&lt;/a&gt; of deep learning. The second desideratum basically says that we don’t want things to blow up. Obviously, if we take infinite learning rates, these matrices will align just fine, but their norms won’t stabilize. It’s fine to initialize one of them to be very close to zero, but its norm should stabilize after a few steps.&lt;/p&gt;
-
-&lt;p&gt;We’ll now see that these intuitive desiderata are &lt;em&gt;incompatible&lt;/em&gt; for training under SGD.&lt;/p&gt;
-
-&lt;h3 id=&quot;evolution-under-sgd&quot;&gt;Evolution under SGD&lt;/h3&gt;
-
-&lt;p&gt;Suppose we have learning rates $\eta_u$ and $\eta_v$ for $\mathbf{u},\mathbf{v}$, respectively. These vectors then see gradient updates&lt;/p&gt;
-
-\[\delta \mathbf{u} = \eta_u \cdot \mathcal{A}_\text{out} \cdot |\!|\mathbf{h}|\!|
-|\!|\mathbf{g}|\!|
-|\!|\mathbf{v}|\!|
-\cdot
-\hat{\mathbf{h}},\]
-
-\[\delta \mathbf{v} = \eta_v \cdot \mathcal{A}_\text{in} \cdot |\!|\mathbf{h}|\!|
-|\!|\mathbf{g}|\!|
-|\!|\mathbf{u}|\!|
-\cdot
-\hat{\mathbf{g}},\]
-
-&lt;p&gt;where $\hat{\mathbf{h}}, \hat{\mathbf{g}}$ are unit vectors in the directions of $\mathbf{h}, \mathbf{g}$. We are free to absorb $|\!| \mathbf{h} |\!|$ and $|\!| \mathbf{g} |\!|$ into the definitions of $\eta_u, \eta_v$. More subtly, we are free to absorb the initial scales of $|\!| \mathbf{u}_0 |\!|$ and $|\!| \mathbf{v}_0 |\!|$ into the learning rates, too, and so will henceforth assume that these vectors are of the same size up to a constant factor.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-\[\delta \mathbf{u} = \tilde \eta_u \cdot \mathcal{A}_\text{out} \cdot 
-|\!|\mathbf{v}|\!|
-\cdot
-\hat{\mathbf{h}},\]
-
-\[\delta \mathbf{v} = \tilde \eta_v \cdot \mathcal{A}_\text{in} \cdot 
-|\!|\mathbf{u}|\!|
-\cdot
-\hat{\mathbf{g}}.\]
-
-&lt;p&gt;From this, we may assess the update norms as&lt;/p&gt;
-
-\[\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \tilde \eta_u \cdot \mathcal{A}_\text{out} \cdot 
-\frac{|\!|  \mathbf{v} |\!|}{|\!| \mathbf{u} |\!|} \sim \tilde \eta_u \cdot \mathcal{A}_\text{out},\]
-
-\[\frac{|\!| \delta \mathbf{v} |\!|}{|\!| \mathbf{v} |\!|} = \tilde \eta_v \cdot \mathcal{A}_\text{in} \cdot 
-\frac{|\!|  \mathbf{u} |\!|}{|\!| \mathbf{v} |\!|} \sim \tilde \eta_v \cdot \mathcal{A}_\text{in},\]
-
-&lt;p&gt;where we have made use of the fact that $\frac{|\!|  \mathbf{v} |\!|}{|\!| \mathbf{u} |\!|} = \Theta(1)$. We now return to our boxed desiderata. To satisfy the weight alignment desideratum, we require $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \Omega(1)$ and likewise for $\mathbf{v}$. To satisfy the no-blowup desideratum, we require $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = O(1)$ and likewise for $\mathbf{v}$. Combining both, we find that $\frac{|\!| \delta \mathbf{u} |\!|}{|\!| \mathbf{u} |\!|} = \Theta(1)$ and likewise for $\mathbf{v}$.&lt;/p&gt;
-
-&lt;p&gt;We may now observe a contradiction. After a few steps we will have that $\mathcal{A}_\text{in}, \mathcal{A}_\text{out} = \Theta(1)$, from which we may conclude that $\tilde \eta_u, \tilde \eta_v = \Theta(1)$. However, these learning rates are too small to cause alignment to begin with! At early times when the alignments are near zero, we have&lt;/p&gt;
-
-\[\frac{d}{dt} \mathcal{A}_\text{in}
-\sim \tilde{\eta}_u \cdot \mathcal{A}_\text{out} \sim \mathcal{A}_\text{out},\]
-
-\[\frac{d}{dt} \mathcal{A}_\text{out}
-\sim \tilde{\eta}_u \cdot \mathcal{A}_\text{in} \sim \mathcal{A}_\text{in}.\]
-
-&lt;p&gt;Treating “$\sim$” as “$=$,” the solution to this coupled ODE from small initial value is&lt;/p&gt;
-
-\[\begin{bmatrix} \mathcal{A}_\text{in} \\ \mathcal{A}_\text{out} \end{bmatrix}
-\approx
-e^t
-\begin{bmatrix} \mathcal{A}_0 \\ \mathcal{A}_0 \end{bmatrix},\]
-
-&lt;p&gt;where $\mathcal{A}_0 = \frac{1}{2} [\mathcal{A}_\text{in} + \mathcal{A}_\text{out} ]_{t=0}$ is the average of the initial alignments. We can now observe that, in order to grow to order unity from an initial size of $\Theta(N^{-1/2})$ requires a number of steps $T$ such that $e^T N^{-1/2} = \Theta(1)$, which implies that $T \sim \log N$! As $N$ grows, it takes longer and more and more steps to reach alignment.&lt;/p&gt;
-
-&lt;h3 id=&quot;what-intuitively-is-going-on&quot;&gt;What, intuitively, is going on?&lt;/h3&gt;
-
-&lt;p&gt;The crux of the problem here is that &lt;em&gt;each weight tensor’s gradient is mediated by the other weight tensor’s alignment.&lt;/em&gt; The more aligned one tensor is, the bigger an update the other one will see. The problem is that since both alignments start small, the dynamics are a classic case of two small variables suppressing each other’s gradients!&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; We’re stuck with a Catch-22: we could jack up the learning rates to have huge updates at the start that overcome the tiny init, but then our dynamics at late times blow up! However, if the learning rate is small enough so the dynamics at late time don’t blow up, then the dynamics take a long time to get going.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;a-simulation&quot;&gt;A simulation&lt;/h3&gt;
-
-&lt;p&gt;Below is a sweep of SGD trajectories for the loss $\mathcal{L} = (\mathbf{h}^\top \mathbf{u} \mathbf{v}^\top \mathbf{g} - 1)^2$. I have taken $|\!| \mathbf{h} |\!| = |\!| \mathbf{g} |\!| = 1$ and initialized with $u_i, v_i \sim N^{-1/2}$, because any larger init will not have aligned at convergence, and any smaller init will still suffer from the core problem but worse. I train both vectors with a learning rate $\eta$ and vary $N$. I train for a fixed number of steps $T = 10$.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/inf_width_autoencoders/autoencoder_sweep.png&quot; width=&quot;60%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;One can clearly see that the region of optimizability is shrinking, albeit slowly, with $\eta_\text{min} \sim \log N$ and $\eta_\text{max} \sim 1$ bound to converge at sufficiently large $N.$ A Colab notebook reproducing this experiment may be found &lt;a href=&quot;https://colab.research.google.com/drive/1zt6qRlnDKgxzbc95\_bE8e3ptJq4A6LZs?usp=sharing&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;so-what-requiring-log-n-time-isnt-so-bad&quot;&gt;So what? Requiring $\log N$ time isn’t so bad.&lt;/h3&gt;
-
-&lt;p&gt;That’s true. The two reasons to care are that:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;In our theoretical models, we want to work at truly infinite width, and the logarithmic factor still blows up.&lt;/li&gt;
-  &lt;li&gt;Hyperparameter transfer ($\mu$Transfer) probably won’t work because the infinite-width process isn’t well-defined.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;So there you have it. Infinite-width networks with finite-width bottlenecks are cursed and can’t be  trained in a traditional fashion so all layers align to their gradients. The above argument can be extended to bottlenecks with finite width $k &amp;gt; 1$, and even to those with any width $k = o(N)$, though that’d require some random matrix theory to see.&lt;/p&gt;
-
-&lt;p&gt;This was actually an awkward point that came up during the writing of “&lt;a href=&quot;https://arxiv.org/abs/2310.17813&quot;&gt;A Spectral Condition for Feature Learning&lt;/a&gt;.” We never resolved it, we just didn’t discuss it! It’s fine for most architectures, but it does feel like a lingering problem with $\mu$P. What is to be done?&lt;/p&gt;
-
-&lt;h2 id=&quot;two-possible-solutions-rank-regularization-and-cascading-init&quot;&gt;Two possible solutions: rank regularization and cascading init&lt;/h2&gt;
-
-&lt;p&gt;Here I’ll pitch two solutions that I think can be used to width-scale autoencoders.&lt;/p&gt;
-
-&lt;p&gt;The first is to ditch the variation in width between layers — just keep everything width-$N$ — and instead enforce the rank constraints implicitly with regularization. For example, if a layer is intended to have fan-out dimension $k$, one could gradually turn on an $\ell_1$ regularization on all but the top $k$ singular vectors of the weight matrix until the regularization is so high that it becomes sparse. I believe this is consistent even at infinite width, though it does unfortunately require computing the SVD lots of times.&lt;/p&gt;
-
-&lt;p&gt;The second idea is to do a “cascading init” in the following fashion. First, initialize all weight tensors to zero. Next, choose a random batch of perhaps $P = 10^3$ inputs. Then, starting from the start of the network and working forwards, initialize each weight tensor so that its “input” singular subspace aligns with the top PCA directions of this input batch. I believe that this, too, makes sense even at infinite width, it doesn’t require computing lots of SVDs throughout training, and it gives you a nice network with aligned vectors right from the get-go. Having everything aligned like this makes the theory really nice, and $\mu$P can be very simply expressed in spectral language.&lt;/p&gt;
-
-&lt;p&gt;A third possibility is that batchnorm or layernorm somehow fix this. My intuition’s that they won’t, though I don’t have a solid argument.&lt;/p&gt;
-
-&lt;p&gt;A fourth solution is to use Adam or another optimizer where the update sizes are independent of the magnitude of the gradient. I think this actually just works (I suspect the LoRA analysis of &lt;a href=&quot;https://arxiv.org/abs/2402.12354&quot;&gt;this paper&lt;/a&gt; shows this!), but it still seems like things ought to be possible with SGD.&lt;/p&gt;
-
-&lt;h2 id=&quot;discussion-what-now&quot;&gt;Discussion: what now?&lt;/h2&gt;
-
-&lt;p&gt;Based on the above argument, I’m of the opinion that&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$\mu$P for networks of greatly-varying width (like autoencoders) is broken: there’s no way to parameterize to get proper feature learning.&lt;/li&gt;
-  &lt;li&gt;There should be a unifying solution, and it’s likely to simplify $\mu$P in the process.&lt;/li&gt;
-  &lt;li&gt;“Cascading init” in particular seems like it might work.&lt;/li&gt;
-  &lt;li&gt;A good metric of success would be achieving hyperparameter transfer when width-scaling an autoencoder.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Seems like a good project for an ambitious grad student :)&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;em&gt;The ideas in this blogpost were born from research discussions with Greg Yang and Jeremy Bernstein. Thanks to Blake Bordelon for recent helpful discussion.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;To see this, note that $(\mathbf{u} \rightarrow \alpha \mathbf{u}, \ \eta_u \rightarrow \alpha \eta_u, \ \eta_v \rightarrow \alpha^{-1} \eta_v)$ is an exact symmetry of the dynamics, with a similar symmetry for \(\mathbf{v}\). &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;For example, consider optimizing $\mathcal{L}(x, y) = (1 - xy)^2$ for scalars $x, y$. When $x, y$ are initialized very close to zero, these dynamics will take a logarithmically-long time to get going, because each parameter suppresses the other’s gradient. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This is also the story with neural network dynamics in the ultra-rich regime as we describe &lt;a href=&quot;https://arxiv.org/abs/2410.04642&quot;&gt;here&lt;/a&gt;. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Tue, 08 Oct 2024 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/blog/autoencoders-are-cursed/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/autoencoders-are-cursed/</guid>
-        
-        
-        <category>dl-science</category>
-        
-      </item>
-    
-      <item>
-        <title>It's hard to turn a low-rank matrix into a high-rank matrix</title>
-        <description>&lt;p&gt;&lt;strong&gt;&lt;em&gt;In this blogpost, I point out that applying a nonlinear function to a low-rank random matrix cannot make it into a high-rank matrix.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Large random matrices can often be profitably understood in terms of their singular value spectrum. One useful distinction is between &lt;em&gt;high (effective) rank&lt;/em&gt; and &lt;em&gt;low (effective) rank&lt;/em&gt; matrices. Low-rank matrix effects are important in deep learning, and if you listen to the whispers of deep learning theorists, they’re cropping up on the margins everywhere. My money’s on their assuming a central role in our understanding of deep learning in the coming years.&lt;/p&gt;
-
-&lt;p&gt;This blogpost conveys a particular idea about low-rank matrices: it’s really hard to deterministically transform them into high-rank matrices. It’s written mostly for myself, but hopefully it’s useful to others.&lt;/p&gt;
-
-&lt;h2 id=&quot;trying-and-failing-to-turn-a-low-rank-matrix-high-rank&quot;&gt;Trying and failing to turn a low-rank matrix high-rank&lt;/h2&gt;
-
-&lt;p&gt;Suppose we independently sample two random vectors $\mathbf{x}, \mathbf{y} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_n)$ with dimension $n$ and standard Gaussian entries. From these vectors, we can construct the rank-one matrix $\mathbf{A} = \frac{1}{n} \mathbf{x}\mathbf{y}^\top$. The matrix $\mathbf{A}$ will have one nonzero singular value with value approaching $\sigma_1 = 1$ as $n$ grows.&lt;/p&gt;
-
-&lt;p&gt;Suppose we want to turn this low-rank matrix into a high-rank matrix, with many singular values of the same order as the largest. Suppose we must accomplish this via some simple transformation, but we have no access to additional randomness, so it’s got to be a deterministic function. The most basic thing we might try is to choose some nonlinear function $\phi: \mathbb{R} \rightarrow \mathbb{R}$ and apply it elementwise to each matrix entry to get $\mathbf{A}_\phi = \frac{1}{n} \phi \circ (\mathbf{x}\mathbf{y}^\top)$.&lt;/p&gt;
-
-&lt;p&gt;This seems promising! Having rank one is a very fragile condition, and so we expect that almost any such nonlinearity would break that condition and give us a matrix with a singular spectrum more like that of a full-rank matrix.&lt;/p&gt;
-
-&lt;p&gt;Well, let’s try it. Here are some examples:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/low_rank_matrices/low_rank_exps_a.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;In the top left plot, I’ve shown the singular spectrum of a rank-one matrix for three values of $n$. In the next four plots, I show the singular spectrum of matrices $\mathbf{A}_\phi$ for various $\phi$. In the final plot, I show the spectrum of a full-rank random matrix with i.i.d. entries, again for various $n$.&lt;/p&gt;
-
-&lt;p&gt;What’s happened? None of the matrices $\mathbf{A}_\phi$ are still rank-one (well, except for $\phi: z \mapsto z^2$), but they seem to only have a handful of singular values of order unity. (They’re actually all nonzero, but they decay really fast.) Their spectra don’t look anything like the singular spectra of the full-rank matrix, which for large $n$ have many eigenvalues close to $\sigma_1$.&lt;/p&gt;
-
-&lt;p&gt;One way to characterize this difference is through the &lt;em&gt;effective rank&lt;/em&gt; of the matrix, defined for a matrix $\mathbf{M}$ as $\text{erank}(\mathbf{M}) = \frac{(\sum_i \sigma_i(\mathbf{M}))^2}{\sum_i \sigma_i^2(\mathbf{M})}$. Here I will plot the effective rank of these same matrices as $n$ increases:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/low_rank_matrices/low_rank_exps_b.png&quot; width=&quot;80%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;We see clearly that the effective rank quickly stabilizes at an order-unity value in each case, while the effective rank of a dense random matrix grows proportionally to $n$. What’s going on?&lt;/p&gt;
-
-&lt;h2 id=&quot;the-explanation-constructing-the-singular-spectrum&quot;&gt;The explanation: constructing the singular spectrum&lt;/h2&gt;
-
-&lt;p&gt;We will now explain what’s going on. Remarkably, we can understand this by explicitly constructing the singular vectors for large $n$.&lt;/p&gt;
-
-&lt;h3 id=&quot;warmup-the-square-function&quot;&gt;Warmup: the square function&lt;/h3&gt;
-
-&lt;p&gt;We’ll start with the case of the square function, which seems like the easiest. For ease of explanation, let’s give it the notation $\xi: z \mapsto z^2$.&lt;/p&gt;
-
-&lt;p&gt;The left- and right- singular vectors of $\mathbf{A} = \frac{1}{n} \mathbf{x}\mathbf{y}^\top$ are (proportional to) $\mathbf{x}$ and $\mathbf{y}$, respectively. What about the matrix  $\mathbf{A}_\xi = \frac{1}{n} \xi \circ \mathbf{x}\mathbf{y}^\top$? Well, this matrix has entries $A_{\xi;i,j} = \frac{1}{n} x_i^2 y_j^2$, from which we can see that&lt;/p&gt;
-
-\[\mathbf{A}_\xi = \frac{1}{n} \left( \xi \circ \mathbf{x} \right)\left( \xi \circ \mathbf{y} \right)^\top.\]
-
-&lt;p&gt;That is, because $\xi$ has the special property that $\xi(ab) = \xi(a) \cdot \xi(b)$, the resulting matrix $\mathbf{A}_\xi$ is actually still rank-one, and its singular vectors are pointwise-nonlinearly transformed versions of the originals. This is also true for many other common functions, including $\phi \in {\mathrm{sign}, \mathrm{abs}}$ and indeed any monomial. It’s worth noting that the condition for preserving rank-one-ness is actually just that $\xi(ab) = f(a) \cdot g(b)$ for some functions $f, g$; these functions need not equal $\xi$.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-general-case&quot;&gt;The general case&lt;/h3&gt;
-
-&lt;p&gt;To get the case of general $\phi$, we’ll actually consider an even &lt;em&gt;larger&lt;/em&gt; set of matrices: matrices $\mathbf{H}$ such that $H_{ij} = \frac{1}{n} h(x_i, y_j)$ for a bivariate function $h : \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$. The difference is that we’re not requiring this function to have the form $h(xy)$; it can be an arbitrary bivariate function.&lt;/p&gt;
-
-&lt;p&gt;We now have a function $h(x, y)$ and probability measures $\mu_x, \mu_y$ from which $x, y$ can each be sampled (namely, both $\mu_x, \mu_y$ are unit Gaussian). This means that we can define what I think of as the “operator SVD” of the function $h$, which means writing it in the form&lt;/p&gt;
-
-\[h(x, y) = \sum_i \sigma_i f_i(x) g_i(y),\]
-
-&lt;p&gt;where ${ \sigma_i }$ are nonnegative singular values indexed in nonincreasing order and the functions ${f_i}, {g_i}$ are orthonormal bases in the sense that $\mathbb{E}_{x \sim \mu_x} [f_i(x) f_j(x)] = \delta_{ij}$ and $\mathbb{E}_{y \sim \mu_y} [g_i(x) g_j(x)] = \delta_{ij}$.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;The upshot is that the first singular value of $\mathbf{A}_\phi$ will be approximately the value $\sigma_1$ obtained from the operator SVD of $h(x, y) = \phi(xy)$, and the first singular vectors are going to be approximately $f_1(\mathbf{x})$ and $g_1(\mathbf{y})$. Ditto with the second and third and so on. These generally decay fairly fast (faster than a powerlaw if $h$ is analytic, I believe), so in the examples above, you usually end up with only a handful of singular values appreciably above zero. Because this spectrum is asympotically independent of the matrix size $n$ (which merely determines the error to which one approximates it), we have order-unity effective rank. Deterministic nonlinear functions applied elementwise can’t bring a matrix from rank one to full rank!&lt;/p&gt;
-
-&lt;p&gt;As an aside, I don’t actually know how to compute the operator SVD of a generic $h$ analytically. I’d guess there’s no general form, even for Gaussian $\mu_x, \mu_y$. However, we could approximate it numerically by taking some finite-size sample of $x, y$ and working from that, and in fact, computing the singular values of $\mathbf{A}_\phi$ is precisely computing a Monte Carlo estimate of the operator singular spectrum of $h$, and ditto for the singular vectors.&lt;/p&gt;
-
-&lt;h3 id=&quot;an-even-more-general-case-rank-k-inputs&quot;&gt;An even more general case: rank-$k$ inputs&lt;/h3&gt;
-
-&lt;p&gt;Well, what if instead of our original matrix isn’t the rank-one matrix $\frac{1}{n} \mathbf{x} \mathbf{y}^\top$ but instead the rank-$k$ matrix $\frac{1}{n} \mathbf{X} \mathbf{Y}^\top$, with $\mathbf{X}, \mathbf{Y} \in \mathbb{R}^{n \times k}$ having standard Gaussian entries and $k = O_n(1)$? Well, turns out that’s fine — you can do the same argument as above, but instead of a scalar bivariate function $h(x, y)$, you end up having to consider a function of two $k$-dimensional vectors $h(\mathbf{\bar{x}}, \mathbf{\bar{y}})$, where $\mathbf{\bar{x}}, \mathbf{\bar{y}}$ represent rows of $\mathbf{X}, \mathbf{Y}$, respectively. (To see this, note that the matrix entries look like $\phi(\mathbf{\bar{x}}^\top \mathbf{\bar{y}})$, and then we’re taking a generalization like we did before.) You can then compute the operator SVD in the same way, where now e.g. $f_i : \mathbb{R}^{k} \rightarrow \mathbb{R}$ are functions of vectors, not scalars. The rest of the argument goes through the same way. This can also be extended to different types of nonlinear functions: for example, if instead of acting elementwise, $\phi$ acts jointly on $k \times k$ submatrices, this still carries through. I’d guess that basically any matrix transformation which acts locally, is blind to the global index of a local region, and is smooth will admit basically the same argument.&lt;/p&gt;
-
-&lt;h2 id=&quot;relevance-to-deep-learning&quot;&gt;Relevance to deep learning&lt;/h2&gt;
-
-&lt;p&gt;One reason this stuff matters is that gradient updates to matrices are low-rank, but modern optimizers (Adam, SignSGD, etc.) often don’t update in the true direction of the gradient, instead applying some kind of elementwise preconditioning. This story about the robustness of low-rankness means that even with these modern optimizers, we expect this low-rank behavior to remain pretty strongly in effect regardless of the optimizer. This is basically why conclusions about the scaling behavior for SGD at infinite width continue to apply (with appropriate modification) for Adam and other optimizers even though their updates aren’t gradient-aligned.&lt;/p&gt;
-
-&lt;h3 id=&quot;some-questions-i-still-have&quot;&gt;Some questions I still have&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Can this be understood via some kind of “entropy” argument? It’d be very cool if something like the following could be made rigorous: &lt;em&gt;we only had a $\Theta(n)$ “amount of randomness” to begin with, but a full-rank random matrix has an “amount of randomness” scaling as $\Theta(n^2)$, so we couldn’t possibly close that gap with a deterministic function, and we need another source of randomness to do so.&lt;/em&gt;&lt;/li&gt;
-  &lt;li&gt;What if the rank $k$ isn’t order-unity, but it’s also not order-$n$, but instead scales like say $k \sim n^{1/2}$? Does the effective rank remain $O(k)$? Seems likely.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Thanks to Greg Yang for pointing this out to me during the development of &lt;a href=&quot;https://arxiv.org/pdf/2310.17813&quot;&gt;this paper&lt;/a&gt;.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This is a super powerful and underutilized decomposition of bivariate functions! My coauthors and I used it as the basis of understanding Gaussian universality for random feature models in our paper &lt;a href=&quot;http://tinyurl.com/more-is-better&quot;&gt;More Is Better&lt;/a&gt;. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Fri, 04 Oct 2024 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/blog/transforming-low-rank-matrices/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/transforming-low-rank-matrices/</guid>
-        
-        
-        <category>mathematics</category>
-        
-      </item>
-    
-      <item>
-        <title>Insights into GPT-2's positional encodings</title>
-        <description>&lt;p&gt;&lt;em&gt;In this blogpost, I show that GPT-2’s positional encodings lie in a roughly orthogonal subspace to its token embeddings. I then show that the subsequent attention layer and MLP are sensitized to these subspaces in intuitive fashions.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;I’m finally learning about transformers, and I intend to both learn the factual basics and also build up some intuition for how they work and how to think about them.
-In doing so, I found I got a bit stuck when reading about &lt;a href=&quot;https://machinelearningmastery.com/a-gentle-introduction-to-positional-encoding-in-transformer-models-part-1/&quot;&gt;positional encoding&lt;/a&gt;, the original scheme used to provide transformers with token position information.
-In particular, I was confused as to how the positional encodings wouldn’t interfere with the token embeddings.
-Messing around with GPT-2, I found the answer’s basically that they’re learned to be orthogonal, and the consequences of this can be seen in downstream weight tensors, too!
-I’ll begin by framing the puzzle here, then show numerical evidence that these two types of embedding are approximately orthogonal, and finally show how this is reflected in some model weight tensors.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;introduction-why-dont-positional-encodings-interfere-with-token-embeddings&quot;&gt;Introduction: why don’t positional encodings interfere with token embeddings?&lt;/h2&gt;
-
-&lt;p&gt;The attention operation at the core of modern transformer models is blind to the order of the embedding sequence it takes as input.
-The operation cares only about the similarity (as computed via the attention mechanism) between two token embeddings in the sequence and is blind to their absolute and relative positions in the sequence (except for the causal mask, which we’ll ignore).
-This positional information is important, though, so it’s typically given to the model via &lt;em&gt;positional encodings.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Under this scheme, after the input sequence is tokenized and mapped to initial token embeddings, a unique vector representing a token’s index in the sequence is added to each embedding.
-This provides token position information to the downstream model.
-Mathematically, if our input is a sequence of tokens ${x_0, x_1, x_2, \ldots }$, we first apply a token embedding map $E$ to get a sequence of vectors ${E(x_0), E(x_1), E(x_2), \ldots}$ and then add positional encoding vectors ${p_i}$ to each embedding vector to get
-${E(x_0) + p_0, E(x_1) + p_1, E(x_2) + p_2, \ldots}$.
-The result is a sequence of embedding vectors such that each vector $e_i = E(x_i) + p_i$ is aware of both its input token $x_i$ and its index $i$.
-This sequence is then passed on to the rest of the transformer.&lt;/p&gt;
-
-&lt;p&gt;Thinking through the vector math here, the choice to simply add positional encodings to the token embeddings seems surprising.
-I’d naively expect these vectors to interfere with each other!
-We’d ideally like to be able to easily resolve both the token embedding and its position, but by adding the corresponding vectors, we get some superposition that sort of muddies them together.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;
-This is weird because you’d imagine the downstream circuitry will want to be able to resolve the two.&lt;/p&gt;
-
-&lt;p&gt;This wouldn’t be a problem if the operation were vector concatenation instead of addition.
-Equivalently, this wouldn’t be a problem if we were knew that the token embeddings and positional encodings lie in roughly orthogonal subspaces, so they won’t interfere.
-This seemed like a reasonable enough hypothesis that I looked at GPT-2’s encoding to check, and it turns out that this is basically what’s happened — the embeddings and encodings learn to lie in roughly orthogonal subspaces!&lt;/p&gt;
-
-&lt;h2 id=&quot;claim-positional-encodings-perp-token-embeddings&quot;&gt;Claim: [positional encodings] $\perp$ [token embeddings]&lt;/h2&gt;
-
-&lt;p&gt;Here I will present numerical evidence that the positional encodings and token embeddings lie in roughly orthogonal subspaces.
-I’ll first plot the singular values of both embedding matrices, which will show that the positional encodings concentrate in a pretty low-dim subspace, then show that this subspace is roughly orthogonal to the space of the token embeddings.&lt;/p&gt;
-
-&lt;p&gt;Let’s fix some notation.
-GPT-2 has an embedding dimension of $d_\text{model} = 768$, a vocabulary size of $d_\text{vocab} \approx 50 \times 10^3$, and a max context window of size $d_\text{context} = 1024$.
-We’ll denote the token embedding matrix by $\mathbf{E} \in \mathbb{R}^{d_\text{vocab} \times d_\text{model}}$ and the positional encoding matrix by $\mathbf{P} \in \mathbb{R}^{d_\text{context} \times d_\text{model}}$.
-Here are the singular values of these two matrices:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/P_and_E_svals.png&quot; width=&quot;75%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;The most important observation here is that $\mathbf{P}$ has fairly low rank: it’s very well captured by its top, say, 30 singular directions.
-The embeddings, by contrast, have fairly high rank: the mass of $\mathbf{E}$ is spread over many singular directions.&lt;/p&gt;
-
-&lt;p&gt;We will now show that the top directions of the right singular subspace of $\mathbf{P}$ (which capture most of its mass) align well with the &lt;em&gt;bottom&lt;/em&gt; directions of the right singular subspace of $\mathbf{E}$, which permits them to not interfere with each other.
-Let the right singular vectors of $\mathbf{E}$ be $v_j$ for $j = 1, \ldots, d_\text{model}$, and let \(\Pi^{(30)}_\mathbf{P}\) be the projector onto the top 30 right singular directions of $\mathbf{P}$. The plot below shows \(v_j^\top \Pi^{(30)}_\mathbf{P} v_j\).
-This quantity lies in $[0,1]$ for each index $j$ and tells us the degree to which each &lt;em&gt;embedding&lt;/em&gt; singular direction is captured by the top singular directions of the &lt;em&gt;positional encoding&lt;/em&gt; matrix.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/tokemb_posenc_capture_plot.png&quot; width=&quot;50%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;The large mass towards the right of the above plot shows that the top subspace of the positional encodings is well-aligned with the bottom subspace of the token embeddings.
-Phrased differently, the positional encodings and token embeddings lie in roughly orthogonal subspaces, and so they won’t interfere!&lt;/p&gt;
-
-&lt;p&gt;Curiously, the above plot also shows a small mass at the low indices.
-This is strange to me, and I don’t know what to make of it.
-Feel free to send me hypotheses!&lt;/p&gt;
-
-&lt;p&gt;Here’s another, more detailed viz of the same phenomenon.
-Here I simply plot the squared overlaps of the right singular vectors of $\mathbf{P}$ and $\mathbf{E}$:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/tokemb_posenc_overlap_heatmap.png&quot; width=&quot;50%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;I’ve applied a small Gaussian blur to the image in order to denoise a bit and bring out the essential feature: the large masses in the upper-right and bottom-right corners, which demonstrates that &lt;strong&gt;the&lt;/strong&gt; &lt;strong&gt;top positional encoding subspace is aligned to the bottom token embedding subspace and vice versa.&lt;/strong&gt;&lt;sup id=&quot;fnref:q&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:q&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;claim-query-key-value-and-post-value-projection-weights-are-attuned-to-the-top-subspaces-of-both-mathbfp-and-mathbfe&quot;&gt;Claim: query, key, value, and “post-value projection” weights are attuned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\)&lt;/h2&gt;
-
-&lt;p&gt;We’ve shown that GPT-2’s positional encodings and token embeddings lie in roughly orthogonal subspaces.
-This raises a natural question: can we see alignment to these subspaces in the weight matrices of the transformer?&lt;/p&gt;
-
-&lt;p&gt;It turns out we can: the first-layer &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt;&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; weights are far more aligned to the top subspaces of both \(\mathbf{P}\) and \(\mathbf{E}\) than one would expect from chance.
-The following big eight-panel plot which shows the squared singular value overlap between each of these four weight matrices (taken from the first attention layer) and both of these two embedding matrices.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/eight_panel_plot.png&quot; width=&quot;40%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;This plot shows that:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt; matrices are well-aligned to the very top subspace of \(\mathbf{P}\) (note the dark dot in the very top left of the top left two plots – you might have to zoom in).&lt;/li&gt;
-  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt; matrices are well-aligned to the top subspaces of \(\mathbf{E}\). The corresponding plots have large mass in the top left.&lt;/li&gt;
-  &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt; matrix is well-aligned with \(\mathbf{P}\) and apparently anti-aligned to \(\mathbf{P}\)!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;One could come up with various just-so stories here — for example, that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;proj&lt;/code&gt; matrix is spreading around positional information — but I’ll refrain. The important takeaways are that these matrices are clearly aware of these two important subspaces and that the top few positional encoding directions are used quite a lot in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query&lt;/code&gt;-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key&lt;/code&gt; similary computation, which makes sense. These seem like useful things to keep in mind when, for example, trying to reverse-engineer transformer circuitry.&lt;/p&gt;
-
-&lt;h2 id=&quot;claim-mlp-weights-perp-positional-encodings&quot;&gt;Claim: [MLP weights] $\perp$ [positional encodings]&lt;/h2&gt;
-
-&lt;p&gt;Here I will present evidence that the fan-out weights of the first-hidden-layer MLP of GPT-2 have learned to be &lt;em&gt;sensitive&lt;/em&gt; to the top directions of the token embeddings and &lt;em&gt;insensitive&lt;/em&gt; to the top directions of the positional encodings.&lt;/p&gt;
-
-&lt;p&gt;The plot below shows the squared overlaps between the right singular vectors of the MLP weights \(\mathbf{W}_1 \in \mathbb{R}^{d_\text{hid} \times d_\text{model}}\) (with \(d_\text{hid} = 4 d_\text{model}\)) and the positional encoding and token embedding matrices \(\mathbf{P}\) and \(\mathbf{E}\).
-We see that the MLP is strongly attuned to the top token embedding directions (the first heatmap has most of its mass along the diagonal) and strongly insensitive to the positional encoding directions (the second heatmap has most of its mass along the antidiagonal).
-This makes sense: the MLP basically acts the same on each token embedding, independently of its position in the sequence.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/mlp_overlap_heatmaps.png&quot; width=&quot;70%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h2 id=&quot;claim-the-positional-encoding-subspace-is-sparse&quot;&gt;Claim: the positional encoding subspace is sparse!&lt;/h2&gt;
-
-&lt;p&gt;Since the top singular subspace of \(\mathbf{P}\) seems to be important, I decided to visualize it.
-To my surprise, it’s sparse in the embedding space!&lt;/p&gt;
-
-&lt;p&gt;Recall that \(\mathbf{P}\) has shape \([d_\text{context} \times d_\text{model}]\), with \(d_\text{context} = 1024\) and \(d_\text{model} = 784\). Let us visualize its top five singular vectors of \(\mathbf{P}\) in these two spaces.
-The left singular vectors live in the context space, and the right singular vectors live in the embedding space.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/gpt2_pos_encs/pos_enc_top_vecs.png&quot; width=&quot;90%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;As we might guess, the top singular vectors in the context (i.e. token) space are basically sinusoids of different frequencies… but the top singular vectors in the embedding space are sparse, concentrating strongly on maybe 40 indices.
-Returning to our original motivation of understanding how the positional encodings don’t interfere with the token embeddings, it seems that not only do they lie in orthogonal subspaces, they actually make use of (roughly) &lt;em&gt;disjoint sets of embedding indices!&lt;/em&gt; This is just a permutation away from the positional encodings being &lt;em&gt;appended&lt;/em&gt; to the token embeddings rather than added, which makes a lot of sense.&lt;/p&gt;
-
-&lt;p&gt;That said, I have no idea why we get sparsification here.
-I don’t know what induces it; I don’t know why the model prefers this over merely orthogonal subspaces.
-Odd!
-It’s a strong enough effect that I’d bet there’s a simple explanation.&lt;/p&gt;
-
-&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
-
-&lt;p&gt;This blogpost describes some purposeful poking around the singular value structure of GPT-2’s positional encoding and token embedding matrices.
-The main observation – that the these two types of information lie in basically orthogonal subspaces, and this is reflected in intuitive ways in downstream weight matrices – seems pretty solid!
-There are a bunch of auxiliary observations, including the sparsity of the positional encodings, that seem pretty clear but which I don’t have a good explanation for.
-In any case, it seems useful to compile heuristic, broad-strokes observations like this when trying to build intuition for how transformers work.
-Observations like this feel to me like puzzle pieces, and if we get enough on the table, maybe we can start fitting them together.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;em&gt;Thanks to Chandan Singh for proofreading this post and for the discussion that led to it. A Colab notebook reproducing all experiments is &lt;a href=&quot;https://colab.research.google.com/drive/1CuNdE2BOdHMZQAoYXiAC0C21j-yRA8BR?usp=sharing&quot;&gt;here&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Two disclaimers here: first, this was written rather fast and some parts might be unclear, and second, I imagine someone out there already knows this! In either case, feel free to drop me a line. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;For example, if you don’t choose the vectors carefully, you might find that the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CAT&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt; is embedded similarly to the word &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APPLE&lt;/code&gt; at index &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6&lt;/code&gt; — or, mathematically, that $E(\text{CAT}) + p_3 \approx E(\text{APPLE}) + p_6$ — making them hard to distinguish. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:q&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;I often bump into the problem of how to best measure or visualize the alignment of two matrices. This very info-dense SV-overlap plot is something I hadn’t tried before. I find it somewhat useful and will probably use it in the future. &lt;a href=&quot;#fnref:q&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;By this I refer to the “projection matrix” from the output of the attention operation back into the residual stream. This isn’t really a projection in any conventional sense, since it’s square – seems better thought of as simply a linear transformation – but that’s what people call it, so we’ll do so here. &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Tue, 20 Aug 2024 00:00:00 -0400</pubDate>
-        <link>http://localhost:4000/blog/gpt2-positional-encs/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/gpt2-positional-encs/</guid>
-        
-        
-        <category>dl-science</category>
         
       </item>
     

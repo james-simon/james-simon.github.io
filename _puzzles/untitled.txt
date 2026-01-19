@@ -11,7 +11,7 @@ nail->polish
 
 hang->up
 hang<->over
-hang->dog
+hang->loose
 
 gun<-water
 gun<-cap
@@ -42,7 +42,7 @@ lady->luck
 lady<-land
 
 land<-ice
-land<-bad
+land->mass
 land<-grace
 
 luck<-good

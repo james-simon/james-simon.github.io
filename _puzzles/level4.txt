@@ -9,7 +9,7 @@ bar->exam
 bar->code
 church->bell
 bell->bottom
-bell->bar
+bar->bell
 blue->bell
 lemon->drop
 lemon->curd

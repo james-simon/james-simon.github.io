@@ -2,7 +2,7 @@
 layout: post
 title:	"Newton vs. Leibniz rap battle"
 date:	2022-01-17 1:00
-category: poetry
+category: music
 read_time: 5m watch
 emoji: 🎤
 ---

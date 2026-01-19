@@ -150,13 +150,41 @@ nav_order: 2
           {% endif %}
         {% endfor %}
       </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Hypotheticals</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "hypotheticals" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 
   <hr class="hr-thick">
 
-  <!-- Art, Adventures, Poetry, Society -->
+  <!-- Poetry, Music, Art, Books -->
   <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Poetry</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "poetry" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Music</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "music" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
     <div class="col-md-6">
       <div class="blog-category">
         <h4>Art</h4>
@@ -168,6 +196,22 @@ nav_order: 2
       </div>
       <hr>
       <div class="blog-category">
+        <h4>Books</h4>
+        {% for post in site.posts %}
+          {% if post.category contains "books" %}
+            {% include make_post_link.html %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Adventures, Tomfoolery, Society -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
         <h4>Adventures</h4>
         {% for post in site.posts %}
           {% if post.category contains "adventures" %}
@@ -175,17 +219,17 @@ nav_order: 2
           {% endif %}
         {% endfor %}
       </div>
-    </div>
-    <div class="col-md-6">
+      <hr>
       <div class="blog-category">
-        <h4>Poetry, music and performance</h4>
+        <h4>Other tomfoolery</h4>
         {% for post in site.posts %}
-          {% if post.category contains "poetry" or post.category contains "music" %}
+          {% if post.category contains "tomfoolery" %}
             {% include make_post_link.html %}
           {% endif %}
         {% endfor %}
       </div>
-      <hr>
+    </div>
+    <div class="col-md-6">
       <div class="blog-category">
         <h4>Society</h4>
         {% for post in site.posts %}
@@ -222,18 +266,24 @@ nav_order: 2
                   {% assign cat_name = "Mathematics" %}
                 {% when "physics" %}
                   {% assign cat_name = "Physics" %}
+                {% when "hypotheticals" %}
+                  {% assign cat_name = "Hypotheticals" %}
                 {% when "biology" %}
                   {% assign cat_name = "Biology and chemistry" %}
                 {% when "chemistry" %}
                   {% assign cat_name = "Biology and chemistry" %}
+                {% when "poetry" %}
+                  {% assign cat_name = "Poetry" %}
+                {% when "music" %}
+                  {% assign cat_name = "Music" %}
                 {% when "art" %}
                   {% assign cat_name = "Art" %}
+                {% when "books" %}
+                  {% assign cat_name = "Books" %}
                 {% when "adventures" %}
                   {% assign cat_name = "Adventures" %}
-                {% when "poetry" %}
-                  {% assign cat_name = "Poetry, music and performance" %}
-                {% when "music" %}
-                  {% assign cat_name = "Poetry, music and performance" %}
+                {% when "tomfoolery" %}
+                  {% assign cat_name = "Other tomfoolery" %}
                 {% when "society" %}
                   {% assign cat_name = "Society" %}
                 {% else %}

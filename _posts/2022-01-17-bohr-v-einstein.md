@@ -2,7 +2,7 @@
 layout: post
 title:	"Einstein vs. Bohr rap battle"
 date:	2022-01-17 1:01
-category: poetry
+category: music
 read_time: 5m watch
 emoji: 🎤
 favorite: true

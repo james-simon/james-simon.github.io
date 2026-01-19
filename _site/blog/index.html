@@ -3809,6 +3809,40 @@
   .blog-category h4 {
     margin-bottom: 0.5em;
   }
+
+  .recency-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .recency-list li {
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #eeeeee;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .recency-list .post-date {
+    color: #888;
+    font-size: 0.9em;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .recency-list .post-title {
+    flex-grow: 1;
+    margin-right: 1em;
+  }
+
+  .recency-list .post-category {
+    color: #888;
+    font-size: 0.85em;
+    font-style: italic;
+    width: 250px;
+    text-align: right;
+    flex-shrink: 0;
+  }
 </style>
 
 <div class="container">
@@ -3817,15 +3851,23 @@
 
   <p>I started to put my writing on this website early in my PhD. I've found it very useful, and it serves a few purposes: it's a repository of research ideas and intuitions not quite baked enough for a paper; it's a way of sharing thoughts and updates about other parts of my life; it's a place to put fun writing; it's a reason to write at all, and writing teaches one how to think clearly.</p>
 
-  <p>Recommended or favorite blogposts are marked with a ⭐. You can also explore my blog visually through a <a href="/t-sne/">t-SNE embedding</a>.</p>
+  <p>Recommended or favorite blogposts are marked with a ⭐. To view posts <span id="toggle-text">ordered by recency</span>, click <a href="#" id="toggle-link" onclick="toggleView(); return false;">here</a>. You can also explore my blog visually through a <a href="/t-sne/">t-SNE embedding</a>.</p>
 
   <hr class="hr-thick">
 
+  <!-- Category View -->
+  <div id="category-view">
   <!-- Essays -->
   <div class="row">
     <div class="col-md-12">
       <div class="blog-category">
         <h4>Essays</h4>
+        
+          
+        
+          
+        
+          
         
           
         
@@ -3944,6 +3986,12 @@
     <div class="col-md-6">
       <div class="blog-category">
         <h4>Kernels and linear regression</h4>
+        
+          
+        
+          
+        
+          
         
           
         
@@ -4092,6 +4140,12 @@
     <div class="col-md-6">
       <div class="blog-category">
         <h4>Science of deep learning</h4>
+        
+          
+        
+          
+        
+          
         
           
         
@@ -4273,6 +4327,12 @@
           
         
           
+        
+          
+        
+          
+        
+          
             <!-- <li> -->
 <h6>
 📉 <a class="post-link" href="/blog/transforming-low-rank-matrices/">It's hard to turn a low-rank matrix into a high-rank matrix</a> <small>(Oct '24)</small>
@@ -4393,6 +4453,12 @@
       <hr>
       <div class="blog-category">
         <h4>Biology and chemistry</h4>
+        
+          
+        
+          
+        
+          
         
           
         
@@ -4558,6 +4624,12 @@
           
         
           
+        
+          
+        
+          
+        
+          
             <!-- <li> -->
 <h6>
 🧩 <a class="post-link" href="/blog/self-assembly/">Experiments in self-assembly</a> <small>(Jul '24)</small>
@@ -4622,15 +4694,6 @@
           
         
           
-            <!-- <li> -->
-<h6>
-🚀 <a class="post-link" href="/blog/rocketball/">Could you propel a spacecraft using sports projectiles?</a> <small>(Nov '20)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Nov 29, 2020-->
-<!-- </li> -->
-          
         
           
             <!-- <li> -->
@@ -4641,6 +4704,114 @@
 <!-- <span class="post-meta"></span> -->
 <!-- Sep 6, 2020-->
 <!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Hypotheticals</h4>
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🚀 <a class="post-link" href="/blog/rocketball/">Could you propel a spacecraft using sports projectiles?</a> <small>(Nov '20)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Nov 29, 2020-->
+<!-- </li> -->
+          
+        
           
         
           
@@ -4690,8 +4861,270 @@
 
   <hr class="hr-thick">
 
-  <!-- Art, Adventures, Poetry, Society -->
+  <!-- Poetry, Music, Art, Books -->
   <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Poetry</h4>
+        
+          
+        
+          
+        
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🎨 <a class="post-link" href="/blog/on-novelty/">On novelty</a> <small>(Nov '25)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Nov 17, 2025-->
+<!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <!-- <li> -->
+<h6>
+💬 <a class="post-link" href="/blog/why-i-talk-to-strangers/">Why I talk to strangers</a> <small>(Mar '24)</small> ⭐
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Mar 15, 2024-->
+<!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Music</h4>
+        
+          
+            <!-- <li> -->
+<h6>
+🦢 <a class="post-link" href="/blog/ballad-of-the-crane-breeder/">The Ballad of the Crane Breeder</a> <small>(Jan '26)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 18, 2026-->
+<!-- </li> -->
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🎶 <a class="post-link" href="/blog/reharmonizing-ode-to-joy/">Reharmonizing Ode to Joy</a> <small>(Jan '26)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 11, 2026-->
+<!-- </li> -->
+          
+        
+          
+            <!-- <li> -->
+<h6>
+👰🏼‍♀️ <a class="post-link" href="/blog/wedding-march-muppets/">The Wedding March (Muppets version)</a> <small>(Jan '26)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 11, 2026-->
+<!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🎤 <a class="post-link" href="/blog/bohr-v-einstein/">Einstein vs. Bohr rap battle</a> <small>(Jan '22)</small> ⭐
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 17, 2022-->
+<!-- </li> -->
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🎤 <a class="post-link" href="/blog/newton-v-leibniz/">Newton vs. Leibniz rap battle</a> <small>(Jan '22)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jan 17, 2022-->
+<!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </div>
     <div class="col-md-6">
       <div class="blog-category">
         <h4>Art</h4>
@@ -4723,9 +5156,15 @@
           
         
           
+        
+          
+        
+          
+        
+          
             <!-- <li> -->
 <h6>
-🌲 <a class="post-link" href="/blog/gravitree-update-2024/">Gravitrees 2: Electric Boogaloo</a> <small>(Jun '24)</small> ⭐
+🌲 <a class="post-link" href="/blog/gravitree-update-2024/">Gravitrees 2: electric boogaloo</a> <small>(Jun '24)</small> ⭐
 </h6>
 
 <!-- <span class="post-meta"></span> -->
@@ -4805,7 +5244,33 @@
       </div>
       <hr>
       <div class="blog-category">
-        <h4>Adventures</h4>
+        <h4>Books</h4>
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
         
           
         
@@ -4832,12 +5297,98 @@
           
             <!-- <li> -->
 <h6>
-🥚 <a class="post-link" href="/blog/egg/">The time I caught an egg in my mouth</a> <small>(Jul '24)</small>
+📖 <a class="post-link" href="/blog/quotes-from-l-t-a-y-p/">Favorite quotes from <em>Letters to a Young Poet</em></a> <small>(Apr '24)</small>
 </h6>
 
 <!-- <span class="post-meta"></span> -->
-<!-- Jul 5, 2024-->
+<!-- Apr 17, 2024-->
 <!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <hr class="hr-thick">
+
+  <!-- Adventures, Tomfoolery, Society -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="blog-category">
+        <h4>Adventures</h4>
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
           
         
           
@@ -4913,6 +5464,114 @@
           
         
           
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+      <hr>
+      <div class="blog-category">
+        <h4>Other tomfoolery</h4>
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <!-- <li> -->
+<h6>
+🥚 <a class="post-link" href="/blog/egg/">The time I caught an egg in my mouth</a> <small>(Jul '24)</small>
+</h6>
+
+<!-- <span class="post-meta"></span> -->
+<!-- Jul 5, 2024-->
+<!-- </li> -->
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
             <!-- <li> -->
 <h6>
 📮 <a class="post-link" href="/blog/mail-shenanigans/">Messing with the postal service</a> <small>(Jul '20)</small> ⭐
@@ -4935,145 +5594,13 @@
     </div>
     <div class="col-md-6">
       <div class="blog-category">
-        <h4>Poetry and performance</h4>
-        
-          
-            <!-- <li> -->
-<h6>
-🎨 <a class="post-link" href="/blog/on-novelty/">On novelty</a> <small>(Nov '25)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Nov 17, 2025-->
-<!-- </li> -->
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            <!-- <li> -->
-<h6>
-📖 <a class="post-link" href="/blog/quotes-from-l-t-a-y-p/">Favorite quotes from <em>Letters to a Young Poet</em></a> <small>(Apr '24)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Apr 17, 2024-->
-<!-- </li> -->
-          
-        
-          
-        
-          
-        
-          
-            <!-- <li> -->
-<h6>
-💬 <a class="post-link" href="/blog/why-i-talk-to-strangers/">Why I talk to strangers</a> <small>(Mar '24)</small> ⭐
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Mar 15, 2024-->
-<!-- </li> -->
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            <!-- <li> -->
-<h6>
-🎤 <a class="post-link" href="/blog/bohr-v-einstein/">Einstein vs. Bohr rap battle</a> <small>(Jan '22)</small> ⭐
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jan 17, 2022-->
-<!-- </li> -->
-          
-        
-          
-            <!-- <li> -->
-<h6>
-🎤 <a class="post-link" href="/blog/newton-v-leibniz/">Newton vs. Leibniz rap battle</a> <small>(Jan '22)</small>
-</h6>
-
-<!-- <span class="post-meta"></span> -->
-<!-- Jan 17, 2022-->
-<!-- </li> -->
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      </div>
-      <hr>
-      <div class="blog-category">
         <h4>Society</h4>
+        
+          
+        
+          
+        
+          
         
           
         
@@ -5175,7 +5702,625 @@
       </div>
     </div>
   </div>
+  </div>
+  <!-- End Category View -->
+
+  <!-- Recency View -->
+  <div id="recency-view" style="display: none;">
+    <ul class="recency-list">
+      
+        <li>
+          <span class="post-date">Jan 2026</span>
+          <span class="post-title">
+            🦢 <a href="/blog/ballad-of-the-crane-breeder/">The Ballad of the Crane Breeder</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Music
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jan 2026</span>
+          <span class="post-title">
+            🎶 <a href="/blog/reharmonizing-ode-to-joy/">Reharmonizing Ode to Joy</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Music
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jan 2026</span>
+          <span class="post-title">
+            👰🏼‍♀️ <a href="/blog/wedding-march-muppets/">The Wedding March (Muppets version)</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Music
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Nov 2025</span>
+          <span class="post-title">
+            🎨 <a href="/blog/on-novelty/">On novelty</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Poetry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2025</span>
+          <span class="post-title">
+            ⚗️ <a href="/blog/on-the-scientific-method/">On the scientific method and its application to the science of deep learning</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Essays
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2025</span>
+          <span class="post-title">
+            ⬅️ <a href="/blog/backsolving-classical-bounds/">Backsolving classical generalization bounds from the modern kernel regression eigenframework</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2025</span>
+          <span class="post-title">
+            🔀 <a href="/blog/one-kernel-many-eigensystems/">One kernel, many eigensystems</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2025</span>
+          <span class="post-title">
+            🧮 <a href="/blog/the-expressivity-of-shallow-relu-nets/">A complete characterization of the expressivity of shallow, bias-free ReLU networks</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Mar 2025</span>
+          <span class="post-title">
+            🔔 <a href="/blog/gaussian-kernel-1d-eigendecomp/">The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Nov 2024</span>
+          <span class="post-title">
+            👌 <a href="/blog/low-rank-linear-regression-sol/">The optimal low-rank solution for multivariate linear regression</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Oct 2024</span>
+          <span class="post-title">
+            👺 <a href="/blog/autoencoders-are-cursed/">Infinite-width autoencoders are cursed</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Oct 2024</span>
+          <span class="post-title">
+            📉 <a href="/blog/transforming-low-rank-matrices/">It's hard to turn a low-rank matrix into a high-rank matrix</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Mathematics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Aug 2024</span>
+          <span class="post-title">
+            🤖 <a href="/blog/gpt2-positional-encs/">Insights into GPT-2's positional encodings</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2024</span>
+          <span class="post-title">
+            🌀 <a href="/blog/fractals-in-iterated-maps/">Understanding fractals from iterated maps</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Mathematics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2024</span>
+          <span class="post-title">
+            🥚 <a href="/blog/egg/">The time I caught an egg in my mouth</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Other tomfoolery
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2024</span>
+          <span class="post-title">
+            🧩 <a href="/blog/self-assembly/">Experiments in self-assembly</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Physics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            🌲 <a href="/blog/gravitree-update-2024/">Gravitrees 2: electric boogaloo</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Art
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            🔬 <a href="/blog/household-microscopy/">Household microscopy</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Biology and chemistry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            🏔️ <a href="/blog/boolpool-timelapse/">The sixth lake</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Adventures
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            ∇ <a href="/blog/the-laplacian-and-diffusion/">Using the Laplacian to take a local average of a function</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Mathematics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            📊 <a href="/blog/1nn-eigenframework/">An eigenframework for the generalization of 1NN on the torus</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            📐 <a href="/blog/lets-solve-learning-rules/">Let's solve more learning rules</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2024</span>
+          <span class="post-title">
+            💊 <a href="/blog/otc-pain-relievers/">Ibuprofen vs. aspirin vs naproxen vs acetaminophen</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Biology and chemistry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2024</span>
+          <span class="post-title">
+            🌾 <a href="/blog/cropland-crystallography/">Number theory, fractals, and crystallography in rows of crops</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Mathematics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2024</span>
+          <span class="post-title">
+            📖 <a href="/blog/quotes-from-l-t-a-y-p/">Favorite quotes from <em>Letters to a Young Poet</em></a>
+          </span>
+          <span class="post-category">
+            
+            
+            Books
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2024</span>
+          <span class="post-title">
+            🌝 <a href="/blog/eclipse-baby/">How many babies were born during the 2024 eclipse?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Mathematics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Apr 2024</span>
+          <span class="post-title">
+            🗺️ <a href="/blog/fifty-states-roadtrip/">Reflections upon visiting all 50 states</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Adventures
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Mar 2024</span>
+          <span class="post-title">
+            💬 <a href="/blog/why-i-talk-to-strangers/">Why I talk to strangers</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Poetry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Mar 2024</span>
+          <span class="post-title">
+            🔏 <a href="/blog/llm-watermarking/">Creating and erasing AI watermarks</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Mar 2024</span>
+          <span class="post-title">
+            🧠 <a href="/blog/neuro-learnings/">Reflections on introductory neuroscience reading</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Essays
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Oct 2022</span>
+          <span class="post-title">
+            🧪 <a href="/blog/volumetric-reaction/">Can a chemical reaction measure the size of its container?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Biology and chemistry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Sep 2022</span>
+          <span class="post-title">
+            ⚔️ <a href="/blog/cell-fight/">Simulating cells fighting to the death</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Biology and chemistry
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Sep 2022</span>
+          <span class="post-title">
+            ⏪ <a href="/blog/time-reversed-random-walks/">Modeling time-reversed random walks</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Physics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Aug 2022</span>
+          <span class="post-title">
+            🔄 <a href="/blog/reverse-engineering/">Reverse engineering the NTK</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jan 2022</span>
+          <span class="post-title">
+            🎤 <a href="/blog/bohr-v-einstein/">Einstein vs. Bohr rap battle</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Music
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jan 2022</span>
+          <span class="post-title">
+            🎤 <a href="/blog/newton-v-leibniz/">Newton vs. Leibniz rap battle</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Music
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Oct 2021</span>
+          <span class="post-title">
+            🔨 <a href="/blog/eigenlearning/">A theory of generalization for wide neural nets</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Kernels and linear regression
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Oct 2021</span>
+          <span class="post-title">
+            🌳 <a href="/blog/gravitrees/">The gravitree</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Art
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Nov 2020</span>
+          <span class="post-title">
+            🚀 <a href="/blog/rocketball/">Could you propel a spacecraft using sports projectiles?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Hypotheticals
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Sep 2020</span>
+          <span class="post-title">
+            ⚡ <a href="/blog/least_power_dissipation/">The principle of least power dissipation</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Physics
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Aug 2020</span>
+          <span class="post-title">
+            ✖️ <a href="/blog/multiplicative-neural-nets/">Multiplicative neural networks</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Science of deep learning
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Aug 2020</span>
+          <span class="post-title">
+            🕯️ <a href="/blog/upside-down-candle/">How would an upside-down candle burn?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Hypotheticals
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2020</span>
+          <span class="post-title">
+            📮 <a href="/blog/mail-shenanigans/">Messing with the postal service</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Other tomfoolery
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jul 2020</span>
+          <span class="post-title">
+            🤝 <a href="/blog/common-ground/">Common ground</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Society
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2020</span>
+          <span class="post-title">
+            🐟 <a href="/blog/fish-planet/">What would happen if you made a planet out of fish?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Hypotheticals
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">Jun 2020</span>
+          <span class="post-title">
+            🐔 <a href="/blog/chicken-cooking/">How hard do you have to hit a chicken to cook it?</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Hypotheticals
+          </span>
+        </li>
+      
+        <li>
+          <span class="post-date">May 2020</span>
+          <span class="post-title">
+            🦠 <a href="/blog/covid-calculation/">The expected cost of breaking quarantine</a>
+          </span>
+          <span class="post-category">
+            
+            
+            Biology and chemistry
+          </span>
+        </li>
+      
+    </ul>
+  </div>
+  <!-- End Recency View -->
 </div>
+
+<script>
+let showingCategory = true;
+
+function toggleView() {
+  if (showingCategory) {
+    // Switch to recency view
+    showRecencyView();
+    // Update URL
+    const url = new URL(window.location);
+    url.searchParams.set('sort', 'date');
+    window.history.pushState({}, '', url);
+  } else {
+    // Switch to category view
+    showCategoryView();
+    // Update URL
+    const url = new URL(window.location);
+    url.searchParams.delete('sort');
+    window.history.pushState({}, '', url);
+  }
+}
+
+function showCategoryView() {
+  document.getElementById('category-view').style.display = 'block';
+  document.getElementById('recency-view').style.display = 'none';
+  document.getElementById('toggle-text').textContent = 'ordered by recency';
+  showingCategory = true;
+}
+
+function showRecencyView() {
+  document.getElementById('category-view').style.display = 'none';
+  document.getElementById('recency-view').style.display = 'block';
+  document.getElementById('toggle-text').textContent = 'grouped by category';
+  showingCategory = false;
+}
+
+// On page load, check URL parameter
+window.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('sort') === 'date') {
+    showRecencyView();
+  }
+});
+</script>
 
       </div>
     </div>

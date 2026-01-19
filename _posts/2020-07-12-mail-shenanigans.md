@@ -2,7 +2,7 @@
 layout: post
 title:   "Messing with the postal service"
 date: 2020-07-12
-category: adventures
+category: tomfoolery
 emoji: 📮
 favorite: true
 ---
