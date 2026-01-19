@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Gravitrees 2: Electric Boogaloo"
+title: "Gravitrees 2: electric boogaloo"
 date: 2024-06-23 02:00
 category: art
 emoji: 🌲
