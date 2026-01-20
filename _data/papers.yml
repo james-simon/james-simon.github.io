@@ -197,7 +197,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   category: other-ml-theory
   year: 2022
   venue: ICML 2022
-  description: This was a cute idea with some surprisingly nice math. It's where I first used Hermite polynomials, which would later return. It was a pretty idea, but I no longer believe in it.
+  description: This was a cute idea with some surprisingly nice math. It's where I first used Hermite polynomials, which would return in my later work. It was a pretty idea, but I no longer believe in it.
   image: shallow_learning_sketch.png
   links:
     - type: arXiv
@@ -223,7 +223,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   category: other-ml-theory
   year: 2021
   venue: Neural Computation 2021
-  description: This was my first ML theory paper!
+  description: This was my first ML theory paper! We found some pathologies in second-order optimizers people were using to try to find critical points of loss landscapes. This was where I learned the ropes of deep learning theory.
   image: trajectories.png
   links:
     - type: arXiv

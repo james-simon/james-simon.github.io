@@ -6,6 +6,7 @@ flavortext: Agent Shade, who made this one, is a friend of mine; she seems a dar
 origin: VT Hunt 2022
 answer: hue
 difficulty: 5
+published: false
 ---
 
 <p align="center">

@@ -22,4 +22,4 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.
 
 ***
 
-*Credit to Isaac Harris for the guitar accompaniament and my uncle Kevin Simon for help with the "bugle" solo.*
+*Credit to Isaac Harris for the guitar accompaniament, my uncle Kevin Simon for help with the "bugle" solo, and of course Tom Zimmer, to whom I have promised royalties.*
