@@ -3552,11 +3552,7 @@
         // Check if on mobile device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         const isSmallScreen = window.innerWidth < 1024;
-
-        if (isTouchDevice && isSmallScreen) {
-          alert("The mystery button is not supported on mobile. Try on a computer!");
-          return;
-        }
+        const isMobile = isTouchDevice && isSmallScreen;
 
         // Check localStorage for click count
         let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
@@ -3571,8 +3567,10 @@
         }
 
         // After 3 clicks, cycle through modes sequentially
-        // Define the rotation order
-        const modeSequence = ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
+        // Define the rotation order (skip gravity, vacuum, pong on mobile)
+        const modeSequence = isMobile
+          ? ['shatter', 'bird', 'splash', 'panic']
+          : ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
 
         // Get current mode index with error handling
         let modeIndex = 0;
@@ -3883,15 +3881,7 @@
       
         
       
-        
-      
-        
-      
     
-      
-        
-      
-        
       
         
       
@@ -3964,10 +3954,6 @@
         
       
     
-      
-        
-      
-        
       
         
       
@@ -4112,10 +4098,6 @@
         
       
         
-      
-        
-      
-        
           <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
             
             
@@ -4140,22 +4122,6 @@
         
       
     
-      
-        
-      
-        
-          <div class="hovereffect" style="border:2px solid black; margin: 10px 10px 10px 10px">
-            
-            
-            
-              <img class="center-cropped" src="/img/90shades/90shadesofblack.png">
-            
-            <div class="tint"></div>
-            <a class="hoverinfo" href="/puzzles/90shades/">
-              <h4>90 SHADES OF BLACK</h4>
-            </a>
-          </div>
-        
       
         
       
@@ -4311,15 +4277,7 @@
       
         
       
-        
-      
-        
-      
     
-      
-        
-      
-        
       
         
       
@@ -4463,15 +4421,7 @@
       
         
       
-        
-      
-        
-      
     
-      
-        
-      
-        
       
         
       
@@ -4603,10 +4553,6 @@
       
         
       
-        
-      
-        
-      
     
   </div>
 
@@ -4615,10 +4561,6 @@
 
   <ul>
     
-      
-        
-      
-        
       
         
       
@@ -4742,15 +4684,7 @@
       
         
       
-        
-      
-        
-      
     
-      
-        
-      
-        
       
         
       
@@ -4845,10 +4779,6 @@
         
       
         
-      
-        
-      
-        
           <li style="margin-bottom: 0.5em;">
             <a href="/puzzles/level4/">Level 4</a>
           </li>
@@ -4915,10 +4845,6 @@
         
       
         
-      
-        
-      
-        
           <li style="margin-bottom: 0.5em;">
             <a href="/puzzles/level5/">Level 5</a>
           </li>
@@ -4955,10 +4881,6 @@
         
       
     
-      
-        
-      
-        
       
         
       
@@ -5082,6 +5004,62 @@
       
         
       
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
         
       
         
@@ -5146,79 +5124,7 @@
       
         
       
-        
-      
-        
-      
     
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-      
-        
-      
-        
       
         
       

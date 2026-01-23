@@ -5,14 +5,14 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 18 Jan 2026 20:03:08 -0500</pubDate>
-    <lastBuildDate>Sun, 18 Jan 2026 20:03:08 -0500</lastBuildDate>
+    <pubDate>Fri, 23 Jan 2026 12:13:25 -0800</pubDate>
+    <lastBuildDate>Fri, 23 Jan 2026 12:13:25 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
         <title>The Ballad of the Crane Breeder</title>
         <description>&lt;p&gt;My brother’s girlfriend’s dad, Tom Zimmer, had the craziest job out of high school I’ve ever heard of.
-He shipped up to a wildlife preserve in Wisconsin and there found his job was to &lt;em&gt;artificially inseminate cranes.&lt;/em&gt;
+He shipped up to a wildlife preserve in Wisconsin run by the International Crane Foundation and there found his job was, among other things, to &lt;em&gt;artificially inseminate cranes.&lt;/em&gt;
 They wouldn’t breed in captivity, so he had to go to their pens — the male first, then the female — to collect and deposit the necessary genetic material.
 One hitch: they’re such violent birds (especially the males) that they’ll peck the hell out of you before you can get the goods, so he’d cover the backs of his calves with cardboard for armor, catch them between his legs when they ran at him, and do what he came to do.
 This is apparently a legitimate technique in crane husbandry.&lt;/p&gt;
@@ -27,9 +27,9 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament and my uncle Kevin Simon for help with the “bugle” solo.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament, my uncle Kevin Simon for help with the “bugle” solo, and of course Tom Zimmer, to whom I have promised royalties.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 18 Jan 2026 07:00:00 -0500</pubDate>
+        <pubDate>Sun, 18 Jan 2026 04:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/ballad-of-the-crane-breeder/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/ballad-of-the-crane-breeder/</guid>
         
@@ -49,7 +49,7 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;p&gt;Even though it’s really short, this was a lot of fun to work on. It was really satisfying to see how adding sevenths to chords made the progression feel jazzier, and how throwing in unusual chords like major thirds and sixths made it feel more tangy and colorful, and how bringing it back to the tonic at the end makes it feel like you’ve wandered afield and come back home. I really had no feel for chord progressions before starting to teach myself music theory some two years ago, but playing around with different ideas and listening very closely to the results in this and known songs and a lot of improvisation has really helped. It’s wonderful to see that there are deeper ideas in music besides the notes, behind the notes, and the structure there is really magical to see and feel.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 11 Jan 2026 05:00:00 -0500</pubDate>
+        <pubDate>Sun, 11 Jan 2026 02:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/reharmonizing-ode-to-joy/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/reharmonizing-ode-to-joy/</guid>
         
@@ -71,7 +71,7 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are singing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;re&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mi&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fa&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sol&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;la&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ti&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 11 Jan 2026 04:00:00 -0500</pubDate>
+        <pubDate>Sun, 11 Jan 2026 01:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/wedding-march-muppets/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/wedding-march-muppets/</guid>
         
@@ -89,7 +89,7 @@ and the pieces rearranged acefgiikllmmnnnooosstttuuvwyy&lt;br /&gt;
 and put together in new configurations aacdeeekllmmrssvyy&lt;br /&gt;
 in an ever-changing dance of parts deeeikllmmoorsstttuuwyy&lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Nov 2025 00:00:00 -0500</pubDate>
+        <pubDate>Mon, 17 Nov 2025 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/on-novelty/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/on-novelty/</guid>
         
@@ -220,7 +220,7 @@ We should expect to see more such leaps as time goes on, and some of them will t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 20 Jul 2025 02:00:00 -0400</pubDate>
+        <pubDate>Sun, 20 Jul 2025 02:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/on-the-scientific-method/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/on-the-scientific-method/</guid>
         
@@ -294,7 +294,7 @@ We should expect to see more such leaps as time goes on, and some of them will t
 
 &lt;p&gt;That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.&lt;/p&gt;
 </description>
-        <pubDate>Wed, 09 Apr 2025 00:00:00 -0400</pubDate>
+        <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
         
@@ -431,7 +431,7 @@ We also of course require that the measure we find from the above is normalized 
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Mon, 07 Apr 2025 00:00:00 -0400</pubDate>
+        <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
         
@@ -603,7 +603,7 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Thu, 03 Apr 2025 00:00:00 -0400</pubDate>
+        <pubDate>Thu, 03 Apr 2025 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</guid>
         
@@ -776,7 +776,7 @@ is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
 
 &lt;p&gt;What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentially realistic) high-dimensional data.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 18 Mar 2025 00:00:00 -0400</pubDate>
+        <pubDate>Tue, 18 Mar 2025 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</guid>
         
@@ -806,7 +806,7 @@ is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
 &lt;p&gt;When the rank is unconstrained and $k$ is maximal, we find that $\mathbf{W}_* = \boldsymbol{\Sigma}_{yx} \boldsymbol{\Sigma}_{xx}^{-1}$ as expected.&lt;/p&gt;
 
 </description>
-        <pubDate>Wed, 06 Nov 2024 00:00:00 -0500</pubDate>
+        <pubDate>Wed, 06 Nov 2024 00:00:00 -0800</pubDate>
         <link>http://localhost:4000/blog/low-rank-linear-regression-sol/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/low-rank-linear-regression-sol/</guid>
         

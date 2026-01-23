@@ -3552,11 +3552,7 @@
         // Check if on mobile device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         const isSmallScreen = window.innerWidth < 1024;
-
-        if (isTouchDevice && isSmallScreen) {
-          alert("The mystery button is not supported on mobile. Try on a computer!");
-          return;
-        }
+        const isMobile = isTouchDevice && isSmallScreen;
 
         // Check localStorage for click count
         let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
@@ -3571,8 +3567,10 @@
         }
 
         // After 3 clicks, cycle through modes sequentially
-        // Define the rotation order
-        const modeSequence = ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
+        // Define the rotation order (skip gravity, vacuum, pong on mobile)
+        const modeSequence = isMobile
+          ? ['shatter', 'bird', 'splash', 'panic']
+          : ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
 
         // Get current mode index with error handling
         let modeIndex = 0;
@@ -3784,10 +3782,6 @@
     <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
         <style>
-  h1 {
-    margin-top: 1.5em;
-  }
-
   .hr-thin {
     border: none;
     height: 1px;
@@ -3843,20 +3837,73 @@
     text-align: right;
     flex-shrink: 0;
   }
+
+  .blog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5em;
+  }
+
+  .blog-header h1 {
+    margin: 0;
+  }
+
+  .sort-controls {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 15px;
+  }
+
+  .sort-controls a {
+    color: #666;
+    text-decoration: none;
+    padding: 0.4em 0.8em;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+    transition: all 0.2s;
+  }
+
+  .sort-controls a:first-of-type {
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+  }
+
+  .sort-controls a:last-of-type {
+    border-radius: 0 4px 4px 0;
+  }
+
+  .sort-controls a:hover {
+    background: #eee;
+  }
+
+  .sort-controls a.active {
+    background: #333;
+    color: white;
+    border-color: #333;
+  }
 </style>
 
 <div class="container">
-  <h1><i class="fas fa-seedling"></i> Blog</h1>
+  <div class="blog-header">
+    <h1><i class="fas fa-seedling"></i> Blog</h1>
+    <div class="sort-controls">
+      <a href="#" id="date-link" class="active" onclick="showRecencyView(); return false;">Date</a><a href="#" id="category-link" onclick="showCategoryView(); return false;">Category</a>
+    </div>
+  </div>
   <hr class="hr-thick">
 
   <p>I started to put my writing on this website early in my PhD. I've found it very useful, and it serves a few purposes: it's a repository of research ideas and intuitions not quite baked enough for a paper; it's a way of sharing thoughts and updates about other parts of my life; it's a place to put fun writing; it's a reason to write at all, and writing teaches one how to think clearly.</p>
 
-  <p>Recommended or favorite blogposts are marked with a ⭐. To view posts <span id="toggle-text">ordered by recency</span>, click <a href="#" id="toggle-link" onclick="toggleView(); return false;">here</a>. You can also explore my blog visually through a <a href="/t-sne/">t-SNE embedding</a>.</p>
+  <p>Recommended or favorite blogposts are marked with a ⭐. You can also explore my blog visually through a <a href="/t-sne/">t-SNE embedding</a>.</p>
+
+  <p>I recently enabled comments on all posts, so go nuts. I'd love to hear what you think.</p>
 
   <hr class="hr-thick">
 
   <!-- Category View -->
-  <div id="category-view">
+  <div id="category-view" style="display: none;">
   <!-- Essays -->
   <div class="row">
     <div class="col-md-12">
@@ -5706,7 +5753,7 @@
   <!-- End Category View -->
 
   <!-- Recency View -->
-  <div id="recency-view" style="display: none;">
+  <div id="recency-view">
     <ul class="recency-list">
       
         <li>
@@ -6279,44 +6326,35 @@
 </div>
 
 <script>
-let showingCategory = true;
-
-function toggleView() {
-  if (showingCategory) {
-    // Switch to recency view
-    showRecencyView();
-    // Update URL
-    const url = new URL(window.location);
-    url.searchParams.set('sort', 'date');
-    window.history.pushState({}, '', url);
-  } else {
-    // Switch to category view
-    showCategoryView();
-    // Update URL
-    const url = new URL(window.location);
-    url.searchParams.delete('sort');
-    window.history.pushState({}, '', url);
-  }
-}
+let showingCategory = false;
 
 function showCategoryView() {
   document.getElementById('category-view').style.display = 'block';
   document.getElementById('recency-view').style.display = 'none';
-  document.getElementById('toggle-text').textContent = 'ordered by recency';
+  document.getElementById('category-link').classList.add('active');
+  document.getElementById('date-link').classList.remove('active');
   showingCategory = true;
+  // Remember choice
+  localStorage.setItem('blogSort', 'category');
 }
 
 function showRecencyView() {
   document.getElementById('category-view').style.display = 'none';
   document.getElementById('recency-view').style.display = 'block';
-  document.getElementById('toggle-text').textContent = 'grouped by category';
+  document.getElementById('date-link').classList.add('active');
+  document.getElementById('category-link').classList.remove('active');
   showingCategory = false;
+  // Remember choice
+  localStorage.setItem('blogSort', 'date');
 }
 
-// On page load, check URL parameter
+// On page load, check localStorage for user's preference
 window.addEventListener('DOMContentLoaded', function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('sort') === 'date') {
+  const savedSort = localStorage.getItem('blogSort');
+  if (savedSort === 'category') {
+    showCategoryView();
+  } else {
+    // Default to date view
     showRecencyView();
   }
 });

@@ -1,0 +1,201 @@
+.toolbar {
+  display: flex;
+  gap: 5px;
+  margin: 1em 0;
+  padding: 10px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.tool-button {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #999;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 20px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.tool-button:hover {
+  background: #f5f5f5;
+}
+
+.tool-button.active {
+  background: #e0e0ff;
+  border-color: #0000ff;
+}
+
+.tool-button .tool-icon-box {
+  width: 30px;
+  height: 30px;
+  border: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.tool-button .tool-icon-line {
+  width: 30px;
+  height: 2px;
+  background: black;
+  transform: rotate(-45deg);
+}
+
+.tool-button .tool-icon-eraser {
+  font-size: 24px;
+}
+
+.tool-button .tool-icon-mouse {
+  font-size: 24px;
+  transform: rotate(-110deg);
+  display: inline-block;
+}
+
+.tensorizer-container {
+  display: flex;
+  gap: 20px;
+  margin: 2em 0;
+}
+
+#tensorCanvas {
+  border: 2px solid #333;
+  cursor: crosshair;
+  background: #fafafa;
+}
+
+#tensorCanvas.dragging {
+  cursor: move;
+}
+
+#tensorCanvas.eraser {
+  cursor: not-allowed;
+}
+
+.controls-panel {
+  min-width: 250px;
+  max-width: 500px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.control-section {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+
+.control-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-family: 'Gill Sans', sans-serif;
+}
+
+.control-section label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 14px;
+}
+
+.control-section input {
+  width: 100%;
+  padding: 5px;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.formula-display {
+  padding: 20px 10px;
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.simulation-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.sim-button {
+  padding: 10px 20px;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 16px;
+  border: 2px solid #333;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.sim-button:hover {
+  background: #f5f5f5;
+}
+
+.sim-button:active {
+  background: #e0e0e0;
+}
+
+.sim-button.running {
+  background: #ffe0e0;
+  border-color: #cc0000;
+}
+
+.loss-plot-container {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#svPlotsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 1em;
+}
+
+.sv-plot-item {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  padding: 10px;
+  box-sizing: border-box;
+  height: 300px;
+}
+
+.sv-plot-item h4 {
+  margin: 0 0 10px 0;
+  font-family: 'Gill Sans', sans-serif;
+  text-align: center;
+}
+
+.sv-plot-item canvas {
+  width: 100%;
+  height: 100%;
+}

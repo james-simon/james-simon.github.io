@@ -35,8 +35,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>90 Shades of Black</title>
-  <meta name="description" content="Though the grid looks pure white and black at first glance, the squares are actually a polychromatic collage of different dark shades, and some of the lines ...">
+  <title>Claude Notes - Tensorizer Project</title>
+  <meta name="description" content="">
 
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
@@ -47,7 +47,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/puzzles/90shades-hue/">
+  <link rel="canonical" href="http://localhost:4000/claude_notes/">
   <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
@@ -3552,11 +3552,7 @@
         // Check if on mobile device
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         const isSmallScreen = window.innerWidth < 1024;
-
-        if (isTouchDevice && isSmallScreen) {
-          alert("The mystery button is not supported on mobile. Try on a computer!");
-          return;
-        }
+        const isMobile = isTouchDevice && isSmallScreen;
 
         // Check localStorage for click count
         let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
@@ -3571,8 +3567,10 @@
         }
 
         // After 3 clicks, cycle through modes sequentially
-        // Define the rotation order
-        const modeSequence = ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
+        // Define the rotation order (skip gravity, vacuum, pong on mobile)
+        const modeSequence = isMobile
+          ? ['shatter', 'bird', 'splash', 'panic']
+          : ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
 
         // Get current mode index with error handling
         let modeIndex = 0;
@@ -3785,43 +3783,108 @@
       <div class="wrapper">
         <article class="post">
 
-  <header class="post-header" style="margin-top: 2em;">
-    <h1 class="post-title" style="text-align:center">90 Shades of Black</h1>
+  <header class="post-header">
+    <h1 class="post-title">Claude Notes - Tensorizer Project</h1>
   </header>
-<!--     <p style="text-align:center;font-size:200%;">Agent Shade, who made this one, is a friend of mine; she seems a dark character at first impression, but that changes as you get to know her.</p> -->
-  
-<div class="container">
 
-  <hr class="featurette-divider">
-  
   <div class="post-content">
-    <p>Though the grid looks pure white and black at first glance, the squares are actually a polychromatic collage of different dark shades, and some of the lines are grey. Except for a few true-black squares, each dark square had red, green, and blue values between 1 and 26, and their color could be read as a three-letter string. Most of these denoted colors, like BLK, WHT, RED, GRN, or BLU. Recoloring squares accordingly, we get the following grid:</p>
+    <h1 id="claude-notes---tensorizer-project">Claude Notes - Tensorizer Project</h1>
 
-<p align="center">
-  <img style="float: center; margin: 0px 15px 15px 0px;" src="/img/90shades/90shades_sol1.png" width="50%" />
-</p>
+<h2 id="project-overview">Project Overview</h2>
+<p>Interactive tensor network diagram editor at <code class="language-plaintext highlighter-rouge">/tensorizer/</code>. Users create and manipulate tensor diagrams with tensors (boxes) and legs (edges), which automatically generate Einstein notation formulas.</p>
 
-<p>The top row reads RGB SEMAPHORE. Noting that yellow is red + green, cyan is green + blue, magenta is blue + red, and white is red + green + blue, each 3x3 subgrid could be decomposed into a superposition of three red, three green, and three blue squares, and each color could be independently read as a semaphore letter. Here’s the upper-left subgrid as an example:</p>
+<h2 id="file-structure-load-order-matters">File Structure (load order matters!)</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tensorizer/
+├── index.html          - HTML structure, Jekyll template with 
+├── styles.css          - All CSS styling
+├── utils.js            - Utility functions, conversions, formatters, name generation
+├── state.js            - State vars, data structures, undo/redo with ID-based serialization
+├── drawing.js          - Canvas rendering, coordinate transforms, manual subscript rendering
+├── formula.js          - Einstein notation formula generation
+├── input.js            - Event handlers, hit detection, tool switching, keyboard shortcuts
+├── ui.js               - Property panel updates, slider handlers
+└── tensorizer.js       - Main init, gets DOM element references
+</code></pre></div></div>
 
-<p align="center">
-  <img style="float: center; margin: 0px 15px 15px 0px;" src="/img/90shades/90shades_sol2.png" width="80%" />
-</p>
+<h2 id="core-concepts">Core Concepts</h2>
 
-<p>Each subgrid gave a color just like each square, suggesting we should view the subgrids as squares in a grand 3x3 metagrid. Translating every subgrid (and discarding the instruction row) gave this metagrid:</p>
+<h3 id="tensors">Tensors</h3>
+<ul>
+  <li>Square boxes, single uppercase letter (A-Z)</li>
+  <li>Show subscripts with connected leg names: A_ijk (sorted alphabetically)</li>
+  <li>Subscripts rendered manually on canvas (28px main, 18px subscript, +8px down)</li>
+</ul>
 
-<p align="center">
-  <img style="float: center; margin: 0px 15px 15px 0px;" src="/img/90shades/90shades_sol3.png" width="20%" />
-</p>
+<h3 id="legs-edges">Legs (edges)</h3>
+<ul>
+  <li>Connect tensors or have free ends</li>
+  <li>Single lowercase letter (a-z), default starts at ‘i’</li>
+  <li>Labels always drawn ABOVE the line</li>
+  <li>Line width: maps from dimension slider (1-100) to 1-15px logarithmically</li>
+  <li>Free ends: circles, radius=6px, clickbox=18px</li>
+</ul>
 
-<p>Decoding the semaphore like before, this gives HUE, the final answer.</p>
+<h3 id="formula-display">Formula Display</h3>
+<p>Einstein notation at top of right panel: <code class="language-plaintext highlighter-rouge">T_ikmn  =  A_ijk B_jl C_lmn</code></p>
+<ul>
+  <li>External indices: legs with exactly one tensor connection</li>
+  <li>Contracted indices: legs with two tensor connections</li>
+  <li>RHS: tensors sorted alphabetically, each with sorted legs</li>
+  <li>LHS: T with sorted external indices only</li>
+</ul>
+
+<h3 id="global-settings-toolbar-sliders-lowercase-labels">Global Settings (toolbar sliders, lowercase labels)</h3>
+<ul>
+  <li><strong>init scale</strong>: 10^-5 to 10^1, discrete values [1-9]×10^k, HTML superscripts</li>
+  <li><strong>leg dimension</strong>: 1-100 integers, logarithmic slider</li>
+</ul>
+
+<h3 id="tools--interaction">Tools &amp; Interaction</h3>
+<ul>
+  <li>Mouse (select/drag), Pan (clears selection), Tensor, Connection, Eraser, Undo</li>
+  <li>Box-select: drag empty space</li>
+  <li>Delete: Backspace/Delete (not when input focused)</li>
+  <li>Properties panel: only shows when selection exists, small inline inputs</li>
+</ul>
+
+<h3 id="auto-cleanup">Auto-cleanup</h3>
+<ul>
+  <li>Self-loops removed (leg from tensor to itself)</li>
+  <li>Unconnected legs removed (both ends free)</li>
+</ul>
+
+<h2 id="critical-implementation-details">Critical Implementation Details</h2>
+
+<h3 id="undo-system-statejs">Undo System (state.js)</h3>
+<p><strong>MUST</strong> store tensor IDs not references, because JSON.stringify breaks object refs:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Save: convert to IDs</span>
+<span class="nx">legs</span><span class="p">:</span> <span class="nx">legs</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">leg</span> <span class="o">=&gt;</span> <span class="p">({</span>
+  <span class="na">startTensorId</span><span class="p">:</span> <span class="nx">leg</span><span class="p">.</span><span class="nx">startTensor</span><span class="p">?.</span><span class="nx">id</span> <span class="p">??</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nx">endTensorId</span><span class="p">:</span> <span class="nx">leg</span><span class="p">.</span><span class="nx">endTensor</span><span class="p">?.</span><span class="nx">id</span> <span class="p">??</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="c1">// ...</span>
+<span class="p">}))</span>
+
+<span class="c1">// Restore: reconnect by ID lookup</span>
+<span class="nx">leg</span><span class="p">.</span><span class="nx">startTensor</span> <span class="o">=</span> <span class="nx">tensors</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">t</span> <span class="o">=&gt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">legData</span><span class="p">.</span><span class="nx">startTensorId</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="leg-label-positioning-drawingjs73-77">Leg Label Positioning (drawing.js:73-77)</h3>
+<p>Always show labels ABOVE line (flip perpendicular if pointing down):</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">perpY</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// perpY &gt; 0 means downward (canvas y-down)</span>
+  <span class="nx">perpX</span> <span class="o">=</span> <span class="o">-</span><span class="nx">perpX</span><span class="p">;</span>
+  <span class="nx">perpY</span> <span class="o">=</span> <span class="o">-</span><span class="nx">perpY</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="key-event-patterns">Key Event Patterns</h3>
+<ul>
+  <li>Tool switch (not to mouse) → clear selection</li>
+  <li>Modify objects → <code class="language-plaintext highlighter-rouge">removeSelfLoops()</code> + <code class="language-plaintext highlighter-rouge">removeUnconnectedLegs()</code> → <code class="language-plaintext highlighter-rouge">saveState()</code> → <code class="language-plaintext highlighter-rouge">draw()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">draw()</code> → renders canvas → <code class="language-plaintext highlighter-rouge">updateFormulaDisplay()</code></li>
+  <li>Backspace/Delete → check <code class="language-plaintext highlighter-rouge">document.activeElement</code> is not INPUT/TEXTAREA first</li>
+</ul>
 
   </div>
-  
-  <hr class="featurette-divider">
-  
-  <p style="text-align:center"> <a href="/puzzles/90shades/" style="font-size:16px">back to puzzle</a></p>
-
-</div>
 
 </article>
 

@@ -1,0 +1,138 @@
+---
+layout: default
+permalink: /tensorizer/
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: {
+      scale: 2.0  // 2x default size
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        console.log('MathJax is ready');
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+
+<div class="container">
+  <h1 style="margin-top: 2em;">Tensorizer</h1>
+
+  <div class="toolbar">
+    <div class="tool-button active" id="mouseTool" title="Select/Move">
+      <div class="tool-icon-mouse">➤</div>
+    </div>
+    <div class="tool-button" id="panTool" title="Pan Canvas">
+      <div style="font-size: 48px; line-height: 1; margin-top: -4px;">☩</div>
+    </div>
+    <div class="tool-button" id="tensorTool" title="Create Tensor">
+      <div class="tool-icon-box">A</div>
+    </div>
+    <div class="tool-button" id="connectionTool" title="Create Connection">
+      <div class="tool-icon-line"></div>
+    </div>
+    <div class="tool-button" id="eraserTool" title="Eraser">
+      <div class="tool-icon-eraser">✕</div>
+    </div>
+    <div class="tool-button" id="undoButton" title="Undo (Ctrl+Z)">
+      <div style="font-size: 36px;">⎌</div>
+    </div>
+    <div class="tool-button" id="showRanksButton" title="Show Leg Ranks">
+      <div style="font-size: 18px; font-weight: bold;">R</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px; padding: 0 10px; border-left: 2px solid #ccc;">
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <label for="globalInitScale" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; white-space: nowrap;">init scale:</label>
+        <input type="range" id="globalInitScale" min="0" max="100" step="1" value="50" style="width: 100px;">
+        <span id="globalInitScaleValue" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; min-width: 50px;">1</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <label for="globalDimension" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; white-space: nowrap;">leg dimension:</label>
+        <input type="range" id="globalDimension" min="0" max="100" step="1" value="35" style="width: 100px;">
+        <span id="globalDimensionValue" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; min-width: 30px;">5</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tensorizer-container">
+    <div>
+      <canvas id="tensorCanvas" width="800" height="600"></canvas>
+      <!-- Pop sounds -->
+      <audio id="pop-1" preload="auto" src="{{site.baseurl}}/audio/pop_1.mp3"></audio>
+      <audio id="pop-2" preload="auto" src="{{site.baseurl}}/audio/pop_2.mp3"></audio>
+      <audio id="pop-3" preload="auto" src="{{site.baseurl}}/audio/pop_3.mp3"></audio>
+      <audio id="pop-4" preload="auto" src="{{site.baseurl}}/audio/pop_4.mp3"></audio>
+    </div>
+
+    <div class="controls-panel">
+      <div id="formulaDisplay" class="formula-display">T = 1</div>
+
+      <div class="control-section" id="propertiesPanel" style="display: none;">
+        <div id="tensorEditor" style="display: none;">
+          <h3>Tensor Properties</h3>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="margin: 0;">name:</label>
+            <input type="text" id="tensorName" placeholder="" maxlength="1" style="width: 30px; text-align: center; transition: border-color 0.2s;">
+          </div>
+        </div>
+        <div id="legEditor" style="display: none;">
+          <h3>Leg Properties</h3>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="margin: 0;">name:</label>
+            <input type="text" id="legName" placeholder="" maxlength="1" style="width: 30px; text-align: center; transition: border-color 0.2s;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="margin: 3em 0 2em 0; border: none; height: 2px; background-color: #ccc;">
+
+  <h2>Gradient Descent Simulation</h2>
+
+  <div class="simulation-controls">
+    <button id="startPauseButton" class="sim-button">Start</button>
+    <button id="resetButton" class="sim-button">Reset</button>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label for="learningRate">Learning rate:</label>
+      <input type="range" id="learningRate" min="0" max="100" value="50" style="width: 200px;">
+      <span id="learningRateValue">0.01</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label>Current loss:</label>
+      <span id="currentLoss" style="font-weight: bold;">—</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label>Steps/sec:</label>
+      <span id="stepsPerSec" style="font-weight: bold;">—</span>
+    </div>
+  </div>
+
+  <div class="loss-plot-container">
+    <canvas id="lossPlot"></canvas>
+  </div>
+
+  <h3 style="margin-top: 2em;">Singular Values by Leg</h3>
+  <div id="svPlotsContainer"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<script src="utils.js"></script>
+<script src="state.js"></script>
+<script src="drawing.js"></script>
+<script src="formula.js"></script>
+<script src="input.js"></script>
+<script src="ui.js"></script>
+<script src="simulation.js"></script>
+<script src="tensorizer.js"></script>

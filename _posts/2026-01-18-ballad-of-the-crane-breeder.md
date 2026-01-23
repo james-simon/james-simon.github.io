@@ -7,7 +7,7 @@ emoji: 🦢
 ---
 
 My brother's girlfriend's dad, Tom Zimmer, had the craziest job out of high school I've ever heard of.
-He shipped up to a wildlife preserve in Wisconsin and there found his job was to *artificially inseminate cranes.*
+He shipped up to a wildlife preserve in Wisconsin run by the International Crane Foundation and there found his job was, among other things, to *artificially inseminate cranes.*
 They wouldn't breed in captivity, so he had to go to their pens --- the male first, then the female --- to collect and deposit the necessary genetic material.
 One hitch: they're such violent birds (especially the males) that they'll peck the hell out of you before you can get the goods, so he'd cover the backs of his calves with cardboard for armor, catch them between his legs when they ran at him, and do what he came to do.
 This is apparently a legitimate technique in crane husbandry.

@@ -1,0 +1,774 @@
+// ============================================================================
+// GRADIENT DESCENT SIMULATION
+// ============================================================================
+
+// Simulation state
+let simulationRunning = false;
+let tensorVariables = new Map(); // tensorName -> tf.Variable
+let targetTensor = null;
+let lossHistory = [];
+let tensorSVHistory = {}; // tensorName -> legIndex -> [{iteration, svs}, ...]
+let legSVHistory = {}; // legId -> [{iteration, svs}, ...]
+// Note: currentLegSVCounts and iterationCount are defined in state.js as globals
+let learningRate = 0.01;
+let lossChart = null;
+let svCharts = {}; // legId -> Chart object
+let animationFrameId = null;
+let simulationStartTime = null;
+let pauseStartTime = null;
+
+// Helper function to get the latest SVs for a tensor's connection to a specific leg
+function getLatestTensorLegSVs(tensor, leg) {
+  const tensorName = tensor.name;
+  if (!tensorSVHistory[tensorName]) {
+    return null;
+  }
+
+  // Find which leg index of this tensor corresponds to this leg
+  const connectedLegs = legs.filter(l => l.startTensor === tensor || l.endTensor === tensor);
+  const legIndex = connectedLegs.findIndex(l => l.id === leg.id);
+
+  if (legIndex === -1 || !tensorSVHistory[tensorName][legIndex]) {
+    return null;
+  }
+
+  const history = tensorSVHistory[tensorName][legIndex];
+  if (history.length === 0) {
+    return null;
+  }
+
+  return history[history.length - 1].svs;
+}
+
+// Unfold tensor along a specific leg
+function unfoldTensor(tensorArray, shape, legIndex) {
+  const rank = shape.length;
+
+  // Special case for 1D tensors
+  if (rank === 1) {
+    return [tensorArray];
+  }
+
+  // Compute dimensions
+  const legDim = shape[legIndex];
+  const otherDims = shape.filter((_, i) => i !== legIndex);
+  const otherDimProduct = otherDims.reduce((a, b) => a * b, 1);
+
+  // Create output matrix
+  const matrix = Array(legDim).fill(0).map(() => Array(otherDimProduct).fill(0));
+
+  // Create index arrays for iteration
+  const indices = Array(rank).fill(0);
+
+  // Flatten the tensor into matrix
+  function getValue(arr, idx) {
+    let current = arr;
+    for (let i = 0; i < idx.length - 1; i++) {
+      current = current[idx[i]];
+    }
+    return current[idx[idx.length - 1]];
+  }
+
+  // Iterate over all tensor elements
+  function iterate(dim) {
+    if (dim === rank) {
+      // Compute matrix position
+      const row = indices[legIndex];
+
+      // Compute column by flattening other indices
+      let col = 0;
+      let stride = 1;
+      for (let i = rank - 1; i >= 0; i--) {
+        if (i !== legIndex) {
+          col += indices[i] * stride;
+          stride *= shape[i];
+        }
+      }
+
+      matrix[row][col] = getValue(tensorArray, indices);
+      return;
+    }
+
+    for (let i = 0; i < shape[dim]; i++) {
+      indices[dim] = i;
+      iterate(dim + 1);
+    }
+  }
+
+  iterate(0);
+  return matrix;
+}
+
+// Learning rate conversion (logarithmic slider)
+function sliderToLearningRate(sliderValue) {
+  // Map 0-100 to 1e-4 to 1 logarithmically
+  const minLog = Math.log10(1e-4);
+  const maxLog = Math.log10(1);
+  const logValue = minLog + (sliderValue / 100) * (maxLog - minLog);
+  return Math.pow(10, logValue);
+}
+
+function updateLearningRateDisplay(rate) {
+  const display = document.getElementById('learningRateValue');
+  if (display) {
+    display.textContent = rate.toExponential(2);
+  }
+}
+
+// Convert diagram to einsum notation
+function diagramToEinsum() {
+  if (tensors.length === 0) {
+    return null;
+  }
+
+  // Sort tensors alphabetically by name
+  const sortedTensors = [...tensors].sort((a, b) => a.name.localeCompare(b.name));
+
+  // Build einsum string and collect shapes
+  const inputSpecs = [];
+  const tensorShapes = new Map();
+  const indexDims = new Map(); // index letter -> dimension
+
+  // First pass: determine dimension for each index
+  legs.forEach(leg => {
+    if (!indexDims.has(leg.name)) {
+      indexDims.set(leg.name, globalDimension);
+    }
+  });
+
+  // Second pass: build einsum inputs and determine tensor shapes
+  sortedTensors.forEach(tensor => {
+    const connectedLegs = legs.filter(leg =>
+      leg.startTensor === tensor || leg.endTensor === tensor
+    );
+    const legNames = connectedLegs.map(leg => leg.name).sort();
+
+    inputSpecs.push(legNames.join(''));
+
+    // Determine shape of this tensor
+    const shape = legNames.map(name => indexDims.get(name));
+    tensorShapes.set(tensor.name, shape);
+  });
+
+  // Determine output indices (external legs)
+  const externalLegs = new Set();
+  legs.forEach(leg => {
+    const connectedTensorCount = (leg.startTensor ? 1 : 0) + (leg.endTensor ? 1 : 0);
+    if (connectedTensorCount === 1) {
+      externalLegs.add(leg.name);
+    }
+  });
+
+  const outputSpec = Array.from(externalLegs).sort().join('');
+
+  // Build einsum equation
+  const equation = inputSpecs.join(',') + '->' + outputSpec;
+
+  return {
+    equation,
+    tensorShapes,
+    tensorNames: sortedTensors.map(t => t.name),
+    outputShape: outputSpec.split('').map(name => indexDims.get(name))
+  };
+}
+
+// Initialize simulation
+function initializeSimulation() {
+  console.log('Initializing simulation...');
+
+  // Clear previous state
+  if (tensorVariables.size > 0) {
+    tensorVariables.forEach(v => v.dispose());
+    tensorVariables.clear();
+  }
+  if (targetTensor) {
+    targetTensor.dispose();
+    targetTensor = null;
+  }
+
+  // Get einsum info
+  const einsumInfo = diagramToEinsum();
+  if (!einsumInfo) {
+    console.log('No tensors in diagram');
+    return false;
+  }
+
+  console.log('Einsum equation:', einsumInfo.equation);
+  console.log('Tensor shapes:', einsumInfo.tensorShapes);
+
+  // Initialize tensor variables
+  const variance = globalInitScale * globalInitScale;
+  const stddev = Math.sqrt(variance);
+
+  einsumInfo.tensorNames.forEach(name => {
+    const shape = einsumInfo.tensorShapes.get(name);
+    const values = tf.randomNormal(shape, 0, stddev);
+    tensorVariables.set(name, tf.variable(values));
+  });
+
+  // Create target tensor
+  if (einsumInfo.outputShape.length === 0) {
+    // Scalar output
+    targetTensor = tf.randomNormal([1], 0, 1);
+  } else {
+    targetTensor = tf.randomNormal(einsumInfo.outputShape, 0, 1);
+  }
+
+  console.log('Initialized', tensorVariables.size, 'tensor variables');
+  console.log('Target tensor shape:', targetTensor.shape);
+
+  // Reset history
+  lossHistory = [];
+  tensorSVHistory = {};
+  legSVHistory = {};
+  currentLegSVCounts = {};
+  currentLegSVs = {};
+  initialMaxSVs = {};
+  iterationCount = 0;
+  simulationStartTime = null;
+  pauseStartTime = null;
+  updateLossDisplay(null);
+  updateLossChart();
+  initializeSVCharts(); // Initialize SV charts for all legs
+  document.getElementById('stepsPerSec').textContent = '—';
+
+  return true;
+}
+
+// Contract two tensors with given index specifications
+function contractPair(tensor1, spec1, tensor2, spec2) {
+  return tf.tidy(() => {
+    // Find shared indices (to be contracted)
+    const indices1 = spec1.split('').filter(x => x); // Remove empty strings
+    const indices2 = spec2.split('').filter(x => x);
+    const sharedIndices = indices1.filter(idx => indices2.includes(idx));
+    const freeIndices1 = indices1.filter(idx => !sharedIndices.includes(idx));
+    const freeIndices2 = indices2.filter(idx => !sharedIndices.includes(idx));
+
+    // Validate dimensions match specs
+    if (tensor1.shape.length !== indices1.length) {
+      console.error('Tensor1 rank mismatch:', tensor1.shape.length, 'vs spec length', indices1.length);
+      throw new Error(`Tensor rank ${tensor1.shape.length} doesn't match spec length ${indices1.length}`);
+    }
+    if (tensor2.shape.length !== indices2.length) {
+      console.error('Tensor2 rank mismatch:', tensor2.shape.length, 'vs spec length', indices2.length);
+      throw new Error(`Tensor rank ${tensor2.shape.length} doesn't match spec length ${indices2.length}`);
+    }
+
+    if (sharedIndices.length === 0) {
+      // Outer product - use broadcasting
+      const shape1 = tensor1.shape;
+      const shape2 = tensor2.shape;
+      const reshapedT1 = tf.reshape(tensor1, [...shape1, ...Array(shape2.length).fill(1)]);
+      const reshapedT2 = tf.reshape(tensor2, [...Array(shape1.length).fill(1), ...shape2]);
+      return tf.mul(reshapedT1, reshapedT2);
+    }
+
+    // For simplicity, implement matrix multiplication for 2D case
+    // Reshape tensors to matrices and use matMul
+    const dim1 = tensor1.shape;
+    const dim2 = tensor2.shape;
+
+    // Flatten free indices and contracted indices
+    const freeSize1 = freeIndices1.length > 0
+      ? freeIndices1.reduce((prod, idx) => prod * dim1[indices1.indexOf(idx)], 1)
+      : 1;
+    const freeSize2 = freeIndices2.length > 0
+      ? freeIndices2.reduce((prod, idx) => prod * dim2[indices2.indexOf(idx)], 1)
+      : 1;
+    const contractSize = sharedIndices.reduce((prod, idx) => prod * dim1[indices1.indexOf(idx)], 1);
+
+    // Transpose tensor1 to put free indices first, then contracted indices
+    const perm1 = [...freeIndices1.map(idx => indices1.indexOf(idx)),
+                    ...sharedIndices.map(idx => indices1.indexOf(idx))];
+    const transposed1 = perm1.length > 0 && perm1.some((p, i) => p !== i)
+      ? tf.transpose(tensor1, perm1)
+      : tensor1;
+    const matrix1 = tf.reshape(transposed1, [freeSize1, contractSize]);
+
+    // Transpose tensor2 to put contracted indices first, then free indices
+    const perm2 = [...sharedIndices.map(idx => indices2.indexOf(idx)),
+                    ...freeIndices2.map(idx => indices2.indexOf(idx))];
+    const transposed2 = perm2.length > 0 && perm2.some((p, i) => p !== i)
+      ? tf.transpose(tensor2, perm2)
+      : tensor2;
+    const matrix2 = tf.reshape(transposed2, [contractSize, freeSize2]);
+
+    // Matrix multiply
+    const resultMatrix = tf.matMul(matrix1, matrix2);
+
+    // Reshape back to tensor
+    const outputIndices = [...freeIndices1, ...freeIndices2];
+    const outputShape = outputIndices.map(idx => {
+      if (freeIndices1.includes(idx)) {
+        return dim1[indices1.indexOf(idx)];
+      } else {
+        return dim2[indices2.indexOf(idx)];
+      }
+    });
+
+    const result = outputShape.length > 0
+      ? tf.reshape(resultMatrix, outputShape)
+      : tf.squeeze(resultMatrix);
+    return result;
+  });
+}
+
+// Compute tensor contraction
+function computeContraction() {
+  const einsumInfo = diagramToEinsum();
+  if (!einsumInfo) {
+    return null;
+  }
+
+  // Get tensor values in correct order
+  const tensorValues = einsumInfo.tensorNames.map(name => tensorVariables.get(name));
+  const inputSpecs = einsumInfo.equation.split('->')[0].split(',');
+  const outputSpec = einsumInfo.equation.split('->')[1];
+
+  if (tensorValues.length === 0) {
+    return tf.scalar(1);
+  } else if (tensorValues.length === 1) {
+    return tensorValues[0];
+  } else {
+    // Contract pairwise
+    let result = tensorValues[0];
+    let resultSpec = inputSpecs[0];
+
+    for (let i = 1; i < tensorValues.length; i++) {
+      result = contractPair(result, resultSpec, tensorValues[i], inputSpecs[i]);
+
+      // Update result spec
+      const indices1 = resultSpec.split('');
+      const indices2 = inputSpecs[i].split('');
+      const sharedIndices = indices1.filter(idx => indices2.includes(idx));
+      const freeIndices1 = indices1.filter(idx => !sharedIndices.includes(idx));
+      const freeIndices2 = indices2.filter(idx => !sharedIndices.includes(idx));
+      resultSpec = [...freeIndices1, ...freeIndices2].join('');
+    }
+
+    return result;
+  }
+}
+
+// Compute loss
+function computeLoss() {
+  const T = computeContraction();
+  if (!T) {
+    return null;
+  }
+
+  // Compute Frobenius norm squared of difference
+  const diff = tf.sub(T, targetTensor);
+  const loss = tf.sum(tf.square(diff));
+
+  return loss;
+}
+
+// Single gradient descent step
+function gradientStep() {
+  tf.tidy(() => {
+    const grads = tf.variableGrads(() => computeLoss());
+
+    // Update each variable
+    tensorVariables.forEach((variable, name) => {
+      const grad = grads.grads[variable.name];
+      if (grad) {
+        const update = tf.mul(grad, learningRate);
+        variable.assign(tf.sub(variable, update));
+      }
+    });
+
+    // Note: grads will be automatically disposed by tf.tidy
+  });
+}
+
+// Simulation loop
+function simulationLoop() {
+  if (!simulationRunning) {
+    return;
+  }
+
+  // Perform multiple gradient steps per frame
+  const stepsPerFrame = 1;
+  for (let i = 0; i < stepsPerFrame; i++) {
+    gradientStep();
+    iterationCount++;
+  }
+
+  // Compute and record loss
+  const lossValue = tf.tidy(() => {
+    const loss = computeLoss();
+    return loss.dataSync()[0];
+  });
+
+  lossHistory.push({ iteration: iterationCount, loss: lossValue });
+  updateLossDisplay(lossValue);
+  updateLossChart();
+  updateSVCharts();
+
+  // Update steps/sec display
+  if (simulationStartTime && iterationCount > 0) {
+    const elapsedSec = (performance.now() - simulationStartTime) / 1000;
+    const stepsPerSec = iterationCount / elapsedSec;
+    document.getElementById('stepsPerSec').textContent = stepsPerSec.toFixed(1);
+  }
+
+  // Track SVs for each tensor from POV of each leg
+  tensorVariables.forEach((tensorVar, tensorName) => {
+    const shape = tensorVar.shape;
+    const rank = shape.length;
+
+    // Initialize storage for this tensor if needed
+    if (!tensorSVHistory[tensorName]) {
+      tensorSVHistory[tensorName] = {};
+      for (let leg = 0; leg < rank; leg++) {
+        tensorSVHistory[tensorName][leg] = [];
+      }
+    }
+
+    // For each leg, unfold and compute SVD
+    for (let legIndex = 0; legIndex < rank; legIndex++) {
+      const svs = tf.tidy(() => {
+        // Get tensor as array
+        const tensorArray = tensorVar.arraySync();
+
+        // Unfold tensor along this leg
+        let matrix = unfoldTensor(tensorArray, shape, legIndex);
+
+        // numeric.svd requires rows >= columns, so transpose if needed
+        const rows = matrix.length;
+        const cols = matrix[0].length;
+        if (cols > rows) {
+          matrix = numeric.transpose(matrix);
+        }
+
+        // Compute SVD
+        const svd = numeric.svd(matrix);
+
+        return svd.S;
+      });
+
+      tensorSVHistory[tensorName][legIndex].push({ iteration: iterationCount, svs });
+    }
+  });
+
+  // Track SVs for each leg in the diagram
+  legs.forEach(leg => {
+    // Initialize storage for this leg if needed
+    if (!legSVHistory[leg.id]) {
+      legSVHistory[leg.id] = [];
+    }
+
+    let legSVs = null;
+
+    // Get SV lists from both connected tensors (if they exist)
+    const sv1 = leg.startTensor ? getLatestTensorLegSVs(leg.startTensor, leg) : null;
+    const sv2 = leg.endTensor ? getLatestTensorLegSVs(leg.endTensor, leg) : null;
+
+    if (sv1 && sv2) {
+      // Both ends connected - take elementwise max
+      const maxLen = Math.max(sv1.length, sv2.length);
+      legSVs = [];
+      for (let i = 0; i < maxLen; i++) {
+        const val1 = i < sv1.length ? sv1[i] : 0;
+        const val2 = i < sv2.length ? sv2[i] : 0;
+        legSVs.push(Math.max(val1, val2));
+      }
+    } else if (sv1) {
+      // Only start tensor connected
+      legSVs = sv1;
+    } else if (sv2) {
+      // Only end tensor connected
+      legSVs = sv2;
+    }
+
+    if (legSVs) {
+      legSVHistory[leg.id].push({ iteration: iterationCount, svs: legSVs });
+
+      // Store current SVs for visualization
+      currentLegSVs[leg.id] = legSVs;
+
+      // Track initial max SV for this leg (at iteration 1)
+      if (iterationCount === 1) {
+        initialMaxSVs[leg.id] = Math.max(...legSVs);
+      }
+
+      // Count SVs > 0.1 for annotation
+      const count = legSVs.filter(sv => sv > 0.1).length;
+      currentLegSVCounts[leg.id] = count;
+    }
+  });
+
+  // Log memory usage periodically
+  if (iterationCount % 1000 === 0) {
+    const memInfo = tf.memory();
+    console.log(`Iteration ${iterationCount}: ${memInfo.numTensors} tensors, ${(memInfo.numBytes / 1024 / 1024).toFixed(2)} MB`);
+  }
+
+  // Redraw canvas to show updated annotations
+  draw();
+
+  // Continue loop
+  animationFrameId = requestAnimationFrame(simulationLoop);
+}
+
+// Start simulation
+function startSimulation() {
+  if (simulationRunning) {
+    return;
+  }
+
+  // Initialize if needed, or reinitialize if at iteration 0 (to pick up setting changes)
+  if (tensorVariables.size === 0 || iterationCount === 0) {
+    const success = initializeSimulation();
+    if (!success) {
+      alert('Cannot start simulation: no tensors in diagram');
+      return;
+    }
+  }
+
+  simulationRunning = true;
+  document.getElementById('startPauseButton').textContent = 'Pause';
+  document.getElementById('startPauseButton').classList.add('running');
+
+  // Record start time if starting from iteration 0, or adjust for pause time
+  if (iterationCount === 0) {
+    simulationStartTime = performance.now();
+  } else if (pauseStartTime !== null) {
+    // Adjust start time to exclude pause duration
+    const pauseDuration = performance.now() - pauseStartTime;
+    simulationStartTime += pauseDuration;
+    pauseStartTime = null;
+  }
+
+  simulationLoop();
+}
+
+// Pause simulation
+function pauseSimulation() {
+  simulationRunning = false;
+  document.getElementById('startPauseButton').textContent = 'Start';
+  document.getElementById('startPauseButton').classList.remove('running');
+
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+
+  // Record pause time
+  pauseStartTime = performance.now();
+}
+
+// Reset simulation
+function resetSimulation() {
+  pauseSimulation();
+  initializeSimulation();
+}
+
+// Update loss display
+function updateLossDisplay(loss) {
+  const display = document.getElementById('currentLoss');
+  if (display) {
+    if (loss === null) {
+      display.textContent = '—';
+    } else {
+      display.textContent = loss.toExponential(4);
+    }
+  }
+}
+
+// Update loss chart
+function updateLossChart() {
+  if (!lossChart) {
+    return;
+  }
+
+  lossChart.data.labels = lossHistory.map(d => d.iteration);
+  lossChart.data.datasets[0].data = lossHistory.map(d => d.loss);
+  lossChart.update('none'); // Update without animation for performance
+}
+
+// Update SV charts
+function updateSVCharts() {
+  legs.forEach(leg => {
+    const chart = svCharts[leg.id];
+    if (!chart || !legSVHistory[leg.id]) {
+      return;
+    }
+
+    const history = legSVHistory[leg.id];
+    if (history.length === 0) {
+      return;
+    }
+
+    // Get the latest SV values
+    const latestEntry = history[history.length - 1];
+    const numSVs = latestEntry.svs.length;
+
+    // Update each SV's dataset
+    for (let i = 0; i < numSVs; i++) {
+      if (!chart.data.datasets[i]) {
+        // Create new dataset for this SV
+        const hue = (i * 360 / numSVs) % 360;
+        chart.data.datasets[i] = {
+          label: `SV ${i + 1}`,
+          data: [],
+          borderColor: `hsl(${hue}, 70%, 50%)`,
+          backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0
+        };
+      }
+
+      // Update data for this SV
+      chart.data.datasets[i].data = history.map(entry =>
+        entry.svs[i] !== undefined ? entry.svs[i] : 0
+      );
+    }
+
+    chart.data.labels = history.map(d => d.iteration);
+    chart.update('none');
+  });
+}
+
+// Initialize loss chart
+function initializeLossChart() {
+  const ctx = document.getElementById('lossPlot').getContext('2d');
+  lossChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Loss',
+        data: [],
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Iteration'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Loss'
+          },
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+}
+
+function initializeSVCharts() {
+  const container = document.getElementById('svPlotsContainer');
+  container.innerHTML = ''; // Clear existing charts
+  svCharts = {}; // Reset chart objects
+
+  legs.forEach(leg => {
+    // Create container for this leg's chart
+    const plotItem = document.createElement('div');
+    plotItem.className = 'sv-plot-item';
+
+    const title = document.createElement('h4');
+    title.textContent = `Leg ${leg.name}`;
+    plotItem.appendChild(title);
+
+    const canvas = document.createElement('canvas');
+    canvas.id = `svPlot-${leg.id}`;
+    plotItem.appendChild(canvas);
+
+    container.appendChild(plotItem);
+
+    // Create chart
+    const ctx = canvas.getContext('2d');
+    svCharts[leg.id] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [] // Will be populated dynamically as SVs are computed
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Iteration'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Singular Value'
+            },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              boxWidth: 12,
+              font: {
+                size: 10
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+}
+
+// Setup simulation UI handlers
+function setupSimulationHandlers() {
+  const startPauseButton = document.getElementById('startPauseButton');
+  const resetButton = document.getElementById('resetButton');
+  const learningRateSlider = document.getElementById('learningRate');
+
+  startPauseButton.addEventListener('click', () => {
+    if (simulationRunning) {
+      pauseSimulation();
+    } else {
+      startSimulation();
+    }
+  });
+
+  resetButton.addEventListener('click', () => {
+    resetSimulation();
+  });
+
+  learningRateSlider.addEventListener('input', (e) => {
+    learningRate = sliderToLearningRate(parseFloat(e.target.value));
+    updateLearningRateDisplay(learningRate);
+  });
+
+  // Initialize displays
+  learningRate = sliderToLearningRate(parseFloat(learningRateSlider.value));
+  updateLearningRateDisplay(learningRate);
+
+  // Initialize charts
+  initializeLossChart();
+}
