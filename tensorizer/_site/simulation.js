@@ -859,11 +859,7 @@ function initializeSidePanelLossChart() {
         },
         y: {
           title: {
-            display: true,
-            text: '                    ',  // Invisible placeholder to reserve space
-            font: {
-              size: 15
-            }
+            display: false
           },
           beginAtZero: true,
           ticks: {
