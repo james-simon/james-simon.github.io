@@ -79,8 +79,7 @@ function updateSidePanelSVChart() {
     // Create datasets for each SV using rainbow colors (HSL) with {x, y} format
     const datasets = [];
     for (let i = 0; i < numSVs; i++) {
-      const hue = (i * 360 / numSVs) % 360;
-      const color = `hsl(${hue}, 70%, 50%)`;
+      const color = getSVColor(i, numSVs);
       const data = history.map(h => ({ x: h.iteration, y: h.svs[i] }));
       datasets.push({
         label: `SV ${i + 1}`,

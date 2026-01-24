@@ -580,18 +580,6 @@ function updateLossDisplay(loss) {
   }
 }
 
-// Update loss chart
-function updateLossChart() {
-  // Removed - no bottom plots, only side panel plot
-  return;
-}
-
-// Update selected SV charts based on selected legs
-function updateSelectedSVCharts() {
-  // Removed - no bottom plots, only side panel plot
-  return;
-}
-
 // Helper to update a single SV chart with leg data
 function updateSingleSVChart(chart, leg) {
   if (!legSVHistory[leg.id]) {
@@ -624,12 +612,12 @@ function updateSingleSVChart(chart, leg) {
   // Update each SV's dataset
   for (let i = 0; i < numSVs; i++) {
     if (!chart.data.datasets[i]) {
-      const hue = (i * 360 / numSVs) % 360;
+      const color = getSVColor(i, numSVs);
       chart.data.datasets[i] = {
         label: `SV ${i + 1}`,
         data: [],
-        borderColor: `hsl(${hue}, 70%, 50%)`,
-        backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
+        borderColor: color,
+        backgroundColor: color.replace('hsl', 'hsla').replace(')', ', 0.1)'),
         borderWidth: 2,
         pointRadius: 0,
         tension: 0
@@ -655,22 +643,6 @@ function updateSingleSVChart(chart, leg) {
   };
 
   chart.update('none');
-}
-
-// Helper to calculate nice tick step size
-function calculateTickStep(maxValue) {
-  const steps = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000];
-  const targetTicks = 8; // Aim for around 8 ticks
-
-  for (const step of steps) {
-    const numTicks = Math.floor(maxValue / step);
-    if (numTicks <= targetTicks) {
-      return step;
-    }
-  }
-
-  // Fallback: use the largest step
-  return steps[steps.length - 1];
 }
 
 // Helper to create an SV chart
@@ -825,125 +797,8 @@ function initializeSelectedSVChart() {
   });
 }
 
-function initializeSidePanelLossChart() {
-  const ctx = document.getElementById('sidePanelLossCanvas').getContext('2d');
-  sidePanelLossChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      datasets: []
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: {
-          type: 'linear',
-          title: {
-            display: true,
-            text: 'step',
-            font: {
-              size: 15
-            }
-          },
-          ticks: {
-            callback: function(value, index, values) {
-              return value;
-            },
-            autoSkip: false,
-            maxRotation: 0,
-            font: {
-              size: 14
-            }
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: '                    ',  // Invisible placeholder to reserve space
-            font: {
-              size: 15
-            }
-          },
-          beginAtZero: true,
-          ticks: {
-            font: {
-              size: 14
-            }
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          display: false
-        },
-        title: {
-          display: false
-        }
-      }
-    }
-  });
-}
-
-function initializeSidePanelSVChart() {
-  const ctx = document.getElementById('sidePanelSVCanvas').getContext('2d');
-  sidePanelSVChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      datasets: []
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: {
-          type: 'linear',
-          title: {
-            display: true,
-            text: 'step',
-            font: {
-              size: 15
-            }
-          },
-          ticks: {
-            callback: function(value, index, values) {
-              return value;
-            },
-            autoSkip: false,
-            maxRotation: 0,
-            font: {
-              size: 14
-            }
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'value',
-            font: {
-              size: 15
-            }
-          },
-          beginAtZero: true,
-          ticks: {
-            font: {
-              size: 14
-            }
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          display: false
-        },
-        title: {
-          display: false
-        }
-      }
-    }
-  });
-}
+// Side panel charts are now initialized via charts.js
+// (functions are called directly from charts.js module)
 
 // Setup simulation UI handlers
 function setupSimulationHandlers() {
@@ -973,6 +828,6 @@ function setupSimulationHandlers() {
   updateLearningRateDisplay(learningRate);
 
   // Initialize charts
-  initializeSidePanelLossChart();
-  initializeSidePanelSVChart();
+  sidePanelLossChart = initializeSidePanelLossChart();
+  sidePanelSVChart = initializeSidePanelSVChart();
 }

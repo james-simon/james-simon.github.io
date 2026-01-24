@@ -2,21 +2,6 @@
 // DRAWING FUNCTIONS
 // ============================================================================
 
-// Transform canvas coordinates
-function screenToWorld(x, y) {
-  return {
-    x: (x - panX) / zoom,
-    y: (y - panY) / zoom
-  };
-}
-
-function worldToScreen(x, y) {
-  return {
-    x: x * zoom + panX,
-    y: y * zoom + panY
-  };
-}
-
 // Main draw function
 function draw() {
   ctx.save();
@@ -45,61 +30,6 @@ function draw() {
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
     ctx.stroke();
-
-    // Draw SV visualization lines ON TOP (disabled - shown in floating plots instead)
-    // if (showSingularValues && iterationCount > 0 && currentLegSVs[leg.id] && initialMaxSVs[leg.id]) {
-    //   const svs = currentLegSVs[leg.id];
-    //   const initMax = initialMaxSVs[leg.id];
-    //   const numSVs = svs.length;
-
-    //   if (numSVs > 0) {
-    //     // Calculate perpendicular direction for spacing
-    //     const dx = end.x - start.x;
-    //     const dy = end.y - start.y;
-    //     const length = Math.sqrt(dx * dx + dy * dy);
-
-    //     if (length > 0) {
-    //       const perpX = -dy / length;
-    //       const perpY = dx / length;
-
-    //       // Total spacing for SV lines - increased for better visibility
-    //       const totalSpacing = Math.min(lineWidth * 2, 40);
-    //       const svSpacing = numSVs > 1 ? totalSpacing / (numSVs - 1) : 0;
-    //       const startOffset = -(totalSpacing / 2);
-
-    //       // Draw each SV as a parallel line
-    //       svs.forEach((sv, i) => {
-    //         // Calculate opacity: initMax -> 0, 0.5 -> 1, linear interpolation
-    //         let opacity;
-
-    //         if (initMax >= 0.5) {
-    //           // Edge case: initMax is already at or above target
-    //           opacity = 0;
-    //         } else {
-    //           // Linear interpolation from initMax (opacity 0) to 0.5 (opacity 1)
-    //           opacity = (sv - initMax) / (0.5 - initMax);
-    //         }
-
-    //         opacity = Math.max(0, Math.min(1, opacity));
-
-    //         // Offset for this SV line
-    //         const offset = startOffset + i * svSpacing;
-    //         const sx = start.x + perpX * offset;
-    //         const sy = start.y + perpY * offset;
-    //         const ex = end.x + perpX * offset;
-    //         const ey = end.y + perpY * offset;
-
-    //         // Draw the SV line in red with calculated opacity
-    //         ctx.strokeStyle = `rgba(255, 0, 0, ${opacity})`;
-    //         ctx.lineWidth = 1.5;
-    //         ctx.beginPath();
-    //         ctx.moveTo(sx, sy);
-    //         ctx.lineTo(ex, ey);
-    //         ctx.stroke();
-    //       });
-    //     }
-    //   }
-    // }
 
     // Draw free end circles
     if (!leg.startTensor) {
@@ -282,118 +212,11 @@ function draw() {
     const plotHeight = 80;
     const BUFFER_SIZE = 20;
     const occupiedRegions = [];
-    const rejectedPositions = []; // For debugging
     floatingPlotBounds = []; // Reset plot bounds for click detection
 
-    // Helper function: distance from point to rectangle
-    function distanceToRect(px, py, rectX, rectY, rectW, rectH) {
-      const closestX = Math.max(rectX, Math.min(px, rectX + rectW));
-      const closestY = Math.max(rectY, Math.min(py, rectY + rectH));
-      const dx = px - closestX;
-      const dy = py - closestY;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    // Helper function: distance from point to line segment
-    function distanceToSegment(px, py, x1, y1, x2, y2) {
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const lengthSq = dx * dx + dy * dy;
-
-      if (lengthSq === 0) {
-        return Math.sqrt((px - x1) * (px - x1) + (py - y1) * (py - y1));
-      }
-
-      let t = ((px - x1) * dx + (py - y1) * dy) / lengthSq;
-      t = Math.max(0, Math.min(1, t));
-
-      const closestX = x1 + t * dx;
-      const closestY = y1 + t * dy;
-      return Math.sqrt((px - closestX) * (px - closestX) + (py - closestY) * (py - closestY));
-    }
-
-    // Helper function: minimum distance from rectangle to another rectangle
-    function rectToRectDistance(x1, y1, w1, h1, x2, y2, w2, h2) {
-      // Check if rectangles overlap
-      if (!(x1 + w1 < x2 || x1 > x2 + w2 || y1 + h1 < y2 || y1 > y2 + h2)) {
-        return 0; // Overlapping
-      }
-
-      // Check corners of rect1 against rect2
-      let minDist = Infinity;
-      const corners1 = [
-        [x1, y1], [x1 + w1, y1], [x1, y1 + h1], [x1 + w1, y1 + h1]
-      ];
-
-      for (const [cx, cy] of corners1) {
-        minDist = Math.min(minDist, distanceToRect(cx, cy, x2, y2, w2, h2));
-      }
-
-      // Check corners of rect2 against rect1
-      const corners2 = [
-        [x2, y2], [x2 + w2, y2], [x2, y2 + h2], [x2 + w2, y2 + h2]
-      ];
-
-      for (const [cx, cy] of corners2) {
-        minDist = Math.min(minDist, distanceToRect(cx, cy, x1, y1, w1, h1));
-      }
-
-      return minDist;
-    }
-
-    // Helper function: minimum distance from rectangle to line segment
-    function rectToSegmentDistance(rectX, rectY, rectW, rectH, x1, y1, x2, y2) {
-      let minDist = Infinity;
-
-      // Check distance from all 4 corners of rectangle to line segment
-      const corners = [
-        [rectX, rectY],
-        [rectX + rectW, rectY],
-        [rectX, rectY + rectH],
-        [rectX + rectW, rectY + rectH]
-      ];
-
-      for (const [cx, cy] of corners) {
-        minDist = Math.min(minDist, distanceToSegment(cx, cy, x1, y1, x2, y2));
-      }
-
-      // Check distance from all 4 edges of rectangle to line segment endpoints
-      minDist = Math.min(minDist, distanceToRect(x1, y1, rectX, rectY, rectW, rectH));
-      minDist = Math.min(minDist, distanceToRect(x2, y2, rectX, rectY, rectW, rectH));
-
-      // Check if line segment intersects or passes through rectangle
-      // Check distance from segment to each edge of the rectangle
-      const edges = [
-        [rectX, rectY, rectX + rectW, rectY], // Top edge
-        [rectX + rectW, rectY, rectX + rectW, rectY + rectH], // Right edge
-        [rectX, rectY + rectH, rectX + rectW, rectY + rectH], // Bottom edge
-        [rectX, rectY, rectX, rectY + rectH] // Left edge
-      ];
-
-      for (const [ex1, ey1, ex2, ey2] of edges) {
-        // Check if segments intersect
-        const dx1 = x2 - x1;
-        const dy1 = y2 - y1;
-        const dx2 = ex2 - ex1;
-        const dy2 = ey2 - ey1;
-
-        const det = dx1 * dy2 - dy1 * dx2;
-        if (Math.abs(det) > 0.0001) {
-          const t = ((ex1 - x1) * dy2 - (ey1 - y1) * dx2) / det;
-          const u = ((ex1 - x1) * dy1 - (ey1 - y1) * dx1) / det;
-
-          if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-            // Segments intersect
-            return 0;
-          }
-        }
-
-        // Also check distance from edge endpoints to segment
-        minDist = Math.min(minDist, distanceToSegment(ex1, ey1, x1, y1, x2, y2));
-        minDist = Math.min(minDist, distanceToSegment(ex2, ey2, x1, y1, x2, y2));
-      }
-
-      return minDist;
+    // Cache for plot positions (legId -> {x, y})
+    if (!window.plotPositionCache) {
+      window.plotPositionCache = {};
     }
 
     legs.forEach(leg => {
@@ -406,11 +229,47 @@ function draw() {
       const midX = (start.x + end.x) / 2;
       const midY = (start.y + end.y) / 2;
 
-      // Spiral search for valid position
+      // Try to use cached position first
       let plotX, plotY;
       let found = false;
       const maxI = 1000;
 
+      if (window.plotPositionCache[leg.id]) {
+        const cached = window.plotPositionCache[leg.id];
+        plotX = cached.x;
+        plotY = cached.y;
+
+        // Validate cached position is still valid
+        let cacheValid = true;
+
+        // Check canvas bounds
+        if (plotX < 10 || plotX + plotWidth > 790 ||
+            plotY < 10 || plotY + plotHeight > 590) {
+          cacheValid = false;
+        }
+
+        // Check against other plots (excluding itself)
+        if (cacheValid) {
+          for (const region of occupiedRegions) {
+            const dist = rectToRectDistance(
+              plotX, plotY, plotWidth, plotHeight,
+              region.x, region.y, region.width, region.height
+            );
+            if (dist < BUFFER_SIZE) {
+              cacheValid = false;
+              break;
+            }
+          }
+        }
+
+        if (cacheValid) {
+          found = true;
+        } else {
+          delete window.plotPositionCache[leg.id];
+        }
+      }
+
+      // Spiral search for valid position if not found in cache
       for (let i = 1; i <= maxI && !found; i++) {
         const theta = i * Math.PI / 16;
         const r = 0.3 * i;
@@ -482,9 +341,8 @@ function draw() {
           plotX = candidateX;
           plotY = candidateY;
           found = true;
-        } else {
-          // Store rejected position for debugging
-          rejectedPositions.push({ x: candidateX + plotWidth / 2, y: candidateY + plotHeight / 2 });
+          // Cache this position for next frame
+          window.plotPositionCache[leg.id] = { x: plotX, y: plotY };
         }
       }
 
@@ -538,8 +396,7 @@ function draw() {
 
         // Draw each SV as a line
         for (let svIndex = 0; svIndex < numSVs; svIndex++) {
-          const hue = (svIndex * 360 / numSVs) % 360;
-          ctx.strokeStyle = `hsl(${hue}, 70%, 50%)`;
+          ctx.strokeStyle = getSVColor(svIndex, numSVs);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
 
@@ -617,83 +474,9 @@ function draw() {
     });
 
     // Draw debug dots for rejected positions (disabled for now)
-    // ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-    // rejectedPositions.forEach(pos => {
-    //   ctx.beginPath();
-    //   ctx.arc(pos.x, pos.y, 2, 0, 2 * Math.PI);
-    //   ctx.fill();
-    // });
   }
 
   ctx.restore();
-
-  // Floating loss plot removed - loss is always shown in side panel
-  // if (iterationCount > 0 && lossHistory && lossHistory.length > 0) {
-  //   const plotWidth = 120;
-  //   const plotHeight = 80;
-  //   const plotX = 10;
-  //   const canvasDisplayHeight = canvas.getBoundingClientRect().height;
-  //   const plotY = canvasDisplayHeight - plotHeight - 10;
-  //
-  //   // Draw plot background (loss plot is not selectable, always shown in top panel)
-  //   ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-  //   ctx.strokeStyle = '#333333';
-  //   ctx.lineWidth = 1;
-  //   ctx.fillRect(plotX, plotY, plotWidth, plotHeight);
-  //   ctx.strokeRect(plotX, plotY, plotWidth, plotHeight);
-  //
-  //   // Store plot bounds for click detection
-  //   if (!floatingPlotBounds) {
-  //     floatingPlotBounds = [];
-  //   }
-  //   floatingPlotBounds.push({
-  //     legId: 'loss',
-  //     leg: 'loss',
-  //     x: plotX,
-  //     y: plotY,
-  //     width: plotWidth,
-  //     height: plotHeight
-  //   });
-  //
-  //   // Draw label at top
-  //   ctx.fillStyle = '#333333';
-  //   ctx.font = '12px sans-serif';
-  //   ctx.textAlign = 'center';
-  //   ctx.fillText('Loss', plotX + plotWidth / 2, plotY + 15);
-  //
-  //   // Draw the loss curve
-  //   if (lossHistory.length > 1) {
-  //     const padding = 5;
-  //     const labelHeight = 20;
-  //     const chartWidth = plotWidth - 2 * padding;
-  //     const chartHeight = plotHeight - 2 * padding - labelHeight;
-  //
-  //     // Find max loss for scaling - lossHistory contains {iteration, loss} objects
-  //     let maxLoss = Math.max(...lossHistory.map(h => h.loss));
-  //     if (maxLoss === 0) maxLoss = 1;
-  //
-  //     ctx.strokeStyle = 'rgb(75, 192, 192)';
-  //     ctx.lineWidth = 2;
-  //     ctx.beginPath();
-  //
-  //     let started = false;
-  //     lossHistory.forEach((entry, i) => {
-  //       const lossValue = entry.loss;
-  //       const x = plotX + padding + (i / (lossHistory.length - 1)) * chartWidth;
-  //       const normalizedLoss = Math.max(0, Math.min(1, lossValue / maxLoss));
-  //       const y = plotY + labelHeight + padding + chartHeight * (1 - normalizedLoss);
-  //
-  //       if (!started) {
-  //         ctx.moveTo(x, y);
-  //         started = true;
-  //       } else {
-  //         ctx.lineTo(x, y);
-  //       }
-  //     });
-  //
-  //     ctx.stroke();
-  //   }
-  // }
 
   // Update formula display
   updateFormulaDisplay();

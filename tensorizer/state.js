@@ -14,6 +14,52 @@ let selectedLeg = null;
 let selectedTensors = new Set(); // For multi-select
 let selectedLegs = new Set(); // For multi-select
 
+// Selection manager helper functions
+const SelectionManager = {
+  // Clear all selections
+  clearAll() {
+    selectedTensor = null;
+    selectedLeg = null;
+    selectedTensors.clear();
+    selectedLegs.clear();
+    if (window.selectedFreeEnds) {
+      window.selectedFreeEnds.clear();
+    }
+  },
+
+  // Select single tensor
+  selectTensor(tensor) {
+    this.clearAll();
+    selectedTensor = tensor;
+  },
+
+  // Select single leg
+  selectLeg(leg) {
+    this.clearAll();
+    selectedLeg = leg;
+  },
+
+  // Check if any tensor is selected
+  hasTensorSelection() {
+    return selectedTensor !== null || selectedTensors.size > 0;
+  },
+
+  // Check if any leg is selected
+  hasLegSelection() {
+    return selectedLeg !== null || selectedLegs.size > 0;
+  },
+
+  // Check if specific tensor is selected (single or multi)
+  isTensorSelected(tensor) {
+    return tensor === selectedTensor || selectedTensors.has(tensor);
+  },
+
+  // Check if specific leg is selected (single or multi)
+  isLegSelected(leg) {
+    return leg === selectedLeg || selectedLegs.has(leg);
+  }
+};
+
 // Interaction state
 let activeTool = 'mouse'; // 'mouse', 'pan', 'tensor', 'connection', 'eraser'
 let draggingTensor = null;
