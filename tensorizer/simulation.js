@@ -19,6 +19,10 @@ let sidePanelSVChart = null; // Chart for the side panel SV plot (shown when leg
 let animationFrameId = null;
 let simulationStartTime = null;
 let pauseStartTime = null;
+let stepTimestamps = []; // Rolling window of recent step timestamps for steps/sec calculation
+const STEPS_PER_SEC_WINDOW = 60; // Average over last 60 steps
+let lastStepsPerSecUpdate = 0; // Timestamp of last steps/sec display update
+const STEPS_PER_SEC_UPDATE_INTERVAL = 250; // Update display every 250ms (4 times per second)
 
 // Helper function to get the latest SVs for a tensor's connection to a specific leg
 function getLatestTensorLegSVs(tensor, leg) {
@@ -230,6 +234,7 @@ function initializeSimulation() {
   iterationCount = 0;
   simulationStartTime = null;
   pauseStartTime = null;
+  stepTimestamps = [];
   updateLossDisplay(null);
   updateSidePanelSVChart(); // Update side panel chart
   document.getElementById('stepsPerSec').textContent = '—';
@@ -409,11 +414,20 @@ function simulationLoop() {
   updateSidePanelLossChart(); // Update side panel loss chart (always visible)
   updateSidePanelSVChart(); // Update side panel SV chart (if leg selected)
 
-  // Update steps/sec display
-  if (simulationStartTime && iterationCount > 0) {
-    const elapsedSec = (performance.now() - simulationStartTime) / 1000;
-    const stepsPerSec = iterationCount / elapsedSec;
-    document.getElementById('stepsPerSec').textContent = stepsPerSec.toFixed(1);
+  // Update steps/sec display using rolling average (throttled to a few times per second)
+  const now = performance.now();
+  stepTimestamps.push(now);
+  if (stepTimestamps.length > STEPS_PER_SEC_WINDOW) {
+    stepTimestamps.shift();
+  }
+
+  if (stepTimestamps.length >= 2 && now - lastStepsPerSecUpdate >= STEPS_PER_SEC_UPDATE_INTERVAL) {
+    const timeSpanMs = stepTimestamps[stepTimestamps.length - 1] - stepTimestamps[0];
+    const timeSpanSec = timeSpanMs / 1000;
+    const stepsInWindow = stepTimestamps.length - 1; // Number of intervals between timestamps
+    const stepsPerSec = stepsInWindow / timeSpanSec;
+    document.getElementById('stepsPerSec').textContent = Math.round(stepsPerSec).toString();
+    lastStepsPerSecUpdate = now;
   }
 
   // Track SVs for each tensor from POV of each leg
