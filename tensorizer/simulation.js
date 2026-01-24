@@ -573,9 +573,9 @@ function updateLossDisplay(loss) {
   const display = document.getElementById('currentLoss');
   if (display) {
     if (loss === null) {
-      display.textContent = '—';
+      display.innerHTML = '—';
     } else {
-      display.textContent = loss.toExponential(4);
+      display.innerHTML = formatToSigFigs(loss, 4);
     }
   }
 }

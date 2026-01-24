@@ -63,6 +63,38 @@ function formatScientific(value) {
   }
 }
 
+// Format value to 4 significant figures with scientific notation
+function formatToSigFigs(value, sigFigs = 4) {
+  if (value === 0) return '0';
+
+  const exponent = Math.floor(Math.log10(Math.abs(value)));
+  const mantissa = value / Math.pow(10, exponent);
+
+  // Round mantissa to sigFigs significant figures
+  const multiplier = Math.pow(10, sigFigs - 1);
+  const roundedMantissa = Math.round(mantissa * multiplier) / multiplier;
+
+  // If rounded to whole number and exponent is 0, just return the number
+  if (exponent === 0 && Math.abs(roundedMantissa - Math.round(roundedMantissa)) < 1e-10) {
+    return Math.round(roundedMantissa).toString();
+  }
+
+  // If mantissa rounds to 1, simplify
+  if (Math.abs(roundedMantissa - 1) < 1e-10) {
+    if (exponent === 0) {
+      return '1';
+    }
+    return `10<sup>${exponent}</sup>`;
+  }
+
+  // If exponent is 0, just show the mantissa
+  if (exponent === 0) {
+    return roundedMantissa.toString();
+  }
+
+  return `${roundedMantissa}×10<sup>${exponent}</sup>`;
+}
+
 // Init scale slider: [1-9] × 10^k for k from -5 to 0, then 10
 const INIT_SCALE_VALUES = [...generateLogValues(-5, 0), 10];
 console.log('INIT_SCALE_VALUES:', INIT_SCALE_VALUES.length, 'values from', INIT_SCALE_VALUES[0], 'to', INIT_SCALE_VALUES[INIT_SCALE_VALUES.length - 1]);
