@@ -117,15 +117,6 @@
   box-sizing: border-box;
 }
 
-.formula-display {
-  padding: 20px 10px;
-  text-align: center;
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
 
 .simulation-controls {
   display: flex;
@@ -173,7 +164,7 @@
   box-sizing: border-box;
 }
 
-#svPlotsContainer {
+#additionalSVPlotsContainer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
@@ -198,4 +189,158 @@
 .sv-plot-item canvas {
   width: 100%;
   height: 100%;
+}
+
+/* Floating toolbar buttons over canvas */
+.floating-toolbar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.floating-toolbar .tool-button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #999;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border-radius: 4px;
+}
+
+.floating-toolbar .tool-button:hover {
+  background: #f5f5f5;
+}
+
+.floating-toolbar .tool-button.active {
+  background: #e0e0ff;
+  border-color: #0000ff;
+}
+
+.floating-toolbar .tool-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Floating toggles in top-right */
+.floating-toggles {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.floating-toggles label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.floating-toggles input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.page-help-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 32px;
+  border-radius: 4px;
+  border: 2px solid #333;
+  background: white;
+  color: #333;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.page-help-button:hover {
+  background: #333;
+  color: white;
+}
+
+/* Canvas wrapper for relative positioning */
+.canvas-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Floating formula display in bottom-left */
+.floating-formula {
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 16px;
+  max-width: 400px;
+  overflow-x: auto;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.floating-formula mjx-container {
+  margin: 0 !important;
+}
+
+/* Floating properties panel in bottom-right */
+.floating-properties {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  min-width: 200px;
+}
+
+.floating-properties h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-family: 'Gill Sans', sans-serif;
+}
+
+.floating-properties label {
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 14px;
+}
+
+.floating-properties input {
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 14px;
 }

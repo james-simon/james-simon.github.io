@@ -2,21 +2,6 @@
 // DRAWING FUNCTIONS
 // ============================================================================
 
-// Transform canvas coordinates
-function screenToWorld(x, y) {
-  return {
-    x: (x - panX) / zoom,
-    y: (y - panY) / zoom
-  };
-}
-
-function worldToScreen(x, y) {
-  return {
-    x: x * zoom + panX,
-    y: y * zoom + panY
-  };
-}
-
 // Main draw function
 function draw() {
   ctx.save();
@@ -45,61 +30,6 @@ function draw() {
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
     ctx.stroke();
-
-    // Draw SV visualization lines ON TOP (if simulation is running, we have SV data, and toggle is on)
-    if (showLegRanks && iterationCount > 0 && currentLegSVs[leg.id] && initialMaxSVs[leg.id]) {
-      const svs = currentLegSVs[leg.id];
-      const initMax = initialMaxSVs[leg.id];
-      const numSVs = svs.length;
-
-      if (numSVs > 0) {
-        // Calculate perpendicular direction for spacing
-        const dx = end.x - start.x;
-        const dy = end.y - start.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-
-        if (length > 0) {
-          const perpX = -dy / length;
-          const perpY = dx / length;
-
-          // Total spacing for SV lines - increased for better visibility
-          const totalSpacing = Math.min(lineWidth * 2, 40);
-          const svSpacing = numSVs > 1 ? totalSpacing / (numSVs - 1) : 0;
-          const startOffset = -(totalSpacing / 2);
-
-          // Draw each SV as a parallel line
-          svs.forEach((sv, i) => {
-            // Calculate opacity: initMax -> 0, 0.5 -> 1, linear interpolation
-            let opacity;
-
-            if (initMax >= 0.5) {
-              // Edge case: initMax is already at or above target
-              opacity = 0;
-            } else {
-              // Linear interpolation from initMax (opacity 0) to 0.5 (opacity 1)
-              opacity = (sv - initMax) / (0.5 - initMax);
-            }
-
-            opacity = Math.max(0, Math.min(1, opacity));
-
-            // Offset for this SV line
-            const offset = startOffset + i * svSpacing;
-            const sx = start.x + perpX * offset;
-            const sy = start.y + perpY * offset;
-            const ex = end.x + perpX * offset;
-            const ey = end.y + perpY * offset;
-
-            // Draw the SV line in red with calculated opacity
-            ctx.strokeStyle = `rgba(255, 0, 0, ${opacity})`;
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(sx, sy);
-            ctx.lineTo(ex, ey);
-            ctx.stroke();
-          });
-        }
-      }
-    }
 
     // Draw free end circles
     if (!leg.startTensor) {
@@ -182,15 +112,17 @@ function draw() {
       ctx.fillStyle = isSelected ? '#0000ff' : '#000000';
       ctx.fillText(leg.name, labelX, labelY);
 
-      // Draw SV count annotation if simulation has started and toggle is on (below the leg)
-      if (showLegRanks && iterationCount > 0 && currentLegSVCounts[leg.id] !== undefined) {
+      // Draw SV count annotation if toggle is on (below the leg)
+      if (showLegRanks) {
         // Draw below by using downward perpendicular
         const annotationX = labelMidX - perpX * offset;
         const annotationY = labelMidY - perpY * offset;
 
         ctx.font = '18px sans-serif';
         ctx.fillStyle = '#666666';
-        const countText = currentLegSVCounts[leg.id].toString();
+        const countText = (iterationCount > 0 && currentLegSVCounts[leg.id] !== undefined)
+          ? currentLegSVCounts[leg.id].toString()
+          : '0';
         ctx.fillText(countText, annotationX, annotationY);
       }
     }
@@ -275,125 +207,179 @@ function draw() {
   }
 
   // Draw floating SV plots (after all legs are drawn)
-  if (showLegRanks && iterationCount > 0) {
+  if (showSingularValues) {
     const plotWidth = 120;
     const plotHeight = 80;
-    const buffer = 20;
+    const BUFFER_SIZE = 20;
     const occupiedRegions = [];
+    floatingPlotBounds = []; // Reset plot bounds for click detection
+
+    // Cache for plot positions (legId -> {x, y})
+    if (!window.plotPositionCache) {
+      window.plotPositionCache = {};
+    }
 
     legs.forEach(leg => {
-      if (!legSVHistory[leg.id] || legSVHistory[leg.id].length === 0) {
-        return;
-      }
+      // Skip legs without history only if simulation has started
+      // If simulation hasn't started, we'll draw empty plots
+      const hasHistory = legSVHistory[leg.id] && legSVHistory[leg.id].length > 0;
 
       const start = getLegEndpoint(leg, 'start');
       const end = getLegEndpoint(leg, 'end');
       const midX = (start.x + end.x) / 2;
       const midY = (start.y + end.y) / 2;
 
-      // Try positions in a spiral pattern around the leg midpoint
+      // Try to use cached position first
       let plotX, plotY;
       let found = false;
+      const maxI = 1000;
 
-      const candidates = [
-        { x: midX + 80, y: midY - 40 },  // Right
-        { x: midX - 80 - plotWidth, y: midY - 40 },  // Left
-        { x: midX - plotWidth/2, y: midY - 100 },  // Top
-        { x: midX - plotWidth/2, y: midY + 60 },  // Bottom
-        { x: midX + 100, y: midY - 100 },  // Top-right
-        { x: midX - 100 - plotWidth, y: midY - 100 },  // Top-left
-        { x: midX + 100, y: midY + 60 },  // Bottom-right
-        { x: midX - 100 - plotWidth, y: midY + 60 },  // Bottom-left
-      ];
+      if (window.plotPositionCache[leg.id]) {
+        const cached = window.plotPositionCache[leg.id];
+        plotX = cached.x;
+        plotY = cached.y;
 
-      for (const candidate of candidates) {
-        // Check if this position collides with any occupied region
-        let collides = false;
+        // Validate cached position is still valid
+        let cacheValid = true;
+
+        // Check canvas bounds
+        if (plotX < 10 || plotX + plotWidth > 790 ||
+            plotY < 10 || plotY + plotHeight > 590) {
+          cacheValid = false;
+        }
+
+        // Check against other plots (excluding itself)
+        if (cacheValid) {
+          for (const region of occupiedRegions) {
+            const dist = rectToRectDistance(
+              plotX, plotY, plotWidth, plotHeight,
+              region.x, region.y, region.width, region.height
+            );
+            if (dist < BUFFER_SIZE) {
+              cacheValid = false;
+              break;
+            }
+          }
+        }
+
+        if (cacheValid) {
+          found = true;
+        } else {
+          delete window.plotPositionCache[leg.id];
+        }
+      }
+
+      // Spiral search for valid position if not found in cache
+      for (let i = 1; i <= maxI && !found; i++) {
+        const theta = i * Math.PI / 16;
+        const r = 0.3 * i;
+
+        // Candidate position (top-left corner of plot)
+        const candidateX = midX + r * Math.cos(theta) - plotWidth / 2;
+        const candidateY = midY + r * Math.sin(theta) - plotHeight / 2;
+
+        // Check if this position is valid
+        let valid = true;
+
+        // Check canvas bounds
+        if (candidateX < 10 || candidateX + plotWidth > 790 ||
+            candidateY < 10 || candidateY + plotHeight > 590) {
+          valid = false;
+        }
 
         // Check against other plots
-        for (const region of occupiedRegions) {
-          if (!(candidate.x + plotWidth + buffer < region.x ||
-                candidate.x > region.x + region.width + buffer ||
-                candidate.y + plotHeight + buffer < region.y ||
-                candidate.y > region.y + region.height + buffer)) {
-            collides = true;
-            break;
+        if (valid) {
+          for (const region of occupiedRegions) {
+            const dist = rectToRectDistance(
+              candidateX, candidateY, plotWidth, plotHeight,
+              region.x, region.y, region.width, region.height
+            );
+            if (dist < BUFFER_SIZE) {
+              valid = false;
+              break;
+            }
           }
         }
 
         // Check against all legs
-        if (!collides) {
-          legs.forEach(otherLeg => {
+        if (valid) {
+          for (const otherLeg of legs) {
             const otherStart = getLegEndpoint(otherLeg, 'start');
             const otherEnd = getLegEndpoint(otherLeg, 'end');
 
-            // Simple bounding box check for leg
-            const legMinX = Math.min(otherStart.x, otherEnd.x) - buffer;
-            const legMaxX = Math.max(otherStart.x, otherEnd.x) + buffer;
-            const legMinY = Math.min(otherStart.y, otherEnd.y) - buffer;
-            const legMaxY = Math.max(otherStart.y, otherEnd.y) + buffer;
+            const dist = rectToSegmentDistance(
+              candidateX, candidateY, plotWidth, plotHeight,
+              otherStart.x, otherStart.y, otherEnd.x, otherEnd.y
+            );
 
-            if (!(candidate.x + plotWidth < legMinX ||
-                  candidate.x > legMaxX ||
-                  candidate.y + plotHeight < legMinY ||
-                  candidate.y > legMaxY)) {
-              collides = true;
+            if (dist < BUFFER_SIZE) {
+              valid = false;
+              break;
             }
-          });
-        }
-
-        // Check against tensors
-        if (!collides) {
-          tensors.forEach(tensor => {
-            const tensorMinX = tensor.x - TENSOR_SIZE/2 - buffer;
-            const tensorMaxX = tensor.x + TENSOR_SIZE/2 + buffer;
-            const tensorMinY = tensor.y - TENSOR_SIZE/2 - buffer;
-            const tensorMaxY = tensor.y + TENSOR_SIZE/2 + buffer;
-
-            if (!(candidate.x + plotWidth < tensorMinX ||
-                  candidate.x > tensorMaxX ||
-                  candidate.y + plotHeight < tensorMinY ||
-                  candidate.y > tensorMaxY)) {
-              collides = true;
-            }
-          });
-        }
-
-        // Check canvas bounds
-        if (!collides) {
-          if (candidate.x < 10 || candidate.x + plotWidth > 790 ||
-              candidate.y < 10 || candidate.y + plotHeight > 590) {
-            collides = true;
           }
         }
 
-        if (!collides) {
-          plotX = candidate.x;
-          plotY = candidate.y;
+        // Check against tensors
+        if (valid) {
+          for (const tensor of tensors) {
+            const tensorX = tensor.x - TENSOR_SIZE / 2;
+            const tensorY = tensor.y - TENSOR_SIZE / 2;
+
+            const dist = rectToRectDistance(
+              candidateX, candidateY, plotWidth, plotHeight,
+              tensorX, tensorY, TENSOR_SIZE, TENSOR_SIZE
+            );
+
+            if (dist < BUFFER_SIZE) {
+              valid = false;
+              break;
+            }
+          }
+        }
+
+        if (valid) {
+          plotX = candidateX;
+          plotY = candidateY;
           found = true;
-          break;
+          // Cache this position for next frame
+          window.plotPositionCache[leg.id] = { x: plotX, y: plotY };
         }
       }
 
       if (!found) {
-        // Fallback: just place it somewhere
-        plotX = midX + 80;
-        plotY = midY - 40;
+        // Fallback: just place it at the last attempted position
+        const theta = maxI * Math.PI / 16;
+        const r = 0.3 * maxI;
+        plotX = midX + r * Math.cos(theta) - plotWidth / 2;
+        plotY = midY + r * Math.sin(theta) - plotHeight / 2;
       }
 
       // Mark this region as occupied
       occupiedRegions.push({ x: plotX, y: plotY, width: plotWidth, height: plotHeight });
 
       // Draw the plot
-      const history = legSVHistory[leg.id];
-      const numSVs = history[0].svs.length;
+      const history = hasHistory ? legSVHistory[leg.id] : [];
+      const numSVs = hasHistory ? history[0].svs.length : 0;
+
+      // Check if this leg/plot is selected
+      const isPlotSelected = leg === selectedLeg || selectedLegs.has(leg);
 
       // Draw plot background
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      ctx.strokeStyle = '#333333';
-      ctx.lineWidth = 1;
+      ctx.fillStyle = isPlotSelected ? 'rgba(224, 224, 255, 0.95)' : 'rgba(255, 255, 255, 0.9)';
+      ctx.strokeStyle = isPlotSelected ? '#0000ff' : '#333333';
+      ctx.lineWidth = isPlotSelected ? 3 : 1;
       ctx.fillRect(plotX, plotY, plotWidth, plotHeight);
       ctx.strokeRect(plotX, plotY, plotWidth, plotHeight);
+
+      // Store plot bounds for click detection
+      floatingPlotBounds.push({
+        legId: leg.id,
+        leg: leg,
+        x: plotX,
+        y: plotY,
+        width: plotWidth,
+        height: plotHeight
+      });
 
       // Find max SV value for scaling
       let maxSV = 0;
@@ -410,8 +396,7 @@ function draw() {
 
         // Draw each SV as a line
         for (let svIndex = 0; svIndex < numSVs; svIndex++) {
-          const hue = (svIndex * 360 / numSVs) % 360;
-          ctx.strokeStyle = `hsl(${hue}, 70%, 50%)`;
+          ctx.strokeStyle = getSVColor(svIndex, numSVs);
           ctx.lineWidth = 1.5;
           ctx.beginPath();
 
@@ -430,23 +415,65 @@ function draw() {
         }
       }
 
-      // Draw label
-      ctx.fillStyle = '#000000';
-      ctx.font = 'italic 12px serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText(`Leg ${leg.name}`, plotX + plotWidth / 2, plotY + 2);
 
-      // Draw a connecting line from plot to leg
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([2, 2]);
-      ctx.beginPath();
-      ctx.moveTo(midX, midY);
-      ctx.lineTo(plotX + plotWidth/2, plotY + plotHeight/2);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      // Draw a connecting line from leg to plot edge
+      // Calculate where line intersects plot rectangle
+      const plotCenterX = plotX + plotWidth / 2;
+      const plotCenterY = plotY + plotHeight / 2;
+      const dx = plotCenterX - midX;
+      const dy = plotCenterY - midY;
+      const length = Math.sqrt(dx * dx + dy * dy);
+
+      if (length > 0) {
+        // Find intersection with plot rectangle
+        const unitX = dx / length;
+        const unitY = dy / length;
+
+        // Test all 4 edges of the rectangle
+        let intersectX = plotCenterX;
+        let intersectY = plotCenterY;
+        const edges = [
+          { x1: plotX, y1: plotY, x2: plotX + plotWidth, y2: plotY }, // Top
+          { x1: plotX + plotWidth, y1: plotY, x2: plotX + plotWidth, y2: plotY + plotHeight }, // Right
+          { x1: plotX, y1: plotY + plotHeight, x2: plotX + plotWidth, y2: plotY + plotHeight }, // Bottom
+          { x1: plotX, y1: plotY, x2: plotX, y2: plotY + plotHeight } // Left
+        ];
+
+        for (const edge of edges) {
+          const edgeDx = edge.x2 - edge.x1;
+          const edgeDy = edge.y2 - edge.y1;
+          const det = unitX * edgeDy - unitY * edgeDx;
+
+          if (Math.abs(det) > 0.0001) {
+            const t = ((edge.x1 - midX) * edgeDy - (edge.y1 - midY) * edgeDx) / det;
+            const u = ((edge.x1 - midX) * unitY - (edge.y1 - midY) * unitX) / det;
+
+            if (t > 0 && u >= 0 && u <= 1) {
+              const candidateX = midX + t * unitX;
+              const candidateY = midY + t * unitY;
+              const distToCandidate = Math.sqrt((candidateX - midX) ** 2 + (candidateY - midY) ** 2);
+              const distToIntersect = Math.sqrt((intersectX - midX) ** 2 + (intersectY - midY) ** 2);
+
+              if (distToCandidate < distToIntersect) {
+                intersectX = candidateX;
+                intersectY = candidateY;
+              }
+            }
+          }
+        }
+
+        // Draw line with same style as plot border
+        ctx.strokeStyle = isPlotSelected ? '#0000ff' : '#333333';
+        ctx.lineWidth = isPlotSelected ? 3 : 1;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(midX, midY);
+        ctx.lineTo(intersectX, intersectY);
+        ctx.stroke();
+      }
     });
+
+    // Draw debug dots for rejected positions (disabled for now)
   }
 
   ctx.restore();

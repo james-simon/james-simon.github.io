@@ -21,6 +21,7 @@ const globalInitScaleSlider = document.getElementById('globalInitScale');
 const globalInitScaleValue = document.getElementById('globalInitScaleValue');
 const globalDimensionSlider = document.getElementById('globalDimension');
 const globalDimensionValue = document.getElementById('globalDimensionValue');
+const helpButton = document.getElementById('helpButton');
 
 // Initialize the application
 function init() {
@@ -30,6 +31,11 @@ function init() {
   setupInputHandlers();
   setupUIHandlers();
   setupSimulationHandlers();
+
+  // Help button handler
+  helpButton.addEventListener('click', () => {
+    alert('Guide to be added');
+  });
 
   // Initialize state
   saveState();

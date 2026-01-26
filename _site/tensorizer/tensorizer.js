@@ -11,6 +11,7 @@ const tensorTool = document.getElementById('tensorTool');
 const connectionTool = document.getElementById('connectionTool');
 const eraserTool = document.getElementById('eraserTool');
 const undoButton = document.getElementById('undoButton');
+const redoButton = document.getElementById('redoButton');
 const propertiesPanel = document.getElementById('propertiesPanel');
 const tensorEditor = document.getElementById('tensorEditor');
 const legEditor = document.getElementById('legEditor');
@@ -20,6 +21,7 @@ const globalInitScaleSlider = document.getElementById('globalInitScale');
 const globalInitScaleValue = document.getElementById('globalInitScaleValue');
 const globalDimensionSlider = document.getElementById('globalDimension');
 const globalDimensionValue = document.getElementById('globalDimensionValue');
+const helpButton = document.getElementById('helpButton');
 
 // Initialize the application
 function init() {
@@ -30,9 +32,15 @@ function init() {
   setupUIHandlers();
   setupSimulationHandlers();
 
+  // Help button handler
+  helpButton.addEventListener('click', () => {
+    alert('Guide to be added');
+  });
+
   // Initialize state
   saveState();
   updateUndoButton();
+  updateRedoButton();
 
   // Set initial slider display values
   globalInitScale = sliderToInitScale(parseFloat(globalInitScaleSlider.value));

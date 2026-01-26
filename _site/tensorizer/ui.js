@@ -9,7 +9,7 @@ function updatePropertyPanel() {
     tensorEditor.style.display = 'block';
     legEditor.style.display = 'none';
     tensorNameInput.value = selectedTensor.name;
-  } else if (selectedLeg) {
+  } else if (selectedLeg && selectedLeg !== 'loss') {
     propertiesPanel.style.display = 'block';
     tensorEditor.style.display = 'none';
     legEditor.style.display = 'block';
@@ -18,6 +18,96 @@ function updatePropertyPanel() {
     propertiesPanel.style.display = 'none';
     tensorEditor.style.display = 'none';
     legEditor.style.display = 'none';
+  }
+
+  // Update side panel SV chart
+  updateSidePanelSVChart();
+}
+
+// Update the side panel loss chart (always visible during simulation)
+function updateSidePanelLossChart() {
+  if (!sidePanelLossChart || !lossHistory || lossHistory.length === 0) {
+    return;
+  }
+
+  // Create loss dataset with {x, y} format for proper x-axis spacing
+  const datasets = [{
+    label: 'Loss',
+    data: lossHistory.map(entry => ({ x: entry.iteration, y: entry.loss })),
+    borderColor: 'rgb(75, 192, 192)',
+    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+    borderWidth: 2,
+    pointRadius: 0
+  }];
+
+  // Calculate smart tick spacing
+  const maxIteration = lossHistory[lossHistory.length - 1].iteration;
+  const tickStep = calculateTickStep(maxIteration);
+
+  sidePanelLossChart.data.datasets = datasets;
+  sidePanelLossChart.options.scales.x.min = 0;
+  sidePanelLossChart.options.scales.x.max = maxIteration;
+  sidePanelLossChart.options.scales.x.ticks.callback = function(value, index, values) {
+    // Only show labels at tickStep intervals or at the max
+    if (value % tickStep === 0 || value === maxIteration) {
+      return value;
+    }
+    return '';
+  };
+  sidePanelLossChart.update('none');
+}
+
+// Update the side panel SV chart based on selected leg
+function updateSidePanelSVChart() {
+  const sidePanelPlot = document.getElementById('sidePanelSVPlot');
+  const sidePanelTitle = document.getElementById('sidePanelSVPlotTitle');
+
+  if (selectedLeg && selectedLeg !== 'loss' && iterationCount > 0 && legSVHistory[selectedLeg.id] && sidePanelSVChart) {
+    sidePanelPlot.style.display = 'block';
+    sidePanelTitle.innerHTML = `singular values of leg <i>${selectedLeg.name}</i>`;
+
+    const history = legSVHistory[selectedLeg.id];
+    if (history.length === 0) {
+      sidePanelSVChart.data.datasets = [];
+      sidePanelSVChart.update('none');
+      return;
+    }
+
+    // Get all iterations
+    const numSVs = history[0].svs.length;
+
+    // Create datasets for each SV using rainbow colors (HSL) with {x, y} format
+    const datasets = [];
+    for (let i = 0; i < numSVs; i++) {
+      const color = getSVColor(i, numSVs);
+      const data = history.map(h => ({ x: h.iteration, y: h.svs[i] }));
+      datasets.push({
+        label: `SV ${i + 1}`,
+        data: data,
+        borderColor: color,
+        backgroundColor: color.replace('hsl', 'hsla').replace(')', ', 0.1)'),
+        borderWidth: 2,
+        pointRadius: 0
+      });
+    }
+
+    // Calculate smart tick spacing
+    const maxIteration = history[history.length - 1].iteration;
+    const tickStep = calculateTickStep(maxIteration);
+
+    sidePanelSVChart.data.datasets = datasets;
+    sidePanelSVChart.options.scales.x.min = 0;
+    sidePanelSVChart.options.scales.x.max = maxIteration;
+    sidePanelSVChart.options.scales.x.ticks.callback = function(value, index, values) {
+      // Only show labels at tickStep intervals or at the max
+      if (value % tickStep === 0 || value === maxIteration) {
+        return value;
+      }
+      return '';
+    };
+    sidePanelSVChart.update('none');
+  } else {
+    sidePanelPlot.style.display = 'none';
   }
 }
 
@@ -29,6 +119,17 @@ function updateUndoButton() {
   } else {
     undoButton.style.opacity = '0.3';
     undoButton.style.cursor = 'not-allowed';
+  }
+}
+
+// Update redo button state
+function updateRedoButton() {
+  if (historyIndex < history.length - 1) {
+    redoButton.style.opacity = '1';
+    redoButton.style.cursor = 'pointer';
+  } else {
+    redoButton.style.opacity = '0.3';
+    redoButton.style.cursor = 'not-allowed';
   }
 }
 

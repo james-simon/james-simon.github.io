@@ -14,6 +14,52 @@ let selectedLeg = null;
 let selectedTensors = new Set(); // For multi-select
 let selectedLegs = new Set(); // For multi-select
 
+// Selection manager helper functions
+const SelectionManager = {
+  // Clear all selections
+  clearAll() {
+    selectedTensor = null;
+    selectedLeg = null;
+    selectedTensors.clear();
+    selectedLegs.clear();
+    if (window.selectedFreeEnds) {
+      window.selectedFreeEnds.clear();
+    }
+  },
+
+  // Select single tensor
+  selectTensor(tensor) {
+    this.clearAll();
+    selectedTensor = tensor;
+  },
+
+  // Select single leg
+  selectLeg(leg) {
+    this.clearAll();
+    selectedLeg = leg;
+  },
+
+  // Check if any tensor is selected
+  hasTensorSelection() {
+    return selectedTensor !== null || selectedTensors.size > 0;
+  },
+
+  // Check if any leg is selected
+  hasLegSelection() {
+    return selectedLeg !== null || selectedLegs.size > 0;
+  },
+
+  // Check if specific tensor is selected (single or multi)
+  isTensorSelected(tensor) {
+    return tensor === selectedTensor || selectedTensors.has(tensor);
+  },
+
+  // Check if specific leg is selected (single or multi)
+  isLegSelected(leg) {
+    return leg === selectedLeg || selectedLegs.has(leg);
+  }
+};
+
 // Interaction state
 let activeTool = 'mouse'; // 'mouse', 'pan', 'tensor', 'connection', 'eraser'
 let draggingTensor = null;
@@ -41,12 +87,14 @@ let panY = 0;
 let globalInitScale = 1.0;
 let globalDimension = 5;
 let showLegRanks = false;
+let showSingularValues = false;
 
 // Simulation state (for display purposes)
 let currentLegSVCounts = {}; // legId -> count of SVs > 0.1
 let currentLegSVs = {}; // legId -> array of current SV values
 let initialMaxSVs = {}; // legId -> max SV at initialization
 let iterationCount = 0;
+let floatingPlotBounds = []; // Array of {legId, x, y, width, height} for click detection
 
 // Constants
 const TENSOR_SIZE = 70;
@@ -127,45 +175,62 @@ function saveState() {
   }
 
   updateUndoButton();
+  updateRedoButton();
 }
 
-// Restore state from history
+// Restore state from history (undo)
 function undo() {
   if (historyIndex > 0) {
     historyIndex--;
-    const state = history[historyIndex];
-
-    tensors = deepClone(state.tensors);
-    nextTensorId = state.nextTensorId;
-    nextLegId = state.nextLegId;
-
-    // Restore legs and reconnect object references
-    legs = state.legs.map(legData => {
-      const leg = {
-        id: legData.id,
-        name: legData.name,
-        startTensor: null,
-        endTensor: null,
-        startPos: legData.startPos ? deepClone(legData.startPos) : null,
-        endPos: legData.endPos ? deepClone(legData.endPos) : null
-      };
-
-      // Reconnect tensor references by ID
-      if (legData.startTensorId !== null) {
-        leg.startTensor = tensors.find(t => t.id === legData.startTensorId);
-      }
-      if (legData.endTensorId !== null) {
-        leg.endTensor = tensors.find(t => t.id === legData.endTensorId);
-      }
-
-      return leg;
-    });
-
-    // Clear selection
-    selectedTensor = null;
-    selectedLeg = null;
-    updatePropertyPanel();
+    restoreStateAtIndex(historyIndex);
     updateUndoButton();
-    draw();
+    updateRedoButton();
   }
+}
+
+// Restore state from history (redo)
+function redo() {
+  if (historyIndex < history.length - 1) {
+    historyIndex++;
+    restoreStateAtIndex(historyIndex);
+    updateUndoButton();
+    updateRedoButton();
+  }
+}
+
+// Helper function to restore state at a given history index
+function restoreStateAtIndex(index) {
+  const state = history[index];
+
+  tensors = deepClone(state.tensors);
+  nextTensorId = state.nextTensorId;
+  nextLegId = state.nextLegId;
+
+  // Restore legs and reconnect object references
+  legs = state.legs.map(legData => {
+    const leg = {
+      id: legData.id,
+      name: legData.name,
+      startTensor: null,
+      endTensor: null,
+      startPos: legData.startPos ? deepClone(legData.startPos) : null,
+      endPos: legData.endPos ? deepClone(legData.endPos) : null
+    };
+
+    // Reconnect tensor references by ID
+    if (legData.startTensorId !== null) {
+      leg.startTensor = tensors.find(t => t.id === legData.startTensorId);
+    }
+    if (legData.endTensorId !== null) {
+      leg.endTensor = tensors.find(t => t.id === legData.endTensorId);
+    }
+
+    return leg;
+  });
+
+  // Clear selection
+  selectedTensor = null;
+  selectedLeg = null;
+  updatePropertyPanel();
+  draw();
 }

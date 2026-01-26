@@ -4,7 +4,6 @@ title: "Why I am not an experimentalist; or, making faces with photolithography"
 date: 2026-01-22 07:00:00
 category: physics
 emoji: 🔬
-published: false
 ---
 
 In 2019, I spent six months in Gothenburg, Sweden at the Chalmers Institute of Technology.
@@ -14,7 +13,9 @@ Have you ever wondered how computer chips are made? A chip is basically a block 
 
 To get around that and get all those wires down, you use a bewildering combination of chemistry and particle physics. First you cover the slab of silicon with a thin layer of a substance called "resist." The resist is sensitive to either photons or electrons, so you shine either a laser or an electron beam over the slab where you want wires to go. You can then wash away the irradiated resist, exposing the bare silicon underneath, and just cover the whole thing with a thin layer of metal shot in from above. The resist blocks the metal everywhere but in the wire tracks, so when you wash away the rest of the resist, you're left with nice, beautiful wires. Here's a cartoon I drew:
 
-[diagram to draw; leave blank for now]
+<div style="text-align: center; margin: 2em 0;">
+  <img src="{{site.baseurl}}/img/lithographocartoon.png" alt="Lithography process cartoon" style="width: 70%;">
+</div>
 
 With this technique and variations on it, all modern computer chips are manufactured. My job that fateful summer was to use this technique to design [quantum inductors](https://en.wikipedia.org/wiki/Josephson_effect), and I was rapidly learning that I was not cut out for labwork. Every step in the cartoon above is actually ten different steps involving mixing toxic chemicals, heating things, putting things into big scary machines, and using inscrutable computer interfaces with a hundred settings. Oh, and to make matters worse, you have to do all this while sweating inside a head-to-toe cleanroom lab suit. My mentor, Anita, would demonstrate something with practiced care and deliberation, she'd walk away, and I would promptly forget everything except maybe what colors were supposed to be created. I cannot overstate the extent of my incompetence: on several occasions, I left a support piece of plastic called a "spider" on a hot plate and literally melted it to the piece of silicon I was working with. This continued until Anita told me to stop using spiders.
 
@@ -39,16 +40,16 @@ I left this image up on his door. I'm pretty sure he knew it was me, but we neve
 
 <div style="text-align: center; margin: 2em 0;">
   <img src="{{site.baseurl}}/img/me_and_emmet_soc_on_silico.png" alt="Me and the Emmet Society on silicon" style="width: 70%;">
-  <p style="margin-top: 0.5em;">Top: me. Bottom: me and the Emmet Society.</p>
+  <p style="margin-top: 0.5em;">Top: me. Bottom: me and friends.</p>
 </div>
 
-I also made this puzzle for the [VT Hunt team](https://www.notion.so/vthunt.com). The answer is an English word. I'll give it at the bottom.
+<!-- I also made this puzzle for the [VT Hunt team](https://www.notion.so/vthunt.com). The answer is an English word. I'll give it at the bottom.
 
 <div style="text-align: center; margin: 2em 0;">
   <img src="{{site.baseurl}}/img/lithography_puzzle_fixed.png" alt="Lithography puzzle" style="width: 40%;">
-</div>
+</div> -->
 
-It's pretty fun to be able to print things at such a small scale. Each of these images has a total size of about 1mm. I still have the picture of myself, and I own a little microscope I can use to look at it. I used it on my dating profile for a while until I conceded nobody knew what the hell they were looking at and gave up.
+It's pretty fun to be able to fabricate things at such a small scale. Each of these images has a total size of about 1mm. I still have the picture of myself, and I own a little microscope I can use to look at it. I used it on my dating profile for a while until I conceded nobody knew what the hell they were looking at and gave up.
 
 ***
 

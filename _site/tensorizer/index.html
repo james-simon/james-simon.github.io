@@ -3794,6 +3794,12 @@
       ready: () => {
         MathJax.startup.defaultReady();
         console.log('MathJax is ready');
+        // Trigger initial formula rendering once MathJax is ready
+        MathJax.startup.promise.then(() => {
+          if (window.updateFormulaDisplay) {
+            window.updateFormulaDisplay();
+          }
+        });
       }
     }
   };
@@ -3802,59 +3808,77 @@
 
 <link rel="stylesheet" href="styles.css">
 
-<div class="container">
-  <h1 style="margin-top: 2em;">Tensorizer</h1>
+<style>
+  /* Wider container for tensorizer page at larger screen sizes */
+  @media (min-width: 1350px) {
+    .container {
+      max-width: 1300px;
+    }
+  }
 
-  <div class="toolbar">
-    <div class="tool-button active" id="mouseTool" title="Select/Move">
-      <div class="tool-icon-mouse">➤</div>
-    </div>
-    <div class="tool-button" id="panTool" title="Pan Canvas">
-      <div style="font-size: 48px; line-height: 1; margin-top: -4px;">☩</div>
-    </div>
-    <div class="tool-button" id="tensorTool" title="Create Tensor">
-      <div class="tool-icon-box">A</div>
-    </div>
-    <div class="tool-button" id="connectionTool" title="Create Connection">
-      <div class="tool-icon-line"></div>
-    </div>
-    <div class="tool-button" id="eraserTool" title="Eraser">
-      <div class="tool-icon-eraser">✕</div>
-    </div>
-    <div class="tool-button" id="undoButton" title="Undo (Ctrl+Z)">
-      <div style="font-size: 36px;">⎌</div>
-    </div>
-    <div class="tool-button" id="showRanksButton" title="Show Leg Ranks">
-      <div style="font-size: 18px; font-weight: bold;">R</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px; padding: 0 10px; border-left: 2px solid #ccc;">
-      <div style="display: flex; align-items: center; gap: 5px;">
-        <label for="globalInitScale" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; white-space: nowrap;">init scale:</label>
-        <input type="range" id="globalInitScale" min="0" max="100" step="1" value="50" style="width: 100px;">
-        <span id="globalInitScaleValue" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; min-width: 50px;">1</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 5px;">
-        <label for="globalDimension" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; white-space: nowrap;">leg dimension:</label>
-        <input type="range" id="globalDimension" min="0" max="100" step="1" value="35" style="width: 100px;">
-        <span id="globalDimensionValue" style="font-family: 'Gill Sans', sans-serif; font-size: 14px; min-width: 30px;">5</span>
-      </div>
-    </div>
+  @media (min-width: 1500px) {
+    .container {
+      max-width: 1450px;
+    }
+  }
+</style>
+
+<div class="container">
+  <div style="position: relative;">
+    <h1 style="margin-top: 2em;">Tensorizer</h1>
+    <button id="helpButton" class="page-help-button" title="Help">mouse over for help</button>
   </div>
 
+  <p style="font-family: 'Gill Sans', sans-serif; font-size: 16px; margin-bottom: 1.5em;">
+    This is an interactive tool for simulating gradient descent on deep linear networks and general tensor networks. Draw a model in the canvas on the left, set hyperparameters at the bottom, run the simulation, and look at its training dynamics.
+  </p>
+
   <div class="tensorizer-container">
-    <div>
+    <div class="canvas-wrapper">
       <canvas id="tensorCanvas" width="800" height="600"></canvas>
-      <!-- Pop sounds -->
-      <audio id="pop-1" preload="auto" src="/audio/pop_1.mp3"></audio>
-      <audio id="pop-2" preload="auto" src="/audio/pop_2.mp3"></audio>
-      <audio id="pop-3" preload="auto" src="/audio/pop_3.mp3"></audio>
-      <audio id="pop-4" preload="auto" src="/audio/pop_4.mp3"></audio>
-    </div>
 
-    <div class="controls-panel">
-      <div id="formulaDisplay" class="formula-display">T = 1</div>
+      <!-- Floating toolbar in top-left -->
+      <div class="floating-toolbar">
+        <div class="tool-button active" id="mouseTool" title="Select/Move">
+          <div class="tool-icon-mouse">➤</div>
+        </div>
+        <div class="tool-button" id="panTool" title="Pan Canvas">
+          <div style="font-size: 40px; line-height: 1; margin-top: -3px;">☩</div>
+        </div>
+        <div class="tool-button" id="tensorTool" title="Create Tensor">
+          <div class="tool-icon-box">A</div>
+        </div>
+        <div class="tool-button" id="connectionTool" title="Create Connection">
+          <div class="tool-icon-line"></div>
+        </div>
+        <div class="tool-button" id="eraserTool" title="Eraser">
+          <div class="tool-icon-eraser">✕</div>
+        </div>
+        <div class="tool-button" id="undoButton" title="Undo (Ctrl+Z)">
+          <div style="font-size: 30px;">⎌</div>
+        </div>
+        <div class="tool-button" id="redoButton" title="Redo (Ctrl+Shift+Z)">
+          <div style="font-size: 30px; transform: scaleX(-1);">⎌</div>
+        </div>
+      </div>
 
-      <div class="control-section" id="propertiesPanel" style="display: none;">
+      <!-- Floating toggles in top-right -->
+      <div class="floating-toggles">
+        <label title="Show rank labels on tensor legs">
+          <input type="checkbox" id="showRanksButton">
+          show ranks
+        </label>
+        <label title="Show singular value visualizations on tensor legs">
+          <input type="checkbox" id="showSVsButton">
+          show sing. vals
+        </label>
+      </div>
+
+      <!-- Floating formula display in bottom-left -->
+      <div id="formulaDisplay" class="floating-formula">T = 1</div>
+
+      <!-- Floating properties panel in bottom-right -->
+      <div class="floating-properties" id="propertiesPanel" style="display: none;">
         <div id="tensorEditor" style="display: none;">
           <h3>Tensor Properties</h3>
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -3870,20 +3894,53 @@
           </div>
         </div>
       </div>
+
+      <!-- Pop sounds -->
+      <audio id="pop-1" preload="auto" src="/audio/pop_1.mp3"></audio>
+      <audio id="pop-2" preload="auto" src="/audio/pop_2.mp3"></audio>
+      <audio id="pop-3" preload="auto" src="/audio/pop_3.mp3"></audio>
+      <audio id="pop-4" preload="auto" src="/audio/pop_4.mp3"></audio>
+    </div>
+
+    <div class="controls-panel">
+      <div id="sidePanelLossPlot">
+        <div style="border: 1px solid #ccc; border-radius: 4px; background: white; padding: 10px; box-sizing: border-box; height: 285px;">
+          <h4 style="margin: 0 0 10px 0; font-family: 'Gill Sans', sans-serif; text-align: center;">loss</h4>
+          <div style="height: calc(100% - 30px); position: relative;">
+            <canvas id="sidePanelLossCanvas"></canvas>
+            <div id="lossYAxisLabel" style="position: absolute; left: -44px; top: 33%; transform: rotate(-90deg) translateY(-50%); transform-origin: center center; font-size: 9px; white-space: nowrap;">$\mathcal{L} = |\!| \mathbf{T} - \mathbf{T}_* |\!|_F^2$</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sidePanelSVPlot" style="margin-top: 10px; display: none;">
+        <div style="border: 1px solid #ccc; border-radius: 4px; background: white; padding: 10px; box-sizing: border-box; height: 285px;">
+          <h4 style="margin: 0 0 10px 0; font-family: 'Gill Sans', sans-serif; text-align: center;" id="sidePanelSVPlotTitle">Singular Values</h4>
+          <div style="height: calc(100% - 30px);">
+            <canvas id="sidePanelSVCanvas"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <hr style="margin: 3em 0 2em 0; border: none; height: 2px; background-color: #ccc;">
-
-  <h2>Gradient Descent Simulation</h2>
 
   <div class="simulation-controls">
     <button id="startPauseButton" class="sim-button">Start</button>
     <button id="resetButton" class="sim-button">Reset</button>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
       <label for="learningRate">Learning rate:</label>
-      <input type="range" id="learningRate" min="0" max="100" value="50" style="width: 200px;">
+      <input type="range" id="learningRate" min="0" max="100" value="50" style="width: 150px;">
       <span id="learningRateValue">0.01</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label for="globalInitScale">Init scale:</label>
+      <input type="range" id="globalInitScale" min="0" max="100" step="1" value="50" style="width: 100px;">
+      <span id="globalInitScaleValue">1</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label for="globalDimension">Leg dimension:</label>
+      <input type="range" id="globalDimension" min="0" max="100" step="1" value="35" style="width: 100px;">
+      <span id="globalDimensionValue">5</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
       <label>Current loss:</label>
@@ -3894,18 +3951,14 @@
       <span id="stepsPerSec" style="font-weight: bold;">—</span>
     </div>
   </div>
-
-  <div class="loss-plot-container">
-    <canvas id="lossPlot"></canvas>
-  </div>
-
-  <h3 style="margin-top: 2em;">Singular Values by Leg</h3>
-  <div id="svPlotsContainer"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+<script src="geometry.js"></script>
+<script src="sliders.js"></script>
+<script src="charts.js"></script>
 <script src="utils.js"></script>
 <script src="state.js"></script>
 <script src="drawing.js"></script>

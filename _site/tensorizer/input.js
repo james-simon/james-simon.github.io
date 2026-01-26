@@ -147,20 +147,27 @@ function setupInputHandlers() {
 
   undoButton.addEventListener('click', () => undo());
 
+  const redoButton = document.getElementById('redoButton');
+  redoButton.addEventListener('click', () => redo());
+
   const showRanksButton = document.getElementById('showRanksButton');
-  showRanksButton.addEventListener('click', () => {
-    showLegRanks = !showLegRanks;
-    if (showLegRanks) {
-      showRanksButton.classList.add('active');
-    } else {
-      showRanksButton.classList.remove('active');
-    }
+  showRanksButton.addEventListener('change', () => {
+    showLegRanks = showRanksButton.checked;
+    draw();
+  });
+
+  const showSVsButton = document.getElementById('showSVsButton');
+  showSVsButton.addEventListener('change', () => {
+    showSingularValues = showSVsButton.checked;
     draw();
   });
 
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') {
+      e.preventDefault();
+      redo();
+    } else if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
       e.preventDefault();
       undo();
     } else if (e.key === 'Backspace' || e.key === 'Delete') {
@@ -275,30 +282,46 @@ function setupInputHandlers() {
       updatePropertyPanel();
       draw();
     } else if (activeTool === 'mouse') {
-      // Select tensor or leg
-      const clickedTensor = findTensorAt(world.x, world.y);
-      if (clickedTensor) {
-        selectedTensor = clickedTensor;
-        selectedLeg = null;
-      } else {
-        // Try to select a leg (endpoint or line)
-        const clickedLegEnd = findFreeLegEndAt(world.x, world.y);
-        if (clickedLegEnd) {
-          selectedTensor = null;
-          selectedLeg = clickedLegEnd.leg;
-        } else {
-          const clickedLeg = findLegAt(world.x, world.y);
-          if (clickedLeg) {
-            selectedTensor = null;
-            selectedLeg = clickedLeg;
-          } else {
-            selectedTensor = null;
-            selectedLeg = null;
-          }
+      // Check if clicking on a floating plot
+      let clickedPlot = null;
+      for (const plot of floatingPlotBounds) {
+        if (world.x >= plot.x && world.x <= plot.x + plot.width &&
+            world.y >= plot.y && world.y <= plot.y + plot.height) {
+          clickedPlot = plot;
+          break;
         }
       }
-      updatePropertyPanel();
-      draw();
+
+      if (clickedPlot) {
+        // Clicked on a floating plot - this is already handled in mousedown, so do nothing
+        // (selection was already set in mousedown handler)
+      } else {
+        // Select tensor or leg
+        const clickedTensor = findTensorAt(world.x, world.y);
+        if (clickedTensor) {
+          selectedTensor = clickedTensor;
+          selectedLeg = null;
+        } else {
+          // Try to select a leg (endpoint or line)
+          const clickedLegEnd = findFreeLegEndAt(world.x, world.y);
+          if (clickedLegEnd) {
+            selectedTensor = null;
+            selectedLeg = clickedLegEnd.leg;
+          } else {
+            const clickedLeg = findLegAt(world.x, world.y);
+            if (clickedLeg) {
+              selectedTensor = null;
+              selectedLeg = clickedLeg;
+            } else {
+              selectedTensor = null;
+              selectedLeg = null;
+            }
+          }
+        }
+        updatePropertyPanel();
+        updateSelectedSVCharts(); // Update the bottom charts
+        draw();
+      }
     }
   });
 
@@ -313,69 +336,95 @@ function setupInputHandlers() {
     mouseDown = true;
 
     if (activeTool === 'mouse') {
-      // Try to grab a free leg end first
-      const legEnd = findFreeLegEndAt(world.x, world.y);
-      if (legEnd) {
-        draggingLegEnd = legEnd;
-        // Select the leg immediately
-        selectedTensor = null;
-        selectedLeg = legEnd.leg;
-        updatePropertyPanel();
-        canvas.classList.add('dragging');
-        draw();
+      // Check if clicking on a floating plot
+      let clickedPlot = null;
+      for (const plot of floatingPlotBounds) {
+        if (world.x >= plot.x && world.x <= plot.x + plot.width &&
+            world.y >= plot.y && world.y <= plot.y + plot.height) {
+          clickedPlot = plot;
+          break;
+        }
+      }
+
+      if (clickedPlot) {
+        // Clicked on a floating plot
+        if (clickedPlot.leg !== 'loss') {
+          // Only select if it's a leg SV plot, not the loss plot (loss is always shown on top)
+          selectedTensor = null;
+          selectedLeg = clickedPlot.leg;
+          selectedTensors.clear();
+          selectedLegs.clear();
+          updatePropertyPanel();
+          updateSidePanelSVChart(); // Update the SV chart panel
+          draw();
+        }
+        // If it's the loss plot, do nothing (loss is always visible)
       } else {
-        // Try to grab a tensor
-        const tensor = findTensorAt(world.x, world.y);
-        if (tensor) {
-          // If clicking on a selected tensor, drag all selected
-          if (selectedTensors.has(tensor)) {
-            draggingMultiple = true;
-            // Store offsets for all selected tensors
-            dragOffsets.clear();
-            selectedTensors.forEach(t => {
-              dragOffsets.set(t, { x: world.x - t.x, y: world.y - t.y });
-            });
-
-            // Store offsets for selected free leg endpoints
-            if (window.selectedFreeEnds) {
-              window.selectedFreeEnds.forEach((ends, leg) => {
-                if (ends.has('start') && leg.startPos) {
-                  dragOffsets.set(`${leg.id}-start`, {
-                    x: world.x - leg.startPos.x,
-                    y: world.y - leg.startPos.y
-                  });
-                }
-                if (ends.has('end') && leg.endPos) {
-                  dragOffsets.set(`${leg.id}-end`, {
-                    x: world.x - leg.endPos.x,
-                    y: world.y - leg.endPos.y
-                  });
-                }
-              });
-            }
-
-            canvas.classList.add('dragging');
-          } else {
-            // Single tensor drag - select it immediately and clear multi-selection
-            selectedTensors.clear();
-            selectedLegs.clear();
-            selectedTensor = tensor;
-            selectedLeg = null;
-            updatePropertyPanel();
-            draggingTensor = tensor;
-            dragOffset.x = world.x - tensor.x;
-            dragOffset.y = world.y - tensor.y;
-            canvas.classList.add('dragging');
-            draw();
-          }
+        // Try to grab a free leg end first
+        const legEnd = findFreeLegEndAt(world.x, world.y);
+        if (legEnd) {
+          draggingLegEnd = legEnd;
+          // Select the leg immediately
+          selectedTensor = null;
+          selectedLeg = legEnd.leg;
+          updatePropertyPanel();
+          updateSelectedSVCharts(); // Update the bottom charts
+          canvas.classList.add('dragging');
+          draw();
         } else {
-          // Start box selection on empty space
-          selectionBox = {
-            startX: world.x,
-            startY: world.y,
-            endX: world.x,
-            endY: world.y
-          };
+          // Try to grab a tensor
+          const tensor = findTensorAt(world.x, world.y);
+          if (tensor) {
+            // If clicking on a selected tensor, drag all selected
+            if (selectedTensors.has(tensor)) {
+              draggingMultiple = true;
+              // Store offsets for all selected tensors
+              dragOffsets.clear();
+              selectedTensors.forEach(t => {
+                dragOffsets.set(t, { x: world.x - t.x, y: world.y - t.y });
+              });
+
+              // Store offsets for selected free leg endpoints
+              if (window.selectedFreeEnds) {
+                window.selectedFreeEnds.forEach((ends, leg) => {
+                  if (ends.has('start') && leg.startPos) {
+                    dragOffsets.set(`${leg.id}-start`, {
+                      x: world.x - leg.startPos.x,
+                      y: world.y - leg.startPos.y
+                    });
+                  }
+                  if (ends.has('end') && leg.endPos) {
+                    dragOffsets.set(`${leg.id}-end`, {
+                      x: world.x - leg.endPos.x,
+                      y: world.y - leg.endPos.y
+                    });
+                  }
+                });
+              }
+
+              canvas.classList.add('dragging');
+            } else {
+              // Single tensor drag - select it immediately and clear multi-selection
+              selectedTensors.clear();
+              selectedLegs.clear();
+              selectedTensor = tensor;
+              selectedLeg = null;
+              updatePropertyPanel();
+              draggingTensor = tensor;
+              dragOffset.x = world.x - tensor.x;
+              dragOffset.y = world.y - tensor.y;
+              canvas.classList.add('dragging');
+              draw();
+            }
+          } else {
+            // Start box selection on empty space
+            selectionBox = {
+              startX: world.x,
+              startY: world.y,
+              endX: world.x,
+              endY: world.y
+            };
+          }
         }
       }
     } else if (activeTool === 'pan') {

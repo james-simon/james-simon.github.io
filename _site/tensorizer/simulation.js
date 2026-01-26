@@ -12,10 +12,17 @@ let legSVHistory = {}; // legId -> [{iteration, svs}, ...]
 // Note: currentLegSVCounts and iterationCount are defined in state.js as globals
 let learningRate = 0.01;
 let lossChart = null;
-let svCharts = {}; // legId -> Chart object
+let selectedSVChart = null; // Chart for the main selected SV plot
+let additionalSVCharts = []; // Charts for additional selected legs
+let sidePanelLossChart = null; // Chart for the side panel loss plot (always visible)
+let sidePanelSVChart = null; // Chart for the side panel SV plot (shown when leg selected)
 let animationFrameId = null;
 let simulationStartTime = null;
 let pauseStartTime = null;
+let stepTimestamps = []; // Rolling window of recent step timestamps for steps/sec calculation
+const STEPS_PER_SEC_WINDOW = 60; // Average over last 60 steps
+let lastStepsPerSecUpdate = 0; // Timestamp of last steps/sec display update
+const STEPS_PER_SEC_UPDATE_INTERVAL = 250; // Update display every 250ms (4 times per second)
 
 // Helper function to get the latest SVs for a tensor's connection to a specific leg
 function getLatestTensorLegSVs(tensor, leg) {
@@ -111,7 +118,7 @@ function sliderToLearningRate(sliderValue) {
 function updateLearningRateDisplay(rate) {
   const display = document.getElementById('learningRateValue');
   if (display) {
-    display.textContent = rate.toExponential(2);
+    display.innerHTML = formatLearningRate(rate);
   }
 }
 
@@ -227,9 +234,9 @@ function initializeSimulation() {
   iterationCount = 0;
   simulationStartTime = null;
   pauseStartTime = null;
+  stepTimestamps = [];
   updateLossDisplay(null);
-  updateLossChart();
-  initializeSVCharts(); // Initialize SV charts for all legs
+  updateSidePanelSVChart(); // Update side panel chart
   document.getElementById('stepsPerSec').textContent = '—';
 
   return true;
@@ -404,14 +411,23 @@ function simulationLoop() {
 
   lossHistory.push({ iteration: iterationCount, loss: lossValue });
   updateLossDisplay(lossValue);
-  updateLossChart();
-  updateSVCharts();
+  updateSidePanelLossChart(); // Update side panel loss chart (always visible)
+  updateSidePanelSVChart(); // Update side panel SV chart (if leg selected)
 
-  // Update steps/sec display
-  if (simulationStartTime && iterationCount > 0) {
-    const elapsedSec = (performance.now() - simulationStartTime) / 1000;
-    const stepsPerSec = iterationCount / elapsedSec;
-    document.getElementById('stepsPerSec').textContent = stepsPerSec.toFixed(1);
+  // Update steps/sec display using rolling average (throttled to a few times per second)
+  const now = performance.now();
+  stepTimestamps.push(now);
+  if (stepTimestamps.length > STEPS_PER_SEC_WINDOW) {
+    stepTimestamps.shift();
+  }
+
+  if (stepTimestamps.length >= 2 && now - lastStepsPerSecUpdate >= STEPS_PER_SEC_UPDATE_INTERVAL) {
+    const timeSpanMs = stepTimestamps[stepTimestamps.length - 1] - stepTimestamps[0];
+    const timeSpanSec = timeSpanMs / 1000;
+    const stepsInWindow = stepTimestamps.length - 1; // Number of intervals between timestamps
+    const stepsPerSec = stepsInWindow / timeSpanSec;
+    document.getElementById('stepsPerSec').textContent = Math.round(stepsPerSec).toString();
+    lastStepsPerSecUpdate = now;
   }
 
   // Track SVs for each tensor from POV of each leg
@@ -571,65 +587,125 @@ function updateLossDisplay(loss) {
   const display = document.getElementById('currentLoss');
   if (display) {
     if (loss === null) {
-      display.textContent = '—';
+      display.innerHTML = '—';
     } else {
-      display.textContent = loss.toExponential(4);
+      display.innerHTML = formatToSigFigs(loss, 4);
     }
   }
 }
 
-// Update loss chart
-function updateLossChart() {
-  if (!lossChart) {
+// Helper to update a single SV chart with leg data
+function updateSingleSVChart(chart, leg) {
+  if (!legSVHistory[leg.id]) {
     return;
   }
 
-  lossChart.data.labels = lossHistory.map(d => d.iteration);
-  lossChart.data.datasets[0].data = lossHistory.map(d => d.loss);
-  lossChart.update('none'); // Update without animation for performance
+  const history = legSVHistory[leg.id];
+  if (history.length === 0) {
+    return;
+  }
+
+  const latestEntry = history[history.length - 1];
+  const numSVs = latestEntry.svs.length;
+  const maxIteration = history[history.length - 1].iteration;
+
+  // Calculate tick step
+  const tickStep = calculateTickStep(maxIteration);
+
+  // Filter data to only include points at tick intervals
+  const filteredIndices = [];
+  const filteredLabels = [];
+
+  history.forEach((entry, idx) => {
+    if (entry.iteration % tickStep === 0 || idx === history.length - 1) {
+      filteredIndices.push(idx);
+      filteredLabels.push(entry.iteration);
+    }
+  });
+
+  // Update each SV's dataset
+  for (let i = 0; i < numSVs; i++) {
+    if (!chart.data.datasets[i]) {
+      const color = getSVColor(i, numSVs);
+      chart.data.datasets[i] = {
+        label: `SV ${i + 1}`,
+        data: [],
+        borderColor: color,
+        backgroundColor: color.replace('hsl', 'hsla').replace(')', ', 0.1)'),
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0
+      };
+    }
+
+    // Use all data points for smooth lines
+    chart.data.datasets[i].data = history.map(entry =>
+      entry.svs[i] !== undefined ? entry.svs[i] : 0
+    );
+  }
+
+  // Use all iterations as labels, but only show ticks at intervals
+  chart.data.labels = history.map(d => d.iteration);
+
+  // Update x-axis to only show labels at intervals
+  chart.options.scales.x.ticks.callback = function(value, index) {
+    const iteration = this.getLabelForValue(value);
+    if (iteration % tickStep === 0 || index === history.length - 1) {
+      return iteration;
+    }
+    return '';
+  };
+
+  chart.update('none');
 }
 
-// Update SV charts
-function updateSVCharts() {
-  legs.forEach(leg => {
-    const chart = svCharts[leg.id];
-    if (!chart || !legSVHistory[leg.id]) {
-      return;
-    }
-
-    const history = legSVHistory[leg.id];
-    if (history.length === 0) {
-      return;
-    }
-
-    // Get the latest SV values
-    const latestEntry = history[history.length - 1];
-    const numSVs = latestEntry.svs.length;
-
-    // Update each SV's dataset
-    for (let i = 0; i < numSVs; i++) {
-      if (!chart.data.datasets[i]) {
-        // Create new dataset for this SV
-        const hue = (i * 360 / numSVs) % 360;
-        chart.data.datasets[i] = {
-          label: `SV ${i + 1}`,
-          data: [],
-          borderColor: `hsl(${hue}, 70%, 50%)`,
-          backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0
-        };
+// Helper to create an SV chart
+function createSVChart(ctx, leg) {
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: []
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Iteration'
+          },
+          ticks: {
+            callback: function(value, index, values) {
+              // Only show the label value itself
+              return this.getLabelForValue(value);
+            },
+            autoSkip: false,
+            maxRotation: 0,
+            maxTicksLimit: 10
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Singular Value'
+          },
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: `Singular Values - Leg ${leg.name}`
+        }
       }
-
-      // Update data for this SV
-      chart.data.datasets[i].data = history.map(entry =>
-        entry.svs[i] !== undefined ? entry.svs[i] : 0
-      );
     }
-
-    chart.data.labels = history.map(d => d.iteration);
-    chart.update('none');
   });
 }
 
@@ -659,6 +735,14 @@ function initializeLossChart() {
           title: {
             display: true,
             text: 'Iteration'
+          },
+          ticks: {
+            callback: function(value, index, values) {
+              return this.getLabelForValue(value);
+            },
+            autoSkip: false,
+            maxRotation: 0,
+            maxTicksLimit: 10
           }
         },
         y: {
@@ -678,69 +762,57 @@ function initializeLossChart() {
   });
 }
 
-function initializeSVCharts() {
-  const container = document.getElementById('svPlotsContainer');
-  container.innerHTML = ''; // Clear existing charts
-  svCharts = {}; // Reset chart objects
-
-  legs.forEach(leg => {
-    // Create container for this leg's chart
-    const plotItem = document.createElement('div');
-    plotItem.className = 'sv-plot-item';
-
-    const title = document.createElement('h4');
-    title.textContent = `Leg ${leg.name}`;
-    plotItem.appendChild(title);
-
-    const canvas = document.createElement('canvas');
-    canvas.id = `svPlot-${leg.id}`;
-    plotItem.appendChild(canvas);
-
-    container.appendChild(plotItem);
-
-    // Create chart
-    const ctx = canvas.getContext('2d');
-    svCharts[leg.id] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [] // Will be populated dynamically as SVs are computed
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Iteration'
-            }
+function initializeSelectedSVChart() {
+  const ctx = document.getElementById('selectedSVPlot').getContext('2d');
+  selectedSVChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: []
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Iteration'
           },
-          y: {
-            title: {
-              display: true,
-              text: 'Singular Value'
+          ticks: {
+            callback: function(value, index, values) {
+              return this.getLabelForValue(value);
             },
-            beginAtZero: true
+            autoSkip: false,
+            maxRotation: 0,
+            maxTicksLimit: 10
           }
         },
-        plugins: {
-          legend: {
+        y: {
+          title: {
             display: true,
-            position: 'top',
-            labels: {
-              boxWidth: 12,
-              font: {
-                size: 10
-              }
-            }
-          }
+            text: 'Singular Value'
+          },
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Select a leg to view SVs'
         }
       }
-    });
+    }
   });
 }
+
+// Side panel charts are now initialized via charts.js
+// (functions are called directly from charts.js module)
 
 // Setup simulation UI handlers
 function setupSimulationHandlers() {
@@ -770,5 +842,6 @@ function setupSimulationHandlers() {
   updateLearningRateDisplay(learningRate);
 
   // Initialize charts
-  initializeLossChart();
+  sidePanelLossChart = initializeSidePanelLossChart();
+  sidePanelSVChart = initializeSidePanelSVChart();
 }
