@@ -30,13 +30,16 @@ function updateSidePanelLossChart() {
     return;
   }
 
+  // Downsample to keep between 200-400 points for performance
+  const downsampledHistory = downsampleData(lossHistory, 200);
+
   // Create loss dataset with {x, y} format for proper x-axis spacing
   const datasets = [{
     label: 'Loss',
-    data: lossHistory.map(entry => ({ x: entry.iteration, y: entry.loss })),
-    borderColor: 'rgb(75, 192, 192)',
-    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-    borderWidth: 2,
+    data: downsampledHistory.map(entry => ({ x: entry.iteration, y: entry.loss })),
+    borderColor: 'rgb(0, 150, 180)',
+    backgroundColor: 'rgba(0, 150, 180, 0.1)',
+    borderWidth: 3,
     pointRadius: 0
   }];
 
@@ -44,16 +47,38 @@ function updateSidePanelLossChart() {
   const maxIteration = lossHistory[lossHistory.length - 1].iteration;
   const tickStep = calculateTickStep(maxIteration);
 
+  // Generate explicit tick values
+  const ticks = [];
+  // Add minor ticks at tickStep/2 intervals
+  for (let i = 0; i <= maxIteration; i += tickStep / 2) {
+    ticks.push(i);
+  }
+  // Always add max if not already present
+  if (ticks[ticks.length - 1] !== maxIteration) {
+    ticks.push(maxIteration);
+  }
+
   sidePanelLossChart.data.datasets = datasets;
   sidePanelLossChart.options.scales.x.min = 0;
   sidePanelLossChart.options.scales.x.max = maxIteration;
-  sidePanelLossChart.options.scales.x.ticks.callback = function(value, index, values) {
-    // Only show labels at tickStep intervals or at the max
-    if (value % tickStep === 0 || value === maxIteration) {
-      return value;
+  sidePanelLossChart.options.scales.x.ticks = {
+    values: ticks,
+    autoSkip: false,
+    callback: function(value) {
+      // Show labels only at major tick intervals (multiples of tickStep) or at max
+      if (value % tickStep === 0 || value === maxIteration) {
+        return value;
+      }
+      // Minor ticks get no label (but still show gridline)
+      return '';
+    },
+    maxRotation: 0,
+    font: {
+      size: 14,
+      family: 'Georgia, serif'
     }
-    return '';
   };
+
   sidePanelLossChart.update('none');
 }
 
@@ -73,14 +98,17 @@ function updateSidePanelSVChart() {
       return;
     }
 
+    // Downsample to keep between 200-400 points for performance
+    const downsampledHistory = downsampleData(history, 200);
+
     // Get all iterations
-    const numSVs = history[0].svs.length;
+    const numSVs = downsampledHistory[0].svs.length;
 
     // Create datasets for each SV using rainbow colors (HSL) with {x, y} format
     const datasets = [];
     for (let i = 0; i < numSVs; i++) {
       const color = getSVColor(i, numSVs);
-      const data = history.map(h => ({ x: h.iteration, y: h.svs[i] }));
+      const data = downsampledHistory.map(h => ({ x: h.iteration, y: h.svs[i] }));
       datasets.push({
         label: `SV ${i + 1}`,
         data: data,
@@ -95,16 +123,38 @@ function updateSidePanelSVChart() {
     const maxIteration = history[history.length - 1].iteration;
     const tickStep = calculateTickStep(maxIteration);
 
+    // Generate explicit tick values
+    const ticks = [];
+    // Add minor ticks at tickStep/2 intervals
+    for (let i = 0; i <= maxIteration; i += tickStep / 2) {
+      ticks.push(i);
+    }
+    // Always add max if not already present
+    if (ticks[ticks.length - 1] !== maxIteration) {
+      ticks.push(maxIteration);
+    }
+
     sidePanelSVChart.data.datasets = datasets;
     sidePanelSVChart.options.scales.x.min = 0;
     sidePanelSVChart.options.scales.x.max = maxIteration;
-    sidePanelSVChart.options.scales.x.ticks.callback = function(value, index, values) {
-      // Only show labels at tickStep intervals or at the max
-      if (value % tickStep === 0 || value === maxIteration) {
-        return value;
+    sidePanelSVChart.options.scales.x.ticks = {
+      values: ticks,
+      autoSkip: false,
+      callback: function(value) {
+        // Show labels only at major tick intervals (multiples of tickStep) or at max
+        if (value % tickStep === 0 || value === maxIteration) {
+          return value;
+        }
+        // Minor ticks get no label (but still show gridline)
+        return '';
+      },
+      maxRotation: 0,
+      font: {
+        size: 14,
+        family: 'Georgia, serif'
       }
-      return '';
     };
+
     sidePanelSVChart.update('none');
   } else {
     sidePanelPlot.style.display = 'none';
@@ -243,7 +293,6 @@ function setupUIHandlers() {
   globalInitScaleSlider.addEventListener('input', () => {
     const sliderVal = parseFloat(globalInitScaleSlider.value);
     globalInitScale = sliderToInitScale(sliderVal);
-    console.log('Init scale slider:', sliderVal, '->', globalInitScale);
     updateInitScaleDisplay(globalInitScale);
     draw();
   });

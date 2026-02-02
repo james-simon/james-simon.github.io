@@ -97,12 +97,10 @@ function formatToSigFigs(value, sigFigs = 4) {
 
 // Init scale slider: [1-9] × 10^k for k from -5 to 0, then 10
 const INIT_SCALE_VALUES = [...generateLogValues(-5, 0), 10];
-console.log('INIT_SCALE_VALUES:', INIT_SCALE_VALUES.length, 'values from', INIT_SCALE_VALUES[0], 'to', INIT_SCALE_VALUES[INIT_SCALE_VALUES.length - 1]);
 const initScaleSlider = new ValueSlider(INIT_SCALE_VALUES, formatScientific);
 
-// Learning rate slider: [1-9] × 10^k for k from -5 to 0
-const LEARNING_RATE_VALUES = generateLogValues(-5, 0);
-console.log('LEARNING_RATE_VALUES:', LEARNING_RATE_VALUES.length, 'values from', LEARNING_RATE_VALUES[0], 'to', LEARNING_RATE_VALUES[LEARNING_RATE_VALUES.length - 1]);
+// Learning rate slider: [1-9] × 10^k for k from -4 to -1, then 1
+const LEARNING_RATE_VALUES = [...generateLogValues(-4, -1), 1];
 const learningRateSlider = new ValueSlider(LEARNING_RATE_VALUES, formatScientific);
 
 // Dimension slider: logarithmic scale from 1 to 100

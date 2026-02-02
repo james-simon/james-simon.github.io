@@ -132,7 +132,6 @@
 
 .sim-button {
   padding: 10px 20px;
-  font-family: 'Gill Sans', sans-serif;
   font-size: 16px;
   border: 2px solid #333;
   background: white;
@@ -250,7 +249,6 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-family: 'Gill Sans', sans-serif;
   font-size: 13px;
   cursor: pointer;
   user-select: none;
@@ -271,11 +269,10 @@
   border: 2px solid #333;
   background: white;
   color: #333;
-  font-family: 'Gill Sans', sans-serif;
   font-size: 14px;
   font-weight: normal;
   cursor: pointer;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 0 12px;
@@ -285,6 +282,82 @@
 .page-help-button:hover {
   background: #333;
   color: white;
+}
+
+/* Help overlay system */
+.help-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.help-highlight {
+  position: relative;
+  z-index: 101 !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6) !important;
+}
+
+.help-label {
+  position: fixed;
+  background: rgba(255, 255, 255, 0.95);
+  color: #d32f2f;
+  border: 2px solid #d32f2f;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Gill Sans', sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  z-index: 102;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.help-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.help-arrow-top {
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 6px 0 6px;
+  border-color: #d32f2f transparent transparent transparent;
+}
+
+.help-arrow-bottom {
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 8px 6px;
+  border-color: transparent transparent #d32f2f transparent;
+}
+
+.help-arrow-left {
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 8px;
+  border-color: transparent transparent transparent #d32f2f;
+}
+
+.help-arrow-right {
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 8px 6px 0;
+  border-color: transparent #d32f2f transparent transparent;
+}
+
+.help-arrow-center {
+  display: none;
 }
 
 /* Canvas wrapper for relative positioning */
@@ -303,8 +376,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10;
-  font-family: 'Gill Sans', sans-serif;
-  font-size: 16px;
+  font-size: 32px;
   max-width: 400px;
   overflow-x: auto;
   line-height: 1;
@@ -332,15 +404,12 @@
 .floating-properties h3 {
   margin: 0 0 10px 0;
   font-size: 16px;
-  font-family: 'Gill Sans', sans-serif;
 }
 
 .floating-properties label {
-  font-family: 'Gill Sans', sans-serif;
   font-size: 14px;
 }
 
 .floating-properties input {
-  font-family: 'Gill Sans', sans-serif;
   font-size: 14px;
 }

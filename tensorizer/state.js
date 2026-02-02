@@ -148,6 +148,11 @@ function getLegEndpoint(leg, end) {
 
 // Save current state to history
 function saveState() {
+  // Clear plot position cache when state changes
+  if (window.plotPositionCache) {
+    window.plotPositionCache = {};
+  }
+
   // Remove any states after current index (for redo functionality)
   history = history.slice(0, historyIndex + 1);
 
@@ -201,6 +206,11 @@ function redo() {
 // Helper function to restore state at a given history index
 function restoreStateAtIndex(index) {
   const state = history[index];
+
+  // Clear plot position cache when restoring state
+  if (window.plotPositionCache) {
+    window.plotPositionCache = {};
+  }
 
   tensors = deepClone(state.tensors);
   nextTensorId = state.nextTensorId;
