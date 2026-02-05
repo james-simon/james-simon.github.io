@@ -121,9 +121,24 @@ function createLossChart(canvasId) {
         index: i
       }));
 
-      // Move 'eff. bal. init.' to the end (far right)
+      // Reorder: loss, eff. bal. init., rise time
+      // (Keep natural order, but move 'eff. bal. init.' to end if present)
       const balancedIdx = labels.findIndex(l => l.text === 'eff. bal. init.');
-      if (balancedIdx !== -1 && balancedIdx !== labels.length - 1) {
+      const riseTimeIdx = labels.findIndex(l => l.text === 'rise time from theory');
+
+      if (balancedIdx !== -1 && riseTimeIdx !== -1) {
+        // Both present: ensure order is [loss, rise time, eff. bal. init.]
+        const reordered = [];
+        labels.forEach((label, i) => {
+          if (i !== balancedIdx && i !== riseTimeIdx) {
+            reordered.push(label);
+          }
+        });
+        reordered.push(labels[riseTimeIdx]);
+        reordered.push(labels[balancedIdx]);
+        return reordered;
+      } else if (balancedIdx !== -1) {
+        // Only balanced present: move to end
         const balancedLabel = labels.splice(balancedIdx, 1)[0];
         labels.push(balancedLabel);
       }
@@ -324,7 +339,7 @@ export class ChartManager {
       });
     }
 
-    // Add vertical line for rise time on loss chart
+    // Add vertical line for rise time on loss chart LAST (so it renders on top)
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       // We'll set the y values after we know the range
       this.lossChart.data.datasets.push({
@@ -334,7 +349,8 @@ export class ChartManager {
         borderWidth: 2,
         pointRadius: 0,
         tension: 0,
-        showLine: true
+        showLine: true,
+        order: -1  // Lower order renders on top
       });
     }
 
@@ -382,7 +398,7 @@ export class ChartManager {
       }
     }
 
-    // Add vertical line for rise time on parameter chart BEFORE updating
+    // Add vertical line for rise time on parameter chart
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       this.paramChart.data.datasets.push({
         label: 'rise time from theory',
@@ -391,7 +407,8 @@ export class ChartManager {
         borderWidth: 2,
         pointRadius: 0,
         tension: 0,
-        showLine: true
+        showLine: true,
+        order: -1  // Lower order renders on top
       });
     }
 

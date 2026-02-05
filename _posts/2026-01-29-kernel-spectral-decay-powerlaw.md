@@ -34,9 +34,9 @@ I find that, when studying machine learning, it's always a good idea to go check
 
 A few observations. First, the spectrum is… kind of a nice powerlaw in the middle? But the transient effects at the head and finite-size effects at the tail make it annoying to tell; we'll have to deal with these. Second, even if you squint, it's hard to argue that the decays all look like powerlaws with $a = 1.5$. Third, the decay rates actually seem to *change:* the plots with larger $\sigma$ seem to have a faster decay and a larger exponent. This wasn't in the prediction of Wortsman and Loureiro (2025). What gives, and can we predict the decay rates we actually see here?
 
-### The HEA: a nonasymptotic approach
+### The HEA: an alternative approach
 
-I'm going to argue that, yeah, their answer that "the spectral decay rate is always $a$" is probably right *asymptotically,* but you'll often have to look prohobitively far into the spectrum before you approach that decay rate. I'll then introduce a tool for getting the *nonasymptotic* eigenvalue decay curve.
+I'm going to argue that, yeah, their answer that "the spectral decay rate is always $a$" is probably right *asymptotically* as you look very deep into the spectrum, but you'll often have to look prohobitively far into the spectrum before you approach that decay rate. To do so, I'll introduce a mathematical tool for getting the precise shape of the decay curve, even at small values of the index $j$.
 
 The main technology we'll use to do this is the *Hermite eigenstructure ansatz (HEA)* from [our paper](https://arxiv.org/abs/2510.14878). I won't go through it in detail here; see the paper or [Joey's blogpost](https://joeyturn.github.io/projects/hea/). The main point we'll use here is that the HEA gives nice, explicit formulae for the kernel eigenvalues in terms of some kernel-derived coefficients (which are basically Taylor series coefficients). For the Gaussian kernel with width $\sigma$, we have $c_\ell = e^{-\frac{1}{\sigma^2}} \cdot \sigma^{-2 \ell}$. Then
 
@@ -60,7 +60,9 @@ c_{|\boldsymbol{\alpha}|}
 \tag{HEA}
 $$
 
-In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won't explain why it's true here, but there is a pretty satisfying derivation we give in our paper.
+In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won't explain why it's true here, but there is a pretty satisfying derivation we give in our paper.[^a]
+
+[^a]: For an alternative approach, you can actually see Arie and Bruno's Proposition 1 --- they find exactly the HEA's eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues up to constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you'll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from.
 
 The HEA isn't exact, and it isn't perfect, but in our paper, we show that it's empirically very accurate in basically every case we hoped it would be, including Gaussian-data cases like the one we're studying here. Let's check: I'll add the theoretical spectrum predicted by simple enumeration of the HEA eigenvalues to the plots.
 
