@@ -2,8 +2,8 @@
   title: Predicting kernel regression learning curves from only raw data statistics
   authors: "Dhruva Karkada*, Joey Turnbull*, Yuxi Liu, James B. Simon"
   category: kernel-regression
-  year: 2025
-  venue: ""
+  year: 2026
+  venue: "ICLR 2026"
   description: "We study KRR with rotation-invariant kernels. We give a theoretical framework that predicts learning curves (test risk vs. sample size) from only two measurements: the empirical data covariance matrix and an empirical polynomial decomposition of the target function $f_*$.
 <br><br>
 This is possible because it turns out the kernel's eigenfunctions are approximately Hermite polynomials (and approximately insensitive to the actual choice of rotation-invariant kernel).
@@ -109,8 +109,8 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   title: "Saddle-to-saddle dynamics in deep ReLU networks: low-rank bias in the first saddle escape"
   authors: "Ioannis Bantzis, James B. Simon, Arthur Jacot"
   category: stepwise-learning
-  year: 2025
-  venue: ""
+  year: 2026
+  venue: "ICLR 2026"
   description: Do general deep neural networks show stepwise learning dynamics from small initialization? Empirically, it's surprisingly hard to tell. Theoretically, it's also surprisingly hard to tell. In this paper, we take the first step by studying the first step a deep $\textrm{ReLU}$ net provably has at least one plateau-and-drop step, and we characterize this first step, showing that the growth direction is <i>rank-one</i> in almost all weight matrices.
   image: ""
   links:
@@ -171,8 +171,8 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
   title: "FACT: the Features at Convergence Theorem"
   authors: "Enric Boix-Adserà*, Neil Mallinar*, James B. Simon, Mikhail Belkin"
   category: other-ml-theory
-  year: 2025
-  venue: ""
+  year: 2026
+  venue: "ICLR 2026"
   description: I quite like the neural feature ansatz, but it's not derivable from first principles, and I was (and remain) convinced it's not quite the right object to study. This paper gives an alternative which <i>does</i> provably come from a first-principles calculation and serves basically the same purposes.
   image: ""
   links:

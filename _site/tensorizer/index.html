@@ -2,6 +2,7 @@
 <html>
 
   <head>
+  
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       TeX: {
@@ -30,6 +31,7 @@
 
 
   <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+  
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -47,8 +49,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/tensorizer/">
-  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
+  <link rel="canonical" href="http://james-simon.github.io/tensorizer/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
 
   <style>
     body {
@@ -3788,7 +3790,7 @@
       displayMath: [['$$', '$$'], ['\\[', '\\]']]
     },
     chtml: {
-      scale: 2.0  // 2x default size
+      scale: 1.0  // Normal size
     },
     startup: {
       ready: () => {
@@ -3829,8 +3831,8 @@
     <button id="helpButton" class="page-help-button" title="Help">mouse over for help</button>
   </div>
 
-  <p style="font-family: 'Gill Sans', sans-serif; font-size: 16px; margin-bottom: 1.5em;">
-    This is an interactive tool for simulating gradient descent on deep linear networks and general tensor networks. Draw a model in the canvas on the left, set hyperparameters at the bottom, run the simulation, and look at its training dynamics.
+  <p style="font-size: 16px; margin-bottom: 1.5em;">
+    This is an interactive tool for simulating gradient descent on deep linear networks and general tensor networks. Draw a model in the canvas on the left, set hyperparameters at the bottom, run the simulation with a random target tensor $\mathbf{T}_*$, and look at its training dynamics.
   </p>
 
   <div class="tensorizer-container">
@@ -3905,17 +3907,17 @@
     <div class="controls-panel">
       <div id="sidePanelLossPlot">
         <div style="border: 1px solid #ccc; border-radius: 4px; background: white; padding: 10px; box-sizing: border-box; height: 285px;">
-          <h4 style="margin: 0 0 10px 0; font-family: 'Gill Sans', sans-serif; text-align: center;">loss</h4>
+          <h4 style="margin: 0 0 10px 0; text-align: center;">loss</h4>
           <div style="height: calc(100% - 30px); position: relative;">
             <canvas id="sidePanelLossCanvas"></canvas>
-            <div id="lossYAxisLabel" style="position: absolute; left: -44px; top: 33%; transform: rotate(-90deg) translateY(-50%); transform-origin: center center; font-size: 9px; white-space: nowrap;">$\mathcal{L} = |\!| \mathbf{T} - \mathbf{T}_* |\!|_F^2$</div>
+            <div id="lossYAxisLabel" style="position: absolute; left: -45px; top: 33%; transform: rotate(-90deg) translateY(-50%); transform-origin: center center; font-size: 17.5px; white-space: nowrap;">$\mathcal{L} = |\!| \mathbf{T} - \mathbf{T}_* |\!|_F^2$</div>
           </div>
         </div>
       </div>
 
       <div id="sidePanelSVPlot" style="margin-top: 10px; display: none;">
         <div style="border: 1px solid #ccc; border-radius: 4px; background: white; padding: 10px; box-sizing: border-box; height: 285px;">
-          <h4 style="margin: 0 0 10px 0; font-family: 'Gill Sans', sans-serif; text-align: center;" id="sidePanelSVPlotTitle">Singular Values</h4>
+          <h4 style="margin: 0 0 10px 0; text-align: center;" id="sidePanelSVPlotTitle">Singular Values</h4>
           <div style="height: calc(100% - 30px);">
             <canvas id="sidePanelSVCanvas"></canvas>
           </div>
@@ -3925,30 +3927,42 @@
   </div>
 
   <div class="simulation-controls">
-    <button id="startPauseButton" class="sim-button">Start</button>
-    <button id="resetButton" class="sim-button">Reset</button>
+    <button id="startPauseButton" class="sim-button">start</button>
+    <button id="resetButton" class="sim-button">reset</button>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-      <label for="learningRate">Learning rate:</label>
+      <label for="learningRate">learning rate:</label>
       <input type="range" id="learningRate" min="0" max="100" value="50" style="width: 150px;">
       <span id="learningRateValue">0.01</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-      <label for="globalInitScale">Init scale:</label>
+      <label for="globalInitScale">init scale:</label>
       <input type="range" id="globalInitScale" min="0" max="100" step="1" value="50" style="width: 100px;">
       <span id="globalInitScaleValue">1</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-      <label for="globalDimension">Leg dimension:</label>
+      <label for="globalDimension">leg dimension:</label>
       <input type="range" id="globalDimension" min="0" max="100" step="1" value="35" style="width: 100px;">
       <span id="globalDimensionValue">5</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-      <label>Current loss:</label>
+      <label>current loss:</label>
       <span id="currentLoss" style="font-weight: bold;">—</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-      <label>Steps/sec:</label>
+      <label>steps/sec:</label>
       <span id="stepsPerSec" style="font-weight: bold;">—</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+      <label title="Use manual random seeds for initialization and target tensor">
+        <input type="checkbox" id="manualSeedsCheckbox">
+        manual random seeds
+      </label>
+    </div>
+    <div id="seedInputs" style="display: none; align-items: center; gap: 10px; margin-left: 20px;">
+      <label for="initSeed">init seed:</label>
+      <input type="number" id="initSeed" step="1" min="0" value="0" style="width: 80px;">
+      <label for="targetSeed">$\mathbf{T}_*$ seed:</label>
+      <input type="number" id="targetSeed" step="1" min="0" value="0" style="width: 80px;">
     </div>
   </div>
 </div>
@@ -3966,6 +3980,7 @@
 <script src="input.js"></script>
 <script src="ui.js"></script>
 <script src="simulation.js"></script>
+<script src="help.js"></script>
 <script src="tensorizer.js"></script>
 
       </div>

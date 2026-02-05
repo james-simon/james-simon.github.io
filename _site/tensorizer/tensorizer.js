@@ -31,11 +31,7 @@ function init() {
   setupInputHandlers();
   setupUIHandlers();
   setupSimulationHandlers();
-
-  // Help button handler
-  helpButton.addEventListener('click', () => {
-    alert('Guide to be added');
-  });
+  setupHelpHandlers();
 
   // Initialize state
   saveState();

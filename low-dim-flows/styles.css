@@ -206,6 +206,21 @@
   font-size: 16px;
 }
 
+/* Plots separator */
+.plots-separator {
+  margin-top: 20px;
+  margin-bottom: 5px;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.plots-section-label {
+  font-size: 12px;
+  color: #888;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
 /* Plots */
 .plots-container {
   display: flex;
@@ -271,6 +286,10 @@
 .logscale-control {
   margin-top: 20px;
   text-align: center;
+}
+
+.logscale-control label {
+  margin-right: 30px;
 }
 
 /* Theory section */

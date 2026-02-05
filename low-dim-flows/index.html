@@ -1,6 +1,7 @@
 ---
 layout: default
 permalink: /low-dim-flows/
+skip_mathjax: true
 ---
 
 <script>
@@ -31,12 +32,12 @@ permalink: /low-dim-flows/
   </div>
 
   <p class="page-description">
-    Visualizing gradient flow on simple loss landscapes.
+    Check it out, Berkan and Joey!
   </p>
 
   <hr class="description-separator">
 
-  <div class="section-label">SET SYSTEM PARAMETERS AND VIZ FLOW</div>
+  <div class="section-label">SET SYSTEM PARAMETERS</div>
 
   <br>
 
@@ -62,14 +63,9 @@ permalink: /low-dim-flows/
   <!-- Variable-specific controls -->
   <div id="variableControls"></div>
 
-  <!-- Global controls -->
-  <div class="controls-section">
-    <div class="control-group">
-      <label for="tMaxSlider">$t_{\mathrm{max}}$:</label>
-      <input type="range" id="tMaxSlider" min="0" max="100" step="1" value="50">
-      <span id="tMaxValue">10</span>
-    </div>
-  </div>
+  <hr class="plots-separator">
+
+  <div class="plots-section-label">LOSS AND PARAMETER FLOWS</div>
 
   <!-- Plots -->
   <div class="plots-container">
@@ -93,11 +89,15 @@ permalink: /low-dim-flows/
     </div>
   </div>
 
-  <!-- Logscale control -->
+  <!-- Logscale and balanced init controls -->
   <div class="logscale-control">
     <label>
       <input type="checkbox" id="logScaleCheckbox">
       logscale y-axes
+    </label>
+    <label>
+      <input type="checkbox" id="showBalancedCheckbox" checked>
+      show dynamics from effective balanced init
     </label>
   </div>
 
@@ -118,9 +118,24 @@ permalink: /low-dim-flows/
       <div class="theory-metric-value" id="kappaValue">—</div>
     </div>
     <div class="theory-metric">
-      <div class="theory-metric-label">mean core parameter</div>
+      <div class="theory-metric-label">mean core parameter at init</div>
       <div class="theory-metric-formula">$\beta = \frac{1}{d} \sum_i \frac{|a_i(0)|}{\sqrt{k_i}}$</div>
       <div class="theory-metric-value" id="betaValue">—</div>
+    </div>
+    <div class="theory-metric">
+      <div class="theory-metric-label">shape parameters</div>
+      <div class="theory-metric-formula">$r_i = \frac{a_i(0)^2}{k_i \beta^2}$</div>
+      <div class="theory-metric-value" id="shapeParamsValue">—</div>
+    </div>
+    <div class="theory-metric">
+      <div class="theory-metric-label">shape integral</div>
+      <div class="theory-metric-formula">$F(\mathbf{r}) = \left(\frac{\ell}{2} - 1\right) \int_0^\infty \prod_i (s + r_i)^{-k_i/2} \, ds$</div>
+      <div class="theory-metric-value" id="shapeIntegralValue">—</div>
+    </div>
+    <div class="theory-metric">
+      <div class="theory-metric-label">effective balanced init scale</div>
+      <div class="theory-metric-formula">$\beta_{\mathrm{eff}} = \begin{cases} \beta, & \text{if } \ell \leq 2 \\ F(\mathbf{r})^{-\frac{1}{\ell-2}} \beta, & \text{if } \ell > 2 \end{cases}$</div>
+      <div class="theory-metric-value" id="betaEffectiveValue">—</div>
     </div>
   </div>
 
@@ -128,9 +143,9 @@ permalink: /low-dim-flows/
     <div class="theory-rise-time-label">rise time</div>
     <div class="theory-rise-time-formula">
       $t_{\mathrm{rise}} = \begin{cases}
-        f_*, & \text{if } \ell = 1, \\
-        -\frac{1}{\kappa f_*} \cdot \log\left(\sqrt{\frac{f_*}{\kappa}}\beta\right), & \text{if } \ell = 2, \\
-        \frac{1}{\ell - 2} \cdot \frac{1}{\kappa f_*} \cdot \frac{1}{\beta^{\ell-2}}. & \text{if } \ell > 2.
+        1, & \text{if } \ell = 1, \\
+        -\frac{1}{\kappa f_*} \cdot \log\left(\sqrt{\frac{\kappa}{f_*}}\beta\right), & \text{if } \ell = 2, \\
+        \frac{1}{\ell - 2} \cdot \frac{F(\mathbf{r})}{\kappa f_*} \cdot \frac{1}{\beta^{\ell-2}}. & \text{if } \ell > 2.
       \end{cases}$
     </div>
     <div class="theory-rise-time-value" id="triseValue">—</div>

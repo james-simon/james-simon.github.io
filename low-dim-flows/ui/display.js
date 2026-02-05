@@ -14,6 +14,9 @@ export class DisplayManager {
     this.ellValue = document.getElementById('ellValue');
     this.kappaValue = document.getElementById('kappaValue');
     this.betaValue = document.getElementById('betaValue');
+    this.shapeParamsValue = document.getElementById('shapeParamsValue');
+    this.shapeIntegralValue = document.getElementById('shapeIntegralValue');
+    this.betaEffectiveValue = document.getElementById('betaEffectiveValue');
     this.triseValue = document.getElementById('triseValue');
   }
 
@@ -89,30 +92,61 @@ export class DisplayManager {
   }
 
   /**
-   * Update theory values display
+   * Format number for LaTeX display (max 3 decimals, strip trailing zeros)
    */
-  updateTheoryValues(theory) {
-    this.ellValue.innerHTML = formatSigFigs(theory.ell);
-    this.kappaValue.innerHTML = formatSigFigs(theory.kappa);
-    this.betaValue.innerHTML = formatSigFigs(theory.beta);
-
-    if (theory.tRise.isUndefined) {
-      this.triseValue.innerHTML = 'undefined';
-    } else {
-      // Format t_rise with 3 decimal places, strip trailing zeros
-      const formatted = theory.tRise.value.toFixed(3);
-      // Remove trailing zeros and decimal point if integer
-      this.triseValue.innerHTML = formatted.replace(/\.?0+$/, '');
-    }
+  formatForLatex(value) {
+    const formatted = value.toFixed(3);
+    return formatted.replace(/\.?0+$/, '');
   }
 
   /**
-   * Update tMax display
+   * Update theory values display
    */
-  updateTMaxDisplay(tMax, formattedValue) {
-    const display = document.getElementById('tMaxValue');
-    if (display) {
-      display.innerHTML = formattedValue;
+  updateTheoryValues(theory) {
+    // Render all values as LaTeX
+    this.ellValue.innerHTML = `$${this.formatForLatex(theory.ell)}$`;
+    this.kappaValue.innerHTML = `$${this.formatForLatex(theory.kappa)}$`;
+    this.betaValue.innerHTML = `$${this.formatForLatex(theory.beta)}$`;
+
+    // Shape parameters - render as vertical list in LaTeX using aligned environment
+    const shapeParamsRows = theory.shapeParams.map((r, i) =>
+      `r_{${i+1}} &= ${this.formatForLatex(r)}`
+    ).join(' \\\\ ');
+    this.shapeParamsValue.innerHTML = `$$\\begin{aligned} ${shapeParamsRows} \\end{aligned}$$`;
+
+    // Shape integral (3 decimal places like other values)
+    if (theory.shapeIntegral.isUndefined) {
+      this.shapeIntegralValue.innerHTML = '—';
+    } else {
+      this.shapeIntegralValue.innerHTML = `$${this.formatForLatex(theory.shapeIntegral.value)}$`;
+    }
+
+    // Effective beta
+    if (isNaN(theory.betaEffective)) {
+      this.betaEffectiveValue.innerHTML = '—';
+    } else {
+      this.betaEffectiveValue.innerHTML = `$${this.formatForLatex(theory.betaEffective)}$`;
+    }
+
+    if (theory.tRise.isUndefined) {
+      this.triseValue.innerHTML = '$\\text{undefined}$';
+    } else {
+      this.triseValue.innerHTML = `$${this.formatForLatex(theory.tRise.value)}$`;
+    }
+
+    // Retypeset MathJax for theory values
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      MathJax.typesetPromise([
+        this.ellValue,
+        this.kappaValue,
+        this.betaValue,
+        this.shapeParamsValue,
+        this.shapeIntegralValue,
+        this.betaEffectiveValue,
+        this.triseValue
+      ]).catch((err) =>
+        console.warn('MathJax typeset error:', err)
+      );
     }
   }
 }

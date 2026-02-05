@@ -3,6 +3,8 @@
 // ============================================================================
 // Pure functions for theoretical predictions
 
+import { computeShapeIntegral } from '../utils/integration.js';
+
 /**
  * Calculate total order: ℓ = Σ k_i
  */
@@ -37,9 +39,9 @@ export function calculateBeta(a0Vec, kVec) {
  * Calculate rise time (piecewise function)
  * Returns { value, isUndefined }
  */
-export function calculateTRise(ell, kappa, beta, fStar) {
+export function calculateTRise(ell, kappa, beta, fStar, shapeIntegral) {
   if (ell === 1) {
-    return { value: fStar, isUndefined: false };
+    return { value: 1, isUndefined: false };
   }
 
   if (ell < 1) {
@@ -47,13 +49,45 @@ export function calculateTRise(ell, kappa, beta, fStar) {
   }
 
   if (ell === 2) {
-    const trise = -(1 / (kappa * fStar)) * Math.log(Math.sqrt(fStar / kappa) * beta);
+    const trise = -(1 / (kappa * fStar)) * Math.log(Math.sqrt(kappa / fStar) * beta);
     return { value: trise, isUndefined: false };
   }
 
   // ell > 2
-  const trise = (1 / (ell - 2)) * (1 / (kappa * fStar)) * (1 / Math.pow(beta, ell - 2));
+  // Use shape integral F(r) in the numerator
+  if (shapeIntegral.isUndefined) {
+    return { value: NaN, isUndefined: true };
+  }
+  const trise = (1 / (ell - 2)) * (shapeIntegral.value / (kappa * fStar)) * (1 / Math.pow(beta, ell - 2));
   return { value: trise, isUndefined: false };
+}
+
+/**
+ * Calculate shape parameters: r_i = a_i(0)^2 / (k_i * β^2)
+ */
+export function calculateShapeParameters(a0Vec, kVec, beta) {
+  const rVec = [];
+  for (let i = 0; i < a0Vec.length; i++) {
+    const ri = (a0Vec[i] * a0Vec[i]) / (kVec[i] * beta * beta);
+    rVec.push(ri);
+  }
+  return rVec;
+}
+
+/**
+ * Calculate effective beta parameter
+ * β_eff = β if ℓ ≤ 2, otherwise F(r)^(-1/(ℓ-2)) * β
+ */
+export function calculateBetaEffective(beta, ell, shapeIntegral) {
+  if (ell <= 2) {
+    return beta;
+  }
+
+  if (shapeIntegral.isUndefined) {
+    return NaN;
+  }
+
+  return Math.pow(shapeIntegral.value, -1 / (ell - 2)) * beta;
 }
 
 /**
@@ -64,7 +98,10 @@ export function calculateAllTheory(a0Vec, kVec, fStar) {
   const ell = calculateEll(kVec);
   const kappa = calculateKappa(kVec);
   const beta = calculateBeta(a0Vec, kVec);
-  const tRise = calculateTRise(ell, kappa, beta, fStar);
+  const shapeParams = calculateShapeParameters(a0Vec, kVec, beta);
+  const shapeIntegral = computeShapeIntegral(shapeParams, kVec, ell);
+  const tRise = calculateTRise(ell, kappa, beta, fStar, shapeIntegral);
+  const betaEffective = calculateBetaEffective(beta, ell, shapeIntegral);
 
-  return { ell, kappa, beta, tRise };
+  return { ell, kappa, beta, tRise, shapeParams, shapeIntegral, betaEffective };
 }

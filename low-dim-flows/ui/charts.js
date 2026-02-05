@@ -112,7 +112,7 @@ function createLossChart(canvasId) {
     padding: 10,
     generateLabels: function(chart) {
       const datasets = chart.data.datasets;
-      return datasets.map((dataset, i) => ({
+      const labels = datasets.map((dataset, i) => ({
         text: dataset.label,
         fillStyle: dataset.borderColor,
         strokeStyle: dataset.borderColor,
@@ -120,6 +120,15 @@ function createLossChart(canvasId) {
         hidden: false,
         index: i
       }));
+
+      // Move 'eff. bal. init.' to the end (far right)
+      const balancedIdx = labels.findIndex(l => l.text === 'eff. bal. init.');
+      if (balancedIdx !== -1 && balancedIdx !== labels.length - 1) {
+        const balancedLabel = labels.splice(balancedIdx, 1)[0];
+        labels.push(balancedLabel);
+      }
+
+      return labels;
     }
   };
   return new Chart(document.getElementById(canvasId).getContext('2d'), config);
@@ -152,30 +161,55 @@ function createParameterChart(canvasId) {
         const datasets = chart.data.datasets;
         const subscripts = ['₁', '₂', '₃', '₄', '₅'];
         let varIndex = 0;
-        return datasets.map((dataset, i) => {
+        const labels = [];
+        let balancedLabel = null;
+
+        datasets.forEach((dataset, i) => {
           // Check if this is the rise time dataset
-          if (dataset.label === 'rise time') {
-            return {
-              text: 'rise time',
+          if (dataset.label === 'rise time from theory') {
+            labels.push({
+              text: 'rise time from theory',
               fillStyle: dataset.borderColor,
               strokeStyle: dataset.borderColor,
               lineWidth: 2,
               hidden: false,
               index: i
-            };
+            });
+            return;
+          }
+          // Check if it's a balanced init trajectory
+          if (dataset.label && dataset.label.includes('eff. bal. init.')) {
+            // Only create one label for all balanced trajectories
+            if (!balancedLabel) {
+              balancedLabel = {
+                text: 'eff. bal. init.',
+                fillStyle: 'rgb(255, 100, 255)', // Magenta
+                strokeStyle: 'rgb(255, 100, 255)',
+                lineWidth: CONFIG.charts.lineWidth,
+                hidden: false,
+                index: i
+              };
+            }
+            return;
           }
           // Otherwise it's a parameter dataset
-          const label = {
+          labels.push({
             text: `a${subscripts[varIndex]}`,  // Unicode subscripts
             fillStyle: dataset.borderColor,
             strokeStyle: dataset.borderColor,
             lineWidth: CONFIG.charts.lineWidth,
             hidden: false,
             index: i
-          };
+          });
           varIndex++;
-          return label;
         });
+
+        // Add balanced label at the end (far right)
+        if (balancedLabel) {
+          labels.push(balancedLabel);
+        }
+
+        return labels;
       }
     }
   };
@@ -204,8 +238,18 @@ function updateChart(chart, times, dataArrays, logScale) {
     yMin = 0;
   }
 
+  // Set x-axis limits based on actual simulation time range
+  const xMin = times[0];
+  const xMax = times[times.length - 1];
+
   // Update chart
   chart.data.labels = times;
+
+  // Set x-axis limits (fixed, not influenced by rise time line)
+  chart.options.scales.x.min = xMin;
+  chart.options.scales.x.max = xMax;
+
+  // Set y-axis limits
   chart.options.scales.y.type = logScale ? 'logarithmic' : 'linear';
   chart.options.scales.y.beginAtZero = !logScale;
   chart.options.scales.y.max = yMax;
@@ -245,20 +289,45 @@ export class ChartManager {
   /**
    * Update charts with simulation results
    */
-  update(solution, numVars, logScale, tRise) {
+  update(solution, numVars, logScale, tRise, balancedSolution = null, showBalanced = true) {
     // Downsample data for plotting
     const times = downsampleData(solution.times);
     const lossValues = downsampleData(solution.lossValues);
     const aTrajectories = solution.aTrajectories.map(traj => downsampleData(traj));
 
+    // Downsample balanced solution if present
+    let balancedTimes = null;
+    let balancedLossValues = null;
+    let balancedATrajectories = null;
+    if (balancedSolution) {
+      balancedTimes = downsampleData(balancedSolution.times);
+      balancedLossValues = downsampleData(balancedSolution.lossValues);
+      balancedATrajectories = balancedSolution.aTrajectories.map(traj => downsampleData(traj));
+    }
+
     // Update loss chart (main line)
     this.lossChart.data.datasets[0].data = lossValues;
+
+    // Add balanced solution loss curve if available and enabled
+    let datasetIndex = 1;
+    if (balancedSolution && showBalanced) {
+      this.lossChart.data.datasets[datasetIndex] = {
+        label: 'eff. bal. init.',
+        data: balancedLossValues.map((val, i) => ({x: balancedTimes[i], y: val})),
+        borderColor: 'rgb(255, 100, 255)', // Magenta
+        borderWidth: CONFIG.charts.lineWidth,
+        borderDash: [5, 5], // Dashed line
+        pointRadius: 0,
+        tension: 0
+      };
+      datasetIndex++;
+    }
 
     // Add vertical line for rise time on loss chart BEFORE updating
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       // We'll set the y values after we know the range
-      this.lossChart.data.datasets[1] = {
-        label: 'rise time',
+      this.lossChart.data.datasets[datasetIndex] = {
+        label: 'rise time from theory',
         data: [{x: tRise.value, y: 0}, {x: tRise.value, y: 1}],
         borderColor: 'rgb(128, 128, 128)',
         borderWidth: 2,
@@ -266,27 +335,37 @@ export class ChartManager {
         tension: 0,
         showLine: true
       };
+      datasetIndex++;
     } else {
-      // Remove rise time line if undefined
-      if (this.lossChart.data.datasets.length > 1) {
-        this.lossChart.data.datasets.splice(1, 1);
+      // Remove any extra datasets beyond the main one (and balanced if present)
+      const keepCount = (balancedSolution && showBalanced) ? 2 : 1;
+      if (this.lossChart.data.datasets.length > keepCount) {
+        this.lossChart.data.datasets.splice(keepCount);
       }
     }
 
-    const lossRange = updateChart(this.lossChart, times, [lossValues], logScale);
+    // Include balanced loss values in range calculation if present and enabled
+    const lossDataArrays = (balancedSolution && showBalanced) ? [lossValues, balancedLossValues] : [lossValues];
+    const lossRange = updateChart(this.lossChart, times, lossDataArrays, logScale);
 
     // Update t_rise line y values with actual range
-    if (tRise && !tRise.isUndefined && isFinite(tRise.value) && this.lossChart.data.datasets[1]) {
-      this.lossChart.data.datasets[1].data = [
-        {x: tRise.value, y: lossRange.yMin},
-        {x: tRise.value, y: lossRange.yMax}
-      ];
-      this.lossChart.update('none');
+    if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
+      // Find the rise time dataset (it's at datasetIndex - 1)
+      const riseTimeIdx = datasetIndex - 1;
+      if (this.lossChart.data.datasets[riseTimeIdx] &&
+          this.lossChart.data.datasets[riseTimeIdx].label === 'rise time from theory') {
+        this.lossChart.data.datasets[riseTimeIdx].data = [
+          {x: tRise.value, y: lossRange.yMin},
+          {x: tRise.value, y: lossRange.yMax}
+        ];
+        this.lossChart.update('none');
+      }
     }
 
     // Update parameter chart (multiple lines)
     this.paramChart.data.datasets = [];
     for (let i = 0; i < numVars; i++) {
+      // Main trajectory (solid)
       this.paramChart.data.datasets.push({
         label: `a${i+1}`,
         data: aTrajectories[i],
@@ -295,12 +374,25 @@ export class ChartManager {
         pointRadius: 0,
         tension: 0
       });
+
+      // Balanced trajectory (dashed, magenta)
+      if (balancedSolution && showBalanced) {
+        this.paramChart.data.datasets.push({
+          label: `a${i+1} (eff. bal. init.)`,
+          data: balancedATrajectories[i].map((val, j) => ({x: balancedTimes[j], y: val})),
+          borderColor: 'rgb(255, 100, 255)', // Magenta
+          borderWidth: CONFIG.charts.lineWidth,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          tension: 0
+        });
+      }
     }
 
     // Add vertical line for rise time on parameter chart BEFORE updating
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       this.paramChart.data.datasets.push({
-        label: 'rise time',
+        label: 'rise time from theory',
         data: [{x: tRise.value, y: 0}, {x: tRise.value, y: 1}],
         borderColor: 'rgb(128, 128, 128)',
         borderWidth: 2,
@@ -310,12 +402,16 @@ export class ChartManager {
       });
     }
 
-    const paramRange = updateChart(this.paramChart, times, aTrajectories, logScale);
+    // Include balanced trajectories in range calculation if present and enabled
+    const paramDataArrays = (balancedSolution && showBalanced)
+      ? aTrajectories.concat(balancedATrajectories)
+      : aTrajectories;
+    const paramRange = updateChart(this.paramChart, times, paramDataArrays, logScale);
 
     // Update rise time line y values with actual range
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       const triseDataset = this.paramChart.data.datasets[this.paramChart.data.datasets.length - 1];
-      if (triseDataset && triseDataset.label === 'rise time') {
+      if (triseDataset && triseDataset.label === 'rise time from theory') {
         triseDataset.data = [
           {x: tRise.value, y: paramRange.yMin},
           {x: tRise.value, y: paramRange.yMax}

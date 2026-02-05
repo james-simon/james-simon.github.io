@@ -23,6 +23,34 @@ let stepTimestamps = []; // Rolling window of recent step timestamps for steps/s
 const STEPS_PER_SEC_WINDOW = 60; // Average over last 60 steps
 let lastStepsPerSecUpdate = 0; // Timestamp of last steps/sec display update
 const STEPS_PER_SEC_UPDATE_INTERVAL = 250; // Update display every 250ms (4 times per second)
+let lastChartUpdate = 0; // Timestamp of last chart update
+const CHART_UPDATE_INTERVAL = 25; // Update charts every 25ms (~40 FPS)
+
+// Random seed state
+let manualSeeds = false;
+let initSeed = 0;
+let targetSeed = 0;
+
+// Seeded random number generator (simple LCG)
+class SeededRandom {
+  constructor(seed) {
+    this.seed = seed;
+  }
+
+  // Generate next random number in [0, 1)
+  next() {
+    this.seed = (this.seed * 1664525 + 1013904223) % 4294967296;
+    return this.seed / 4294967296;
+  }
+
+  // Box-Muller transform to get normal distribution
+  nextGaussian(mean = 0, stddev = 1) {
+    const u1 = this.next();
+    const u2 = this.next();
+    const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    return mean + z0 * stddev;
+  }
+}
 
 // Helper function to get the latest SVs for a tensor's connection to a specific leg
 function getLatestTensorLegSVs(tensor, leg) {
@@ -105,16 +133,6 @@ function unfoldTensor(tensorArray, shape, legIndex) {
   iterate(0);
   return matrix;
 }
-
-// Learning rate conversion (logarithmic slider)
-function sliderToLearningRate(sliderValue) {
-  // Map 0-100 to 1e-4 to 1 logarithmically
-  const minLog = Math.log10(1e-4);
-  const maxLog = Math.log10(1);
-  const logValue = minLog + (sliderValue / 100) * (maxLog - minLog);
-  return Math.pow(10, logValue);
-}
-
 function updateLearningRateDisplay(rate) {
   const display = document.getElementById('learningRateValue');
   if (display) {
@@ -207,22 +225,65 @@ function initializeSimulation() {
   const variance = globalInitScale * globalInitScale;
   const stddev = Math.sqrt(variance);
 
-  einsumInfo.tensorNames.forEach(name => {
-    const shape = einsumInfo.tensorShapes.get(name);
-    const values = tf.randomNormal(shape, 0, stddev);
-    tensorVariables.set(name, tf.variable(values));
-  });
+  if (manualSeeds) {
+    // Use seeded RNG for reproducibility
+    const rng = new SeededRandom(initSeed);
+    einsumInfo.tensorNames.forEach(name => {
+      const shape = einsumInfo.tensorShapes.get(name);
+      const size = shape.reduce((a, b) => a * b, 1);
+      const values = new Float32Array(size);
+      for (let i = 0; i < size; i++) {
+        values[i] = rng.nextGaussian(0, stddev);
+      }
+      const tensor = tf.tensor(values, shape);
+      tensorVariables.set(name, tf.variable(tensor));
+      tensor.dispose(); // Dispose intermediate tensor
+    });
+  } else {
+    // Use TensorFlow's random for true randomness
+    einsumInfo.tensorNames.forEach(name => {
+      const shape = einsumInfo.tensorShapes.get(name);
+      const values = tf.randomNormal(shape, 0, stddev);
+      tensorVariables.set(name, tf.variable(values));
+      values.dispose(); // Dispose intermediate tensor
+    });
+  }
 
   // Create target tensor
-  if (einsumInfo.outputShape.length === 0) {
-    // Scalar output
-    targetTensor = tf.randomNormal([1], 0, 1);
+  if (manualSeeds) {
+    // Use seeded RNG for reproducibility
+    const rng = new SeededRandom(targetSeed);
+    const shape = einsumInfo.outputShape.length === 0 ? [1] : einsumInfo.outputShape;
+    const size = shape.reduce((a, b) => a * b, 1);
+    const values = new Float32Array(size);
+    for (let i = 0; i < size; i++) {
+      values[i] = rng.nextGaussian(0, 1);
+    }
+    targetTensor = tf.tensor(values, shape);
   } else {
-    targetTensor = tf.randomNormal(einsumInfo.outputShape, 0, 1);
+    // Use TensorFlow's random for true randomness
+    if (einsumInfo.outputShape.length === 0) {
+      targetTensor = tf.randomNormal([1], 0, 1);
+    } else {
+      targetTensor = tf.randomNormal(einsumInfo.outputShape, 0, 1);
+    }
   }
 
   console.log('Initialized', tensorVariables.size, 'tensor variables');
   console.log('Target tensor shape:', targetTensor.shape);
+
+  // Debug: Check if manual seeds are enabled
+  console.log('DEBUG: manualSeeds =', manualSeeds, ', initSeed =', initSeed, ', targetSeed =', targetSeed);
+
+  // Debug: Log sums to verify random seeds
+  let paramSum = 0;
+  tensorVariables.forEach((tensorVar, name) => {
+    const sum = tf.tidy(() => tf.sum(tensorVar).dataSync()[0]);
+    paramSum += sum;
+  });
+  const targetSum = tf.tidy(() => tf.sum(targetTensor).dataSync()[0]);
+  console.log('DEBUG: Sum of all parameter elements:', paramSum);
+  console.log('DEBUG: Sum of all target tensor elements:', targetSum);
 
   // Reset history
   lossHistory = [];
@@ -232,12 +293,27 @@ function initializeSimulation() {
   currentLegSVs = {};
   initialMaxSVs = {};
   iterationCount = 0;
+
+  // Clear downsampled SV cache
+  if (window.downsampledSVCache) {
+    window.downsampledSVCache = {};
+  }
   simulationStartTime = null;
   pauseStartTime = null;
   stepTimestamps = [];
   updateLossDisplay(null);
+
+  // Clear charts
+  if (sidePanelLossChart) {
+    sidePanelLossChart.data.datasets = [];
+    sidePanelLossChart.update('none');
+  }
   updateSidePanelSVChart(); // Update side panel chart
+
   document.getElementById('stepsPerSec').textContent = '—';
+
+  // Redraw canvas to clear floating SV plots
+  draw();
 
   return true;
 }
@@ -396,14 +472,18 @@ function simulationLoop() {
     return;
   }
 
+  const loopStart = performance.now();
+
   // Perform multiple gradient steps per frame
-  const stepsPerFrame = 1;
+  const gradStart = performance.now();
+  const stepsPerFrame = 3;
   for (let i = 0; i < stepsPerFrame; i++) {
     gradientStep();
-    iterationCount++;
   }
+  const gradTime = performance.now() - gradStart;
 
-  // Compute and record loss
+  // Compute and record loss (before incrementing, so first iteration is 0)
+  const lossStart = performance.now();
   const lossValue = tf.tidy(() => {
     const loss = computeLoss();
     return loss.dataSync()[0];
@@ -411,11 +491,19 @@ function simulationLoop() {
 
   lossHistory.push({ iteration: iterationCount, loss: lossValue });
   updateLossDisplay(lossValue);
-  updateSidePanelLossChart(); // Update side panel loss chart (always visible)
-  updateSidePanelSVChart(); // Update side panel SV chart (if leg selected)
+  const lossTime = performance.now() - lossStart;
+
+  // Update charts at ~40 FPS for performance
+  const chartStart = performance.now();
+  const now = performance.now();
+  if (now - lastChartUpdate >= CHART_UPDATE_INTERVAL) {
+    updateSidePanelLossChart(); // Update side panel loss chart (always visible)
+    updateSidePanelSVChart(); // Update side panel SV chart (if leg selected)
+    lastChartUpdate = now;
+  }
+  const chartTime = performance.now() - chartStart;
 
   // Update steps/sec display using rolling average (throttled to a few times per second)
-  const now = performance.now();
   stepTimestamps.push(now);
   if (stepTimestamps.length > STEPS_PER_SEC_WINDOW) {
     stepTimestamps.shift();
@@ -425,12 +513,13 @@ function simulationLoop() {
     const timeSpanMs = stepTimestamps[stepTimestamps.length - 1] - stepTimestamps[0];
     const timeSpanSec = timeSpanMs / 1000;
     const stepsInWindow = stepTimestamps.length - 1; // Number of intervals between timestamps
-    const stepsPerSec = stepsInWindow / timeSpanSec;
+    const stepsPerSec = (stepsInWindow / timeSpanSec) * stepsPerFrame; // Multiply by steps per frame
     document.getElementById('stepsPerSec').textContent = Math.round(stepsPerSec).toString();
     lastStepsPerSecUpdate = now;
   }
 
   // Track SVs for each tensor from POV of each leg
+  const svStart = performance.now();
   tensorVariables.forEach((tensorVar, tensorName) => {
     const shape = tensorVar.shape;
     const rank = shape.length;
@@ -505,8 +594,8 @@ function simulationLoop() {
       // Store current SVs for visualization
       currentLegSVs[leg.id] = legSVs;
 
-      // Track initial max SV for this leg (at iteration 1)
-      if (iterationCount === 1) {
+      // Track initial max SV for this leg (at iteration 0)
+      if (iterationCount === 0) {
         initialMaxSVs[leg.id] = Math.max(...legSVs);
       }
 
@@ -515,15 +604,24 @@ function simulationLoop() {
       currentLegSVCounts[leg.id] = count;
     }
   });
+  const svTime = performance.now() - svStart;
 
-  // Log memory usage periodically
+  // Redraw canvas to show updated annotations
+  const drawStart = performance.now();
+  draw();
+  const drawTime = performance.now() - drawStart;
+
+  const totalTime = performance.now() - loopStart;
+
+  // Log timing breakdown periodically
   if (iterationCount % 1000 === 0) {
     const memInfo = tf.memory();
     console.log(`Iteration ${iterationCount}: ${memInfo.numTensors} tensors, ${(memInfo.numBytes / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`Timing breakdown (ms): grad=${gradTime.toFixed(2)}, loss=${lossTime.toFixed(2)}, sv=${svTime.toFixed(2)}, chart=${chartTime.toFixed(2)}, draw=${drawTime.toFixed(2)}, total=${totalTime.toFixed(2)}`);
   }
 
-  // Redraw canvas to show updated annotations
-  draw();
+  // Increment iteration counter by number of steps performed
+  iterationCount += stepsPerFrame;
 
   // Continue loop
   animationFrameId = requestAnimationFrame(simulationLoop);
@@ -535,8 +633,8 @@ function startSimulation() {
     return;
   }
 
-  // Initialize if needed, or reinitialize if at iteration 0 (to pick up setting changes)
-  if (tensorVariables.size === 0 || iterationCount === 0) {
+  // Initialize if needed (only if not already initialized)
+  if (tensorVariables.size === 0) {
     const success = initializeSimulation();
     if (!success) {
       alert('Cannot start simulation: no tensors in diagram');
@@ -545,7 +643,7 @@ function startSimulation() {
   }
 
   simulationRunning = true;
-  document.getElementById('startPauseButton').textContent = 'Pause';
+  document.getElementById('startPauseButton').textContent = 'pause';
   document.getElementById('startPauseButton').classList.add('running');
 
   // Record start time if starting from iteration 0, or adjust for pause time
@@ -564,7 +662,7 @@ function startSimulation() {
 // Pause simulation
 function pauseSimulation() {
   simulationRunning = false;
-  document.getElementById('startPauseButton').textContent = 'Start';
+  document.getElementById('startPauseButton').textContent = 'start';
   document.getElementById('startPauseButton').classList.remove('running');
 
   if (animationFrameId) {
@@ -576,10 +674,49 @@ function pauseSimulation() {
   pauseStartTime = performance.now();
 }
 
-// Reset simulation
+// Reset simulation (clear state but don't generate new random values yet)
 function resetSimulation() {
   pauseSimulation();
-  initializeSimulation();
+
+  // Clear previous state
+  if (tensorVariables.size > 0) {
+    tensorVariables.forEach(v => v.dispose());
+    tensorVariables.clear();
+  }
+  if (targetTensor) {
+    targetTensor.dispose();
+    targetTensor = null;
+  }
+
+  // Reset history
+  lossHistory = [];
+  tensorSVHistory = {};
+  legSVHistory = {};
+  currentLegSVCounts = {};
+  currentLegSVs = {};
+  initialMaxSVs = {};
+  iterationCount = 0;
+
+  // Clear downsampled SV cache
+  if (window.downsampledSVCache) {
+    window.downsampledSVCache = {};
+  }
+  simulationStartTime = null;
+  pauseStartTime = null;
+  stepTimestamps = [];
+  updateLossDisplay(null);
+
+  // Clear charts
+  if (sidePanelLossChart) {
+    sidePanelLossChart.data.datasets = [];
+    sidePanelLossChart.update('none');
+  }
+  updateSidePanelSVChart(); // Update side panel chart
+
+  document.getElementById('stepsPerSec').textContent = '—';
+
+  // Redraw canvas to clear floating SV plots
+  draw();
 }
 
 // Update loss display
@@ -835,6 +972,35 @@ function setupSimulationHandlers() {
   learningRateSlider.addEventListener('input', (e) => {
     learningRate = sliderToLearningRate(parseFloat(e.target.value));
     updateLearningRateDisplay(learningRate);
+  });
+
+  // Manual seeds controls
+  const manualSeedsCheckbox = document.getElementById('manualSeedsCheckbox');
+  const seedInputs = document.getElementById('seedInputs');
+  const initSeedInput = document.getElementById('initSeed');
+  const targetSeedInput = document.getElementById('targetSeed');
+
+  manualSeedsCheckbox.addEventListener('change', (e) => {
+    manualSeeds = e.target.checked;
+    seedInputs.style.display = manualSeeds ? 'flex' : 'none';
+    // Trigger MathJax to render the T* label
+    if (manualSeeds && window.MathJax) {
+      MathJax.typesetPromise([seedInputs]).catch((err) => console.log('MathJax error:', err));
+    }
+  });
+
+  initSeedInput.addEventListener('input', (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= 0) {
+      initSeed = value;
+    }
+  });
+
+  targetSeedInput.addEventListener('input', (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= 0) {
+      targetSeed = value;
+    }
   });
 
   // Initialize displays

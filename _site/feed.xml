@@ -3,11 +3,126 @@
   <channel>
     <title>Jamie Simon</title>
     <description></description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 25 Jan 2026 17:49:55 -0800</pubDate>
-    <lastBuildDate>Sun, 25 Jan 2026 17:49:55 -0800</lastBuildDate>
+    <link>http://james-simon.github.io/</link>
+    <atom:link href="http://james-simon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 04 Feb 2026 23:07:02 -0800</pubDate>
+    <lastBuildDate>Wed, 04 Feb 2026 23:07:02 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Predicting kernel spectra powerlaw exponents from raw data statistics</title>
+        <description>&lt;p&gt;&lt;em&gt;This is a technical note on kernel theory. Venture in at your own risk!&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;My collaborators and I recently put out a paper called &lt;a href=&quot;https://arxiv.org/abs/2510.14878&quot;&gt;Predicting kernel regression learning curves from raw data statistics&lt;/a&gt; in which, among other things, we show how to map from the data PCA stats to the eigenfunctions and eigenvalues of a broad swath of rotation-invariant kernels. It’s a surprising result, both mathematically and empirically: the formulas we find are very simple, and they predict very well for both synthetic Gaussian datasets &lt;em&gt;and image datasets like CIFAR-10.&lt;/em&gt; This has given me real hope that we can deal with the problem of data in the fundamental science of deep learning.&lt;/p&gt;
+
+&lt;p&gt;At about the same time, Arie Wortsman and Bruno Loureiro &lt;a href=&quot;https://arxiv.org/abs/2510.04780&quot;&gt;published a paper&lt;/a&gt; that takes up a very similar topic! They also ask about the mapping from data covariance stats to kernel eigenvalues, and where we discuss the same questions, we find agreeing answers. They’re particularly interested in powerlaws (while we’re more spectrum-agnostic), and they’d like to know: if the data covariance eigenvalues decay as a powerlaw with exponent $\alpha$, with what exponent do the &lt;em&gt;kernel&lt;/em&gt; eigenvalues decay?&lt;/p&gt;
+
+&lt;p&gt;This is a great question, well-motivated by recent developments in practical machine learning and attempts to explain them. The data decay exponent is a more fundamental object, but the kernel eigenvalue decay exponent is the more practically important one. It’s a good question to ask how they’re linked. In this blogpost, I’ll review their answer, propose an alternative perspective with some experiments to back it up, and discuss what I see as important open questions.&lt;/p&gt;
+
+&lt;h3 id=&quot;review-the-answer-of-wortsman-and-loureiro-2025&quot;&gt;Review: the answer of Wortsman and Loureiro (2025)&lt;/h3&gt;
+
+&lt;p&gt;Let the data be sampled $\mathbf{x} \sim \mathcal{N}(\mathbf{0}, \boldsymbol{\Gamma})$ with $\boldsymbol{\Gamma} = \mathrm{diag}(\gamma_1, \ldots, \gamma_d)$. Let the data covariance eigenvalues be $\gamma_i = i^{-a}$ with exponent $a &amp;gt; 1$. (We could add a constant of proportionality — that is, $\gamma_i = \gamma_0 i^{-\alpha}$ — but this only changes the results trivially, so I’ll assume $\gamma_0 = 1$ to keep things simple.) The data dimension $d$ will be very large; for the purposes of this blogpost, we will let it be infinite.&lt;/p&gt;
+
+&lt;p&gt;Wortsman and Loureiro find that the kernel eigenvalues asymptotically decay as $\lambda_j \sim j^{-a}$ — that is, the kernel spectral decay exponent is the same as the data covariance decay exponent. They give nice formal bounds that imply this, and they also give a beautiful characterization of the spectrum when $d$ is finite and $a &amp;lt; 1$, which is very mathematically satisfying (if less practically relevant, since in with real data one almost always finds that $a&amp;gt; 1$).&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;turning-to-experiment-can-we-see-this&quot;&gt;Turning to experiment: can we see this?&lt;/h3&gt;
+
+&lt;p&gt;I find that, when studying machine learning, it’s always a good idea to go check your results against experiment. So what happens if we try this prediction with a real kernel function? To try this, I drew $n = 10^4$ samples of Gaussian data with eigenvalues $\gamma_i \propto i^{-a}$ with exponent $a= 1.5$ and unit trace $\sum_i \gamma_i = 1$, with data dimension $d = 10^4$. I then computed the spectrum of a Gaussian kernel $K_\sigma(\mathbf{x}, \mathbf{x}’) = e^{-\frac{1}{2 \sigma^2} |\mathbf{x} - \mathbf{x}’|^2}$ with different kernel widths $\sigma$ over this dataset and plotted the spectrum. Here’s what I found:&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;img src=&quot;/img/raw_eigenvalue_plots.png&quot; alt=&quot;Kernel eigenvalue spectra for different sigma values&quot; style=&quot;width: 90%;&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A few observations. First, the spectrum is… kind of a nice powerlaw in the middle? But the transient effects at the head and finite-size effects at the tail make it annoying to tell; we’ll have to deal with these. Second, even if you squint, it’s hard to argue that the decays all look like powerlaws with $a = 1.5$. Third, the decay rates actually seem to &lt;em&gt;change:&lt;/em&gt; the plots with larger $\sigma$ seem to have a faster decay and a larger exponent. This wasn’t in the prediction of Wortsman and Loureiro (2025). What gives, and can we predict the decay rates we actually see here?&lt;/p&gt;
+
+&lt;h3 id=&quot;the-hea-a-nonasymptotic-approach&quot;&gt;The HEA: a nonasymptotic approach&lt;/h3&gt;
+
+&lt;p&gt;I’m going to argue that, yeah, their answer that “the spectral decay rate is always $a$” is probably right &lt;em&gt;asymptotically,&lt;/em&gt; but you’ll often have to look prohobitively far into the spectrum before you approach that decay rate. I’ll then introduce a tool for getting the &lt;em&gt;nonasymptotic&lt;/em&gt; eigenvalue decay curve.&lt;/p&gt;
+
+&lt;p&gt;The main technology we’ll use to do this is the &lt;em&gt;Hermite eigenstructure ansatz (HEA)&lt;/em&gt; from &lt;a href=&quot;https://arxiv.org/abs/2510.14878&quot;&gt;our paper&lt;/a&gt;. I won’t go through it in detail here; see the paper or &lt;a href=&quot;https://joeyturn.github.io/projects/hea/&quot;&gt;Joey’s blogpost&lt;/a&gt;. The main point we’ll use here is that the HEA gives nice, explicit formulae for the kernel eigenvalues in terms of some kernel-derived coefficients (which are basically Taylor series coefficients). For the Gaussian kernel with width $\sigma$, we have $c_\ell = e^{-\frac{1}{\sigma^2}} \cdot \sigma^{-2 \ell}$. Then&lt;/p&gt;
+
+\[\left\{
+\lambda_j
+\quad
+\text{for all }
+\quad
+j \in \mathbb{N}
+\right\}
+=
+\left\{
+c_{|\boldsymbol{\alpha}|}
+\cdot
+\prod_i \gamma_i^{\alpha_i}
+\quad
+\text{for all }
+\quad
+\boldsymbol{\alpha} \in \mathbb{N}_0^d \right\}.
+\tag{HEA}\]
+
+&lt;p&gt;In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won’t explain why it’s true here, but there is a pretty satisfying derivation we give in our paper.&lt;/p&gt;
+
+&lt;p&gt;The HEA isn’t exact, and it isn’t perfect, but in our paper, we show that it’s empirically very accurate in basically every case we hoped it would be, including Gaussian-data cases like the one we’re studying here. Let’s check: I’ll add the theoretical spectrum predicted by simple enumeration of the HEA eigenvalues to the plots.&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;img src=&quot;/img/eigenvalue_plots_with_hea_vals.png&quot; alt=&quot;Comparison of experimental vs HEA-predicted spectra&quot; style=&quot;width: 90%;&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Pretty good! It’s not perfect, but it’s pretty close, and the discrepancy in the tails is probably due to finite-size effects in the experiment. I trust the HEA more there, and the HEA seems to show a fairly nice powerlaw that spans several decades! It looks reasonably like the eigenvalues actually follow a powerlaw with a &lt;em&gt;different&lt;/em&gt; slope $a’ \neq a$. I didn’t draw those lines because I wasn’t totally sold, but I’m close to buying it.&lt;/p&gt;
+
+&lt;p&gt;To proceed, let’s just assume the HEA gives us the exact spectrum and ask what that implies.&lt;/p&gt;
+
+&lt;h3 id=&quot;from-the-hea-to-spectral-decay&quot;&gt;From the HEA to spectral decay?&lt;/h3&gt;
+
+&lt;p&gt;Now that we just have a closed-form construction for the kernel spectrum, all that remains is to look at its decay w.r.t. index. The right-hand side of the HEA is a sum over multi-indices —- it naturally takes the shape of a $d$-dimensional array —- so the challenge is just flattening this set down to a one-dimensional sorted list.&lt;/p&gt;
+
+&lt;p&gt;Treated as a discrete math problem, this is difficult. I’m a physicist, though, so when I see a problem like this, I’ll first try a continuum approximation to the sum and see if that works.&lt;/p&gt;
+
+&lt;p&gt;We want a function for $\lambda(j)$, the eigenvalue at index $j$. It turns out it’s easier to go after $j(\lambda) = \#[\textrm{eigenvalues } \ge \lambda]$ and then invert it. To get $j(\lambda)$, a decent idea is to do a Laplace’s method “saddle point” analysis: most of the total number of eigenvalues less than $\lambda$ will occur at or near a particular eigenvalue order $\ell_*$, and Taylor-expanding the multiplicity locally around $\ell_*$ turns out to be a useful idea.&lt;/p&gt;
+
+&lt;p&gt;It turns out that ChatGPT can just do this whole calculation if you throw it the problem setup. After some minutes of thinking, it reports that:&lt;/p&gt;
+
+\[\lambda(j)\ \propto \ f(j; \sigma, a) \equiv j^{-a}\;\exp\!\Big(2a\,\sqrt{r\,\log j}\Big)\;(\log j)^{-\,\frac{3a}{4}},\]
+
+&lt;p&gt;where $r = \Big(\sigma^{-2}\gamma_1\Big)^{1/a}$. So does this work? Let’s add it to the plot:&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;img src=&quot;/img/eigenvalue_plots_with_hea_and_saddle_pt_theory.png&quot; alt=&quot;Adding ChatGPT's prediction to the plots&quot; style=&quot;width: 90%;&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Not really. I’m not sure why. Even after adding more terms (i.e. considering a higher-order expansion around the saddle point), it doesn’t work. It’s possible that GPT’s calculation was just wrong; I haven’t checked in detail (and that’s a first thing to do were I to take up this problem seriously). It’s better than just assuming a powerlaw with exponent $a$, though.&lt;/p&gt;
+
+&lt;p&gt;Let’s ignore the discrepancy and study the function $f(j; \sigma, a)$ anyways. A first observation is that it actually &lt;em&gt;does&lt;/em&gt; asymptotically decay like $j^{-a}$. A second observation, though, is that it can take a &lt;em&gt;really, really long time to get there.&lt;/em&gt; Here’s a plot of the slope on a log-log plot:&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;img src=&quot;/img/log_log_slope_plot.png&quot; alt=&quot;Slope on a log-log plot&quot; style=&quot;width: 40%;&quot; /&gt;
+&lt;p style=&quot;font-size: 0.9em; margin-top: 0.5em;&quot;&gt;Slope on a log-log plot of $\lambda(j) = f(j; \sigma, a)$ with $a = 1.5$. Note that it takes an extremely long time to converge to the asymptotic slope of $-a = -1.5$!&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;When $\sigma$ isn’t particularly big, sometimes it takes up to $j \sim 10^{100}$ to actually converge to a powerlaw slope of $a$. Perils of asymptotic analysis! Really makes me suspect that all the power laws we see in machine learning are actually just locally powerlaws, and over enough orders of magnitude, they’ll change.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-now&quot;&gt;What now?&lt;/h3&gt;
+
+&lt;p&gt;I’d say the big open question here is: given that the HEA eigenvalues look pretty good, what analysis can you do on top of them? It’s probably not the right idea to jump all the way to the asymptotic decay rate. Instead, it’ll probably turn out that the decay rate is roughly constant for the first several decades (say, from $10^1$ to $10^6$), and &lt;em&gt;that’s&lt;/em&gt; the more interesting value to predict, since it’s the one we’ll see in experiments.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;The second half of Arie and Bruno’s paper is a treatment of how the data spectrum drives generalization in KRR, which is one step beyond the kernel spectrum! I’m just not discussing it because I’m focused on the powerlaw spectrum question here. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 28 Jan 2026 23:00:00 -0800</pubDate>
+        <link>http://james-simon.github.io/blog/kernel-spectral-decay-powerlaw/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/kernel-spectral-decay-powerlaw/</guid>
+        
+        
+        <category>kernels</category>
+        
+      </item>
     
       <item>
         <title>Why I am not an experimentalist; or, making faces with photolithography</title>
@@ -22,9 +137,9 @@ I was working in the lab of Per Delsing doing nanofabrication in my gap year bef
   &lt;img src=&quot;/img/lithographocartoon.png&quot; alt=&quot;Lithography process cartoon&quot; style=&quot;width: 70%;&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;With this technique and variations on it, all modern computer chips are manufactured. My job that fateful summer was to use this technique to design &lt;a href=&quot;https://en.wikipedia.org/wiki/Josephson_effect&quot;&gt;quantum inductors&lt;/a&gt;, and I was rapidly learning that I was not cut out for labwork. Every step in the cartoon above is actually ten different steps involving mixing toxic chemicals, heating things, putting things into big scary machines, and using inscrutable computer interfaces with a hundred settings. Oh, and to make matters worse, you have to do all this while sweating inside a head-to-toe cleanroom lab suit. My mentor, Anita, would demonstrate something with practiced care and deliberation, she’d walk away, and I would promptly forget everything except maybe what colors were supposed to be created. I cannot overstate the extent of my incompetence: on several occasions, I left a support piece of plastic called a “spider” on a hot plate and literally melted it to the piece of silicon I was working with. This continued until Anita told me to stop using spiders.&lt;/p&gt;
+&lt;p&gt;With this technique and variations on it, all modern computer chips are manufactured. My job that fateful summer was to use this technique to design &lt;a href=&quot;https://en.wikipedia.org/wiki/Josephson_effect&quot;&gt;quantum inductors&lt;/a&gt;, and I was rapidly learning that I was not cut out for labwork. Every step in the cartoon above is actually ten different steps involving mixing toxic chemicals, heating things, putting things into big scary machines, and using inscrutable computer interfaces with a hundred settings. Oh, and to make matters worse, you have to do all this while sweating inside a head-to-toe cleanroom lab suit. My mentor, Anita, would demonstrate something with practiced care and deliberation, she’d walk away, and I would promptly forget everything except maybe what colors were supposed to be created. I cannot overstate the extent of my incompetence: on several occasions, I left a piece of support plastic called a “spider” on a hot plate and literally melted it to the piece of silicon I was working with. This continued until Anita told me to stop using spiders.&lt;/p&gt;
 
-&lt;p&gt;Even though I was close to useless in the lab, it turned out I was pretty good at coming up with things for other people to try. At the start of my time there, I learned that quantum inductors are usually made with three shoot-down-a-layer-of-metal steps to make three different parts of the circuit. You can do the first two in one machine cycle, but for annoying geometric reasons, everyone did the third step in its own cycle, which could take an extra day or two. I found a way to do them all in one machine cycle by shooting the metal down from three different angles. Thanks to the hard work of the rest of the lab to show this idea actually worked, &lt;a href=&quot;https://pubs.aip.org/aip/apl/article/118/6/064002/40060&quot;&gt;this is now among my most-cited publications&lt;/a&gt;. The finished quantum inductors looked like this:&lt;/p&gt;
+&lt;p&gt;Even though I was close to useless in the lab, it turned out I was pretty good at coming up with things for other people to try. At the start of my time there, I learned that quantum inductors are usually made with three shoot-down-a-layer-of-metal steps to make three different parts of the circuit. You can do the first two in one machine cycle, but for annoying geometric reasons, everyone did the third step in its own cycle, which could take an extra day or two. I found a way to do them all in one machine cycle by shooting the metal down from three different angles. Thanks to the hard work of my collaborators to show this idea actually worked — figuring out how to fabricate the design, characterize it, and test it in quantum circuits — &lt;a href=&quot;https://pubs.aip.org/aip/apl/article/118/6/064002/40060&quot;&gt;this is now among my most-cited publications&lt;/a&gt;. The finished quantum inductors looked like this:&lt;/p&gt;
 
 &lt;div style=&quot;text-align: center; margin: 2em 0;&quot;&gt;
   &lt;img src=&quot;/img/josephson_junction.png&quot; alt=&quot;Josephson junction&quot; style=&quot;width: 30%;&quot; /&gt;
@@ -61,8 +176,8 @@ So I figured out how scripting worked in the design software, and I wrote some P
 &lt;p&gt;In August 2019, I left Sweden and started my PhD at Berkeley. I switched gears away from experiment, and then away from quantum physics altogether, and joined a lab studying, among other things, the fundamental theory of deep learning, and that got me to where I am today. But now, as I use a computer, and run things with GPUs, and stand by as tech giants fill warehouses with upwards of millions of GPUs and $10^{17}$ transistors total, it’s illuminating and remarkable and a deeply privileged feeling to have gotten to see how computer chips are made.&lt;/p&gt;
 </description>
         <pubDate>Wed, 21 Jan 2026 23:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/why-i-am-not-an-experimentalist/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/why-i-am-not-an-experimentalist/</guid>
+        <link>http://james-simon.github.io/blog/why-i-am-not-an-experimentalist/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/why-i-am-not-an-experimentalist/</guid>
         
         
         <category>physics</category>
@@ -90,8 +205,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament, my uncle Kevin Simon for help with the “bugle” solo, and of course Tom Zimmer, to whom I have promised royalties.&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 18 Jan 2026 04:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/ballad-of-the-crane-breeder/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/ballad-of-the-crane-breeder/</guid>
+        <link>http://james-simon.github.io/blog/ballad-of-the-crane-breeder/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/ballad-of-the-crane-breeder/</guid>
         
         
         <category>music</category>
@@ -110,8 +225,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;Even though it’s really short, this was a lot of fun to work on. It was really satisfying to see how adding sevenths to chords made the progression feel jazzier, and how throwing in unusual chords like major thirds and sixths made it feel more tangy and colorful, and how bringing it back to the tonic at the end makes it feel like you’ve wandered afield and come back home. I really had no feel for chord progressions before starting to teach myself music theory some two years ago, but playing around with different ideas and listening very closely to the results in this and known songs and a lot of improvisation has really helped. It’s wonderful to see that there are deeper ideas in music besides the notes, behind the notes, and the structure there is really magical to see and feel.&lt;/p&gt;
 </description>
         <pubDate>Sun, 11 Jan 2026 02:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/reharmonizing-ode-to-joy/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/reharmonizing-ode-to-joy/</guid>
+        <link>http://james-simon.github.io/blog/reharmonizing-ode-to-joy/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/reharmonizing-ode-to-joy/</guid>
         
         
         <category>music</category>
@@ -132,8 +247,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are singing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;re&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mi&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fa&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sol&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;la&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ti&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 11 Jan 2026 01:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/wedding-march-muppets/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/wedding-march-muppets/</guid>
+        <link>http://james-simon.github.io/blog/wedding-march-muppets/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/wedding-march-muppets/</guid>
         
         
         <category>music</category>
@@ -150,8 +265,8 @@ and put together in new configurations aacdeeekllmmrssvyy&lt;br /&gt;
 in an ever-changing dance of parts deeeikllmmoorsstttuuwyy&lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Nov 2025 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/on-novelty/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-novelty/</guid>
+        <link>http://james-simon.github.io/blog/on-novelty/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/on-novelty/</guid>
         
         
         <category>poetry</category>
@@ -281,8 +396,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 20 Jul 2025 02:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/on-the-scientific-method/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-the-scientific-method/</guid>
+        <link>http://james-simon.github.io/blog/on-the-scientific-method/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/on-the-scientific-method/</guid>
         
         
         <category>essays</category>
@@ -355,8 +470,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;p&gt;That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.&lt;/p&gt;
 </description>
         <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
+        <link>http://james-simon.github.io/blog/backsolving-classical-bounds/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/backsolving-classical-bounds/</guid>
         
         
         <category>kernels</category>
@@ -492,8 +607,8 @@ We also of course require that the measure we find from the above is normalized 
 &lt;/div&gt;
 </description>
         <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
+        <link>http://james-simon.github.io/blog/one-kernel-many-eigensystems/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/one-kernel-many-eigensystems/</guid>
         
         
         <category>kernels</category>
@@ -664,184 +779,11 @@ where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
 &lt;/div&gt;
 </description>
         <pubDate>Thu, 03 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/the-expressivity-of-shallow-relu-nets/</guid>
+        <link>http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</link>
+        <guid isPermaLink="true">http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</guid>
         
         
         <category>dl-science</category>
-        
-      </item>
-    
-      <item>
-        <title>The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure</title>
-        <description>&lt;p&gt;&lt;em&gt;This blogpost composed in collaboration with &lt;a href=&quot;https://yuxi-liu-wired.github.io/&quot;&gt;Yuxi Liu&lt;/a&gt;, who did much of the analytical legwork.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;A &lt;a href=&quot;https://arxiv.org/abs/2002.02561&quot;&gt;large&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2006.09796&quot;&gt;number&lt;/a&gt; of &lt;a href=&quot;https://arxiv.org/abs/2110.03922&quot;&gt;recent&lt;/a&gt; &lt;a href=&quot;https://arxiv.org/abs/2203.06176&quot;&gt;works&lt;/a&gt; have converged on the conclusion that the behavior and performance of kernel methods (and kernel regression in particular) can be simply described in terms of the eigenstructure of the task with respect to the kernel. To restate: &lt;em&gt;we can understand kernel regression to the degree we understand the eigenstructure of the task.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;It is generally not too hard to diagonalize the kernel and obtain the task eigenstructure numerically, and this has lead to a great deal of insight into the learning behavior of kernel regression. However, it’s generally quite difficult to find task eigenstructure analytically, even in simple toy cases, as it usually requires computing some complicated integrals. As every physicist knows, there are major advantages to analytical solutions: insight and intuition are often more easily extracted from symbolic solutions, and by taking limits a single analytical solution can give a system’s phenomenology in several different regimes. It thus behooves us to collect analytically solvable cases and sit with them to extract generalizing intuition. &lt;strong&gt;To that end, in this blogpost, we will give the analytical eigenstructure for the Gaussian kernel on a 1D Gaussian distribution.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;what-exactly-diagonalizable-cases-are-known&quot;&gt;What exactly diagonalizable cases are known?&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;The first cases one turns to when one wants an exact analytical eigensystem are settings where the kernel and the domain share a &lt;em&gt;symmetry.&lt;/em&gt;
-For example, with a translation-invariant kernel on a translation-invariant domain (e.g. the $d$-torus) or a rotation-invariant kernel on a rotation-invariant-domain (e.g. the $d$-sphere), the eigenfunctions are simply the harmonic functions on the domain (plane waves or spherical harmonics in the two named cases), and the eigenvalues are given by the Fourier transform of the kernel.
-Some high-dimensional problems resemble these cases when the number of dimensions goes to infinity (e.g. &lt;a href=&quot;https://arxiv.org/abs/1908.05355&quot;&gt;Mei + Montanari (2019)&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;Solvable finite-dimensional cases without exact symmetry are rare.
-It seems worth considering such cases, since real data rarely has such symmetry, and the eigenfunctions are only nontrivial if there’s no exact symmetry.
-&lt;a href=&quot;https://citeseerx.ist.psu.edu/document?repid=rep1&amp;amp;type=pdf&amp;amp;doi=b2d5fff7600abe81da7b1e5af749ed9511867aed&quot;&gt;Zhu et al. (1997)&lt;/a&gt; treat a very similar case to the one we develop here.
-I don’t really know any other examples of exactly solvable cases.
-If you know any more, let me know.
-It seems worth compiling a list!&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;problem-setup-gaussian-kernel-on-a-1d-gaussian-distribution&quot;&gt;Problem setup: Gaussian kernel on a 1D Gaussian distribution&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;Consider a scalar normal random variable $x \sim \mathcal{N}(0,\sigma^2)$, where $\sigma^2$ is the variance of the distribution. Consider learning on this distribution with a &lt;em&gt;Gaussian kernel&lt;/em&gt;&lt;/p&gt;
-
-\[K(x,y)=e^{-\frac{(x-y)^2}{2 w^2}}\]
-
-&lt;p&gt;where $w$ is the width of the kernel. We seek an &lt;em&gt;eigendecomposition&lt;/em&gt;&lt;/p&gt;
-
-\[K(x,y) = \sum_k \lambda_k \, \phi_k(x) \, \phi_k(y),\]
-
-&lt;p&gt;where $\lbrace \lambda_k \rbrace$ are nonnegative eigenvalues and $\lbrace \phi_k \rbrace$ are eigenfunctions satisfying the orthonormality relation&lt;/p&gt;
-
-\[\mathbb{E}_x[\phi_k(x) \phi_\ell(x)] = \delta_{k\ell}.\]
-
-&lt;p&gt;We refer to $\lbrace \lambda_k \rbrace$ and $\lbrace \phi_k \rbrace$ together as the kernel &lt;em&gt;eigensystem&lt;/em&gt; or &lt;em&gt;eigenstructure.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;main-result-analytical-form-of-the-eigenstructure&quot;&gt;Main result: analytical form of the eigenstructure&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;hermite-polynomials&quot;&gt;Hermite polynomials&lt;/h3&gt;
-
-&lt;p&gt;Let $h_k(x) \equiv \frac{1}{\sqrt{k!}} \text{He}_k(x)$ denote the (rescaled) &lt;a href=&quot;https://en.wikipedia.org/wiki/Hermite_polynomials&quot;&gt;probabilist’s Hermite polynomials&lt;/a&gt;. The normalization prefactor $\frac{1}{\sqrt{k!}}$ is chosen so that $\mathbb{E}_{x \sim \mathcal{N}(0,1)}[h_k^2(x)] = 1$.&lt;/p&gt;
-
-&lt;h3 id=&quot;the-eigenstructure-in-closed-form&quot;&gt;The eigenstructure in closed form&lt;/h3&gt;
-
-&lt;div style=&quot;border: 2px solid black; padding: 15px; width: 100%; text-align: left;&quot;&gt;
-
-The eigenfunctions and eigenvalues are given by:
-
-$$
-\begin{aligned}
-    \phi_k(x) &amp;amp;= c \cdot e^{-\frac{x^2}{2 \alpha^2}} \cdot h_k\!\left(\frac{x}{\beta}\right) \qquad &amp;amp;&amp;amp;(1) \\[8pt]
-    \lambda_k &amp;amp;= (1 - r)\,r^k \qquad &amp;amp;&amp;amp;(2)
-\end{aligned}
-$$
-
-for $k \ge 0$, where the scalars $\alpha, \beta, c, r &amp;gt; 0$ are given by:
-
-$$
-\begin{aligned}
-    \alpha &amp;amp;= \frac{1}{\sqrt{2}}\Bigl(w^2 + w\,\sqrt{w^2 + 4\,\sigma^2}\Bigr)^{\!1/2}, \\[8pt]
-    \beta &amp;amp;= \frac{\sigma \,\sqrt{w}}{\bigl(w^2 + 4\,\sigma^2\bigr)^{1/4}}, \\[8pt]
-    c &amp;amp;= \Bigl[1 + \frac{4\,\sigma^2}{w^2}\Bigr]^{\!1/8}, \\[8pt]
-    r &amp;amp;= \frac{\sigma^2}{\sigma^2 + \alpha^2}.
-\end{aligned}
-$$
-
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;Note that the eigenfunctions resemble the eigenfunctions of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator&quot;&gt;quantum harmonic oscillator&lt;/a&gt; but  with different scale factors $\alpha \neq\beta$ on the exponential and Hermite components. The eigenvalues are a geometric series with ratio $r &amp;lt; 1$.&lt;/p&gt;
-
-&lt;h3 id=&quot;obtaining-the-answer&quot;&gt;Obtaining the answer&lt;/h3&gt;
-
-&lt;p&gt;We obtained these eigenfunctions treating Equations 1,2 as an ansatz and solving for $\alpha, \beta, c, r$. This is doable with &lt;a href=&quot;https://en.m.wikipedia.org/wiki/Mehler_kernel&quot;&gt;Mehler’s formula&lt;/a&gt; and algebraic manipulation. &lt;a href=&quot;/assets/gaussian_kernel_eigendecomp_derivation.pdf&quot;&gt;Here&lt;/a&gt; is a step-by-step derivation.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;visualizing-the-eigenstructure&quot;&gt;Visualizing the eigenstructure&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can plot the eigenfunctions and eigenvalues and compare analytical formulae with numerics to make sure we’re right. &lt;a href=&quot;https://colab.research.google.com/drive/1Vz0RZuMxrgGGz9aq9e4l4PH8p9jIIBXG?usp=sharing&quot;&gt;Here’s&lt;/a&gt; a colab notebook that does so, and here’s the resulting plot:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/analytical_gaussian_eigendecompositions/1d_eigenfn_viz.png&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Each row shows the eigenstructure for a different ratio $\frac{w^2}{\sigma^2}$. The leftmost plot in each row is a simple visualization of the Gaussian PDF (which here always has $\sigma^2 = 1$) and the Gaussian kernel. The middle plot in each row shows the first five kernel eigenfunctions with theoretical curves overlaid for comparison. The rightmost plot in each row shows the kernel eigenvalues. We find that the experimental eigenvalues indeed follow the predicted geometric descent (with small deflections due to numerical error).&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;eigenstructure-in-two-limits&quot;&gt;Eigenstructure in two limits&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;Looking at the top and bottow rows in the above figure, we get the feeling it might be informative to examine the $\sigma^2 \gg w^2$ and $\sigma^2 \ll w^2$ limits of our analytical expressions. Here’s what you get:&lt;/p&gt;
-
-&lt;h3 id=&quot;narrow-kernel-sigma2-gg-w2&quot;&gt;Narrow kernel: $\sigma^2 \gg w^2$&lt;/h3&gt;
-
-\[\begin{aligned}
-    \alpha &amp;amp;\approx \sqrt{\sigma w}, \\[6pt]
-    \beta &amp;amp;\approx \sqrt{\frac{\sigma w}{2}}, \\[6pt]
-    c &amp;amp;\approx \left( \frac{2 \sigma}{w} \right)^{1/4}, \\[6pt]
-    r &amp;amp;\approx 1.
-\end{aligned}\]
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;In this regime, the scale factors $\alpha, \beta$ are the same up to a factor of $\sqrt{2}$, and the resulting eigenfunctions $\phi_k$ are exactly the eigenfunctions of the quantum harmonic oscillator (note that we’re using probabilist’s instead of physicist’s Hermite polynomials). This makes sense, as we’d expect the eigenfunctions of a sufficiently narrow Gaussian kernel to converge to the eigenfunctions of the Laplacian. The ratio $r = \frac{\lambda_{k+1}}{\lambda_k}$ approaches $1$, which tells us that the top eigenfunctions have practically identical eigenvalues.&lt;/p&gt;
-
-&lt;h3 id=&quot;wide-kernel-sigma2-ll-w2&quot;&gt;Wide kernel: $\sigma^2 \ll w^2$&lt;/h3&gt;
-
-\[\begin{aligned}
-    \alpha &amp;amp;\approx w, \\[6pt]
-    \beta &amp;amp;\approx \sigma, \\[6pt]
-    c &amp;amp;\approx 1, \\[6pt]
-    r &amp;amp;\approx \frac{\sigma^2}{w^2}.
-\end{aligned}\]
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;This is the more interesting regime. In this case, $\alpha$ and $\beta$ decouple, and in fact $\alpha \approx w \gg \sigma$ is so wide that the exponential factor in the functional form of $\phi_k(x)$ becomes irrelevant, and we’re left with just a Hermite polynomial. You can see this in the bottom row of the figure above: the eigenfunctions start to just look like polynomials of increasing order. The eigenvalue ratio $r \approx \frac{\sigma^2}{w^2}$ approaches &lt;em&gt;the ratio of the distribution variance to the kernel variance.&lt;/em&gt; These two facts are the main things I wanted to get out of this calculation.&lt;/p&gt;
-
-&lt;h3 id=&quot;how-hermite-are-the-eigenfunctions-for-varying-values-of-sigma2--w2&quot;&gt;How “Hermite” are the eigenfunctions for varying values of $\sigma^2 / w^2$?&lt;/h3&gt;
-
-&lt;p&gt;Let us perform a numerical experiment: we shall compute the true kernel eigenfunctions ${\phi_k}$, compute the Hermite polynomials ${h_k}$, and for each $k$, find the cosine similarity 
-\(\frac{\langle \phi_k, h_k \rangle}{\| h_k \|}\)
-where the inner product 
-\(\langle f, g \rangle = \mathbb{E}_x[f(x) g(x)]\)
-is the $L^2$ inner product w.r.t. the measure.&lt;/p&gt;
-
-&lt;p&gt;The results are plotted below:&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/analytical_gaussian_eigendecompositions/eigenfn_hermite_similarity.png&quot; width=&quot;50%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;A few observations:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;at larger $k$, we require smaller $\gamma \equiv \frac{\sigma^2}{w^2}$ to approach Hermiteness, and&lt;/li&gt;
-  &lt;li&gt;$\gamma &amp;lt; 0.1$ is generally small enough, at least up to $k = 3$ or $4$.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;implications-and-next-steps&quot;&gt;Implications and next steps&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;The main takeaway here is that so long as $\sigma^2$ is sufficiently smaller than $w^2$ — &lt;em&gt;and we don’t care exactly how small&lt;/em&gt; — the kernel’s “eigenfeatures” are simply the “Hermite features” of the data. In this regime, the kernel eigenvalues are simply powers of $\frac{\sigma^2}{w^2}$. Nice!&lt;/p&gt;
-
-&lt;p&gt;What’s next? It’s likely that a more general class of kernels (including in higher dimension) can be solved using these techniques, and if that’s the case, it’s worth compiling these exactly solvable cases and extracting what intuition we can. Even with this 1D Gaussian case, though, there are probably ways to take this result and apply its intuition to kernel learning problems on (potentially realistic) high-dimensional data.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 18 Mar 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/gaussian-kernel-1d-eigendecomp/</guid>
-        
-        
-        <category>kernels</category>
         
       </item>
     

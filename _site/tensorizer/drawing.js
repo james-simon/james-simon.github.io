@@ -2,6 +2,9 @@
 // DRAWING FUNCTIONS
 // ============================================================================
 
+// Cache for downsampled SV history to avoid recomputing every frame
+window.downsampledSVCache = {}; // legId -> { length: originalLength, downsampled: array }
+
 // Main draw function
 function draw() {
   ctx.save();
@@ -214,6 +217,17 @@ function draw() {
     const occupiedRegions = [];
     floatingPlotBounds = []; // Reset plot bounds for click detection
 
+    // Add tensor positions to occupied regions so plots avoid them
+    tensors.forEach(tensor => {
+      const halfSize = TENSOR_SIZE / 2;
+      occupiedRegions.push({
+        x: tensor.x - halfSize,
+        y: tensor.y - halfSize,
+        width: TENSOR_SIZE,
+        height: TENSOR_SIZE
+      });
+    });
+
     // Cache for plot positions (legId -> {x, y})
     if (!window.plotPositionCache) {
       window.plotPositionCache = {};
@@ -358,7 +372,9 @@ function draw() {
       occupiedRegions.push({ x: plotX, y: plotY, width: plotWidth, height: plotHeight });
 
       // Draw the plot
-      const history = hasHistory ? legSVHistory[leg.id] : [];
+      const fullHistory = hasHistory ? legSVHistory[leg.id] : [];
+      // Downsample to max 200 points for performance
+      const history = downsampleData(fullHistory, 200);
       const numSVs = hasHistory ? history[0].svs.length : 0;
 
       // Check if this leg/plot is selected
@@ -478,6 +494,9 @@ function draw() {
 
   ctx.restore();
 
-  // Update formula display
-  updateFormulaDisplay();
+  // Only update formula display when diagram changes, not during simulation
+  // (formula doesn't change during gradient descent, only when tensors/legs change)
+  if (!simulationRunning) {
+    updateFormulaDisplay();
+  }
 }

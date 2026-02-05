@@ -70,7 +70,8 @@ function generateLogValues(minExp, maxExp) {
  */
 export const sliders = {
   tMax: new ValueSlider(
-    generateLogValues(CONFIG.sliders.tMax.minExp, CONFIG.sliders.tMax.maxExp),
+    generateLogValues(CONFIG.sliders.tMax.minExp, CONFIG.sliders.tMax.maxExp)
+      .filter(v => v <= (CONFIG.sliders.tMax.maxValue || Infinity)),
     formatScientific
   ),
 

@@ -747,6 +747,11 @@ function setupInputHandlers() {
       saveState();
     }
 
+    // Redraw to show any connections made
+    if (draggingTensor || draggingLegEnd || draggingMultiple) {
+      draw();
+    }
+
     draggingTensor = null;
     draggingLegEnd = null;
     draggingMultiple = false;

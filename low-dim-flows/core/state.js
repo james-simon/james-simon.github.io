@@ -23,6 +23,7 @@ export class AppState {
     this.tMax = CONFIG.simulation.defaultTMax;
     this.fStar = CONFIG.simulation.defaultFStar;
     this.logScale = false;
+    this.showBalanced = true;
 
     // Observer pattern
     this.listeners = [];
@@ -108,6 +109,14 @@ export class AppState {
   }
 
   /**
+   * Toggle balanced simulation visibility
+   */
+  toggleShowBalanced() {
+    this.showBalanced = !this.showBalanced;
+    this.notify();
+  }
+
+  /**
    * Reset all parameters to defaults
    */
   resetToDefaults() {
@@ -126,6 +135,7 @@ export class AppState {
     this.tMax = CONFIG.simulation.defaultTMax;
     this.fStar = CONFIG.simulation.defaultFStar;
     this.logScale = false;
+    this.showBalanced = true;
 
     this.notify();
   }
@@ -146,7 +156,8 @@ export class AppState {
       variables: this.variables,
       tMax: this.tMax,
       fStar: this.fStar,
-      logScale: this.logScale
+      logScale: this.logScale,
+      showBalanced: this.showBalanced
     };
   }
 
@@ -185,6 +196,10 @@ export class AppState {
 
     if (json.logScale !== undefined) {
       this.logScale = json.logScale;
+    }
+
+    if (json.showBalanced !== undefined) {
+      this.showBalanced = json.showBalanced;
     }
 
     // Don't notify on restore - caller should trigger update

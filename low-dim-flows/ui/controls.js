@@ -127,7 +127,7 @@ export class ControlsManager {
 
     // a0 slider (on bottom)
     const a0Row = this.createSliderRow(
-      'init:',
+      `init $a_{${index + 1}}(0)$:`,
       `a0Slider_${index}`,
       `a0Value_${index}`,
       sliders.a0,

@@ -45,6 +45,17 @@ permalink: /t-sne/
     box-shadow: 0 0 8px rgba(0,0,0,0.3);
   }
 
+  .post-point.dimmed {
+    opacity: 0.2;
+  }
+
+  .post-point.highlighted {
+    width: 34px;
+    height: 34px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    z-index: 50;
+  }
+
   /* COMMENTED OUT - labels next to dots version
   .post-label {
     position: absolute;
@@ -106,6 +117,14 @@ permalink: /t-sne/
     display: flex;
     align-items: center;
     gap: 6px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .legend-item:hover {
+    background-color: #f0f0f0;
   }
 
   .legend-color {
@@ -169,7 +188,11 @@ permalink: /t-sne/
     'art': '#a8dadc',
     'adventures': '#8b7355',
     'poetry': '#d8b4fe',
-    'society': '#fbbf24'
+    'society': '#fbbf24',
+    'music': '#9333ea',
+    'hypotheticals': '#06b6d4',
+    'tomfoolery': '#f97316',
+    'books': '#84cc16'
   };
 
   function getColorForCategory(category) {
@@ -183,6 +206,7 @@ permalink: /t-sne/
     categories.forEach(cat => {
       const item = document.createElement('div');
       item.className = 'legend-item';
+      item.dataset.category = cat;
 
       const color = document.createElement('div');
       color.className = 'legend-color';
@@ -194,6 +218,28 @@ permalink: /t-sne/
       item.appendChild(color);
       item.appendChild(label);
       legendEl.appendChild(item);
+
+      // Add hover interaction to highlight posts of this category
+      item.addEventListener('mouseenter', () => {
+        const points = container.querySelectorAll('.post-point');
+        points.forEach(point => {
+          const postIndex = parseInt(point.dataset.index);
+          const postCategory = posts[postIndex].category?.split(',')[0].trim();
+          if (postCategory === cat) {
+            point.classList.add('highlighted');
+          } else {
+            point.classList.add('dimmed');
+          }
+        });
+      });
+
+      item.addEventListener('mouseleave', () => {
+        const points = container.querySelectorAll('.post-point');
+        points.forEach(point => {
+          point.classList.remove('highlighted');
+          point.classList.remove('dimmed');
+        });
+      });
     });
   }
 

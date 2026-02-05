@@ -2,6 +2,7 @@
 <html>
 
   <head>
+  
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       TeX: {
@@ -30,6 +31,7 @@
 
 
   <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+  
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -47,8 +49,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/t-sne/">
-  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
+  <link rel="canonical" href="http://james-simon.github.io/t-sne/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
 
   <style>
     body {
@@ -3823,6 +3825,17 @@
     box-shadow: 0 0 8px rgba(0,0,0,0.3);
   }
 
+  .post-point.dimmed {
+    opacity: 0.2;
+  }
+
+  .post-point.highlighted {
+    width: 34px;
+    height: 34px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    z-index: 50;
+  }
+
   /* COMMENTED OUT - labels next to dots version
   .post-label {
     position: absolute;
@@ -3884,6 +3897,14 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .legend-item:hover {
+    background-color: #f0f0f0;
   }
 
   .legend-color {
@@ -3947,7 +3968,11 @@
     'art': '#a8dadc',
     'adventures': '#8b7355',
     'poetry': '#d8b4fe',
-    'society': '#fbbf24'
+    'society': '#fbbf24',
+    'music': '#9333ea',
+    'hypotheticals': '#06b6d4',
+    'tomfoolery': '#f97316',
+    'books': '#84cc16'
   };
 
   function getColorForCategory(category) {
@@ -3961,6 +3986,7 @@
     categories.forEach(cat => {
       const item = document.createElement('div');
       item.className = 'legend-item';
+      item.dataset.category = cat;
 
       const color = document.createElement('div');
       color.className = 'legend-color';
@@ -3972,6 +3998,28 @@
       item.appendChild(color);
       item.appendChild(label);
       legendEl.appendChild(item);
+
+      // Add hover interaction to highlight posts of this category
+      item.addEventListener('mouseenter', () => {
+        const points = container.querySelectorAll('.post-point');
+        points.forEach(point => {
+          const postIndex = parseInt(point.dataset.index);
+          const postCategory = posts[postIndex].category?.split(',')[0].trim();
+          if (postCategory === cat) {
+            point.classList.add('highlighted');
+          } else {
+            point.classList.add('dimmed');
+          }
+        });
+      });
+
+      item.addEventListener('mouseleave', () => {
+        const points = container.querySelectorAll('.post-point');
+        points.forEach(point => {
+          point.classList.remove('highlighted');
+          point.classList.remove('dimmed');
+        });
+      });
     });
   }
 

@@ -9,7 +9,6 @@ import { calculateAllTheory } from './core/theory.js';
 import { ChartManager } from './ui/charts.js';
 import { ControlsManager } from './ui/controls.js';
 import { DisplayManager } from './ui/display.js';
-import { sliders } from './utils/sliders.js';
 
 /**
  * LowDimFlowsApp: Main application controller
@@ -46,30 +45,12 @@ class LowDimFlowsApp {
     this.controls.init();
     this.attachGlobalControls();
 
-    // If state was restored, update UI to match
-    if (restored) {
-      this.updateGlobalSliderDisplays();
-    }
-
-    // Initial render
+    // Initial render (includes restored state if any)
     this.onStateChange();
 
     console.log('Low-Dimensional Flows initialized successfully');
   }
 
-  /**
-   * Update global slider displays (for reset)
-   */
-  updateGlobalSliderDisplays() {
-    const tMaxSlider = document.getElementById('tMaxSlider');
-    const tMaxValue = document.getElementById('tMaxValue');
-    const logScaleCheckbox = document.getElementById('logScaleCheckbox');
-
-    tMaxSlider.value = sliders.tMax.valueToSlider(this.state.tMax);
-    tMaxValue.innerHTML = sliders.tMax.format(this.state.tMax);
-
-    logScaleCheckbox.checked = this.state.logScale;
-  }
 
   /**
    * Handle state changes (reactive updates)
@@ -80,22 +61,34 @@ class LowDimFlowsApp {
     const a0Vec = vars.map(v => v.a0);
     const kVec = vars.map(v => v.k);
 
-    // Run simulation
+    // Run main simulation
     const solution = solveODE(a0Vec, kVec, this.state.tMax, this.state.fStar);
 
     // Calculate and display theory
     const theory = calculateAllTheory(a0Vec, kVec, this.state.fStar);
     this.display.updateTheoryValues(theory);
 
-    // Update charts (pass t_rise for vertical line)
-    this.charts.update(solution, this.state.numVariables, this.state.logScale, theory.tRise);
+    // Run effective balanced initial condition simulation
+    // a_i(0) = sqrt(k_i) * β_eff
+    let balancedSolution = null;
+    if (!isNaN(theory.betaEffective)) {
+      const a0Balanced = kVec.map(k => Math.sqrt(k) * theory.betaEffective);
+      // Run for same number of steps as main simulation
+      const numSteps = solution.times.length;
+      const dt = solution.times.length > 1 ? solution.times[1] - solution.times[0] : 0.01;
+      const tMaxBalanced = solution.times[solution.times.length - 1];
+      balancedSolution = solveODE(a0Balanced, kVec, tMaxBalanced, this.state.fStar, dt);
+    }
+
+    // Update charts (pass t_rise for vertical line and balanced solution)
+    this.charts.update(solution, this.state.numVariables, this.state.logScale, theory.tRise, balancedSolution, this.state.showBalanced);
 
     // Update loss equation
     this.display.updateLossEquation(this.state.numVariables, this.state.fStar, kVec);
   }
 
   /**
-   * Attach event listeners for global controls (tMax, logscale, reset)
+   * Attach event listeners for global controls (logscale, reset)
    */
   attachGlobalControls() {
     // Reset button
@@ -106,25 +99,6 @@ class LowDimFlowsApp {
       // Re-render controls to reset all variable sliders
       this.controls.render();
       this.controls.updateButtonStates();
-      // Update global slider displays to match reset state
-      this.updateGlobalSliderDisplays();
-    });
-
-    // tMax slider
-    const tMaxSlider = document.getElementById('tMaxSlider');
-    const tMaxValue = document.getElementById('tMaxValue');
-
-    // Initialize display
-    const initialTMax = sliders.tMax.sliderToValue(tMaxSlider.value);
-    this.state.tMax = initialTMax;
-    tMaxValue.innerHTML = sliders.tMax.format(initialTMax);
-
-    // Update on slider change
-    tMaxSlider.addEventListener('input', () => {
-      const tMax = sliders.tMax.sliderToValue(tMaxSlider.value);
-      tMaxValue.innerHTML = sliders.tMax.format(tMax);
-      this.state.setTMax(tMax);
-      this.state.save();
     });
 
     // Logscale checkbox
@@ -133,6 +107,15 @@ class LowDimFlowsApp {
 
     logScaleCheckbox.addEventListener('change', () => {
       this.state.toggleLogScale();
+      this.state.save();
+    });
+
+    // Show balanced checkbox
+    const showBalancedCheckbox = document.getElementById('showBalancedCheckbox');
+    showBalancedCheckbox.checked = this.state.showBalanced;
+
+    showBalancedCheckbox.addEventListener('change', () => {
+      this.state.toggleShowBalanced();
       this.state.save();
     });
   }
