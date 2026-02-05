@@ -1,0 +1,144 @@
+---
+layout: default
+permalink: /low-dim-flows/
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: {
+      scale: 1.0
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        console.log('MathJax is ready');
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+
+<div class="container">
+  <div class="header-container">
+    <h1 class="page-title">Low-Dimensional Flows</h1>
+    <button id="resetButton" class="reset-button">reset to defaults</button>
+  </div>
+
+  <p class="page-description">
+    Visualizing gradient flow on simple loss landscapes.
+  </p>
+
+  <hr class="description-separator">
+
+  <div class="section-label">SET SYSTEM PARAMETERS AND VIZ FLOW</div>
+
+  <br>
+
+  <!-- Loss equation with add/remove buttons -->
+  <div class="loss-equation-container">
+    <div class="loss-equation-text">
+      <span id="lossDisplay">$$\begin{align}
+\mathcal{L} &= \frac{1}{2}(f_*-a_1^{k_1})^2, \\
+&= \frac{1}{2}(1-a_1^{1})^2,
+\end{align}$$</span>
+    </div>
+    <div class="equation-buttons">
+      <button id="removeVariableButton" class="equation-button">remove variable</button>
+      <button id="addVariableButton" class="equation-button">add variable</button>
+    </div>
+  </div>
+
+  <!-- Dynamics equation -->
+  <div class="dynamics-equation">
+    $\dot{a}_i = -\frac{d \mathcal{L}}{d a_i}$.
+  </div>
+
+  <!-- Variable-specific controls -->
+  <div id="variableControls"></div>
+
+  <!-- Global controls -->
+  <div class="controls-section">
+    <div class="control-group">
+      <label for="tMaxSlider">$t_{\mathrm{max}}$:</label>
+      <input type="range" id="tMaxSlider" min="0" max="100" step="1" value="50">
+      <span id="tMaxValue">10</span>
+    </div>
+  </div>
+
+  <!-- Plots -->
+  <div class="plots-container">
+    <div class="plot-wrapper">
+      <div class="plot-box">
+        <div class="plot-content">
+          <canvas id="lossPlot" class="plot-canvas"></canvas>
+          <div class="y-axis-label y-axis-label-loss">loss $\mathcal{L}$</div>
+          <div class="x-axis-label">time $t$</div>
+        </div>
+      </div>
+    </div>
+    <div class="plot-wrapper">
+      <div class="plot-box">
+        <div class="plot-content">
+          <canvas id="aPlot" class="plot-canvas"></canvas>
+          <div class="y-axis-label y-axis-label-params">parameters $a_i$</div>
+          <div class="x-axis-label">time $t$</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logscale control -->
+  <div class="logscale-control">
+    <label>
+      <input type="checkbox" id="logScaleCheckbox">
+      logscale y-axes
+    </label>
+  </div>
+
+  <!-- Theory section -->
+  <hr class="theory-separator">
+
+  <div class="theory-section-label">THEORY COMPUTED BELOW THIS LINE</div>
+
+  <div class="theory-metrics">
+    <div class="theory-metric">
+      <div class="theory-metric-label">total order</div>
+      <div class="theory-metric-formula">$\ell = \sum_i k_i$</div>
+      <div class="theory-metric-value" id="ellValue">—</div>
+    </div>
+    <div class="theory-metric">
+      <div class="theory-metric-label">order prefactor</div>
+      <div class="theory-metric-formula">$\kappa = \prod_i k_i^{k_i/2}$</div>
+      <div class="theory-metric-value" id="kappaValue">—</div>
+    </div>
+    <div class="theory-metric">
+      <div class="theory-metric-label">mean core parameter</div>
+      <div class="theory-metric-formula">$\beta = \frac{1}{d} \sum_i \frac{|a_i(0)|}{\sqrt{k_i}}$</div>
+      <div class="theory-metric-value" id="betaValue">—</div>
+    </div>
+  </div>
+
+  <div class="theory-rise-time">
+    <div class="theory-rise-time-label">rise time</div>
+    <div class="theory-rise-time-formula">
+      $t_{\mathrm{rise}} = \begin{cases}
+        f_*, & \text{if } \ell = 1, \\
+        -\frac{1}{\kappa f_*} \cdot \log\left(\sqrt{\frac{f_*}{\kappa}}\beta\right), & \text{if } \ell = 2, \\
+        \frac{1}{\ell - 2} \cdot \frac{1}{\kappa f_*} \cdot \frac{1}{\beta^{\ell-2}}. & \text{if } \ell > 2.
+      \end{cases}$
+    </div>
+    <div class="theory-rise-time-value" id="triseValue">—</div>
+  </div>
+</div>
+
+<!-- Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+<!-- Application (ES6 module) -->
+<script type="module" src="app.js"></script>
