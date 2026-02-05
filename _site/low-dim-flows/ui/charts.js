@@ -308,10 +308,12 @@ export class ChartManager {
     // Update loss chart (main line)
     this.lossChart.data.datasets[0].data = lossValues;
 
+    // Clear all datasets beyond the main loss line, then rebuild
+    this.lossChart.data.datasets.splice(1);
+
     // Add balanced solution loss curve if available and enabled
-    let datasetIndex = 1;
     if (balancedSolution && showBalanced) {
-      this.lossChart.data.datasets[datasetIndex] = {
+      this.lossChart.data.datasets.push({
         label: 'eff. bal. init.',
         data: balancedLossValues.map((val, i) => ({x: balancedTimes[i], y: val})),
         borderColor: 'rgb(255, 100, 255)', // Magenta
@@ -319,14 +321,13 @@ export class ChartManager {
         borderDash: [5, 5], // Dashed line
         pointRadius: 0,
         tension: 0
-      };
-      datasetIndex++;
+      });
     }
 
-    // Add vertical line for rise time on loss chart BEFORE updating
+    // Add vertical line for rise time on loss chart
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
       // We'll set the y values after we know the range
-      this.lossChart.data.datasets[datasetIndex] = {
+      this.lossChart.data.datasets.push({
         label: 'rise time from theory',
         data: [{x: tRise.value, y: 0}, {x: tRise.value, y: 1}],
         borderColor: 'rgb(128, 128, 128)',
@@ -334,14 +335,7 @@ export class ChartManager {
         pointRadius: 0,
         tension: 0,
         showLine: true
-      };
-      datasetIndex++;
-    } else {
-      // Remove any extra datasets beyond the main one (and balanced if present)
-      const keepCount = (balancedSolution && showBalanced) ? 2 : 1;
-      if (this.lossChart.data.datasets.length > keepCount) {
-        this.lossChart.data.datasets.splice(keepCount);
-      }
+      });
     }
 
     // Include balanced loss values in range calculation if present and enabled
@@ -350,11 +344,10 @@ export class ChartManager {
 
     // Update t_rise line y values with actual range
     if (tRise && !tRise.isUndefined && isFinite(tRise.value)) {
-      // Find the rise time dataset (it's at datasetIndex - 1)
-      const riseTimeIdx = datasetIndex - 1;
-      if (this.lossChart.data.datasets[riseTimeIdx] &&
-          this.lossChart.data.datasets[riseTimeIdx].label === 'rise time from theory') {
-        this.lossChart.data.datasets[riseTimeIdx].data = [
+      // Find the rise time dataset (should be the last one)
+      const riseTimeDataset = this.lossChart.data.datasets.find(d => d.label === 'rise time from theory');
+      if (riseTimeDataset) {
+        riseTimeDataset.data = [
           {x: tRise.value, y: lossRange.yMin},
           {x: tRise.value, y: lossRange.yMax}
         ];
