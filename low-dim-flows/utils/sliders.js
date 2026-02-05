@@ -90,5 +90,11 @@ export const sliders = {
     generateLogValues(CONFIG.sliders.fStar.minExp, CONFIG.sliders.fStar.maxExp)
       .filter(v => v <= 100),
     formatScientific
+  ),
+
+  c: new ValueSlider(
+    generateLogValues(CONFIG.sliders.c.minExp, CONFIG.sliders.c.maxExp)
+      .filter(v => v <= 10),
+    formatScientific
   )
 };

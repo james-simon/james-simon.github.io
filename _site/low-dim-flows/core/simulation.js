@@ -7,9 +7,9 @@
 import { CONFIG } from '../config.js';
 
 /**
- * Loss function: L = (1/2)(f* - prod(a_i^k_i))^2
+ * Loss function: L = (1/2)(f* - c*prod(a_i^k_i))^2
  */
-export function loss(aVec, kVec, fStar = 1) {
+export function loss(aVec, kVec, fStar = 1, c = 1) {
   if (aVec.length !== kVec.length) {
     throw new Error(`Array length mismatch: aVec(${aVec.length}) !== kVec(${kVec.length})`);
   }
@@ -24,15 +24,15 @@ export function loss(aVec, kVec, fStar = 1) {
   for (let i = 0; i < aVec.length; i++) {
     product *= Math.pow(aVec[i], kVec[i]);
   }
-  const term = fStar - product;
+  const term = fStar - c * product;
   return 0.5 * term * term;
 }
 
 /**
  * Gradient of loss with respect to all variables
- * dL/da_i = -(f*-P) * k_i * P / a_i, where P = prod(a_j^k_j)
+ * dL/da_i = -(f*-c*P) * c * k_i * P / a_i, where P = prod(a_j^k_j)
  */
-export function gradientLoss(aVec, kVec, fStar = 1) {
+export function gradientLoss(aVec, kVec, fStar = 1, c = 1) {
   if (aVec.length !== kVec.length) {
     throw new Error(`Array length mismatch: aVec(${aVec.length}) !== kVec(${kVec.length})`);
   }
@@ -50,7 +50,7 @@ export function gradientLoss(aVec, kVec, fStar = 1) {
   }
 
   // Compute gradient for each variable
-  const factor = -(fStar - product);
+  const factor = -(fStar - c * product) * c;
   for (let i = 0; i < n; i++) {
     grad[i] = factor * kVec[i] * product / aVec[i];
   }
@@ -61,27 +61,27 @@ export function gradientLoss(aVec, kVec, fStar = 1) {
 /**
  * ODE system: da/dt = -dL/da (gradient flow)
  */
-export function odeSystem(aVec, kVec, fStar = 1) {
-  const grad = gradientLoss(aVec, kVec, fStar);
+export function odeSystem(aVec, kVec, fStar = 1, c = 1) {
+  const grad = gradientLoss(aVec, kVec, fStar, c);
   return grad.map(g => -g);
 }
 
 /**
  * RK4 integration step for the system
  */
-export function rk4Step(aVec, dt, kVec, fStar = 1) {
+export function rk4Step(aVec, dt, kVec, fStar = 1, c = 1) {
   const n = aVec.length;
 
-  const k1 = odeSystem(aVec, kVec, fStar);
+  const k1 = odeSystem(aVec, kVec, fStar, c);
 
   const aVec2 = aVec.map((a, i) => a + 0.5 * dt * k1[i]);
-  const k2 = odeSystem(aVec2, kVec, fStar);
+  const k2 = odeSystem(aVec2, kVec, fStar, c);
 
   const aVec3 = aVec.map((a, i) => a + 0.5 * dt * k2[i]);
-  const k3 = odeSystem(aVec3, kVec, fStar);
+  const k3 = odeSystem(aVec3, kVec, fStar, c);
 
   const aVec4 = aVec.map((a, i) => a + dt * k3[i]);
-  const k4 = odeSystem(aVec4, kVec, fStar);
+  const k4 = odeSystem(aVec4, kVec, fStar, c);
 
   const aVecNew = aVec.map((a, i) =>
     a + (dt / 6) * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i])
@@ -104,7 +104,7 @@ export function rk4Step(aVec, dt, kVec, fStar = 1) {
  * - Hard stop at hardCapTime
  * Returns times, trajectories for each variable, and loss values
  */
-export function solveODE(a0Vec, kVec, tMax, fStar = 1, dt = CONFIG.simulation.dt) {
+export function solveODE(a0Vec, kVec, tMax, fStar = 1, c = 1, dt = CONFIG.simulation.dt) {
   const THRESHOLD_FRACTION = CONFIG.simulation.adaptiveStoppingThreshold;
   const HARD_CAP = CONFIG.simulation.hardCapTime;
 
@@ -116,7 +116,7 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, dt = CONFIG.simulation.dt
   let t = 0;
 
   // Compute initial loss to set threshold
-  const initialLoss = loss(aVec, kVec, fStar);
+  const initialLoss = loss(aVec, kVec, fStar, c);
   const lossThreshold = THRESHOLD_FRACTION * initialLoss;
 
   let thresholdTime = null;  // When loss first drops below threshold
@@ -128,7 +128,7 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, dt = CONFIG.simulation.dt
       aTrajectories[i].push(aVec[i]);
     }
 
-    const currentLoss = loss(aVec, kVec, fStar);
+    const currentLoss = loss(aVec, kVec, fStar, c);
     lossValues.push(currentLoss);
 
     // Check if we've crossed the threshold for the first time
@@ -138,7 +138,7 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, dt = CONFIG.simulation.dt
     }
 
     // Integrate
-    aVec = rk4Step(aVec, dt, kVec, fStar);
+    aVec = rk4Step(aVec, dt, kVec, fStar, c);
     t += dt;
   }
 

@@ -39,11 +39,12 @@ export class DisplayManager {
   /**
    * Update loss equation based on number of variables
    */
-  updateLossEquation(numVars, fStar, kVec) {
+  updateLossEquation(numVars, fStar, c, kVec) {
     let latex;
 
-    // Clean f_* for display
+    // Clean f_* and c for display
     const fStarClean = this.cleanFloat(fStar);
+    const cClean = this.cleanFloat(c);
 
     if (numVars === 1) {
       // Build aligned equation with symbolic and expanded forms
@@ -51,8 +52,8 @@ export class DisplayManager {
       // Omit exponent if k = 1
       const expandedTerm = kClean === '1' ? 'a_1' : `a_1^{${kClean}}`;
       latex = `$$\\begin{align}
-\\mathcal{L} &= \\frac{1}{2}(f_*-a_1^{k_1})^2, \\\\
-&= \\frac{1}{2}(${fStarClean}-${expandedTerm})^2,
+\\mathcal{L} &= \\frac{1}{2}(f_*-c \\cdot a_1^{k_1})^2, \\\\
+&= \\frac{1}{2}(${fStarClean}-${cClean} \\cdot ${expandedTerm})^2,
 \\end{align}$$`;
     } else {
       // Build product term: a_1^{k_1} a_2^{k_2} ... a_n^{k_n}
@@ -76,8 +77,8 @@ export class DisplayManager {
       const expandedProduct = expandedProductTerms.join(' ');
 
       latex = `$$\\begin{align}
-\\mathcal{L} &= \\frac{1}{2}(f_*-${product})^2, \\\\
-&= \\frac{1}{2}(${fStarClean}-${expandedProduct})^2,
+\\mathcal{L} &= \\frac{1}{2}(f_*-c \\cdot ${product})^2, \\\\
+&= \\frac{1}{2}(${fStarClean}-${cClean} \\cdot ${expandedProduct})^2,
 \\end{align}$$`;
     }
 

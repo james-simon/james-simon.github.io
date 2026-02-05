@@ -153,6 +153,10 @@
   text-align: center;
 }
 
+.variable-label.constants-label {
+  font-weight: normal;
+}
+
 .variable-sliders {
   display: flex;
   flex-direction: column;

@@ -62,10 +62,10 @@ class LowDimFlowsApp {
     const kVec = vars.map(v => v.k);
 
     // Run main simulation
-    const solution = solveODE(a0Vec, kVec, this.state.tMax, this.state.fStar);
+    const solution = solveODE(a0Vec, kVec, this.state.tMax, this.state.fStar, this.state.c);
 
     // Calculate and display theory
-    const theory = calculateAllTheory(a0Vec, kVec, this.state.fStar);
+    const theory = calculateAllTheory(a0Vec, kVec, this.state.fStar, this.state.c);
     this.display.updateTheoryValues(theory);
 
     // Run effective balanced initial condition simulation
@@ -77,14 +77,14 @@ class LowDimFlowsApp {
       const numSteps = solution.times.length;
       const dt = solution.times.length > 1 ? solution.times[1] - solution.times[0] : 0.01;
       const tMaxBalanced = solution.times[solution.times.length - 1];
-      balancedSolution = solveODE(a0Balanced, kVec, tMaxBalanced, this.state.fStar, dt);
+      balancedSolution = solveODE(a0Balanced, kVec, tMaxBalanced, this.state.fStar, this.state.c, dt);
     }
 
     // Update charts (pass t_rise for vertical line and balanced solution)
     this.charts.update(solution, this.state.numVariables, this.state.logScale, theory.tRise, balancedSolution, this.state.showBalanced);
 
     // Update loss equation
-    this.display.updateLossEquation(this.state.numVariables, this.state.fStar, kVec);
+    this.display.updateLossEquation(this.state.numVariables, this.state.fStar, this.state.c, kVec);
   }
 
   /**

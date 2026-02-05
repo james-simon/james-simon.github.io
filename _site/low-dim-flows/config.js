@@ -9,6 +9,7 @@ export const CONFIG = {
     dt: 0.01,           // Time step for RK4 integration
     defaultTMax: 10,    // Default max time
     defaultFStar: 1,    // Default target value f*
+    defaultC: 1,        // Default coefficient c
     adaptiveStoppingThreshold: 0.01,  // Stop when loss drops to 1% of initial
     hardCapTime: 3000   // Maximum simulation time (hard stop)
   },
@@ -39,6 +40,10 @@ export const CONFIG = {
     fStar: {
       minExp: -2,       // 0.01
       maxExp: 2         // 100
+    },
+    c: {
+      minExp: -1,       // 0.1
+      maxExp: 1         // 10
     }
   },
 

@@ -22,6 +22,7 @@ export class AppState {
     // Global parameters
     this.tMax = CONFIG.simulation.defaultTMax;
     this.fStar = CONFIG.simulation.defaultFStar;
+    this.c = CONFIG.simulation.defaultC;
     this.logScale = false;
     this.showBalanced = true;
 
@@ -101,6 +102,14 @@ export class AppState {
   }
 
   /**
+   * Set coefficient c
+   */
+  setC(c) {
+    this.c = c;
+    this.notify();
+  }
+
+  /**
    * Toggle logscale mode
    */
   toggleLogScale() {
@@ -134,6 +143,7 @@ export class AppState {
     // Reset global parameters
     this.tMax = CONFIG.simulation.defaultTMax;
     this.fStar = CONFIG.simulation.defaultFStar;
+    this.c = CONFIG.simulation.defaultC;
     this.logScale = false;
     this.showBalanced = true;
 
@@ -156,6 +166,7 @@ export class AppState {
       variables: this.variables,
       tMax: this.tMax,
       fStar: this.fStar,
+      c: this.c,
       logScale: this.logScale,
       showBalanced: this.showBalanced
     };
@@ -192,6 +203,10 @@ export class AppState {
 
     if (json.fStar !== undefined) {
       this.fStar = json.fStar;
+    }
+
+    if (json.c !== undefined) {
+      this.c = json.c;
     }
 
     if (json.logScale !== undefined) {

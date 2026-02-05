@@ -53,7 +53,7 @@ export class ControlsManager {
   }
 
   /**
-   * Create f* control box
+   * Create constants control box (f* and c)
    */
   createFStarBox() {
     const box = document.createElement('div');
@@ -61,8 +61,8 @@ export class ControlsManager {
 
     // Label
     const label = document.createElement('div');
-    label.className = 'variable-label';
-    label.innerHTML = '$f_*$';
+    label.className = 'variable-label constants-label';
+    label.innerHTML = 'constants';
     box.appendChild(label);
 
     // Slider container
@@ -71,7 +71,7 @@ export class ControlsManager {
 
     // f* slider
     const fStarRow = this.createSliderRow(
-      'value:',
+      '$f_*$:',
       'fStarSlider',
       'fStarValue',
       sliders.fStar,
@@ -82,6 +82,20 @@ export class ControlsManager {
       }
     );
     slidersDiv.appendChild(fStarRow);
+
+    // c slider
+    const cRow = this.createSliderRow(
+      '$c$:',
+      'cSlider',
+      'cValue',
+      sliders.c,
+      this.state.c,
+      (value) => {
+        this.state.setC(value);
+        this.state.save();
+      }
+    );
+    slidersDiv.appendChild(cRow);
 
     box.appendChild(slidersDiv);
     return box;
@@ -127,7 +141,7 @@ export class ControlsManager {
 
     // a0 slider (on bottom)
     const a0Row = this.createSliderRow(
-      `init $a_{${index + 1}}(0)$:`,
+      `$a_{${index + 1}}(0)$:`,
       `a0Slider_${index}`,
       `a0Value_${index}`,
       sliders.a0,
