@@ -382,7 +382,7 @@ function renderNetworkViz() {
   const lineColor = '#333333';
   const lineWidth = 3;
 
-  for (let i = 0; i < numLayers; i++) {
+  for (let i = 0; i < NETWORK_VIZ.NUM_LAYERS; i++) {
     const x = xPositions[i];
     const h = heights[i];
     const centerY = height / 2;
@@ -399,7 +399,7 @@ function renderNetworkViz() {
 
   // Add labels to trapezoids (weight matrices) using MathJax
   const trapezoidLabels = ['$\\mathbf{W}_1$', '$\\mathbf{W}_{\\mathrm{froz}}$', '$\\mathbf{W}_2$'];
-  for (let i = 0; i < numLayers - 1; i++) {
+  for (let i = 0; i < NETWORK_VIZ.NUM_LAYERS - 1; i++) {
     const centerX = (xPositions[i] + xPositions[i + 1]) / 2;
     const centerY = height / 2;
 
