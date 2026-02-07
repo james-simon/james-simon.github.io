@@ -1,0 +1,216 @@
+---
+layout: default
+permalink: /expander-nets/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: {
+      scale: 1.0
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        console.log('MathJax is ready');
+        // Set flag that MathJax is ready
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 class="page-title">Expander Nets</h1>
+    <button id="resetToDefaultsButton" class="sim-button">reset to defaults</button>
+  </div>
+
+  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 1em; margin-bottom: 0.2em;">
+
+  <div class="section-label">SETUP</div>
+
+  <div style="margin-top: 0; margin-bottom: 2em;">
+    <!-- Row 1: Network (Red) with diagram on the right -->
+    <div style="display: flex; gap: 1em; margin-bottom: 1em;">
+      <div style="background-color: #fff0f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; position: relative; min-height: 120px; flex: 1;">
+        <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc5555; white-space: pre;">    NETWORK</div>
+        <div style="display: flex; gap: 2em; margin-left: 60px;">
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">network function</div>
+            <div>$$\hat{f}(\mathbf{x}) = \mathbf{W}_2 \, \sigma \circ \mathbf{W}_{\mathrm{froz}} \, \mathbf{W}_1 \, \mathbf{x}$$</div>
+            <div style="font-size: 13px; margin-top: 8px; color: #888;">$$\mathbf{W}_2 \in \mathbb{R}^{1 \times k}, \, \mathbf{W}_{\mathrm{froz}} \in \mathbb{R}^{k \times d},$$</div>
+            <div style="font-size: 13px; margin-top: 4px; color: #888;">$$\mathbf{W}_1 \in \mathbb{R}^{d \times d}, \, \mathbf{x} \in \mathbb{R}^d$$</div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">nonlinearity</div>
+            <div>$$\sigma(z) = \sqrt{2} \cos\left(z + \frac{\pi}{4}\right)$$</div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">hidden dimension</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; flex-wrap: nowrap;">
+              <span style="font-size: 17px; white-space: nowrap;">$k$:</span>
+              <input type="range" id="kSlider" min="0" max="100" value="50" style="width: 120px; flex-shrink: 1;">
+              <span id="kValue" style="font-size: 15px; text-align: left; white-space: nowrap;">1000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+        <svg id="networkViz" width="400"></svg>
+      </div>
+    </div>
+
+    <!-- Row 2: Data (Orange) -->
+    <div style="background-color: #fff8f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
+      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc8855; white-space: pre;">    DATA</div>
+      <div style="display: flex; gap: 2em; margin-left: 60px;">
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data distro</div>
+          <div>$$\mathbf{x} \sim \mathcal{N}(0, \mathbf{\Gamma})$$</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data dimension</div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
+            <span style="font-size: 18px;">$d$:</span>
+            <input type="range" id="dSlider" min="1" max="5" value="3" style="width: 120px;">
+            <span id="dValue" style="font-size: 16px; min-width: 30px; text-align: left;">3</span>
+          </div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data covariance</div>
+          <div style="margin-bottom: 8px;">$$\mathbf{\Gamma} = \mathrm{diag}(\gamma_i)$$</div>
+          <div id="gammaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Target (Green) -->
+    <div style="background-color: #f0fff0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 140px;">
+      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #55aa55; white-space: pre;">    TARGET    FUNCTION</div>
+      <div style="display: flex; gap: 2em; margin-left: 60px;">
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target function</div>
+          <div id="targetFunctionEquation">$$\begin{align}
+f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x}\right) \\
+&= h_1(\gamma_1^{-1/2} x_1) \cdot h_2(\gamma_2^{-1/2} x_2) \cdot h_3(\gamma_3^{-1/2} x_3)
+\end{align}$$</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target multi-index</div>
+          <div style="margin-bottom: 8px;">$$\boldsymbol{\alpha} = (\alpha_i)$$</div>
+          <div id="alphaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Training (Blue) -->
+    <div style="background-color: #f0f4ff; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
+      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #5578cc; white-space: pre;">    TRAINING</div>
+      <div style="display: flex; gap: 2em; margin-left: 60px;">
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">loss</div>
+          <div>$$\mathcal{L} = \frac{1}{2} \mathbb{E}_\mathbf{x}\left[(f_*(\mathbf{x}) - \hat{f}(\mathbf{x}))^2\right]$$</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">initialization</div>
+          <div>$$\begin{align}
+\mathbf{W}_1(0) &= \mathbf{I}_d \\
+\mathbf{W}_{\mathrm{froz},ij} &\sim \mathcal{N}(0, 1) \\
+\mathbf{W}_2(0) &= \mathbf{0}
+\end{align}$$</div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">dynamics</div>
+          <div>$$\begin{align}
+\dot{\mathbf{W}}_1 &= -\nabla_{\mathbf{W}_1} \mathcal{L} \\
+\dot{\mathbf{W}}_{\mathrm{froz}} &= \mathbf{0} \\
+\dot{\mathbf{W}}_2 &= -\frac{1}{k}\nabla_{\mathbf{W}_2} \mathcal{L}
+\end{align}$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 5: Hyperparameters (Purple) -->
+    <div style="background-color: #f8f0ff; padding: 1.5em; padding-top: 3em; padding-bottom: calc(3em + 30px); border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
+      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #9955cc; white-space: pre;">    HYPERPARAMETERS</div>
+      <div style="display: flex; gap: 2em; margin-left: 60px;">
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">learning rate</div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
+            <span style="font-size: 18px;">$\eta$:</span>
+            <input type="range" id="etaSlider" min="0" max="100" value="50" style="width: 120px;">
+            <span id="etaValue" style="font-size: 16px; min-width: 60px; text-align: left;">0.01</span>
+          </div>
+        </div>
+        <div style="text-align: center; flex: 1;">
+          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">batch size</div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
+            <span style="font-size: 18px;">$|B|$:</span>
+            <input type="range" id="batchSizeSlider" min="0" max="100" value="50" style="width: 120px;">
+            <span id="batchSizeValue" style="font-size: 16px; min-width: 60px; text-align: left;">100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 2em; margin-bottom: 0.2em;">
+
+  <div class="section-label">SIMULATION</div>
+
+  <div style="margin-top: 1em; margin-bottom: 2em;">
+    <div style="display: flex; gap: 1em; align-items: center; margin-bottom: 2em;">
+      <button id="startPauseButton" class="sim-button">start</button>
+      <button id="resetButton" class="sim-button">reset</button>
+    </div>
+
+    <!-- Plots -->
+    <div class="plots-container">
+      <div class="plot-wrapper">
+        <div class="plot-box">
+          <div class="plot-content">
+            <canvas id="lossChart" class="plot-canvas"></canvas>
+            <div class="y-axis-label y-axis-label-loss">loss $\mathcal{L}$</div>
+            <div class="x-axis-label">step</div>
+          </div>
+        </div>
+      </div>
+      <div class="plot-wrapper">
+        <div class="plot-box">
+          <div class="plot-content">
+            <canvas id="normChart" class="plot-canvas"></canvas>
+            <div class="y-axis-label y-axis-label-norms">$\|\mathbf{W}_i\|_F^2$</div>
+            <div class="x-axis-label">step</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plot controls -->
+    <div class="logscale-control">
+      <label style="margin-right: 20px;">
+        <input type="checkbox" id="logScaleCheckbox">
+        logscale y-axes
+      </label>
+      <span style="margin-right: 0.5em;">plot w.r.t.</span>
+      <span class="plot-xaxis-toggle">
+        <a href="#" id="step-link" class="active" onclick="setXAxisMode('step'); return false;">step</a><a href="#" id="teff-link" onclick="setXAxisMode('teff'); return false;">$t_{\mathrm{eff}}$</a>
+      </span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+<!-- Application (ES6 module) -->
+<script type="module" src="app.js"></script>
