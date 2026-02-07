@@ -49,8 +49,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://james-simon.github.io/blog/kernel-spectral-decay-powerlaw/">
-  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://james-simon.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/blog/kernel-spectral-decay-powerlaw/">
+  <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
     body {
@@ -3820,9 +3820,9 @@
 
 <p>A few observations. First, the spectrum is… kind of a nice powerlaw in the middle? But the transient effects at the head and finite-size effects at the tail make it annoying to tell; we’ll have to deal with these. Second, even if you squint, it’s hard to argue that the decays all look like powerlaws with $a = 1.5$. Third, the decay rates actually seem to <em>change:</em> the plots with larger $\sigma$ seem to have a faster decay and a larger exponent. This wasn’t in the prediction of Wortsman and Loureiro (2025). What gives, and can we predict the decay rates we actually see here?</p>
 
-<h3 id="the-hea-a-nonasymptotic-approach">The HEA: a nonasymptotic approach</h3>
+<h3 id="the-hea-an-alternative-approach">The HEA: an alternative approach</h3>
 
-<p>I’m going to argue that, yeah, their answer that “the spectral decay rate is always $a$” is probably right <em>asymptotically,</em> but you’ll often have to look prohobitively far into the spectrum before you approach that decay rate. I’ll then introduce a tool for getting the <em>nonasymptotic</em> eigenvalue decay curve.</p>
+<p>I’m going to argue that, yeah, their answer that “the spectral decay rate is always $a$” is probably right <em>asymptotically</em> as you look very deep into the spectrum, but you’ll often have to look prohobitively far into the spectrum before you approach that decay rate. To do so, I’ll introduce a mathematical tool for getting the precise shape of the decay curve, even at small values of the index $j$.</p>
 
 <p>The main technology we’ll use to do this is the <em>Hermite eigenstructure ansatz (HEA)</em> from <a href="https://arxiv.org/abs/2510.14878">our paper</a>. I won’t go through it in detail here; see the paper or <a href="https://joeyturn.github.io/projects/hea/">Joey’s blogpost</a>. The main point we’ll use here is that the HEA gives nice, explicit formulae for the kernel eigenvalues in terms of some kernel-derived coefficients (which are basically Taylor series coefficients). For the Gaussian kernel with width $\sigma$, we have $c_\ell = e^{-\frac{1}{\sigma^2}} \cdot \sigma^{-2 \ell}$. Then</p>
 
@@ -3844,7 +3844,7 @@ c_{|\boldsymbol{\alpha}|}
 \boldsymbol{\alpha} \in \mathbb{N}_0^d \right\}.
 \tag{HEA}\]
 
-<p>In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won’t explain why it’s true here, but there is a pretty satisfying derivation we give in our paper.</p>
+<p>In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won’t explain why it’s true here, but there is a pretty satisfying derivation we give in our paper.<sup id="fnref:a" role="doc-noteref"><a href="#fn:a" class="footnote">2</a></sup></p>
 
 <p>The HEA isn’t exact, and it isn’t perfect, but in our paper, we show that it’s empirically very accurate in basically every case we hoped it would be, including Gaussian-data cases like the one we’re studying here. Let’s check: I’ll add the theoretical spectrum predicted by simple enumeration of the HEA eigenvalues to the plots.</p>
 
@@ -3894,6 +3894,9 @@ c_{|\boldsymbol{\alpha}|}
   <ol>
     <li id="fn:1" role="doc-endnote">
       <p>The second half of Arie and Bruno’s paper is a treatment of how the data spectrum drives generalization in KRR, which is one step beyond the kernel spectrum! I’m just not discussing it because I’m focused on the powerlaw spectrum question here. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:a" role="doc-endnote">
+      <p>For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find exactly the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. <a href="#fnref:a" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

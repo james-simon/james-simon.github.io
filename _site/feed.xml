@@ -3,11 +3,43 @@
   <channel>
     <title>Jamie Simon</title>
     <description></description>
-    <link>http://james-simon.github.io/</link>
-    <atom:link href="http://james-simon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 05 Feb 2026 08:46:11 -0800</pubDate>
-    <lastBuildDate>Thu, 05 Feb 2026 08:46:11 -0800</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 07 Feb 2026 12:00:12 -0800</pubDate>
+    <lastBuildDate>Sat, 07 Feb 2026 12:00:12 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Goo</title>
+        <description>&lt;p&gt;I love classic folk and country songs. I listened to so many at camp growing up, songs like “Rocky Top” or “Country Roads” or John Prine’s “Paradise” that tug at the heartstrings and make you yearn for the simple things. A really good folk song gives you the feeling that it’s been around forever. It’s like a pebble in a creek, worn smooth from the tumbling of being sung again and again.&lt;/p&gt;
+
+&lt;p&gt;In 2018, I wanted to see if I could write one. I thought, well, &lt;em&gt;somebody&lt;/em&gt; wrote these songs, and trying to fake the timeless feel sounded fun. My songwriting process started in Albania, of all places, when I was finally bored enough for inspiration to strike. A few weeks later I had a finished song. It was my first song with lyrics. I’ll show it to you at the end.&lt;/p&gt;
+
+&lt;p&gt;I started out writing a slow, soulful ballad about a mother’s love for a child about to venture out on his own. I tried to establish a sense of place (“This river, my child, is winding and wild…”), and make plain the mother’s fondness for her son, and her regret but acceptance of his leaving her because that’s the way of the world. I wrote a verse like that. Then I got stuck.&lt;/p&gt;
+
+&lt;p&gt;Truth is, I found it kind of painful to be that sincere. I wasn’t really able to show my feelings back then, and it felt so, so uncool to be that simple and direct without twisting into irony or flexing my intellect. The result was that I wrote one verse of a sincere ballad about a mother’s love, and then two verses and three choruses where the mother goes on to tell the child that the one thing they should &lt;em&gt;really&lt;/em&gt; remember is that, if they ever get in trouble, they should eat a big blob of whatever goo they find lying around.&lt;/p&gt;
+
+&lt;p&gt;I told myself I was making fun of folk superstition and old wives’ tales, of motherly chidings to not walk past black cats or under ladders. I don’t think that really shines through. It’s a fun song and one I still listen to fondly, but I cringe a bit. I wasn’t much of a storyteller yet, and there are some things I know now that I didn’t back then. I wanted to write a song poking fun at how true motherly love is blended together with the most ridiculous advice (@Mom). Instead of switching from real wisdom all the way over to goo-mode, I’d interleave the two: a few lines of good advice, then wait, hold the phone, yes, it’s back to goo. It takes genuine love to hold both things and balance them in writing.&lt;/p&gt;
+
+&lt;p&gt;Well, you can’t change the past. As promised, all the way from 2018, here’s &lt;em&gt;Goo.&lt;/em&gt;&lt;/p&gt;
+
+&lt;audio controls=&quot;&quot; style=&quot;width: 100%; margin: 1.5em 0;&quot;&gt;
+  &lt;source src=&quot;/audio/goo.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Credit to my brother Sam for the guitar backing. The other instruments are actually the same harmonica, played way low for the bass and high for the solo. Thanks also to Bennett Witcher, who’s sent this recording back to me multiple times after I’ve lost it. For your services, I hereby confer upon you the title of Eternal Steward of the Goo.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 06 Feb 2026 00:00:00 -0800</pubDate>
+        <link>http://localhost:4000/blog/goo/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/goo/</guid>
+        
+        
+        <category>music</category>
+        
+      </item>
     
       <item>
         <title>Predicting kernel spectra powerlaw exponents from raw data statistics</title>
@@ -37,9 +69,9 @@
 
 &lt;p&gt;A few observations. First, the spectrum is… kind of a nice powerlaw in the middle? But the transient effects at the head and finite-size effects at the tail make it annoying to tell; we’ll have to deal with these. Second, even if you squint, it’s hard to argue that the decays all look like powerlaws with $a = 1.5$. Third, the decay rates actually seem to &lt;em&gt;change:&lt;/em&gt; the plots with larger $\sigma$ seem to have a faster decay and a larger exponent. This wasn’t in the prediction of Wortsman and Loureiro (2025). What gives, and can we predict the decay rates we actually see here?&lt;/p&gt;
 
-&lt;h3 id=&quot;the-hea-a-nonasymptotic-approach&quot;&gt;The HEA: a nonasymptotic approach&lt;/h3&gt;
+&lt;h3 id=&quot;the-hea-an-alternative-approach&quot;&gt;The HEA: an alternative approach&lt;/h3&gt;
 
-&lt;p&gt;I’m going to argue that, yeah, their answer that “the spectral decay rate is always $a$” is probably right &lt;em&gt;asymptotically,&lt;/em&gt; but you’ll often have to look prohobitively far into the spectrum before you approach that decay rate. I’ll then introduce a tool for getting the &lt;em&gt;nonasymptotic&lt;/em&gt; eigenvalue decay curve.&lt;/p&gt;
+&lt;p&gt;I’m going to argue that, yeah, their answer that “the spectral decay rate is always $a$” is probably right &lt;em&gt;asymptotically&lt;/em&gt; as you look very deep into the spectrum, but you’ll often have to look prohobitively far into the spectrum before you approach that decay rate. To do so, I’ll introduce a mathematical tool for getting the precise shape of the decay curve, even at small values of the index $j$.&lt;/p&gt;
 
 &lt;p&gt;The main technology we’ll use to do this is the &lt;em&gt;Hermite eigenstructure ansatz (HEA)&lt;/em&gt; from &lt;a href=&quot;https://arxiv.org/abs/2510.14878&quot;&gt;our paper&lt;/a&gt;. I won’t go through it in detail here; see the paper or &lt;a href=&quot;https://joeyturn.github.io/projects/hea/&quot;&gt;Joey’s blogpost&lt;/a&gt;. The main point we’ll use here is that the HEA gives nice, explicit formulae for the kernel eigenvalues in terms of some kernel-derived coefficients (which are basically Taylor series coefficients). For the Gaussian kernel with width $\sigma$, we have $c_\ell = e^{-\frac{1}{\sigma^2}} \cdot \sigma^{-2 \ell}$. Then&lt;/p&gt;
 
@@ -61,7 +93,7 @@ c_{|\boldsymbol{\alpha}|}
 \boldsymbol{\alpha} \in \mathbb{N}_0^d \right\}.
 \tag{HEA}\]
 
-&lt;p&gt;In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won’t explain why it’s true here, but there is a pretty satisfying derivation we give in our paper.&lt;/p&gt;
+&lt;p&gt;In words: the set of all kernel eigenvalues (the left-hand side) equals the set enumerated on the right, where the enumeration runs over all multi-index vectors $\boldsymbol{\alpha} \in \mathbb{N}_0^d$ and each choice of $\boldsymbol{\alpha}$ gives a certain monomial of the data covariance eigenvalues $\gamma_i$. This is the deep idea from our paper, and it unifies a lot of other cases with known kernel spectra. I won’t explain why it’s true here, but there is a pretty satisfying derivation we give in our paper.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;The HEA isn’t exact, and it isn’t perfect, but in our paper, we show that it’s empirically very accurate in basically every case we hoped it would be, including Gaussian-data cases like the one we’re studying here. Let’s check: I’ll add the theoretical spectrum predicted by simple enumeration of the HEA eigenvalues to the plots.&lt;/p&gt;
 
@@ -112,12 +144,15 @@ c_{|\boldsymbol{\alpha}|}
     &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
       &lt;p&gt;The second half of Arie and Bruno’s paper is a treatment of how the data spectrum drives generalization in KRR, which is one step beyond the kernel spectrum! I’m just not discussing it because I’m focused on the powerlaw spectrum question here. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find exactly the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
         <pubDate>Wed, 28 Jan 2026 23:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/kernel-spectral-decay-powerlaw/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/kernel-spectral-decay-powerlaw/</guid>
+        <link>http://localhost:4000/blog/kernel-spectral-decay-powerlaw/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/kernel-spectral-decay-powerlaw/</guid>
         
         
         <category>kernels</category>
@@ -176,8 +211,8 @@ So I figured out how scripting worked in the design software, and I wrote some P
 &lt;p&gt;In August 2019, I left Sweden and started my PhD at Berkeley. I switched gears away from experiment, and then away from quantum physics altogether, and joined a lab studying, among other things, the fundamental theory of deep learning, and that got me to where I am today. But now, as I use a computer, and run things with GPUs, and stand by as tech giants fill warehouses with upwards of millions of GPUs and $10^{17}$ transistors total, it’s illuminating and remarkable and a deeply privileged feeling to have gotten to see how computer chips are made.&lt;/p&gt;
 </description>
         <pubDate>Wed, 21 Jan 2026 23:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/why-i-am-not-an-experimentalist/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/why-i-am-not-an-experimentalist/</guid>
+        <link>http://localhost:4000/blog/why-i-am-not-an-experimentalist/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/why-i-am-not-an-experimentalist/</guid>
         
         
         <category>physics</category>
@@ -205,8 +240,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament, my uncle Kevin Simon for help with the “bugle” solo, and of course Tom Zimmer, to whom I have promised royalties.&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 18 Jan 2026 04:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/ballad-of-the-crane-breeder/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/ballad-of-the-crane-breeder/</guid>
+        <link>http://localhost:4000/blog/ballad-of-the-crane-breeder/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/ballad-of-the-crane-breeder/</guid>
         
         
         <category>music</category>
@@ -225,8 +260,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;Even though it’s really short, this was a lot of fun to work on. It was really satisfying to see how adding sevenths to chords made the progression feel jazzier, and how throwing in unusual chords like major thirds and sixths made it feel more tangy and colorful, and how bringing it back to the tonic at the end makes it feel like you’ve wandered afield and come back home. I really had no feel for chord progressions before starting to teach myself music theory some two years ago, but playing around with different ideas and listening very closely to the results in this and known songs and a lot of improvisation has really helped. It’s wonderful to see that there are deeper ideas in music besides the notes, behind the notes, and the structure there is really magical to see and feel.&lt;/p&gt;
 </description>
         <pubDate>Sun, 11 Jan 2026 02:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/reharmonizing-ode-to-joy/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/reharmonizing-ode-to-joy/</guid>
+        <link>http://localhost:4000/blog/reharmonizing-ode-to-joy/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/reharmonizing-ode-to-joy/</guid>
         
         
         <category>music</category>
@@ -247,8 +282,8 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are singing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;re&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mi&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fa&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sol&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;la&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ti&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 11 Jan 2026 01:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/wedding-march-muppets/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/wedding-march-muppets/</guid>
+        <link>http://localhost:4000/blog/wedding-march-muppets/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/wedding-march-muppets/</guid>
         
         
         <category>music</category>
@@ -265,8 +300,8 @@ and put together in new configurations aacdeeekllmmrssvyy&lt;br /&gt;
 in an ever-changing dance of parts deeeikllmmoorsstttuuwyy&lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Nov 2025 00:00:00 -0800</pubDate>
-        <link>http://james-simon.github.io/blog/on-novelty/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/on-novelty/</guid>
+        <link>http://localhost:4000/blog/on-novelty/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/on-novelty/</guid>
         
         
         <category>poetry</category>
@@ -396,8 +431,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 20 Jul 2025 02:00:00 -0700</pubDate>
-        <link>http://james-simon.github.io/blog/on-the-scientific-method/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/on-the-scientific-method/</guid>
+        <link>http://localhost:4000/blog/on-the-scientific-method/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/on-the-scientific-method/</guid>
         
         
         <category>essays</category>
@@ -470,8 +505,8 @@ We should expect to see more such leaps as time goes on, and some of them will t
 &lt;p&gt;That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.&lt;/p&gt;
 </description>
         <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://james-simon.github.io/blog/backsolving-classical-bounds/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/backsolving-classical-bounds/</guid>
+        <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
         
         
         <category>kernels</category>
@@ -607,183 +642,11 @@ We also of course require that the measure we find from the above is normalized 
 &lt;/div&gt;
 </description>
         <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://james-simon.github.io/blog/one-kernel-many-eigensystems/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/one-kernel-many-eigensystems/</guid>
+        <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
         
         
         <category>kernels</category>
-        
-      </item>
-    
-      <item>
-        <title>A complete characterization of the expressivity of shallow, bias-free ReLU networks</title>
-        <description>&lt;p&gt;In the theoretical study of neural networks, one of the simplest questions one can ask is that of &lt;em&gt;expressivity.&lt;/em&gt; A neural network $f_{\boldsymbol{\theta}}(\cdot)$ can represent (or “express”) many different functions, and which function is expressed is determined by the choice of the parameters $\boldsymbol{\theta}$. The study of expressivity simply asks: which class of functions may be represented?&lt;/p&gt;
-
-&lt;p&gt;Among the pantheon of ML algorithms, neural networks are famous for their high expressivity. This fact is requisite to their power and versatility: practitioners find that a big enough neural network can represent functions complicated enough generate language and images.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; You may have heard of the classic &lt;a href=&quot;https://en.wikipedia.org/wiki/Universal_approximation_theorem&quot;&gt;universal approximation theorem&lt;/a&gt; which roughly states that an infinitely-wide neural network can represent &lt;em&gt;any function at all.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;The fact that nets’ expressivity is so high means that the notion of expressivity alone is usually unhelpful: it’s good to know that your network can represent virtually all functions, but this information is vacuous if you want to know which function it’ll actually learn! The one place where I’ve found the notion frequently useful is in negative cases: if a neural network architecture &lt;em&gt;can’t&lt;/em&gt; express some class of function, it cannot learn it — no need for further questions.&lt;/p&gt;
-
-&lt;p&gt;This blogpost is about one of those cases. The most common activation function used today is $\mathrm{ReLU}$, and so one would be forgiven for thinking that any big enough $\mathrm{ReLU}$ network will be able to express any function. It turns out this reasonable intuition is wrong: there are lots of functions that a shallow $\mathrm{ReLU}$ network with no biases can’t represent, even if it has infinite width. To spoil the answer, such a net can trivially only represent homogeneous functions (i.e., those such that $f(\alpha x) = \alpha \cdot f(x)$ for $\alpha &amp;gt; 0$), but less trivially, it also can’t represent &lt;strong&gt;&lt;em&gt;odd polynomials of order greater than one.&lt;/em&gt;&lt;/strong&gt; This fact’s independently showed up in my research no fewer than three times in the last month, which I take as a pretty strong sign that it’s worth articulating and sharing.&lt;/p&gt;
-
-&lt;p&gt;The structure of this blogpost will be as follows. I’ll begin with a refresher on the universal approximation theorem. We’ll then state a theorem about the expressivity of shallow $\mathrm{ReLU}$ networks and list some cases where it applies. We’ll conclude with some experiments showing $\mathrm{ReLU}$ networks failing to learn simple cubic and quintic monomials.&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;review-the-universal-approximation-theorem&quot;&gt;Review: the universal approximation theorem&lt;/h2&gt;
-
-&lt;p&gt;The UAT states that a shallow neural network with biases and a nonpolynomial nonlinearity can, given sufficiently large width, approximate any function to within any desired error. More precisely, suppose we have $d$-dimensional data $\mathbf{x} \in \mathbb{R}^d$ sampled from a distribution $p(\mathbf{x})$ and a feedforward function of the form&lt;/p&gt;
-
-\[f_{\boldsymbol{\theta}}(\mathbf x) = \sum_{i=1}^n a_i \cdot \sigma( \mathbf{b}_i^\top \mathbf{x} + c_i),\]
-
-&lt;p&gt;where $a_i \in \mathbb{R},\ \mathbf{b}_i \in \mathbb{R}^d,\ c_i \in \mathbb{R}$ are free parameters, and we write $\boldsymbol{\theta} \equiv {(a_i,\, \mathbf{b}_i,\, c_i)}_{i=1}^n$ to denote the tuple of all free parameters. Suppose we wish to approximate some desired function $f_* : \mathbb{R}^d \rightarrow \mathbb{R}$ such that the error…&lt;/p&gt;
-
-\[\mathcal{E}_{\boldsymbol{\theta}} := \mathbb{E}_{\mathbf{x} \sim p} \left[ (f_*(\mathbf{x}) - f_{\boldsymbol{\theta}}(\mathbf{x}))^2 \right]\]
-
-&lt;p&gt;is less than some threshold $\epsilon$. So long as $n$ is sufficiently large and the functions $\sigma, f_*, p$ satisfy some natural regularity conditions (see the &lt;a href=&quot;https://en.wikipedia.org/wiki/Universal_approximation_theorem&quot;&gt;Wikipedia page&lt;/a&gt;), we can always find a way to choose $\boldsymbol{\theta}$ so that $\mathcal{E}_{\boldsymbol{\theta}} &amp;lt; \epsilon$.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-limitations-of-shallow-mathrmrelu-networks&quot;&gt;The limitations of shallow $\mathrm{ReLU}$ networks&lt;/h2&gt;
-
-&lt;p&gt;The nonlinearity $\sigma(z) = \mathrm{ReLU}(z) := \max(z,0)$ is nonpolynomial, so the universal approximation theorem indeed applies to shallow $\mathrm{ReLU}$ networks. All guarantees are off, however, if we remove the biases (i.e. set $c_i = 0$). A $\mathrm{ReLU}$ network without biases has clear expressivity limitations: for example, it can only express homogeneous functions $f(\alpha \mathbf{x}) = \alpha f(\mathbf{x})$. (For this reason, when studying shallow $\mathrm{ReLU}$ nets, it is common to consider only functions on the sphere.) The point of this blogpost is to show that there’s an &lt;em&gt;additional&lt;/em&gt; limitation which is often overlooked.&lt;/p&gt;
-
-&lt;p&gt;We start with an observation about the functional form of a shallow $\mathrm{ReLU}$ net.&lt;/p&gt;
-
-&lt;div style=&quot;border: 2px solid black; padding: 15px; width: 100%; text-align: left;&quot;&gt;
-&lt;b&gt;Proposition 1.&lt;/b&gt; Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases. The network function has the linear-plus-even form
-
-$$
-f_{\boldsymbol{\theta}}(\mathbf{x}) = \boldsymbol{\beta}^\top \mathbf{x} + |\!| \mathbf{x} |\!| \cdot \mathrm{even}(\mathbf{x}),
-$$
-
-where $\mathrm{even}(\cdot)$ is a function satisfying $\mathrm{even}(\mathbf{x}) = \mathrm{even}(-\mathbf{x})$.
-&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h5 class=&quot;toggle-header2&quot; onclick=&quot;toggleContent2()&quot;&gt;Click for proof&lt;/h5&gt;
-&lt;div class=&quot;toggle-content2&quot;&gt;
-The function $f_{\boldsymbol{\theta}}(\mathbf{x})$ is a sum of functions of the form $f_i(\mathbf{x}) = a_i \cdot \mathrm{ReLU}(\mathbf{b}_i^\top \mathbf{x}) = \frac{1}{2} \cdot a_i \cdot (\lvert \mathbf{b}_i^\top \mathbf{x} \rvert + \mathbf{b}_i^\top \mathbf{x})$, which has the desired form. The full function $f_{\boldsymbol{\theta}}$ therefore has the desired form.
-&lt;/div&gt;
-
-&lt;script&gt;
-    function toggleContent2() {
-        var content = document.querySelector('.toggle-content2');
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-        } else {
-            content.style.display = 'none';
-        }
-    }
-&lt;/script&gt;
-
-&lt;style&gt;
-    .toggle-header2 {
-        cursor: pointer;
-        background-color: #f1f1f1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-    .toggle-content2 {
-        display: none;
-        margin-top: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-&lt;/style&gt;
-
-&lt;p&gt;Any function that doesn’t have this linear-plus-even form can’t be represented by a shallow ReLU net without biases. The following definition and proposition show that if a function has this form, it &lt;em&gt;can&lt;/em&gt; be represented (or more precisely, approximated to arbitrary accuracy) by a shallow $\mathrm{ReLU}$ net.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Definition 1:&lt;/strong&gt; Let $f_{\boldsymbol{\theta}}(\mathbf{x})$ be a shallow $\mathrm{ReLU}$ network with no biases and width $n$. We will say a function $f_\ast$ is &lt;em&gt;shallow&lt;/em&gt; $\mathrm{ReLU}$ &lt;em&gt;approximable&lt;/em&gt; if, for every probability distribution $p(\cdot)$ with compact support and every $\epsilon &amp;gt; 0$, we may choose $n$, $\boldsymbol{\theta}$ such that $\mathcal{E}_{\boldsymbol{\theta}} &amp;lt; \epsilon$.&lt;/p&gt;
-
-&lt;div style=&quot;border: 2px solid black; padding: 15px; width: 100%; text-align: left;&quot;&gt;
-
-&lt;b&gt;Proposition 2.&lt;/b&gt; A continuous function $f_\star$ is shallow $\mathrm{ReLU}$ approximable &lt;i&gt;if and only if&lt;/i&gt; it has the linear-plus-even form
-
-$$
-f_*(\mathbf{x}) = \boldsymbol{\beta}^\top \mathbf{x} + |\!| \mathbf{x} |\!| \cdot \mathrm{even} \left( \frac{\mathbf{x}}{|\!| \mathbf{x} |\!|} \right)
-$$
-
-where $\mathrm{even}(\mathbf{z}) = \mathrm{even}(-\mathbf{z})$.
-
-&lt;/div&gt;
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h5 class=&quot;toggle-header&quot; onclick=&quot;toggleContent()&quot;&gt;Click for proof sketch&lt;/h5&gt;
-&lt;div class=&quot;toggle-content&quot;&gt;
-&lt;p&gt;We can prove this by first using homogeneity to only have to consider functions on the sphere, then using Fourier analysis with spherical harmonics to show that the $\mathbf{ReLU}$ basis function is enough to represent all linear and even-order polynomials. Any continuous function on the sphere may be approximated by a polynomial by the Stone-Weierstrass theorem (I think I’m using that right). I’m not going to flesh out the details here, but ChatGPT can probably do it if you’re curious.&lt;/p&gt;
-&lt;/div&gt;
-&lt;script&gt;
-    function toggleContent() {
-        var content = document.querySelector('.toggle-content');
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-        } else {
-            content.style.display = 'none';
-        }
-    }
-&lt;/script&gt;
-
-&lt;style&gt;
-    .toggle-header {
-        cursor: pointer;
-        background-color: #f1f1f1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-    .toggle-content {
-        display: none;
-        margin-top: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-&lt;/style&gt;
-
-&lt;p&gt;Out of this we get a nice corollary that gives us a property to look for that tells us that no component of our function is representable:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Corollary 1:&lt;/strong&gt; Suppose $p(\mathbf{x}) = p(-\mathbf{x})$ and $f_\ast(\mathbf{x})$ is an odd function satisfying $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) \cdot \boldsymbol{\beta}^\top \mathbf{x}] = 0$ for all $\boldsymbol{\beta}$ (i.e., it’s orthogonal to all linear functions). Then $\mathbb{E}_{x \sim p}[f_\ast(\mathbf{x}) f_{\boldsymbol{\theta}}(\mathbf{x})] = 0$ for all ${\boldsymbol{\theta}}$, and when choosing $\boldsymbol{\theta}$ to minimize the MSE $\mathcal{E}_{\boldsymbol{\theta}}$, the best the network can do is to represent the zero function.&lt;/p&gt;
-
-&lt;p&gt;(We can actually prove this corollary without going through the above machinery, just integrating directly against the measure and using properties of the $\mathrm{ReLU}$ function, but it’s illuminating to go through the above propositions because we get a complete picture of the representable functions.)&lt;/p&gt;
-
-&lt;h2 id=&quot;some-examples&quot;&gt;Some examples&lt;/h2&gt;
-
-&lt;p&gt;So what? Does this ever actually show up? Here are two cases where it’s shown up in my recent research. Notice how you could easily think shallow $\mathrm{ReLU}$ networks could do the job if you didn’t know better.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Sinusoids on the unit circle.&lt;/strong&gt; If $\mathbf{x}$ is sampled from the unit circle, either uniformly over all angles or uniformly over evenly-spaced discrete points, then the network can’t achieve nonzero learning on functions like $\sin(k x_1)$ with $k = 3, 5, 7, \ldots$&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Cubic monomials and higher-order friends.&lt;/strong&gt; Suppose the coordinates of $\mathbf{x}$ are sampled independently (but not necessarily identically) from mearn-zero (say, Gaussian) distributions. The network can’t achieve nonzero learning on any monomial $x_i x_j x_k$ with nonrepeated indices. The same is true of monomials of order $5, 7,$ etc.&lt;/p&gt;
-
-&lt;p&gt;This last one’s pretty surprising to me! To test it, I trained bias-free $\mathrm{ReLU}$ nets, both shallow (i.e. depth 2) and deep (depth 3), on monomial functions of Gaussian distributions. As you can see, the deep net can make progress on monomials of every order, but the shallow net can make no progress on odd monomials of order $\ge 3$. Weird!&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center;&quot;&gt;
-&lt;img src=&quot;/img/shallow_relu_expressivity/monomial_training_expts.png&quot; width=&quot;100%&quot; /&gt;
-&lt;/p&gt;
-
-&lt;h2 id=&quot;concluding-thoughts&quot;&gt;Concluding thoughts&lt;/h2&gt;
-
-&lt;p&gt;This doesn’t matter at all for deep learning practitioners, but it’s useful to keep in mind for deep learning theorists. It’s useful to study the simplest model that can perform a learning task, and it’s good to know that the first thing you might try — a shallow, bias-free $\mathrm{ReLU}$ net — can’t even learn every function on the sphere.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;p&gt;&lt;em&gt;Thanks to Joey Turnbull, who first brought the experiment reported above to my attention.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Of course, the more remarkable fact is that neural networks not only &lt;em&gt;can represent&lt;/em&gt; these functions but also &lt;em&gt;do learn&lt;/em&gt; them when trained. This is beyond the power of expressivity to explain. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;As a disclaimer, I’ll say that I’m confident that none of the content in this blogpost is new: I’m sure many researchers over the years have realized all of this. I’m not sure where to find these results in the literature, and it’s easier for me to write this then to find a good reference, so I’m just going to develop it all from first principles, but if you know a reference, do send it my way. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Thu, 03 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</link>
-        <guid isPermaLink="true">http://james-simon.github.io/blog/the-expressivity-of-shallow-relu-nets/</guid>
-        
-        
-        <category>dl-science</category>
         
       </item>
     
