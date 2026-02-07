@@ -14,7 +14,8 @@ const DEFAULTS = {
   eta: 0.01,
   batchSize: 100,
   logScale: false,
-  xAxisMode: 'step'
+  xAxisMode: 'step',
+  emaWindow: 1
 };
 
 export class AppState {
@@ -28,6 +29,7 @@ export class AppState {
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
     this.xAxisMode = DEFAULTS.xAxisMode;
+    this.emaWindow = DEFAULTS.emaWindow;
   }
 
   /**
@@ -42,7 +44,8 @@ export class AppState {
       eta: this.eta,
       batchSize: this.batchSize,
       logScale: this.logScale,
-      xAxisMode: this.xAxisMode
+      xAxisMode: this.xAxisMode,
+      emaWindow: this.emaWindow
     };
   }
 
@@ -87,6 +90,10 @@ export class AppState {
     if (json.xAxisMode !== undefined) {
       this.xAxisMode = json.xAxisMode;
     }
+
+    if (json.emaWindow !== undefined) {
+      this.emaWindow = json.emaWindow;
+    }
   }
 
   /**
@@ -128,5 +135,6 @@ export class AppState {
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
     this.xAxisMode = DEFAULTS.xAxisMode;
+    this.emaWindow = DEFAULTS.emaWindow;
   }
 }

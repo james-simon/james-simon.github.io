@@ -84,7 +84,35 @@ class LogarithmicSlider {
   }
 }
 
-const gammaSlider = new LogarithmicSlider(0.001, 1);
+/**
+ * Logarithmic slider that starts at a minimum value (no zero)
+ * Just uses the standard logarithmic values [min, max]
+ */
+class LogarithmicSliderWithOff {
+  constructor(min, max) {
+    this.values = generateOneSigFigValues(min, max);
+  }
+
+  sliderToValue(position) {
+    const index = Math.round((position / 100) * (this.values.length - 1));
+    return this.values[index];
+  }
+
+  valueToSlider(value) {
+    let closestIndex = 0;
+    let closestDist = Math.abs(value - this.values[0]);
+    for (let i = 1; i < this.values.length; i++) {
+      const dist = Math.abs(value - this.values[i]);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIndex = i;
+      }
+    }
+    return (closestIndex / (this.values.length - 1)) * 100;
+  }
+}
+
+const gammaSlider = new LogarithmicSlider(0.0001, 1);
 
 /**
  * Generic function to render dynamic parameter sliders
@@ -560,6 +588,31 @@ logScaleCheckbox.addEventListener('change', () => {
   normChart.setLogScale(useLog);
 });
 
+// EMA slider
+const emaSlider = new LogarithmicSliderWithOff(1, 1000);
+const emaSliderElement = document.getElementById('emaSlider');
+const emaValueElement = document.getElementById('emaValue');
+
+// Initialize EMA slider from state and apply to charts
+emaSliderElement.value = emaSlider.valueToSlider(appState.emaWindow);
+emaValueElement.textContent = appState.emaWindow === 1 ? 'off' : appState.emaWindow;
+lossChart.setEmaWindow(appState.emaWindow);
+normChart.setEmaWindow(appState.emaWindow);
+
+emaSliderElement.addEventListener('input', () => {
+  const emaWindow = emaSlider.sliderToValue(parseFloat(emaSliderElement.value));
+  emaValueElement.textContent = emaWindow === 1 ? 'off' : emaWindow;
+  appState.emaWindow = emaWindow;
+  appState.save();
+
+  // Apply EMA to charts
+  lossChart.setEmaWindow(emaWindow);
+  normChart.setEmaWindow(emaWindow);
+
+  // Update charts immediately with current data
+  updateCharts();
+});
+
 // X-axis mode toggle function
 window.setXAxisMode = function(mode) {
   const useEffTime = (mode === 'teff');
@@ -575,7 +628,7 @@ window.setXAxisMode = function(mode) {
   // Update x-axis labels
   const xLabels = document.querySelectorAll('.x-axis-label');
   xLabels.forEach(label => {
-    label.innerHTML = useEffTime ? '$t_{\\mathrm{eff}} = \\eta \\cdot \\mathrm{[step]}$' : 'step';
+    label.innerHTML = useEffTime ? '$t_{\\mathrm{eff}} = \\eta \\cdot \\mathrm{step}$' : 'step';
   });
 
   // Re-render MathJax for labels if needed
@@ -598,23 +651,15 @@ function updateCharts() {
   const state = simulation.getState();
   if (state.lossHistory.length > 0) {
     lossChart.update(state.lossHistory);
-    normChart.update(state.normHistory);
+    normChart.update(state.normHistory, state.d);
   }
 }
 
 // Initialize x-axis mode from saved state
 setXAxisMode(appState.xAxisMode);
 
-// Update visualization loop
-function updateVisualization() {
-  if (simulation.isRunning) {
-    updateCharts();
-  }
-  requestAnimationFrame(updateVisualization);
-}
-
-// Start visualization loop
-updateVisualization();
+// Set up chart update callback for simulation
+simulation.onFrameUpdate = updateCharts;
 
 // Reset to defaults button
 const resetToDefaultsButton = document.getElementById('resetToDefaultsButton');

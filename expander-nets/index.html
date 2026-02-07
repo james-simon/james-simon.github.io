@@ -204,6 +204,17 @@ f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x
       <span class="plot-xaxis-toggle">
         <a href="#" id="step-link" class="active" onclick="setXAxisMode('step'); return false;">step</a><a href="#" id="teff-link" onclick="setXAxisMode('teff'); return false;">$t_{\mathrm{eff}}$</a>
       </span>
+      <span style="margin-left: 30px; display: inline-flex; align-items: center; gap: 8px;">
+        <span>EMA:</span>
+        <input type="range" id="emaSlider" min="0" max="100" value="0" style="width: 120px;">
+        <span id="emaValue" style="min-width: 30px; text-align: left;">0</span>
+      </span>
+    </div>
+
+    <!-- Steps per second display -->
+    <div style="margin-top: 1.5em; text-align: center; color: #666; font-size: 14px;">
+      <label>steps/sec:</label>
+      <span id="stepsPerSec" style="font-weight: bold;">—</span>
     </div>
   </div>
 

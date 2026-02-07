@@ -42,7 +42,7 @@ export const CONFIG = {
       maxExp: 2         // 100
     },
     c: {
-      minExp: -1,       // 0.1
+      minExp: -4,       // 0.0001
       maxExp: 1         // 10
     }
   },
