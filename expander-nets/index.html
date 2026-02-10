@@ -187,7 +187,7 @@ f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x
         <div class="plot-box">
           <div class="plot-content">
             <canvas id="normChart" class="plot-canvas"></canvas>
-            <div class="y-axis-label y-axis-label-norms">$\|\mathbf{W}_i\|_F^2$</div>
+            <div class="y-axis-label y-axis-label-norms" id="paramSizeLabel">parameter size</div>
             <div class="x-axis-label">step</div>
           </div>
         </div>
@@ -199,6 +199,10 @@ f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x
       <label style="margin-right: 20px;">
         <input type="checkbox" id="logScaleCheckbox">
         logscale y-axes
+      </label>
+      <label style="margin-right: 20px;">
+        <input type="checkbox" id="showTheoryCheckbox">
+        show theory curves
       </label>
       <span style="margin-right: 0.5em;">plot w.r.t.</span>
       <span class="plot-xaxis-toggle">
@@ -215,6 +219,118 @@ f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x
     <div style="margin-top: 1.5em; text-align: center; color: #666; font-size: 14px;">
       <label>steps/sec:</label>
       <span id="stepsPerSec" style="font-weight: bold;">—</span>
+    </div>
+
+    <!-- Theory section -->
+    <hr class="theory-separator">
+
+    <div class="theory-section-label">THEORY COMPUTED BELOW THIS LINE</div>
+
+    <div class="theory-row">
+      <div class="theory-modeling-ode">
+        <div class="theory-modeling-ode-label">modeling ODE</div>
+        <div class="theory-modeling-ode-formula" id="modelingOdeFormula">
+          $\mathcal{L} = \frac{1}{2}\left(1 - c a_1^{\alpha_1} \cdots a_d^{\alpha_d} b\right)^2$
+        </div>
+      </div>
+
+      <div class="theory-modeling-ode">
+        <div class="theory-modeling-ode-label">dynamics</div>
+        <div class="theory-modeling-ode-formula">
+          $\begin{align}
+          \dot{a}_i &= -\partial_{a_i} \mathcal{L} \\
+          \dot{b} &= -\partial_b \mathcal{L}
+          \end{align}$
+        </div>
+      </div>
+
+      <div class="theory-modeling-ode">
+        <div class="theory-modeling-ode-label">initialization</div>
+        <div class="theory-modeling-ode-formula">
+          $\begin{align}
+          a_i(0) &= 1 \\
+          b(0) &= 0
+          \end{align}$
+        </div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">rate constant</div>
+        <div class="theory-metric-formula" id="rateConstantFormula">
+          $\kappa = \sqrt{\frac{\prod_i \gamma_i^{\alpha_i}}{|\boldsymbol{\alpha}|!}}$
+        </div>
+        <div class="theory-metric-value" id="rateConstantValue">—</div>
+      </div>
+    </div>
+
+    <hr class="theory-row-separator">
+
+    <div class="theory-metrics">
+      <div class="theory-metric">
+        <div class="theory-metric-label">number of relevant directions</div>
+        <div class="theory-metric-formula">$d_{\mathrm{rel}} = \#\{\alpha_i > 0\}$</div>
+        <div class="theory-metric-value" id="relevantDirectionsValue">—</div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">order of $f_*$</div>
+        <div class="theory-metric-formula">$|\boldsymbol{\alpha}| = \sum_i \alpha_i$</div>
+        <div class="theory-metric-value" id="orderOfFStarValue">—</div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">order of dynamical system</div>
+        <div class="theory-metric-formula">$\ell = |\boldsymbol{\alpha}| + 1$</div>
+        <div class="theory-metric-value" id="totalOrderValue">—</div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">order prefactor</div>
+        <div class="theory-metric-formula">
+          $\kappa = \prod_i \alpha_i^{\alpha_i/2}$
+        </div>
+        <div class="theory-metric-value" id="orderPrefactorValue">—</div>
+      </div>
+    </div>
+
+    <hr class="theory-row-separator">
+
+    <div class="theory-metrics">
+      <div class="theory-metric">
+        <div class="theory-metric-label">mean core parameter at init</div>
+        <div class="theory-metric-formula">
+          $\beta = \frac{1}{d+1} \left(\sum_i \frac{|a_i(0)|}{\sqrt{\alpha_i}} + |b(0)|\right)$
+        </div>
+        <div class="theory-metric-value" id="betaValue">—</div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">shape parameters</div>
+        <div class="theory-metric-formula">
+          $r_i = \frac{a_i(0)^2}{\alpha_i \beta^2}$
+        </div>
+        <div class="theory-metric-value" id="shapeParamsValue">—</div>
+      </div>
+
+      <div class="theory-metric">
+        <div class="theory-metric-label">shape integral</div>
+        <div class="theory-metric-formula">
+          $F(\mathbf{r}) = \left(\frac{\ell}{2} - 1\right) \int_0^\infty (s + r_b)^{-1/2} \prod_i (s + r_i)^{-\alpha_i/2} \, ds$
+        </div>
+        <div class="theory-metric-value" id="shapeIntegralValue">—</div>
+      </div>
+    </div>
+
+    <div class="theory-rise-time">
+      <div class="theory-rise-time-label">rise time</div>
+      <div class="theory-rise-time-formula">
+        $t_{\mathrm{rise}} = \begin{cases}
+          c^{-2} & \text{if } \ell = 1, \\
+          -\frac{1}{\kappa c} \cdot \log\left(\sqrt{\kappa c}\beta\right) & \text{if } \ell = 2, \\
+          \frac{1}{\ell - 2} \cdot \frac{1}{\kappa c} \cdot \frac{F(\mathbf{r})}{\beta^{\ell-2}} & \text{if } \ell > 2.
+        \end{cases}$
+      </div>
+      <div class="theory-rise-time-value" id="triseValue">—</div>
     </div>
   </div>
 

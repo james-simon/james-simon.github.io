@@ -91,8 +91,25 @@ export function calculateBetaEffective(beta, ell, shapeIntegral) {
 }
 
 /**
- * Calculate all theory values at once
- * Returns object with all quantities
+ * Calculate all theoretical quantities for the system
+ *
+ * @param {number[]} a0Vec - Initial parameter values [a_1(0), a_2(0), ...]
+ * @param {number[]} kVec - Exponents [k_1, k_2, ...]
+ * @param {number} fStar - Target value f*
+ * @param {number} c - Coefficient c
+ * @returns {Object} Theory object containing:
+ *   - ell: Total order (Σ k_i)
+ *   - kappa: Order prefactor (Π k_i^(k_i/2))
+ *   - beta: Mean core parameter at init
+ *   - tRise: Rise time {value, isUndefined}
+ *   - shapeParams: Shape parameters [r_1, r_2, ...]
+ *   - shapeIntegral: F(r) {value, isUndefined}
+ *   - betaEffective: Effective balanced init scale
+ *
+ * @example
+ * const theory = calculateAllTheory([0.01, 0.01], [2, 3], 1, 1);
+ * console.log(theory.tRise.value); // Rise time
+ * console.log(theory.betaEffective); // β_eff
  */
 export function calculateAllTheory(a0Vec, kVec, fStar, c) {
   const ell = calculateEll(kVec);

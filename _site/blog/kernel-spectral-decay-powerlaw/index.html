@@ -3883,7 +3883,7 @@ c_{|\boldsymbol{\alpha}|}
 <p style="font-size: 0.9em; margin-top: 0.5em;">Slope on a log-log plot of $\lambda(j) = f(j; \sigma, a)$ with $a = 1.5$. Note that it takes an extremely long time to converge to the asymptotic slope of $-a = -1.5$!</p>
 </div>
 
-<p>When $\sigma$ isn’t particularly big, sometimes it takes up to $j \sim 10^{100}$ to actually converge to a powerlaw slope of $a$. Perils of asymptotic analysis! Really makes me suspect that all the power laws we see in machine learning are actually just locally powerlaws, and over enough orders of magnitude, they’ll change.</p>
+<p>When $\sigma$ isn’t particularly big, sometimes it takes up to $j \sim 10^{100}$ to actually get close to a decay rate of exponent $a$. Perils of asymptotic analysis! Really makes me suspect that all the power laws we see in machine learning are actually just locally powerlaws, and over enough orders of magnitude, they’ll change.</p>
 
 <h3 id="what-now">What now?</h3>
 
@@ -3896,7 +3896,7 @@ c_{|\boldsymbol{\alpha}|}
       <p>The second half of Arie and Bruno’s paper is a treatment of how the data spectrum drives generalization in KRR, which is one step beyond the kernel spectrum! I’m just not discussing it because I’m focused on the powerlaw spectrum question here. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:a" role="doc-endnote">
-      <p>For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find exactly the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. <a href="#fnref:a" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find essentially the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. <a href="#fnref:a" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

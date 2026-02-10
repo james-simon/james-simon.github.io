@@ -3,12 +3,41 @@
 
   <head>
   
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+  
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Jamie Simon</title>
+  <title>Expander Nets - Project Structure and Implementation Notes</title>
   <meta name="description" content="">
 
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -20,7 +49,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/expander-nets/">
+  <link rel="canonical" href="http://localhost:4000/expander-nets/CLAUDE_NOTES/">
   <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
@@ -3754,343 +3783,345 @@
 
     <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
-        <script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
-    },
-    chtml: {
-      scale: 1.0
-    },
-    startup: {
-      ready: () => {
-        MathJax.startup.defaultReady();
-        console.log('MathJax is ready');
-        // Set flag that MathJax is ready
-        window.mathJaxReady = true;
-      }
-    }
-  };
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <article class="post">
 
-<link rel="stylesheet" href="styles.css">
+  <header class="post-header">
+    <h1 class="post-title">Expander Nets - Project Structure and Implementation Notes</h1>
+  </header>
 
-<div class="container">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 class="page-title">Expander Nets</h1>
-    <button id="resetToDefaultsButton" class="sim-button">reset to defaults</button>
+  <div class="post-content">
+    <h1 id="expander-nets---project-structure-and-implementation-notes">Expander Nets - Project Structure and Implementation Notes</h1>
+
+<h2 id="overview">Overview</h2>
+<p>This is an interactive visualization for training “expander nets” - neural networks with a specific architecture designed to learn Hermite polynomial target functions. The project includes both experimental simulation (gradient descent) and theoretical predictions (ODE solver).</p>
+
+<h2 id="architecture">Architecture</h2>
+
+<h3 id="network-structure">Network Structure</h3>
+<ul>
+  <li><strong>Input dimension</strong>: d (user configurable, 1-5)</li>
+  <li><strong>Hidden dimension</strong>: k (large, typically 1000)</li>
+  <li><strong>Layers</strong>:
+    <ul>
+      <li>W₁: d×d diagonal matrix (trainable)</li>
+      <li>W_froz: d×k fixed random Gaussian matrix (frozen)</li>
+      <li>W₂: k×1 trainable weights</li>
+    </ul>
+  </li>
+  <li><strong>Forward pass</strong>: <code class="language-plaintext highlighter-rouge">f(x) = W₂ᵀ · σ(W_froz · W₁ · x)</code>
+where σ is ReLU activation</li>
+</ul>
+
+<h3 id="target-function">Target Function</h3>
+<ul>
+  <li>Product of normalized Hermite polynomials: <code class="language-plaintext highlighter-rouge">f*(x) = ∏ᵢ h_αᵢ(xᵢ/√γᵢ)</code></li>
+  <li>Uses <strong>normalized probabilist’s Hermite polynomials</strong>: <code class="language-plaintext highlighter-rouge">h_α(z) = He_α(z) / √(α!)</code>
+    <ul>
+      <li>h₀(z) = 1</li>
+      <li>h₁(z) = z</li>
+      <li>h₂(z) = (z² - 1) / √2</li>
+      <li>h₃(z) = (z³ - 3z) / √6</li>
+    </ul>
+  </li>
+  <li>Parameters:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">αᵢ</code> (alpha): polynomial degree for dimension i</li>
+      <li><code class="language-plaintext highlighter-rouge">γᵢ</code> (gamma): normalization scale for dimension i</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="file-structure">File Structure</h2>
+
+<h3 id="core-logic">Core Logic</h3>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">app.js</code></strong>: Main application entry point
+    <ul>
+      <li>Initializes AppState, managers, and simulation</li>
+      <li>Sets up network visualization</li>
+      <li>Handles start/pause/reset buttons</li>
+      <li><strong>CRITICAL THEORY LOGIC</strong>: Only recomputes theory in “preview mode” (before simulation has data)</li>
+      <li>Once simulation starts, theory is “locked” to captured parameters</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">model.js</code></strong>: ExpanderNet neural network implementation
+    <ul>
+      <li>W₁ initialization: diagonal with small values (0.01)</li>
+      <li>W_froz: fixed Gaussian random matrix</li>
+      <li>W₂: initialized small (0.01)</li>
+      <li>Forward pass with ReLU activation</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">target.js</code></strong>: Hermite polynomial target functions
+    <ul>
+      <li>Normalized Hermite polynomials h_α(z) = He_α(z) / √(α!)</li>
+      <li>Derivatives for gradient computation</li>
+      <li>Target function evaluation: product over dimensions</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">training.js</code></strong>: SGD trainer
+    <ul>
+      <li>Batch sampling from Gaussian distribution</li>
+      <li>Gradient computation via backprop</li>
+      <li>Parameter updates (only W₁ diagonals and W₂)</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">simulation.js</code></strong>: Training loop controller
+    <ul>
+      <li>Adaptive stepping: fits as many SGD steps as possible per frame (~40 Hz target)</li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>Tracks loss and parameter norms (W₁ diagonals, W₁ cross-term [0,1], √k·</td>
+              <td> </td>
+              <td>W₂</td>
+              <td> </td>
+              <td>)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li>Runs ODE theory prediction via <code class="language-plaintext highlighter-rouge">runTheoryODE()</code></li>
+      <li><strong>Adaptive dt scaling</strong>: For tMax &gt; 2000, scales dt proportionally to keep ~200k ODE steps</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">state.js</code></strong>: Application state with localStorage persistence
+    <ul>
+      <li>Stores all UI parameters (d, k, γ, α, η, batch size, etc.)</li>
+      <li>Stores UI settings (logScale, showTheory, xAxisMode, emaWindow)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="ui-components-ui-directory">UI Components (<code class="language-plaintext highlighter-rouge">ui/</code> directory)</h3>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">charts.js</code></strong>: Chart initialization and controls
+    <ul>
+      <li>Creates LossChart and NormChart instances</li>
+      <li>Sets up logscale, x-axis mode (step vs t_eff), EMA slider, theory checkbox</li>
+      <li><code class="language-plaintext highlighter-rouge">computeAndShowTheoryOnly()</code>: Shows theory preview before simulation runs</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">controls.js</code></strong>: Parameter sliders and displays
+    <ul>
+      <li>d slider, k slider</li>
+      <li>5 gamma sliders (one per possible dimension)</li>
+      <li>5 alpha sliders (one per possible dimension)</li>
+      <li>η (learning rate) and batch size sliders</li>
+      <li>Updates theoretical predictions display</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">display.js</code></strong>: Theory predictions display panel
+    <ul>
+      <li>Shows c, β_eff, t_rise, etc. computed from theory</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="visualization">Visualization</h3>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">visualization.js</code></strong>: Chart.js wrapper classes
+    <ul>
+      <li><strong>LossChart</strong>: 3 datasets (raw, EMA-smoothed exp, theory)</li>
+      <li><strong>NormChart</strong>: Multiple datasets for W₁ diagonals, W₁ cross-term, W₂ norm
+        <ul>
+          <li>Dataset structure (for d dimensions):
+            <ul>
+              <li>Indices 0 to d-1: W₁ diagonals (exp, thick lines)</li>
+              <li>Index d: W₁ cross-term [0,1] (exp, thick, dark gray) - only if d ≥ 2</li>
+              <li>Index d + crossOffset: W₂ norm (exp, thick, slate gray)</li>
+              <li>Next d datasets: W₁ diagonals (theory, thin, dashed)</li>
+              <li>Final dataset: W₂ norm (theory, thin, dashed)</li>
+            </ul>
+          </li>
+          <li>Theory datasets excluded from legend via <code class="language-plaintext highlighter-rouge">generateLabels</code> filter</li>
+        </ul>
+      </li>
+      <li>Incremental caching with downsampling (MAX_PLOT_POINTS = 2000)</li>
+      <li>EMA smoothing for loss plot</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="theory-computation-core-directory">Theory Computation (<code class="language-plaintext highlighter-rouge">core/</code> directory)</h3>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">theory.js</code></strong>: Analytical theory calculations
+    <ul>
+      <li>Computes c, β_eff, t_rise from parameters</li>
+      <li>Used for predictions display and ODE initialization</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="configuration">Configuration</h3>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">config.js</code></strong>: Constants and network visualization settings</li>
+</ul>
+
+<h2 id="key-design-patterns">Key Design Patterns</h2>
+
+<h3 id="theory-curve-state-management">Theory Curve State Management</h3>
+<p><strong>Two modes:</strong></p>
+<ol>
+  <li><strong>Preview mode</strong> (before simulation starts):
+    <ul>
+      <li>Theory updates live as sliders change</li>
+      <li>Uses current slider values to compute theory</li>
+      <li>Implemented in <code class="language-plaintext highlighter-rouge">app.js</code> parameter callback and <code class="language-plaintext highlighter-rouge">charts.js</code> checkbox handler</li>
+    </ul>
+  </li>
+  <li><strong>Locked mode</strong> (after simulation has data):
+    <ul>
+      <li>Theory stays frozen to captured parameters from simulation start</li>
+      <li>Slider changes don’t affect theory curves</li>
+      <li>Only show/hide existing theory data</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Implementation check</strong> in <code class="language-plaintext highlighter-rouge">app.js</code>:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">simulationHasData</span> <span class="o">=</span> <span class="nx">simulation</span><span class="p">.</span><span class="nx">model</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span>
+                          <span class="nx">simulation</span><span class="p">.</span><span class="nx">lossHistory</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">simulationHasData</span> <span class="o">&amp;&amp;</span> <span class="nx">appState</span><span class="p">.</span><span class="nx">showTheory</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">chartsManager</span><span class="p">.</span><span class="nx">computeAndShowTheoryOnly</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="parameter-capture-pattern">Parameter Capture Pattern</h3>
+<p>When simulation starts (<code class="language-plaintext highlighter-rouge">app.js</code>):</p>
+<ol>
+  <li>User clicks “start”</li>
+  <li><code class="language-plaintext highlighter-rouge">simulation.captureParams(...)</code> saves current slider values</li>
+  <li><code class="language-plaintext highlighter-rouge">simulation.start()</code> initializes model and runs ODE with captured params</li>
+  <li>Theory is computed once and stored in <code class="language-plaintext highlighter-rouge">theoryLossHistory</code>, <code class="language-plaintext highlighter-rouge">theoryNormHistory</code></li>
+  <li>Future slider changes don’t affect theory (until reset)</li>
+</ol>
+
+<h3 id="adaptive-performance">Adaptive Performance</h3>
+<p><strong>SGD stepping</strong> (<code class="language-plaintext highlighter-rouge">simulation.js</code>):</p>
+<ul>
+  <li>Target 25ms per frame (40 Hz)</li>
+  <li>Estimates time per step with exponential moving average</li>
+  <li>Dynamically adjusts steps per frame to meet budget</li>
+  <li>Typical: 100-500 steps/frame depending on d, k</li>
+</ul>
+
+<p><strong>ODE integration</strong> (<code class="language-plaintext highlighter-rouge">simulation.js</code>, <code class="language-plaintext highlighter-rouge">charts.js</code>):</p>
+<ul>
+  <li>Base dt = 0.01 for tMax ≤ 2000</li>
+  <li>For tMax &gt; 2000: dt = 0.01 × (tMax / 2000)</li>
+  <li>Keeps computation constant (~200k steps regardless of tMax)</li>
+</ul>
+
+<h3 id="incremental-plotting-cache">Incremental Plotting Cache</h3>
+<p><strong><code class="language-plaintext highlighter-rouge">IncrementalCache</code></strong> in <code class="language-plaintext highlighter-rouge">visualization.js</code>:</p>
+<ul>
+  <li>Tracks last processed index to avoid reprocessing entire history</li>
+  <li>Computes EMA incrementally (O(new points) not O(n))</li>
+  <li>Downsamples to MAX_PLOT_POINTS for chart rendering</li>
+  <li>Stores running max values for y-axis scaling</li>
+</ul>
+
+<h2 id="integration-with-low-dim-flows">Integration with Low-Dim-Flows</h2>
+
+<p>The project uses the <code class="language-plaintext highlighter-rouge">low-dim-flows</code> ODE solver (sibling directory) to compute theory predictions:</p>
+
+<p><strong>Import</strong>: <code class="language-plaintext highlighter-rouge">import { solveODE } from '../low-dim-flows/api.js'</code></p>
+
+<p><strong>Usage</strong> in <code class="language-plaintext highlighter-rouge">simulation.js</code> and <code class="language-plaintext highlighter-rouge">charts.js</code>:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">solveODE</span><span class="p">(</span><span class="nx">a0Vec</span><span class="p">,</span> <span class="nx">kVec</span><span class="p">,</span> <span class="nx">tMax</span><span class="p">,</span> <span class="nx">fStar</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">dt</span><span class="p">);</span>
+<span class="c1">// Returns: { times, aTrajectories, lossValues }</span>
+</code></pre></div></div>
+
+<p><strong>Mapping</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">a0Vec = [1, 1, ..., 1, 1e-10]</code> - initial values for W₁ diagonals + W₂ bias</li>
+  <li><code class="language-plaintext highlighter-rouge">kVec = [...alphas, 1]</code> - exponents for each parameter</li>
+  <li><code class="language-plaintext highlighter-rouge">tMax = 2 × t_rise</code> - simulation time</li>
+  <li>Theory trajectories map to experiment:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">aTrajectories[i]</code> (i &lt; d) → W₁ diagonal element i</li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td><code class="language-plaintext highlighter-rouge">aTrajectories[d]</code> → W₂ norm (bias term b, shown as</td>
+              <td>b</td>
+              <td>)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Recent change</strong>: Removed HARD_CAP override in low-dim-flows so caller’s tMax is respected</p>
+
+<h2 id="x-axis-modes">X-Axis Modes</h2>
+
+<p><strong>Step mode</strong>: x-axis shows iteration count (discrete steps)
+<strong>t_eff mode</strong>: x-axis shows effective time = η × step (continuous time)</p>
+
+<p>Both experiment and theory use the same x-axis transformation for consistency.</p>
+
+<h2 id="important-gotchas">Important Gotchas</h2>
+
+<ol>
+  <li><strong>Dataset indexing in NormChart</strong>: Must account for crossTermOffset when d &lt; 2</li>
+  <li><strong>Theory curve visibility</strong>: Controlled by both <code class="language-plaintext highlighter-rouge">showTheory</code> flag AND <code class="language-plaintext highlighter-rouge">simulationHasData</code> state</li>
+  <li><strong>Legend filtering</strong>: Theory datasets have “theory” in label → excluded via <code class="language-plaintext highlighter-rouge">generateLabels</code></li>
+  <li><strong>Y-axis max</strong>: Must include theory range when <code class="language-plaintext highlighter-rouge">showTheory</code> is true</li>
+  <li><strong>EMA initialization</strong>: Must match initial parameter values (W₁ = 1, W₂ = 0)</li>
+  <li><strong>Unicode subscripts</strong>: Use <code class="language-plaintext highlighter-rouge">String.fromCharCode(0x2080 + digit)</code> for legend labels</li>
+  <li><strong>W₁ cross-term</strong>: Only tracked/displayed when d ≥ 2, stored as <code class="language-plaintext highlighter-rouge">w1_cross</code></li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><strong>W₂ norm display</strong>: Shows √k·</td>
+          <td> </td>
+          <td>W₂</td>
+          <td> </td>
+          <td>(scaled), but theory shows just</td>
+          <td>b</td>
+          <td>(unscaled)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ol>
+
+<h2 id="performance-characteristics">Performance Characteristics</h2>
+
+<p><strong>Typical performance</strong> (d=3, k=1000, batch=100):</p>
+<ul>
+  <li>~300 steps/sec</li>
+  <li>~1.5ms per SGD step</li>
+  <li>~0.3ms per norm computation</li>
+  <li>~0.5ms per chart update</li>
+  <li>Total: ~25ms per frame (40 FPS)</li>
+</ul>
+
+<p><strong>Bottlenecks</strong>:</p>
+<ol>
+  <li>Forward/backward pass scales with k</li>
+  <li>Norm computation (Frobenius norm of W₂)</li>
+  <li>History array appends (becomes slow after ~100k points)</li>
+</ol>
+
+<p><strong>Optimizations</strong>:</p>
+<ul>
+  <li>Incremental cache reduces chart update from O(n) to O(new points)</li>
+  <li>Downsampling keeps chart at 2000 points max</li>
+  <li>No intermediate allocations in hot loops</li>
+  <li>Adaptive stepping maximizes training per frame</li>
+</ul>
+
   </div>
 
-  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 1em; margin-bottom: 0.2em;">
-
-  <div class="section-label">SETUP</div>
-
-  <div style="margin-top: 0; margin-bottom: 2em;">
-    <!-- Row 1: Network (Red) with diagram on the right -->
-    <div style="display: flex; gap: 1em; margin-bottom: 1em;">
-      <div style="background-color: #fff0f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; position: relative; min-height: 120px; flex: 1;">
-        <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc5555; white-space: pre;">    NETWORK</div>
-        <div style="display: flex; gap: 2em; margin-left: 60px;">
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">network function</div>
-            <div>$$\hat{f}(\mathbf{x}) = \mathbf{W}_2 \, \sigma \circ \mathbf{W}_{\mathrm{froz}} \, \mathbf{W}_1 \, \mathbf{x}$$</div>
-            <div style="font-size: 13px; margin-top: 8px; color: #888;">$$\mathbf{W}_2 \in \mathbb{R}^{1 \times k}, \, \mathbf{W}_{\mathrm{froz}} \in \mathbb{R}^{k \times d},$$</div>
-            <div style="font-size: 13px; margin-top: 4px; color: #888;">$$\mathbf{W}_1 \in \mathbb{R}^{d \times d}, \, \mathbf{x} \in \mathbb{R}^d$$</div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">nonlinearity</div>
-            <div>$$\sigma(z) = \sqrt{2} \cos\left(z + \frac{\pi}{4}\right)$$</div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">hidden dimension</div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; flex-wrap: nowrap;">
-              <span style="font-size: 17px; white-space: nowrap;">$k$:</span>
-              <input type="range" id="kSlider" min="0" max="100" value="50" style="width: 120px; flex-shrink: 1;">
-              <span id="kValue" style="font-size: 15px; text-align: left; white-space: nowrap;">1000</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <svg id="networkViz" width="400"></svg>
-      </div>
-    </div>
-
-    <!-- Row 2: Data (Orange) -->
-    <div style="background-color: #fff8f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc8855; white-space: pre;">    DATA</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data distro</div>
-          <div>$$\mathbf{x} \sim \mathcal{N}(0, \mathbf{\Gamma})$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data dimension</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$d$:</span>
-            <input type="range" id="dSlider" min="1" max="5" value="3" style="width: 120px;">
-            <span id="dValue" style="font-size: 16px; min-width: 30px; text-align: left;">3</span>
-          </div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data covariance</div>
-          <div style="margin-bottom: 8px;">$$\mathbf{\Gamma} = \mathrm{diag}(\gamma_i)$$</div>
-          <div id="gammaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 3: Target (Green) -->
-    <div style="background-color: #f0fff0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 140px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #55aa55; white-space: pre;">    TARGET    FUNCTION</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target function</div>
-          <div id="targetFunctionEquation">$$\begin{align}
-f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x}\right) \\
-&= h_1(\gamma_1^{-1/2} x_1) \cdot h_2(\gamma_2^{-1/2} x_2) \cdot h_3(\gamma_3^{-1/2} x_3)
-\end{align}$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target multi-index</div>
-          <div style="margin-bottom: 8px;">$$\boldsymbol{\alpha} = (\alpha_i)$$</div>
-          <div id="alphaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 4: Training (Blue) -->
-    <div style="background-color: #f0f4ff; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #5578cc; white-space: pre;">    TRAINING</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">loss</div>
-          <div>$$\mathcal{L} = \frac{1}{2} \mathbb{E}_\mathbf{x}\left[(f_*(\mathbf{x}) - \hat{f}(\mathbf{x}))^2\right]$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">initialization</div>
-          <div>$$\begin{align}
-\mathbf{W}_1(0) &= \mathbf{I}_d \\
-\mathbf{W}_{\mathrm{froz},ij} &\sim \mathcal{N}(0, 1) \\
-\mathbf{W}_2(0) &= \mathbf{0}
-\end{align}$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">dynamics</div>
-          <div>$$\begin{align}
-\dot{\mathbf{W}}_1 &= -\nabla_{\mathbf{W}_1} \mathcal{L} \\
-\dot{\mathbf{W}}_{\mathrm{froz}} &= \mathbf{0} \\
-\dot{\mathbf{W}}_2 &= -\frac{1}{k}\nabla_{\mathbf{W}_2} \mathcal{L}
-\end{align}$$</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 5: Hyperparameters (Purple) -->
-    <div style="background-color: #f8f0ff; padding: 1.5em; padding-top: 3em; padding-bottom: calc(3em + 30px); border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #9955cc; white-space: pre;">    HYPERPARAMETERS</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">learning rate</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$\eta$:</span>
-            <input type="range" id="etaSlider" min="0" max="100" value="50" style="width: 120px;">
-            <span id="etaValue" style="font-size: 16px; min-width: 60px; text-align: left;">0.01</span>
-          </div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">batch size</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$|B|$:</span>
-            <input type="range" id="batchSizeSlider" min="0" max="100" value="50" style="width: 120px;">
-            <span id="batchSizeValue" style="font-size: 16px; min-width: 60px; text-align: left;">100</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 2em; margin-bottom: 0.2em;">
-
-  <div class="section-label">SIMULATION</div>
-
-  <div style="margin-top: 1em; margin-bottom: 2em;">
-    <div style="display: flex; gap: 1em; align-items: center; margin-bottom: 2em;">
-      <button id="startPauseButton" class="sim-button">start</button>
-      <button id="resetButton" class="sim-button">reset</button>
-    </div>
-
-    <!-- Plots -->
-    <div class="plots-container">
-      <div class="plot-wrapper">
-        <div class="plot-box">
-          <div class="plot-content">
-            <canvas id="lossChart" class="plot-canvas"></canvas>
-            <div class="y-axis-label y-axis-label-loss">loss $\mathcal{L}$</div>
-            <div class="x-axis-label">step</div>
-          </div>
-        </div>
-      </div>
-      <div class="plot-wrapper">
-        <div class="plot-box">
-          <div class="plot-content">
-            <canvas id="normChart" class="plot-canvas"></canvas>
-            <div class="y-axis-label y-axis-label-norms" id="paramSizeLabel">parameter size</div>
-            <div class="x-axis-label">step</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Plot controls -->
-    <div class="logscale-control">
-      <label style="margin-right: 20px;">
-        <input type="checkbox" id="logScaleCheckbox">
-        logscale y-axes
-      </label>
-      <label style="margin-right: 20px;">
-        <input type="checkbox" id="showTheoryCheckbox">
-        show theory curves
-      </label>
-      <span style="margin-right: 0.5em;">plot w.r.t.</span>
-      <span class="plot-xaxis-toggle">
-        <a href="#" id="step-link" class="active" onclick="setXAxisMode('step'); return false;">step</a><a href="#" id="teff-link" onclick="setXAxisMode('teff'); return false;">$t_{\mathrm{eff}}$</a>
-      </span>
-      <span style="margin-left: 30px; display: inline-flex; align-items: center; gap: 8px;">
-        <span>EMA:</span>
-        <input type="range" id="emaSlider" min="0" max="100" value="0" style="width: 120px;">
-        <span id="emaValue" style="min-width: 30px; text-align: left;">0</span>
-      </span>
-    </div>
-
-    <!-- Steps per second display -->
-    <div style="margin-top: 1.5em; text-align: center; color: #666; font-size: 14px;">
-      <label>steps/sec:</label>
-      <span id="stepsPerSec" style="font-weight: bold;">—</span>
-    </div>
-
-    <!-- Theory section -->
-    <hr class="theory-separator">
-
-    <div class="theory-section-label">THEORY COMPUTED BELOW THIS LINE</div>
-
-    <div class="theory-row">
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">modeling ODE</div>
-        <div class="theory-modeling-ode-formula" id="modelingOdeFormula">
-          $\mathcal{L} = \frac{1}{2}\left(1 - c a_1^{\alpha_1} \cdots a_d^{\alpha_d} b\right)^2$
-        </div>
-      </div>
-
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">dynamics</div>
-        <div class="theory-modeling-ode-formula">
-          $\begin{align}
-          \dot{a}_i &= -\partial_{a_i} \mathcal{L} \\
-          \dot{b} &= -\partial_b \mathcal{L}
-          \end{align}$
-        </div>
-      </div>
-
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">initialization</div>
-        <div class="theory-modeling-ode-formula">
-          $\begin{align}
-          a_i(0) &= 1 \\
-          b(0) &= 0
-          \end{align}$
-        </div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">rate constant</div>
-        <div class="theory-metric-formula" id="rateConstantFormula">
-          $\kappa = \sqrt{\frac{\prod_i \gamma_i^{\alpha_i}}{|\boldsymbol{\alpha}|!}}$
-        </div>
-        <div class="theory-metric-value" id="rateConstantValue">—</div>
-      </div>
-    </div>
-
-    <hr class="theory-row-separator">
-
-    <div class="theory-metrics">
-      <div class="theory-metric">
-        <div class="theory-metric-label">number of relevant directions</div>
-        <div class="theory-metric-formula">$d_{\mathrm{rel}} = \#\{\alpha_i > 0\}$</div>
-        <div class="theory-metric-value" id="relevantDirectionsValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order of $f_*$</div>
-        <div class="theory-metric-formula">$|\boldsymbol{\alpha}| = \sum_i \alpha_i$</div>
-        <div class="theory-metric-value" id="orderOfFStarValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order of dynamical system</div>
-        <div class="theory-metric-formula">$\ell = |\boldsymbol{\alpha}| + 1$</div>
-        <div class="theory-metric-value" id="totalOrderValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order prefactor</div>
-        <div class="theory-metric-formula">
-          $\kappa = \prod_i \alpha_i^{\alpha_i/2}$
-        </div>
-        <div class="theory-metric-value" id="orderPrefactorValue">—</div>
-      </div>
-    </div>
-
-    <hr class="theory-row-separator">
-
-    <div class="theory-metrics">
-      <div class="theory-metric">
-        <div class="theory-metric-label">mean core parameter at init</div>
-        <div class="theory-metric-formula">
-          $\beta = \frac{1}{d+1} \left(\sum_i \frac{|a_i(0)|}{\sqrt{\alpha_i}} + |b(0)|\right)$
-        </div>
-        <div class="theory-metric-value" id="betaValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">shape parameters</div>
-        <div class="theory-metric-formula">
-          $r_i = \frac{a_i(0)^2}{\alpha_i \beta^2}$
-        </div>
-        <div class="theory-metric-value" id="shapeParamsValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">shape integral</div>
-        <div class="theory-metric-formula">
-          $F(\mathbf{r}) = \left(\frac{\ell}{2} - 1\right) \int_0^\infty (s + r_b)^{-1/2} \prod_i (s + r_i)^{-\alpha_i/2} \, ds$
-        </div>
-        <div class="theory-metric-value" id="shapeIntegralValue">—</div>
-      </div>
-    </div>
-
-    <div class="theory-rise-time">
-      <div class="theory-rise-time-label">rise time</div>
-      <div class="theory-rise-time-formula">
-        $t_{\mathrm{rise}} = \begin{cases}
-          c^{-2} & \text{if } \ell = 1, \\
-          -\frac{1}{\kappa c} \cdot \log\left(\sqrt{\kappa c}\beta\right) & \text{if } \ell = 2, \\
-          \frac{1}{\ell - 2} \cdot \frac{1}{\kappa c} \cdot \frac{F(\mathbf{r})}{\beta^{\ell-2}} & \text{if } \ell > 2.
-        \end{cases}$
-      </div>
-      <div class="theory-rise-time-value" id="triseValue">—</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
-
-<!-- Application (ES6 module) -->
-<script type="module" src="app.js"></script>
+</article>
 
       </div>
     </div>

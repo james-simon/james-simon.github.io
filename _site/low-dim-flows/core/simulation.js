@@ -99,14 +99,31 @@ export function rk4Step(aVec, dt, kVec, fStar = 1, c = 1) {
 }
 
 /**
- * Solve ODE system with adaptive stopping:
- * - Continue until loss < threshold * initial_loss, then go twice as far
- * - Hard stop at hardCapTime
- * Returns times, trajectories for each variable, and loss values
+ * Solve ODE system: da/dt = -dL/da with gradient flow dynamics
+ * Loss: L = (1/2)(f* - c·∏a_i^k_i)²
+ *
+ * Uses adaptive stopping: continues until loss drops below threshold,
+ * then runs twice as long (up to hardCapTime)
+ *
+ * @param {number[]} a0Vec - Initial conditions [a_1(0), a_2(0), ...]
+ * @param {number[]} kVec - Exponents [k_1, k_2, ...]
+ * @param {number} tMax - Maximum simulation time (advisory, may stop earlier)
+ * @param {number} fStar - Target value f* (default: 1)
+ * @param {number} c - Coefficient c (default: 1)
+ * @param {number} dt - Time step (default: from CONFIG)
+ * @returns {Object} Solution containing:
+ *   - times: Array of time points
+ *   - aTrajectories: Array of trajectories (one per variable)
+ *   - lossValues: Loss at each time point
+ *
+ * @example
+ * const solution = solveODE([0.01, 0.01], [2, 3], 10, 1, 1);
+ * console.log(solution.times);        // [0, 0.01, 0.02, ...]
+ * console.log(solution.lossValues);   // [L(t=0), L(t=0.01), ...]
+ * console.log(solution.aTrajectories); // [[a1(t)], [a2(t)]]
  */
 export function solveODE(a0Vec, kVec, tMax, fStar = 1, c = 1, dt = CONFIG.simulation.dt) {
   const THRESHOLD_FRACTION = CONFIG.simulation.adaptiveStoppingThreshold;
-  const HARD_CAP = CONFIG.simulation.hardCapTime;
 
   const times = [];
   const aTrajectories = a0Vec.map(() => []);  // One array per variable
@@ -120,9 +137,9 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, c = 1, dt = CONFIG.simula
   const lossThreshold = THRESHOLD_FRACTION * initialLoss;
 
   let thresholdTime = null;  // When loss first drops below threshold
-  let targetTime = HARD_CAP;  // Default to hard cap
+  let targetTime = tMax;  // Will be updated when threshold is crossed
 
-  while (t <= targetTime && t <= HARD_CAP) {
+  while (t <= targetTime) {
     times.push(t);
     for (let i = 0; i < aVec.length; i++) {
       aTrajectories[i].push(aVec[i]);
@@ -134,7 +151,8 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, c = 1, dt = CONFIG.simula
     // Check if we've crossed the threshold for the first time
     if (thresholdTime === null && currentLoss < lossThreshold) {
       thresholdTime = t;
-      targetTime = Math.min(2 * thresholdTime, HARD_CAP);
+      // Adaptive stopping: run twice as long after threshold, but don't exceed tMax
+      targetTime = Math.min(2 * thresholdTime, tMax);
     }
 
     // Integrate
@@ -143,4 +161,28 @@ export function solveODE(a0Vec, kVec, tMax, fStar = 1, c = 1, dt = CONFIG.simula
   }
 
   return { times, aTrajectories, lossValues };
+}
+
+/**
+ * Solve ODE from balanced initial conditions
+ * Computes β_eff from theory, then runs simulation with a_i(0) = √k_i * β_eff
+ *
+ * @param {number[]} a0Vec - Initial conditions (used only to compute β_eff)
+ * @param {number[]} kVec - Exponents for each variable
+ * @param {number} tMax - Maximum simulation time
+ * @param {number} fStar - Target value
+ * @param {number} c - Coefficient
+ * @param {number} dt - Time step (optional)
+ * @returns {{ times: number[], aTrajectories: number[][], lossValues: number[] }}
+ */
+export function solveBalancedInit(a0Vec, kVec, tMax, fStar = 1, c = 1, betaEffective, dt = CONFIG.simulation.dt) {
+  if (isNaN(betaEffective)) {
+    throw new Error('Cannot compute balanced init: β_eff is undefined');
+  }
+
+  // Create balanced initial conditions: a_i(0) = √k_i * β_eff
+  const a0Balanced = kVec.map(k => Math.sqrt(k) * betaEffective);
+
+  // Run simulation
+  return solveODE(a0Balanced, kVec, tMax, fStar, c, dt);
 }

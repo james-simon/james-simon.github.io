@@ -51,7 +51,7 @@ export class Trainer {
     return totalLoss / batch.length;
   }
 
-  // SGD step: compute gradients and update W₁ and W₂
+  // SGD step (compute gradients, update weights, return loss)
   step() {
     const stepStartTime = performance.now();
     this.stepCount++;
@@ -76,6 +76,7 @@ export class Trainer {
     let targetEvalTime = 0;
     let forwardTime = 0;
     let backpropTime = 0;
+    let totalLoss = 0;  // Accumulate loss while we're doing gradients anyway
 
     // Accumulate gradients over batch
     for (const x of batch) {
@@ -90,6 +91,9 @@ export class Trainer {
 
       const bp0 = performance.now();
       const error = fStar - fHat;
+
+      // Accumulate loss (essentially free)
+      totalLoss += 0.5 * error * error;
 
       // Backpropagation
       // ∂L/∂W₂ = -(f* - f̂) σ(W_froz W₁ x)ᵀ
@@ -151,10 +155,8 @@ export class Trainer {
     }
     const updateTime = performance.now() - t4;
 
-    const t5 = performance.now();
-    // Compute and return loss
-    const loss = this.computeLoss(batch);
-    const lossTime = performance.now() - t5;
+    // Compute average loss
+    const loss = totalLoss / batch.length;
 
     const totalStepTime = performance.now() - stepStartTime;
 
@@ -173,11 +175,11 @@ export class Trainer {
       console.log(`    Backprop: ${backpropTime.toFixed(3)}ms (${(backpropTime/totalStepTime*100).toFixed(1)}%)`);
       console.log(`  Average grads: ${avgTime.toFixed(3)}ms (${(avgTime/totalStepTime*100).toFixed(1)}%)`);
       console.log(`  Update weights: ${updateTime.toFixed(3)}ms (${(updateTime/totalStepTime*100).toFixed(1)}%)`);
-      console.log(`  Compute loss: ${lossTime.toFixed(3)}ms (${(lossTime/totalStepTime*100).toFixed(1)}%)`);
     }
 
     return loss;
   }
+
 
   // Helper: create zero matrix
   createZeros(rows, cols) {

@@ -4,7 +4,7 @@
 // Orchestrates all modules and manages application lifecycle
 
 import { AppState } from './core/state.js';
-import { solveODE } from './core/simulation.js';
+import { solveODE, solveBalancedInit } from './core/simulation.js';
 import { calculateAllTheory } from './core/theory.js';
 import { ChartManager } from './ui/charts.js';
 import { ControlsManager } from './ui/controls.js';
@@ -69,15 +69,12 @@ class LowDimFlowsApp {
     this.display.updateTheoryValues(theory);
 
     // Run effective balanced initial condition simulation
-    // a_i(0) = sqrt(k_i) * β_eff
     let balancedSolution = null;
     if (!isNaN(theory.betaEffective)) {
-      const a0Balanced = kVec.map(k => Math.sqrt(k) * theory.betaEffective);
-      // Run for same number of steps as main simulation
-      const numSteps = solution.times.length;
+      // Use same time extent as main simulation
       const dt = solution.times.length > 1 ? solution.times[1] - solution.times[0] : 0.01;
       const tMaxBalanced = solution.times[solution.times.length - 1];
-      balancedSolution = solveODE(a0Balanced, kVec, tMaxBalanced, this.state.fStar, this.state.c, dt);
+      balancedSolution = solveBalancedInit(a0Vec, kVec, tMaxBalanced, this.state.fStar, this.state.c, theory.betaEffective, dt);
     }
 
     // Update charts (pass t_rise for vertical line and balanced solution)

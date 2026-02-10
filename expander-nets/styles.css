@@ -46,7 +46,6 @@
 
 .section-label {
   font-size: 14px;
-  font-weight: bold;
   color: #888;
   letter-spacing: 1px;
   margin-bottom: 1em;
@@ -139,7 +138,7 @@ input[type="range"] {
 }
 
 .y-axis-label-norms {
-  left: -36px;
+  left: -65px;
 }
 
 .x-axis-label {
@@ -193,4 +192,112 @@ input[type="range"] {
   background: #333;
   color: white;
   border-color: #333;
+}
+
+/* Theory section */
+.theory-separator {
+  margin-top: 40px;
+  margin-bottom: 5px;
+  border: none;
+  border-top: 2px solid #ccc;
+}
+
+.theory-row-separator {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+}
+
+.theory-section-label {
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 1px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.theory-row {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-bottom: 40px;
+}
+
+.theory-modeling-ode {
+  text-align: center;
+}
+
+.theory-modeling-ode-label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.theory-modeling-ode-formula {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.theory-metrics {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.theory-metrics {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.theory-metric {
+  text-align: center;
+}
+
+.theory-metric-label {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #666;
+}
+
+.theory-metric-formula {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.theory-metric-value {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+}
+
+.theory-rise-time {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.theory-rise-time-label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.theory-rise-time-formula {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.theory-rise-time-value {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
 }

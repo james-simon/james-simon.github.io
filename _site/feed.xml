@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 07 Feb 2026 12:19:28 -0800</pubDate>
-    <lastBuildDate>Sat, 07 Feb 2026 12:19:28 -0800</lastBuildDate>
+    <pubDate>Mon, 09 Feb 2026 18:01:14 -0800</pubDate>
+    <lastBuildDate>Mon, 09 Feb 2026 18:01:14 -0800</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -132,7 +132,7 @@ c_{|\boldsymbol{\alpha}|}
 &lt;p style=&quot;font-size: 0.9em; margin-top: 0.5em;&quot;&gt;Slope on a log-log plot of $\lambda(j) = f(j; \sigma, a)$ with $a = 1.5$. Note that it takes an extremely long time to converge to the asymptotic slope of $-a = -1.5$!&lt;/p&gt;
 &lt;/div&gt;
 
-&lt;p&gt;When $\sigma$ isn’t particularly big, sometimes it takes up to $j \sim 10^{100}$ to actually converge to a powerlaw slope of $a$. Perils of asymptotic analysis! Really makes me suspect that all the power laws we see in machine learning are actually just locally powerlaws, and over enough orders of magnitude, they’ll change.&lt;/p&gt;
+&lt;p&gt;When $\sigma$ isn’t particularly big, sometimes it takes up to $j \sim 10^{100}$ to actually get close to a decay rate of exponent $a$. Perils of asymptotic analysis! Really makes me suspect that all the power laws we see in machine learning are actually just locally powerlaws, and over enough orders of magnitude, they’ll change.&lt;/p&gt;
 
 &lt;h3 id=&quot;what-now&quot;&gt;What now?&lt;/h3&gt;
 
@@ -145,7 +145,7 @@ c_{|\boldsymbol{\alpha}|}
       &lt;p&gt;The second half of Arie and Bruno’s paper is a treatment of how the data spectrum drives generalization in KRR, which is one step beyond the kernel spectrum! I’m just not discussing it because I’m focused on the powerlaw spectrum question here. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find exactly the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;For an alternative approach, you can actually see Arie and Bruno’s Proposition 1 — they find essentially the HEA’s eigenvalue prescription in almost the same language! Their result involves constant-factor bounds on the eigenvalues (while we give the eigenvalues including constant factors), but this price is paid in exchange for their actually proving their result rigorously, where we do not except in two limiting cases. Which of these you’ll want to use probably depends on your style! If you just want a formula to try in experiments, our presentation is probably preferable. If you want to prove theorems or build rigorous mathematical foundations, our results should be a good guide for the intuition, but their analysis is probably a better place to build from. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;

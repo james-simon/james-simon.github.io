@@ -3,12 +3,41 @@
 
   <head>
   
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right"
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      }
+    });
+    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+        clearTag() {
+          if (!this.global.notags) {
+            this.super(arguments).clearTag.call(this);
+          }
+        }
+      });
+    });
+  </script>
+  <script type="text/javascript" charset="utf-8"
+    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
+
+
+  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+  
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Jamie Simon</title>
+  <title>Expander Nets Refactoring Summary</title>
   <meta name="description" content="">
 
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
@@ -20,7 +49,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/expander-nets/">
+  <link rel="canonical" href="http://localhost:4000/expander-nets/REFACTOR_SUMMARY/">
   <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
@@ -3754,343 +3783,217 @@
 
     <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
-        <script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
-    },
-    chtml: {
-      scale: 1.0
-    },
-    startup: {
-      ready: () => {
-        MathJax.startup.defaultReady();
-        console.log('MathJax is ready');
-        // Set flag that MathJax is ready
-        window.mathJaxReady = true;
-      }
-    }
-  };
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <article class="post">
 
-<link rel="stylesheet" href="styles.css">
+  <header class="post-header">
+    <h1 class="post-title">Expander Nets Refactoring Summary</h1>
+  </header>
 
-<div class="container">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1 class="page-title">Expander Nets</h1>
-    <button id="resetToDefaultsButton" class="sim-button">reset to defaults</button>
+  <div class="post-content">
+    <h1 id="expander-nets-refactoring-summary">Expander Nets Refactoring Summary</h1>
+
+<h2 id="overview">Overview</h2>
+<p>Refactored the codebase from a monolithic 1103-line <code class="language-plaintext highlighter-rouge">app.js</code> into a modular structure with clear separation of concerns.</p>
+
+<h2 id="new-structure">New Structure</h2>
+
+<h3 id="core-files">Core Files</h3>
+
+<p><strong>app.js</strong> (190 lines) - Main entry point</p>
+<ul>
+  <li>Imports and initializes all managers</li>
+  <li>Network visualization rendering</li>
+  <li>Start/pause button handler</li>
+  <li>Reset button handler</li>
+  <li>Minimal orchestration only</li>
+</ul>
+
+<p><strong>config.js</strong> (46 lines) - Configuration constants</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">NETWORK_VIZ</code> - SVG visualization parameters</li>
+  <li><code class="language-plaintext highlighter-rouge">SLIDERS</code> - Slider min/max ranges</li>
+</ul>
+
+<h3 id="core-module-theory-calculations">Core Module (Theory Calculations)</h3>
+
+<p><strong>core/theory.js</strong> (166 lines) - Pure calculation functions</p>
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><code class="language-plaintext highlighter-rouge">calculateOrderOfFStar()</code> -</td>
+          <td>α</td>
+          <td>= Σ αᵢ</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><code class="language-plaintext highlighter-rouge">calculateEll()</code> - ℓ =</td>
+          <td>α</td>
+          <td>+ 1</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td><code class="language-plaintext highlighter-rouge">calculateRateConstant()</code> - c = √(Πᵢ γᵢ^αᵢ /</td>
+          <td>α</td>
+          <td>!)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">calculateKappa()</code> - κ = Πᵢ αᵢ^(αᵢ/2)</li>
+  <li><code class="language-plaintext highlighter-rouge">calculateBeta()</code> - β mean core parameter</li>
+  <li><code class="language-plaintext highlighter-rouge">calculateShapeParams()</code> - rᵢ shape parameters</li>
+  <li><code class="language-plaintext highlighter-rouge">calculateShapeIntegral()</code> - F(r) using numerical integration</li>
+  <li><code class="language-plaintext highlighter-rouge">calculateRiseTime()</code> - t_rise (piecewise function)</li>
+  <li><code class="language-plaintext highlighter-rouge">calculateAllTheory()</code> - Main function that computes all theory values</li>
+</ul>
+
+<p>All functions are pure (no side effects, no DOM manipulation) and testable.</p>
+
+<h3 id="ui-module">UI Module</h3>
+
+<p><strong>ui/display.js</strong> (172 lines) - DOM updates and MathJax rendering</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">DisplayManager</code> class</li>
+  <li><code class="language-plaintext highlighter-rouge">updateModelingOdeFormula()</code> - Dynamic LaTeX formula generation</li>
+  <li><code class="language-plaintext highlighter-rouge">updateRateConstantFormula()</code> - Rate constant formula with values</li>
+  <li><code class="language-plaintext highlighter-rouge">updateTheoryValues()</code> - Update all theory metric displays</li>
+  <li><code class="language-plaintext highlighter-rouge">renderMathJax()</code> - MathJax typesetting helper</li>
+</ul>
+
+<p><strong>ui/controls.js</strong> (274 lines) - Slider initialization and event handlers</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ControlsManager</code> class</li>
+  <li><code class="language-plaintext highlighter-rouge">initializeKSlider()</code>, <code class="language-plaintext highlighter-rouge">initializeDSlider()</code>, etc.</li>
+  <li><code class="language-plaintext highlighter-rouge">renderGammaSliders()</code>, <code class="language-plaintext highlighter-rouge">renderAlphaSliders()</code> - Dynamic slider rendering</li>
+  <li><code class="language-plaintext highlighter-rouge">renderParameterSliders()</code> - Generic slider rendering function</li>
+  <li><code class="language-plaintext highlighter-rouge">updateTargetFunctionEquation()</code> - Update f* equation</li>
+  <li><code class="language-plaintext highlighter-rouge">updateTheoryCalculations()</code> - Trigger theory recalculation</li>
+  <li>Event handlers for all parameter changes</li>
+</ul>
+
+<p><strong>ui/charts.js</strong> (157 lines) - Chart initialization and controls</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ChartsManager</code> class</li>
+  <li>Wraps LossChart and NormChart from visualization.js</li>
+  <li><code class="language-plaintext highlighter-rouge">setupLogScaleControl()</code> - Logscale checkbox</li>
+  <li><code class="language-plaintext highlighter-rouge">setupXAxisModeControl()</code> - Step vs t_eff toggle</li>
+  <li><code class="language-plaintext highlighter-rouge">setupEmaControl()</code> - EMA window slider</li>
+  <li>Applies saved state on initialization</li>
+</ul>
+
+<h3 id="utils-module">Utils Module</h3>
+
+<p><strong>utils/sliders.js</strong> (103 lines) - Slider utilities</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">generateOneSigFigValues()</code> - Generate logarithmic slider values</li>
+  <li><code class="language-plaintext highlighter-rouge">formatScientific()</code> - Format with HTML superscripts</li>
+  <li><code class="language-plaintext highlighter-rouge">LogarithmicSlider</code> class - Map slider position ↔ value</li>
+  <li><code class="language-plaintext highlighter-rouge">LogarithmicSliderWithOff</code> class - Variant for optional parameters</li>
+</ul>
+
+<p><strong>utils/formatters.js</strong> (48 lines) - Number formatting</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">formatForLatex()</code> - Format numbers for LaTeX display with scientific notation</li>
+</ul>
+
+<p><strong>utils/integration.js</strong> (119 lines) - Numerical integration</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">computeShapeIntegral()</code> - Adaptive Simpson’s rule for shape integral</li>
+</ul>
+
+<h3 id="existing-files-unchanged">Existing Files (Unchanged)</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">state.js</code> (140 lines) - State management</li>
+  <li><code class="language-plaintext highlighter-rouge">simulation.js</code> (284 lines) - Simulation loop</li>
+  <li><code class="language-plaintext highlighter-rouge">model.js</code> (115 lines) - Neural network model</li>
+  <li><code class="language-plaintext highlighter-rouge">target.js</code> (76 lines) - Target function (Hermite polynomials)</li>
+  <li><code class="language-plaintext highlighter-rouge">training.js</code> (193 lines) - Training logic</li>
+  <li><code class="language-plaintext highlighter-rouge">visualization.js</code> (444 lines) - Chart.js wrappers</li>
+  <li><code class="language-plaintext highlighter-rouge">ema.js</code> (93 lines) - EMA calculation</li>
+  <li><code class="language-plaintext highlighter-rouge">incremental-cache.js</code> (224 lines) - Performance optimization</li>
+</ul>
+
+<h2 id="file-size-comparison">File Size Comparison</h2>
+
+<h3 id="before">Before</h3>
+<ul>
+  <li>app.js: <strong>1103 lines</strong> (monolithic, everything mixed together)</li>
+</ul>
+
+<h3 id="after">After</h3>
+<ul>
+  <li>app.js: <strong>190 lines</strong> (orchestration only)</li>
+  <li>core/theory.js: <strong>166 lines</strong> (pure calculations)</li>
+  <li>ui/display.js: <strong>172 lines</strong> (DOM updates)</li>
+  <li>ui/controls.js: <strong>274 lines</strong> (sliders &amp; events)</li>
+  <li>ui/charts.js: <strong>157 lines</strong> (chart initialization)</li>
+  <li>utils/sliders.js: <strong>103 lines</strong> (slider utilities)</li>
+  <li>config.js: <strong>46 lines</strong> (constants)</li>
+</ul>
+
+<p><strong>Total: ~1108 lines across 7 focused files (same functionality, much better organized)</strong></p>
+
+<h2 id="benefits">Benefits</h2>
+
+<ol>
+  <li><strong>Clear Separation of Concerns</strong>
+    <ul>
+      <li>Theory calculations are pure functions</li>
+      <li>UI updates are separated from logic</li>
+      <li>Event handling is centralized in controls manager</li>
+    </ul>
+  </li>
+  <li><strong>Testability</strong>
+    <ul>
+      <li>Pure calculation functions can be unit tested</li>
+      <li>No DOM dependencies in core logic</li>
+    </ul>
+  </li>
+  <li><strong>Maintainability</strong>
+    <ul>
+      <li>Each file has a single, clear purpose</li>
+      <li>File sizes are manageable (&lt; 300 lines each)</li>
+      <li>Easy to find and modify specific functionality</li>
+    </ul>
+  </li>
+  <li><strong>Follows Low-Dim-Flows Pattern</strong>
+    <ul>
+      <li>Similar structure to the mature low-dim-flows codebase</li>
+      <li>Easy for developers familiar with that project</li>
+    </ul>
+  </li>
+  <li><strong>Reusability</strong>
+    <ul>
+      <li>Theory calculations can be used in other contexts</li>
+      <li>Slider utilities can be shared across projects</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="migration-notes">Migration Notes</h2>
+
+<ul>
+  <li>Original <code class="language-plaintext highlighter-rouge">app.js</code> backed up as <code class="language-plaintext highlighter-rouge">app.js.backup</code></li>
+  <li>All functionality preserved</li>
+  <li>No breaking changes to public API</li>
+  <li>Build tested and successful</li>
+</ul>
+
   </div>
 
-  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 1em; margin-bottom: 0.2em;">
-
-  <div class="section-label">SETUP</div>
-
-  <div style="margin-top: 0; margin-bottom: 2em;">
-    <!-- Row 1: Network (Red) with diagram on the right -->
-    <div style="display: flex; gap: 1em; margin-bottom: 1em;">
-      <div style="background-color: #fff0f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; position: relative; min-height: 120px; flex: 1;">
-        <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc5555; white-space: pre;">    NETWORK</div>
-        <div style="display: flex; gap: 2em; margin-left: 60px;">
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">network function</div>
-            <div>$$\hat{f}(\mathbf{x}) = \mathbf{W}_2 \, \sigma \circ \mathbf{W}_{\mathrm{froz}} \, \mathbf{W}_1 \, \mathbf{x}$$</div>
-            <div style="font-size: 13px; margin-top: 8px; color: #888;">$$\mathbf{W}_2 \in \mathbb{R}^{1 \times k}, \, \mathbf{W}_{\mathrm{froz}} \in \mathbb{R}^{k \times d},$$</div>
-            <div style="font-size: 13px; margin-top: 4px; color: #888;">$$\mathbf{W}_1 \in \mathbb{R}^{d \times d}, \, \mathbf{x} \in \mathbb{R}^d$$</div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">nonlinearity</div>
-            <div>$$\sigma(z) = \sqrt{2} \cos\left(z + \frac{\pi}{4}\right)$$</div>
-          </div>
-          <div style="text-align: center; flex: 1;">
-            <div style="font-size: 15px; margin-bottom: 4px; color: #666;">hidden dimension</div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; flex-wrap: nowrap;">
-              <span style="font-size: 17px; white-space: nowrap;">$k$:</span>
-              <input type="range" id="kSlider" min="0" max="100" value="50" style="width: 120px; flex-shrink: 1;">
-              <span id="kValue" style="font-size: 15px; text-align: left; white-space: nowrap;">1000</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
-        <svg id="networkViz" width="400"></svg>
-      </div>
-    </div>
-
-    <!-- Row 2: Data (Orange) -->
-    <div style="background-color: #fff8f0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #cc8855; white-space: pre;">    DATA</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data distro</div>
-          <div>$$\mathbf{x} \sim \mathcal{N}(0, \mathbf{\Gamma})$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data dimension</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$d$:</span>
-            <input type="range" id="dSlider" min="1" max="5" value="3" style="width: 120px;">
-            <span id="dValue" style="font-size: 16px; min-width: 30px; text-align: left;">3</span>
-          </div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">data covariance</div>
-          <div style="margin-bottom: 8px;">$$\mathbf{\Gamma} = \mathrm{diag}(\gamma_i)$$</div>
-          <div id="gammaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 3: Target (Green) -->
-    <div style="background-color: #f0fff0; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 140px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #55aa55; white-space: pre;">    TARGET    FUNCTION</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target function</div>
-          <div id="targetFunctionEquation">$$\begin{align}
-f_*(\mathbf{x}) &= h_{\boldsymbol{\alpha}}\left(\mathbf{\Gamma}^{-1/2} \mathbf{x}\right) \\
-&= h_1(\gamma_1^{-1/2} x_1) \cdot h_2(\gamma_2^{-1/2} x_2) \cdot h_3(\gamma_3^{-1/2} x_3)
-\end{align}$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">target multi-index</div>
-          <div style="margin-bottom: 8px;">$$\boldsymbol{\alpha} = (\alpha_i)$$</div>
-          <div id="alphaSliders" style="display: flex; flex-direction: column; gap: 6px; align-items: center;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 4: Training (Blue) -->
-    <div style="background-color: #f0f4ff; padding: 1.5em; padding-top: 3em; padding-bottom: 3em; border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #5578cc; white-space: pre;">    TRAINING</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">loss</div>
-          <div>$$\mathcal{L} = \frac{1}{2} \mathbb{E}_\mathbf{x}\left[(f_*(\mathbf{x}) - \hat{f}(\mathbf{x}))^2\right]$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">initialization</div>
-          <div>$$\begin{align}
-\mathbf{W}_1(0) &= \mathbf{I}_d \\
-\mathbf{W}_{\mathrm{froz},ij} &\sim \mathcal{N}(0, 1) \\
-\mathbf{W}_2(0) &= \mathbf{0}
-\end{align}$$</div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">dynamics</div>
-          <div>$$\begin{align}
-\dot{\mathbf{W}}_1 &= -\nabla_{\mathbf{W}_1} \mathcal{L} \\
-\dot{\mathbf{W}}_{\mathrm{froz}} &= \mathbf{0} \\
-\dot{\mathbf{W}}_2 &= -\frac{1}{k}\nabla_{\mathbf{W}_2} \mathcal{L}
-\end{align}$$</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Row 5: Hyperparameters (Purple) -->
-    <div style="background-color: #f8f0ff; padding: 1.5em; padding-top: 3em; padding-bottom: calc(3em + 30px); border-radius: 8px; margin-bottom: 1em; position: relative; min-height: 120px;">
-      <div style="position: absolute; left: 20px; top: 50%; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; font-size: 14px; font-weight: 600; color: #9955cc; white-space: pre;">    HYPERPARAMETERS</div>
-      <div style="display: flex; gap: 2em; margin-left: 60px;">
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">learning rate</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$\eta$:</span>
-            <input type="range" id="etaSlider" min="0" max="100" value="50" style="width: 120px;">
-            <span id="etaValue" style="font-size: 16px; min-width: 60px; text-align: left;">0.01</span>
-          </div>
-        </div>
-        <div style="text-align: center; flex: 1;">
-          <div style="font-size: 16px; margin-bottom: 4px; color: #666;">batch size</div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;">
-            <span style="font-size: 18px;">$|B|$:</span>
-            <input type="range" id="batchSizeSlider" min="0" max="100" value="50" style="width: 120px;">
-            <span id="batchSizeValue" style="font-size: 16px; min-width: 60px; text-align: left;">100</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <hr style="border: none; border-top: 2px solid #ccc; margin-top: 2em; margin-bottom: 0.2em;">
-
-  <div class="section-label">SIMULATION</div>
-
-  <div style="margin-top: 1em; margin-bottom: 2em;">
-    <div style="display: flex; gap: 1em; align-items: center; margin-bottom: 2em;">
-      <button id="startPauseButton" class="sim-button">start</button>
-      <button id="resetButton" class="sim-button">reset</button>
-    </div>
-
-    <!-- Plots -->
-    <div class="plots-container">
-      <div class="plot-wrapper">
-        <div class="plot-box">
-          <div class="plot-content">
-            <canvas id="lossChart" class="plot-canvas"></canvas>
-            <div class="y-axis-label y-axis-label-loss">loss $\mathcal{L}$</div>
-            <div class="x-axis-label">step</div>
-          </div>
-        </div>
-      </div>
-      <div class="plot-wrapper">
-        <div class="plot-box">
-          <div class="plot-content">
-            <canvas id="normChart" class="plot-canvas"></canvas>
-            <div class="y-axis-label y-axis-label-norms" id="paramSizeLabel">parameter size</div>
-            <div class="x-axis-label">step</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Plot controls -->
-    <div class="logscale-control">
-      <label style="margin-right: 20px;">
-        <input type="checkbox" id="logScaleCheckbox">
-        logscale y-axes
-      </label>
-      <label style="margin-right: 20px;">
-        <input type="checkbox" id="showTheoryCheckbox">
-        show theory curves
-      </label>
-      <span style="margin-right: 0.5em;">plot w.r.t.</span>
-      <span class="plot-xaxis-toggle">
-        <a href="#" id="step-link" class="active" onclick="setXAxisMode('step'); return false;">step</a><a href="#" id="teff-link" onclick="setXAxisMode('teff'); return false;">$t_{\mathrm{eff}}$</a>
-      </span>
-      <span style="margin-left: 30px; display: inline-flex; align-items: center; gap: 8px;">
-        <span>EMA:</span>
-        <input type="range" id="emaSlider" min="0" max="100" value="0" style="width: 120px;">
-        <span id="emaValue" style="min-width: 30px; text-align: left;">0</span>
-      </span>
-    </div>
-
-    <!-- Steps per second display -->
-    <div style="margin-top: 1.5em; text-align: center; color: #666; font-size: 14px;">
-      <label>steps/sec:</label>
-      <span id="stepsPerSec" style="font-weight: bold;">—</span>
-    </div>
-
-    <!-- Theory section -->
-    <hr class="theory-separator">
-
-    <div class="theory-section-label">THEORY COMPUTED BELOW THIS LINE</div>
-
-    <div class="theory-row">
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">modeling ODE</div>
-        <div class="theory-modeling-ode-formula" id="modelingOdeFormula">
-          $\mathcal{L} = \frac{1}{2}\left(1 - c a_1^{\alpha_1} \cdots a_d^{\alpha_d} b\right)^2$
-        </div>
-      </div>
-
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">dynamics</div>
-        <div class="theory-modeling-ode-formula">
-          $\begin{align}
-          \dot{a}_i &= -\partial_{a_i} \mathcal{L} \\
-          \dot{b} &= -\partial_b \mathcal{L}
-          \end{align}$
-        </div>
-      </div>
-
-      <div class="theory-modeling-ode">
-        <div class="theory-modeling-ode-label">initialization</div>
-        <div class="theory-modeling-ode-formula">
-          $\begin{align}
-          a_i(0) &= 1 \\
-          b(0) &= 0
-          \end{align}$
-        </div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">rate constant</div>
-        <div class="theory-metric-formula" id="rateConstantFormula">
-          $\kappa = \sqrt{\frac{\prod_i \gamma_i^{\alpha_i}}{|\boldsymbol{\alpha}|!}}$
-        </div>
-        <div class="theory-metric-value" id="rateConstantValue">—</div>
-      </div>
-    </div>
-
-    <hr class="theory-row-separator">
-
-    <div class="theory-metrics">
-      <div class="theory-metric">
-        <div class="theory-metric-label">number of relevant directions</div>
-        <div class="theory-metric-formula">$d_{\mathrm{rel}} = \#\{\alpha_i > 0\}$</div>
-        <div class="theory-metric-value" id="relevantDirectionsValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order of $f_*$</div>
-        <div class="theory-metric-formula">$|\boldsymbol{\alpha}| = \sum_i \alpha_i$</div>
-        <div class="theory-metric-value" id="orderOfFStarValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order of dynamical system</div>
-        <div class="theory-metric-formula">$\ell = |\boldsymbol{\alpha}| + 1$</div>
-        <div class="theory-metric-value" id="totalOrderValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">order prefactor</div>
-        <div class="theory-metric-formula">
-          $\kappa = \prod_i \alpha_i^{\alpha_i/2}$
-        </div>
-        <div class="theory-metric-value" id="orderPrefactorValue">—</div>
-      </div>
-    </div>
-
-    <hr class="theory-row-separator">
-
-    <div class="theory-metrics">
-      <div class="theory-metric">
-        <div class="theory-metric-label">mean core parameter at init</div>
-        <div class="theory-metric-formula">
-          $\beta = \frac{1}{d+1} \left(\sum_i \frac{|a_i(0)|}{\sqrt{\alpha_i}} + |b(0)|\right)$
-        </div>
-        <div class="theory-metric-value" id="betaValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">shape parameters</div>
-        <div class="theory-metric-formula">
-          $r_i = \frac{a_i(0)^2}{\alpha_i \beta^2}$
-        </div>
-        <div class="theory-metric-value" id="shapeParamsValue">—</div>
-      </div>
-
-      <div class="theory-metric">
-        <div class="theory-metric-label">shape integral</div>
-        <div class="theory-metric-formula">
-          $F(\mathbf{r}) = \left(\frac{\ell}{2} - 1\right) \int_0^\infty (s + r_b)^{-1/2} \prod_i (s + r_i)^{-\alpha_i/2} \, ds$
-        </div>
-        <div class="theory-metric-value" id="shapeIntegralValue">—</div>
-      </div>
-    </div>
-
-    <div class="theory-rise-time">
-      <div class="theory-rise-time-label">rise time</div>
-      <div class="theory-rise-time-formula">
-        $t_{\mathrm{rise}} = \begin{cases}
-          c^{-2} & \text{if } \ell = 1, \\
-          -\frac{1}{\kappa c} \cdot \log\left(\sqrt{\kappa c}\beta\right) & \text{if } \ell = 2, \\
-          \frac{1}{\ell - 2} \cdot \frac{1}{\kappa c} \cdot \frac{F(\mathbf{r})}{\beta^{\ell-2}} & \text{if } \ell > 2.
-        \end{cases}$
-      </div>
-      <div class="theory-rise-time-value" id="triseValue">—</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
-
-<!-- Application (ES6 module) -->
-<script type="module" src="app.js"></script>
+</article>
 
       </div>
     </div>

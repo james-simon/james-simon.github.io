@@ -7,14 +7,16 @@ const STORAGE_KEY = 'expander-nets-state';
 
 // Default values
 const DEFAULTS = {
-  d: 3,
+  d: 1,
   k: 1000,
   gamma: 0.1,
   alpha: 0,
   eta: 0.01,
   batchSize: 100,
   logScale: false,
-  xAxisMode: 'step'
+  showTheory: false,
+  xAxisMode: 'step',
+  emaWindow: 1
 };
 
 export class AppState {
@@ -27,7 +29,9 @@ export class AppState {
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
+    this.emaWindow = DEFAULTS.emaWindow;
   }
 
   /**
@@ -42,7 +46,9 @@ export class AppState {
       eta: this.eta,
       batchSize: this.batchSize,
       logScale: this.logScale,
-      xAxisMode: this.xAxisMode
+      showTheory: this.showTheory,
+      xAxisMode: this.xAxisMode,
+      emaWindow: this.emaWindow
     };
   }
 
@@ -84,8 +90,16 @@ export class AppState {
       this.logScale = json.logScale;
     }
 
+    if (json.showTheory !== undefined) {
+      this.showTheory = json.showTheory;
+    }
+
     if (json.xAxisMode !== undefined) {
       this.xAxisMode = json.xAxisMode;
+    }
+
+    if (json.emaWindow !== undefined) {
+      this.emaWindow = json.emaWindow;
     }
   }
 
@@ -127,6 +141,8 @@ export class AppState {
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
+    this.emaWindow = DEFAULTS.emaWindow;
   }
 }

@@ -7,13 +7,14 @@ const STORAGE_KEY = 'expander-nets-state';
 
 // Default values
 const DEFAULTS = {
-  d: 3,
+  d: 1,
   k: 1000,
   gamma: 0.1,
   alpha: 0,
   eta: 0.01,
   batchSize: 100,
   logScale: false,
+  showTheory: false,
   xAxisMode: 'step',
   emaWindow: 1
 };
@@ -28,6 +29,7 @@ export class AppState {
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
     this.emaWindow = DEFAULTS.emaWindow;
   }
@@ -44,6 +46,7 @@ export class AppState {
       eta: this.eta,
       batchSize: this.batchSize,
       logScale: this.logScale,
+      showTheory: this.showTheory,
       xAxisMode: this.xAxisMode,
       emaWindow: this.emaWindow
     };
@@ -85,6 +88,10 @@ export class AppState {
 
     if (json.logScale !== undefined) {
       this.logScale = json.logScale;
+    }
+
+    if (json.showTheory !== undefined) {
+      this.showTheory = json.showTheory;
     }
 
     if (json.xAxisMode !== undefined) {
@@ -134,6 +141,7 @@ export class AppState {
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
     this.emaWindow = DEFAULTS.emaWindow;
   }
