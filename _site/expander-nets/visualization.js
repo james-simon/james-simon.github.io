@@ -17,6 +17,7 @@ const MAX_PLOT_POINTS = 1000;
 export class LossChart {
   constructor(canvasId) {
     this.logScale = false;
+    this.logScaleX = false;
     this.useEffectiveTime = false;
     this.eta = 0.01;
     this.emaWindow = 1; // Default: off (no EMA)
@@ -156,10 +157,25 @@ export class LossChart {
     });
   }
 
-  // Toggle log scale
+  // Toggle log scale y-axis
   setLogScale(useLog) {
     this.logScale = useLog;
     this.chart.options.scales.y.type = useLog ? 'logarithmic' : 'linear';
+    this.chart.update('none');
+  }
+
+  // Toggle log scale x-axis
+  setLogScaleX(useLogX) {
+    this.logScaleX = useLogX;
+    this.chart.options.scales.x.type = useLogX ? 'logarithmic' : 'linear';
+
+    // Set appropriate min based on mode
+    if (useLogX) {
+      this.chart.options.scales.x.min = this.useEffectiveTime ? 5 : 1;
+    } else {
+      this.chart.options.scales.x.min = 0;
+    }
+
     this.chart.update('none');
   }
 
@@ -167,6 +183,11 @@ export class LossChart {
   setEffectiveTime(useEffTime, eta) {
     this.useEffectiveTime = useEffTime;
     this.eta = eta;
+
+    // Update x-axis min if logscale is enabled
+    if (this.logScaleX) {
+      this.chart.options.scales.x.min = useEffTime ? 5 : 1;
+    }
 
     // Update x-axis tick formatting based on mode
     const chart = this.chart;
@@ -191,6 +212,12 @@ export class LossChart {
   setEmaWindow(window) {
     this.emaWindow = window;
     this.cache.setEmaWindow(window);
+  }
+
+  // Update initial EMA value (call when numTerms changes)
+  setInitialLoss(initialLoss) {
+    this.cache.initEmaValues = { loss: initialLoss };
+    this.cache.lastEmaValues = { loss: initialLoss };
   }
 
   // Toggle theory curve visibility
@@ -238,6 +265,7 @@ export class LossChart {
 
     // Plot theory curve if available and enabled
     let theoryMaxX = 0;
+    let theoryMaxLoss = 0;
     if (theoryLossHistory && theoryLossHistory.length > 0 && this.showTheory) {
       const theoryData = theoryLossHistory.map(point => ({
         x: this.useEffectiveTime ? point.iteration * this.eta : point.iteration,
@@ -246,9 +274,10 @@ export class LossChart {
       this.chart.data.datasets[2].data = theoryData;
       this.chart.data.datasets[2].hidden = false;
 
-      // Get max x from theory data
+      // Get max x and max loss from theory data
       const lastTheoryPoint = theoryLossHistory[theoryLossHistory.length - 1];
       theoryMaxX = this.useEffectiveTime ? lastTheoryPoint.iteration * this.eta : lastTheoryPoint.iteration;
+      theoryMaxLoss = Math.max(...theoryLossHistory.map(p => p.loss));
     } else {
       this.chart.data.datasets[2].data = [];
       this.chart.data.datasets[2].hidden = true;
@@ -260,8 +289,9 @@ export class LossChart {
     this.chart.options.scales.x.max = Math.max(currentMax, theoryMaxX);
 
     // Set y-axis max using cached max (O(1) instead of O(n))
+    // Include theory max if theory is shown
     if (!this.logScale) {
-      const maxLoss = max.loss;
+      const maxLoss = Math.max(max.loss, theoryMaxLoss);
       const yMax = maxLoss * 1.4;
       this.chart.options.scales.y.max = yMax;
 
@@ -304,6 +334,7 @@ export class LossChart {
 export class NormChart {
   constructor(canvasId) {
     this.logScale = false;
+    this.logScaleX = false;
     this.useEffectiveTime = false;
     this.eta = 0.01;
     this.emaWindow = 1; // Default: off (no EMA)
@@ -396,10 +427,25 @@ export class NormChart {
     });
   }
 
-  // Toggle log scale
+  // Toggle log scale y-axis
   setLogScale(useLog) {
     this.logScale = useLog;
     this.chart.options.scales.y.type = useLog ? 'logarithmic' : 'linear';
+    this.chart.update('none');
+  }
+
+  // Toggle log scale x-axis
+  setLogScaleX(useLogX) {
+    this.logScaleX = useLogX;
+    this.chart.options.scales.x.type = useLogX ? 'logarithmic' : 'linear';
+
+    // Set appropriate min based on mode
+    if (useLogX) {
+      this.chart.options.scales.x.min = this.useEffectiveTime ? 5 : 1;
+    } else {
+      this.chart.options.scales.x.min = 0;
+    }
+
     this.chart.update('none');
   }
 
@@ -407,6 +453,11 @@ export class NormChart {
   setEffectiveTime(useEffTime, eta) {
     this.useEffectiveTime = useEffTime;
     this.eta = eta;
+
+    // Update x-axis min if logscale is enabled
+    if (this.logScaleX) {
+      this.chart.options.scales.x.min = useEffTime ? 5 : 1;
+    }
 
     // Update x-axis tick formatting based on mode
     const chart = this.chart;
@@ -638,14 +689,26 @@ export class NormChart {
     // Set y-axis max (include theory curve range if shown)
     if (!this.logScale) {
       let maxVal = 0;
-      for (let i = 0; i < d; i++) {
-        maxVal = Math.max(maxVal, max[`w1_${i}`]);
+
+      // Check if this is preview mode (only 1 experimental data point)
+      const isPreviewMode = normHistory.length === 1;
+
+      if (!isPreviewMode) {
+        // Normal mode: use experimental data max
+        for (let i = 0; i < d; i++) {
+          const val = max[`w1_${i}`];
+          if (isFinite(val)) {
+            maxVal = Math.max(maxVal, val);
+          }
+        }
+        // Include cross-term if d >= 2
+        if (d >= 2 && max.w1_cross !== undefined && isFinite(max.w1_cross)) {
+          maxVal = Math.max(maxVal, Math.abs(max.w1_cross));
+        }
+        if (isFinite(max.w2NormNormalized)) {
+          maxVal = Math.max(maxVal, max.w2NormNormalized);
+        }
       }
-      // Include cross-term if d >= 2
-      if (d >= 2 && max.w1_cross !== undefined) {
-        maxVal = Math.max(maxVal, Math.abs(max.w1_cross));
-      }
-      maxVal = Math.max(maxVal, max.w2NormNormalized);
 
       // Also check theory data if shown - we want to see the full theory curves
       if (theoryNormHistory && theoryNormHistory.length > 0 && this.showTheory) {

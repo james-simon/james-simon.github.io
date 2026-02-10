@@ -4,7 +4,14 @@
 
 export class TargetFunction {
   constructor(alphas, gammas, fStar, c) {
-    this.alphas = alphas;  // [α₁, α₂, ..., αd]
+    // alphas is now 2D: [[α₁, α₂, ...], [α'₁, α'₂, ...], ...]
+    // If 1D array passed (backward compat), convert to 2D
+    if (!Array.isArray(alphas[0])) {
+      this.alphas = [alphas];
+    } else {
+      this.alphas = alphas;
+    }
+    this.numTerms = this.alphas.length;
     this.gammas = gammas;  // [γ₁, γ₂, ..., γd]
     this.fStar = fStar;    // Target value (currently unused, but kept for future)
     this.c = c;            // Constant (currently unused, but kept for future)
@@ -25,37 +32,50 @@ export class TargetFunction {
     throw new Error(`Hermite polynomial for α=${alpha} not implemented`);
   }
 
-  // Target function: f*(x) = ∏ᵢ h_αᵢ(γᵢ⁻¹/² xᵢ)
+  // Target function: f*(x) = Σⱼ ∏ᵢ h_αⱼᵢ(γᵢ⁻¹/² xᵢ)
   evaluate(x) {
-    let product = 1;
-    for (let i = 0; i < x.length; i++) {
-      const normalized = x[i] / Math.sqrt(this.gammas[i]);
-      const hermiteVal = this.hermite(this.alphas[i], normalized);
-      product *= hermiteVal;
+    let sum = 0;
+    // Sum over terms
+    for (let termIdx = 0; termIdx < this.numTerms; termIdx++) {
+      let product = 1;
+      // Product over dimensions
+      for (let dimIdx = 0; dimIdx < x.length; dimIdx++) {
+        const normalized = x[dimIdx] / Math.sqrt(this.gammas[dimIdx]);
+        const hermiteVal = this.hermite(this.alphas[termIdx][dimIdx], normalized);
+        product *= hermiteVal;
+      }
+      sum += product;
     }
-    return product;
+    return sum;
   }
 
   // Gradient of target function w.r.t. x
-  // ∂f*/∂xᵢ = (1/√γᵢ) h'_αᵢ(γᵢ⁻¹/² xᵢ) ∏_{j≠i} h_αⱼ(γⱼ⁻¹/² xⱼ)
+  // ∂f*/∂xᵢ = Σⱼ (1/√γᵢ) h'_αⱼᵢ(γᵢ⁻¹/² xᵢ) ∏_{k≠i} h_αⱼₖ(γₖ⁻¹/² xₖ)
   gradient(x) {
     const grad = [];
     const d = x.length;
 
-    for (let i = 0; i < d; i++) {
-      const zi = x[i] / Math.sqrt(this.gammas[i]);
-      const hPrime = this.hermitePrime(this.alphas[i], zi);
+    for (let dimIdx = 0; dimIdx < d; dimIdx++) {
+      let gradSum = 0;
 
-      // Product of all other Hermite terms
-      let product = 1;
-      for (let j = 0; j < d; j++) {
-        if (j !== i) {
-          const zj = x[j] / Math.sqrt(this.gammas[j]);
-          product *= this.hermite(this.alphas[j], zj);
+      // Sum over terms
+      for (let termIdx = 0; termIdx < this.numTerms; termIdx++) {
+        const zi = x[dimIdx] / Math.sqrt(this.gammas[dimIdx]);
+        const hPrime = this.hermitePrime(this.alphas[termIdx][dimIdx], zi);
+
+        // Product of all other Hermite terms for this term
+        let product = 1;
+        for (let otherDimIdx = 0; otherDimIdx < d; otherDimIdx++) {
+          if (otherDimIdx !== dimIdx) {
+            const zj = x[otherDimIdx] / Math.sqrt(this.gammas[otherDimIdx]);
+            product *= this.hermite(this.alphas[termIdx][otherDimIdx], zj);
+          }
         }
+
+        gradSum += (1 / Math.sqrt(this.gammas[dimIdx])) * hPrime * product;
       }
 
-      grad[i] = (1 / Math.sqrt(this.gammas[i])) * hPrime * product;
+      grad[dimIdx] = gradSum;
     }
 
     return grad;

@@ -219,7 +219,7 @@ This was my first paper functioning as a PI. It's also my best work -- my coauth
 
 - id: critical-point-finding
   title: Critical point-finding methods reveal gradient-flat regions of deep network losses
-  authors: "Charles G. Frye, James Simon, Neha S. Wadia, Andrew Ligeralde, Michael R. DeWeese, Kristofer E. Bouchard"
+  authors: "Charles G. Frye, James B. Simon, Neha S. Wadia, Andrew Ligeralde, Michael R. DeWeese, Kristofer E. Bouchard"
   category: other-ml-theory
   year: 2021
   venue: Neural Computation 2021

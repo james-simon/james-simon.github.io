@@ -11,9 +11,11 @@ const DEFAULTS = {
   k: 1000,
   gamma: 0.1,
   alpha: 0,
+  numTerms: 1,
   eta: 0.01,
   batchSize: 100,
   logScale: false,
+  logScaleX: false,
   showTheory: false,
   xAxisMode: 'step',
   emaWindow: 1
@@ -24,11 +26,18 @@ export class AppState {
     // UI parameters
     this.d = DEFAULTS.d;
     this.k = DEFAULTS.k;
+    this.numTerms = DEFAULTS.numTerms;
     this.gammaValues = Array(5).fill(DEFAULTS.gamma);
-    this.alphaValues = Array(5).fill(DEFAULTS.alpha);
+    // alphaValues is now 2D: [termIndex][dimIndex]
+    this.alphaValues = [
+      Array(5).fill(DEFAULTS.alpha),
+      Array(5).fill(DEFAULTS.alpha),
+      Array(5).fill(DEFAULTS.alpha)
+    ];
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.logScaleX = DEFAULTS.logScaleX;
     this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
     this.emaWindow = DEFAULTS.emaWindow;
@@ -41,11 +50,13 @@ export class AppState {
     return {
       d: this.d,
       k: this.k,
+      numTerms: this.numTerms,
       gammaValues: this.gammaValues,
       alphaValues: this.alphaValues,
       eta: this.eta,
       batchSize: this.batchSize,
       logScale: this.logScale,
+      logScaleX: this.logScaleX,
       showTheory: this.showTheory,
       xAxisMode: this.xAxisMode,
       emaWindow: this.emaWindow
@@ -66,15 +77,32 @@ export class AppState {
       this.k = json.k;
     }
 
+    if (json.numTerms !== undefined) {
+      this.numTerms = Math.max(1, Math.min(3, json.numTerms));
+    }
+
     if (Array.isArray(json.gammaValues)) {
       for (let i = 0; i < Math.min(json.gammaValues.length, 5); i++) {
         this.gammaValues[i] = json.gammaValues[i] ?? DEFAULTS.gamma;
       }
     }
 
+    // Handle backward compatibility: 1D array -> convert to 2D
     if (Array.isArray(json.alphaValues)) {
-      for (let i = 0; i < Math.min(json.alphaValues.length, 5); i++) {
-        this.alphaValues[i] = json.alphaValues[i] ?? DEFAULTS.alpha;
+      if (Array.isArray(json.alphaValues[0])) {
+        // Already 2D
+        for (let t = 0; t < 3; t++) {
+          if (json.alphaValues[t]) {
+            for (let i = 0; i < Math.min(json.alphaValues[t].length, 5); i++) {
+              this.alphaValues[t][i] = json.alphaValues[t][i] ?? DEFAULTS.alpha;
+            }
+          }
+        }
+      } else {
+        // Old 1D format - treat as first term only
+        for (let i = 0; i < Math.min(json.alphaValues.length, 5); i++) {
+          this.alphaValues[0][i] = json.alphaValues[i] ?? DEFAULTS.alpha;
+        }
       }
     }
 
@@ -88,6 +116,10 @@ export class AppState {
 
     if (json.logScale !== undefined) {
       this.logScale = json.logScale;
+    }
+
+    if (json.logScaleX !== undefined) {
+      this.logScaleX = json.logScaleX;
     }
 
     if (json.showTheory !== undefined) {
@@ -136,11 +168,17 @@ export class AppState {
   resetToDefaults() {
     this.d = DEFAULTS.d;
     this.k = DEFAULTS.k;
+    this.numTerms = DEFAULTS.numTerms;
     this.gammaValues = Array(5).fill(DEFAULTS.gamma);
-    this.alphaValues = Array(5).fill(DEFAULTS.alpha);
+    this.alphaValues = [
+      Array(5).fill(DEFAULTS.alpha),
+      Array(5).fill(DEFAULTS.alpha),
+      Array(5).fill(DEFAULTS.alpha)
+    ];
     this.eta = DEFAULTS.eta;
     this.batchSize = DEFAULTS.batchSize;
     this.logScale = DEFAULTS.logScale;
+    this.logScaleX = DEFAULTS.logScaleX;
     this.showTheory = DEFAULTS.showTheory;
     this.xAxisMode = DEFAULTS.xAxisMode;
     this.emaWindow = DEFAULTS.emaWindow;

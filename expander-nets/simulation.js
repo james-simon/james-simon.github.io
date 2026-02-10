@@ -5,7 +5,8 @@
 import { ExpanderNet } from './model.js';
 import { TargetFunction } from './target.js';
 import { Trainer } from './training.js';
-import { solveODE } from '../low-dim-flows/api.js';
+import { solveODE } from './core/ode-solver.js';
+import { computeDerivatives, computeLoss } from './core/dynamics.js';
 import { calculateAllTheory } from './core/theory.js';
 
 export class Simulation {
@@ -47,7 +48,7 @@ export class Simulation {
       d: d,
       k: k,
       gammas: [...gammas],
-      alphas: [...alphas],
+      alphas: alphas.map(row => [...row]),  // Deep copy 2D array
       eta: eta,
       batchSize: batchSize,
       fStar: fStar,
@@ -107,56 +108,127 @@ export class Simulation {
     this.runTheoryODE();
   }
 
-  // Run low-dim-flows ODE to get theory prediction
+  // Run ODE solver to get theory prediction with adaptive tMax
   runTheoryODE() {
-    // Compute theory to get c and tRise
-    const theory = calculateAllTheory(this.params.gammas, this.params.alphas, this.params.d);
+    const numTerms = this.params.alphas.length;
+    const d = this.params.d;
 
-    // Build kVec: all alphas + [1] for b
-    const kVec = [...this.params.alphas, 1];
+    // Compute c values for all terms
+    const cValues = [];
+    for (let termIdx = 0; termIdx < numTerms; termIdx++) {
+      const theory = calculateAllTheory(this.params.gammas, this.params.alphas[termIdx], d);
+      cValues.push(theory.c);
+    }
 
-    // Build a0Vec: [1, 1, ..., 1, small_value] (d ones for a_i, small positive for b)
-    // Note: b starts near 0 but must be positive for ODE solver (gradient divides by a_i)
-    const a0Vec = Array(this.params.d).fill(1).concat([1e-10]);
+    // Initial conditions: y = [a₁, ..., aₐ, b₁, ..., bₙ]
+    const y0 = [
+      ...Array(d).fill(1),           // a_i(0) = 1
+      ...Array(numTerms).fill(1e-10) // b_j(0) ≈ 0
+    ];
 
-    // Choose tMax (no cap - let user explore long-time behavior)
-    const tMax = theory.tRise.isUndefined ? 100 : theory.tRise.value * 2;
+    // Define derivative function
+    const derivativeFn = (t, y) => computeDerivatives(t, y, this.params.alphas, cValues, d);
 
-    // Adaptive dt scaling: keep computational cost constant for tMax > 2000
-    // by scaling dt proportionally so we always take ~200k steps
-    const baseDt = 0.01;
-    const dtScaleThreshold = 2000;
-    const dt = tMax > dtScaleThreshold
-      ? baseDt * (tMax / dtScaleThreshold)
-      : baseDt;
+    // Adaptive search for convergence time
+    const threshold = 0.001;
+    let tMax = 1000;
+    const maxTMax = 50000;
+    const baseDt = 0.1;
+    const dtScaleThreshold = 1000;
+    let tConvergence = null;
 
-    // Run ODE with adaptive dt
-    const fStar = 1;
-    const c = theory.c;
-    const result = solveODE(a0Vec, kVec, tMax, fStar, c, dt);
+    while (tMax <= maxTMax) {
+      // Compute dt for this tMax (scales with tMax for efficiency)
+      const dt = tMax > dtScaleThreshold
+        ? baseDt * (tMax / dtScaleThreshold)
+        : baseDt;
 
-    // Convert loss to our format: ODE time t = our t_eff, so step = t / eta
-    this.theoryLossHistory = result.times.map((t, i) => ({
-      iteration: t / this.params.eta,  // Convert t_eff to step
-      loss: result.lossValues[i]
-    }));
+      // Solve ODE up to tMax
+      const result = solveODE(derivativeFn, y0, tMax, dt);
 
-    // Convert parameter trajectories for norm plot
-    // result.aTrajectories[i] = trajectory for parameter i (a_1, a_2, ..., a_d, b)
-    this.theoryNormHistory = result.times.map((t, idx) => {
-      const dataPoint = {
-        iteration: t / this.params.eta
-      };
+      // Check final loss
+      const finalY = [];
+      for (let i = 0; i < y0.length; i++) {
+        finalY.push(result.trajectories[i][result.trajectories[i].length - 1]);
+      }
+      const finalLoss = computeLoss(finalY, this.params.alphas, cValues, d);
 
-      // Add W1 diagonal trajectories (a_i maps to W1_ii)
-      for (let i = 0; i < this.params.d; i++) {
-        dataPoint[`w1_${i}`] = result.aTrajectories[i][idx];
+      if (finalLoss < threshold) {
+        // Found convergence - find exact time by searching backward
+        for (let idx = result.times.length - 1; idx >= 0; idx--) {
+          const y = [];
+          for (let i = 0; i < y0.length; i++) {
+            y.push(result.trajectories[i][idx]);
+          }
+          const loss = computeLoss(y, this.params.alphas, cValues, d);
+
+          if (loss >= threshold) {
+            // Found first time above threshold, convergence is next step
+            tConvergence = result.times[Math.min(idx + 1, result.times.length - 1)];
+            break;
+          }
+        }
+
+        // If we didn't find it (very fast convergence), use first time
+        if (tConvergence === null) {
+          tConvergence = result.times[0];
+        }
+        break;
       }
 
-      // Add b trajectory (just b, not scaled by sqrt(k))
-      // In our model, b is scalar
-      const b = result.aTrajectories[this.params.d][idx];
-      dataPoint.w2NormNormalized = Math.abs(b);
+      // Double tMax and try again
+      tMax *= 2;
+    }
+
+    // If never converged, use maxTMax
+    if (tConvergence === null) {
+      tConvergence = maxTMax;
+    }
+
+    // Determine plot duration based on number of terms
+    const tMaxPlot = numTerms === 1 ? 2 * tConvergence : 1.5 * tConvergence;
+
+    // Final solve with plot duration
+    const dtFinal = tMaxPlot > dtScaleThreshold
+      ? baseDt * (tMaxPlot / dtScaleThreshold)
+      : baseDt;
+    const finalResult = solveODE(derivativeFn, y0, tMaxPlot, dtFinal);
+
+    // Extract loss trajectory
+    this.theoryLossHistory = finalResult.times.map((t, idx) => {
+      const y = [];
+      for (let i = 0; i < y0.length; i++) {
+        y.push(finalResult.trajectories[i][idx]);
+      }
+      const loss = computeLoss(y, this.params.alphas, cValues, d);
+
+      return {
+        iteration: t / this.params.eta,
+        loss: loss
+      };
+    });
+
+    // Extract norm trajectories
+    this.theoryNormHistory = finalResult.times.map((t, idx) => {
+      const dataPoint = { iteration: t / this.params.eta };
+
+      // W1 diagonal elements (a_i)
+      for (let i = 0; i < d; i++) {
+        dataPoint[`w1_${i}`] = finalResult.trajectories[i][idx];
+      }
+
+      // Individual b values (b, b', b'')
+      for (let j = 0; j < numTerms; j++) {
+        dataPoint[`b_${j}`] = finalResult.trajectories[d + j][idx];
+      }
+
+      // W2 norm: √(Σⱼ bⱼ²) (no √k factor for theory)
+      let sumBSquared = 0;
+      for (let j = 0; j < numTerms; j++) {
+        const b = finalResult.trajectories[d + j][idx];
+        sumBSquared += b * b;
+      }
+      dataPoint.w2NormNormalized = Math.sqrt(sumBSquared);
 
       return dataPoint;
     });

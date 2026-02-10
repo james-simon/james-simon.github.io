@@ -161,6 +161,11 @@ startPauseButton.addEventListener('click', () => {
     const fStar = 1;  // Target value (currently unused)
     const c = 1;      // Constant (currently unused)
     simulation.captureParams(params.d, params.k, params.gammas, params.alphas, params.eta, params.batchSize, fStar, c);
+
+    // Update EMA initial value based on number of terms
+    const initialLoss = 0.5 * params.numTerms;
+    chartsManager.lossChart.setInitialLoss(initialLoss);
+
     simulation.start();
     startPauseButton.textContent = 'pause';
   } else {
