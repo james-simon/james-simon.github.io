@@ -30,8 +30,11 @@ const manualSeedCheckbox = document.getElementById('manualSeedCheckbox');
 const seedInputDiv       = document.getElementById('seedInputDiv');
 const seedInput          = document.getElementById('seedInput');
 
-// Set slider position from persisted state
+// Set slider/checkbox positions from persisted state
 alphaSlider.value = alphaSliderHelper.valueToSlider(appState.alpha);
+manualSeedCheckbox.checked = appState.manualSeed;
+seedInputDiv.style.display = appState.manualSeed ? 'inline-block' : 'none';
+if (appState.seedValue !== undefined) seedInput.value = appState.seedValue;
 
 // ============================================================================
 // SLIDER DISPLAY UPDATES
@@ -109,10 +112,16 @@ resetBtn.addEventListener('click', () => {
 
 // Seed checkbox
 manualSeedCheckbox.addEventListener('change', () => {
+  appState.manualSeed = manualSeedCheckbox.checked;
+  appState.save();
   seedInputDiv.style.display = manualSeedCheckbox.checked ? 'inline-block' : 'none';
   if (!sim.running) preSample();
 });
-seedInput.addEventListener('change', () => { if (!sim.running) preSample(); });
+seedInput.addEventListener('change', () => {
+  appState.seedValue = parseInt(seedInput.value, 10) || 0;
+  appState.save();
+  if (!sim.running) preSample();
+});
 
 // ============================================================================
 // INITIAL RENDER — wait for MathJax

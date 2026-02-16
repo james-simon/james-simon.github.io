@@ -106,20 +106,31 @@ export class WeightPlot {
                     fillStyle: 'rgba(0,0,0,0)',
                     strokeStyle: 'rgba(0,0,0,0)',
                   },
-                  {
-                    text: 'teacher features',
-                    fillStyle: 'rgba(0,0,0,0)',
-                    strokeStyle: 'black',
-                    pointStyle: 'line',
-                    rotation: 0,
-                    hidden: false,
-                    lineWidth: 2,
-                    lineDash: [6, 4],
-                  },
+                  (() => {
+                    const c = document.createElement('canvas');
+                    c.width = 20; c.height = 10;
+                    const cx = c.getContext('2d');
+                    cx.strokeStyle = 'black';
+                    cx.lineWidth = 3;
+                    cx.setLineDash([6, 4]);
+                    cx.beginPath();
+                    cx.moveTo(0, 5);
+                    cx.lineTo(20, 5);
+                    cx.stroke();
+                    return {
+                      text: 'teacher feature directions',
+                      pointStyle: c,
+                      hidden: false,
+                      fillStyle: 'rgba(0,0,0,0)',
+                      strokeStyle: 'rgba(0,0,0,0)',
+                      lineWidth: 0,
+                    };
+                  })(),
                 ];
               },
               usePointStyle: true,
               pointStyleWidth: 10,
+              padding: 16,
               font: { size: 12, family: MONO },
             },
           },
@@ -147,6 +158,8 @@ export class WeightPlot {
     if (!sim.W || !sim.a) return;
     const { W, a, Ws, as, params, weightHistory } = sim;
     const { n, k } = params;
+    // Use initial a signs for stable coloring — a[i] can flip sign during training
+    const signs = sim.a0signs || a.map(ai => ai >= 0 ? 1 : -1);
 
     // Compute auto-zoom range: 1.2x the max absolute coordinate
     let maxCoord = 1;
@@ -164,7 +177,7 @@ export class WeightPlot {
     const traceDatasets = [];
     if (renderIndices.length > 1 && hist.length > 0) {
       for (let i = 0; i < n; i++) {
-        const color = a[i] >= 0 ? RED_TRACE : BLUE_TRACE;
+        const color = signs[i] >= 0 ? RED_TRACE : BLUE_TRACE;
         const pts = renderIndices
           .filter(idx => idx < hist.length)
           .map(idx => ({ x: hist[idx][i][0], y: hist[idx][i][1] }));
@@ -182,7 +195,7 @@ export class WeightPlot {
 
     const redDots = [], blueDots = [];
     for (let i = 0; i < n; i++) {
-      (a[i] >= 0 ? redDots : blueDots).push({ x: W[i][0], y: W[i][1] });
+      (signs[i] >= 0 ? redDots : blueDots).push({ x: W[i][0], y: W[i][1] });
     }
 
     // Teacher rays: dashed lines from origin, extended past plot edge
@@ -211,8 +224,8 @@ export class WeightPlot {
     this.chart.data.datasets = [
       ...teacherDatasets,
       ...traceDatasets,
-      { data: redDots,  backgroundColor: RED_DOT,  pointRadius: 5, pointHoverRadius: 5 },
-      { data: blueDots, backgroundColor: BLUE_DOT, pointRadius: 5, pointHoverRadius: 5 },
+      { data: blueDots, backgroundColor: BLUE_DOT, pointRadius: 5, pointHoverRadius: 5, order: 2 },
+      { data: redDots,  backgroundColor: RED_DOT,  pointRadius: 5, pointHoverRadius: 5, order: 1 },
     ];
     this.chart.update('none');
   }

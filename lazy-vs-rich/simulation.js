@@ -122,6 +122,9 @@ export class Simulation {
       }
     }
 
+    // Snapshot of initial a signs — used for stable coloring in the plot
+    this.a0signs = this.a.map(ai => ai >= 0 ? 1 : -1);
+
     this.iteration = 0;
     this.lossHistory = [];
     this.weightHistory = []; // array of snapshots: [[x,y], ...] per neuron

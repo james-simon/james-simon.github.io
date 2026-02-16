@@ -5,7 +5,9 @@
 const STORAGE_KEY = 'lazy-vs-rich-state';
 
 const DEFAULTS = {
-  alpha: 1,
+  alpha:       1,
+  manualSeed:  false,
+  seedValue:   0,
 };
 
 export class AppState {
