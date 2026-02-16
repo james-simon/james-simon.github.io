@@ -1,0 +1,122 @@
+---
+layout: default
+permalink: /lazy-vs-rich/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: {
+      scale: 1.0
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+
+<div class="container">
+  <div class="header-container">
+    <h1 class="page-title">Lazy vs. rich training dynamics: it's all in the output multiplier</h1>
+  </div>
+
+  <p>
+    One of the most important ideas in deep learning theory from the last few years is that sometimes, in some settings,
+    training in deep learning may be linearized in its parameters. Training in this &ldquo;lazy&rdquo; regime can be induced
+    just by adding an output multiplier on the network.
+  </p>
+
+  <p>
+    Here's an example from <a href="https://arxiv.org/abs/1812.07956">Chizat et al. (2018)</a>.
+    To start, we're going to make a &ldquo;teacher&rdquo; function of the form
+    $$f^*(\mathbf{x}) = \frac{1}{\sqrt{k}} \sum_{i=1}^k a^*_i \,\mathrm{ReLU}\!\left(\langle \mathbf{w}^*_i, \mathbf{x} \rangle\right).$$
+    This teacher is just a ReLU network with random weights. We could have chosen another teacher function,
+    but this one will allow nice visualizations. We let the teacher have $k = 3$ ReLU neurons.
+    The input is two-dimensional: $\mathbf{x} \in \mathbb{R}^2$.
+  </p>
+
+  <p>
+    The &ldquo;student&rdquo; network is the one we will train. Its function is
+    $$\hat{f}(\mathbf{x}) = \frac{\alpha}{n} \sum_{i=1}^n a_i \,\mathrm{ReLU}\!\left(\langle \mathbf{w}_i, \mathbf{x} \rangle\right).$$
+    We let the number of student neurons $n = 200$.
+    We train the parameters $(a_i, \mathbf{w}_i)_{i=1}^n$ to make the student represent the teacher,
+    minimizing the squared loss over Gaussian data
+    $$\mathcal{L} = \mathbb{E}_{\mathbf{x} \sim \mathcal{N}(0,\mathbf{I}_2)}\!\left[\left(\hat{f}(\mathbf{x}) - f^*(\mathbf{x})\right)^2\right].$$
+  </p>
+
+  <p>
+    <strong>The parameterization and the output multiplier.</strong>
+    The student network has a factor of $\frac{\alpha}{n}$ in front of it.
+    The factor of $\frac{1}{n}$ puts the network in
+    <a href="https://arxiv.org/abs/1804.06561">mean-field parameterization</a>.
+    We initialize all student parameters from $\mathcal{N}(0,1)$ and train with ordinary gradient descent.
+    The extra factor of $\alpha$, however, is our new addition.
+    Making this output multiplier large, small, or order one will fundamentally change how training happens
+    and where the student weights end up.
+  </p>
+
+  <p>
+    Below is an interactive module that lets you see how training changes with different values of $\alpha$.
+    First, try running the simulation at $\alpha = 1$. You will see the loss drop on the left plot,
+    and in the right plot, the student weights (dots) will drift closer to the teacher features (dashed lines).
+    If you use $\alpha \gg 1$, you will find that the dynamics are &ldquo;lazy&rdquo;: the student weights need not
+    change much to drive the loss down. By contrast, when $\alpha \ll 1$, the dynamics are &ldquo;ultra-rich&rdquo;:
+    the student weights need to change enormously, and they grow to strikingly align with the teacher features.
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin-top: 1em; margin-bottom: 5px;">
+
+  <div class="section-label">SIMULATION</div>
+
+  <!-- Alpha slider -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1.2em;">
+    <span style="font-size: 1.5em;">$\alpha$:</span>
+    <input type="range" id="alphaSlider" min="0" max="100" value="50" style="width: 160px;">
+    <span id="alphaValue" style="font-size: 1.3em; min-width: 3em; text-align: left;"></span>
+    <span id="regimeLabel" style="font-size: 1.1em; color: #555; font-style: normal; min-width: 7em; margin-left: 1.5em;"></span>
+  </div>
+
+  <!-- Simulation controls row -->
+  <div style="display: flex; align-items: center; gap: 1em; margin-bottom: 1.4em; flex-wrap: wrap;">
+    <div style="display: flex; gap: 0.6em;">
+      <button id="startPauseBtn" class="sim-button">start</button>
+      <button id="resetBtn" class="sim-button">reset</button>
+    </div>
+    <label style="font-size: 0.95em; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+      <input type="checkbox" id="manualSeedCheckbox"> manually set random seed
+    </label>
+    <div id="seedInputDiv" style="display: none;">
+      <input type="number" id="seedInput" min="0" step="1" placeholder="random seed"
+             style="width: 120px; font-size: 0.9em; color: #333;">
+    </div>
+    <div style="margin-left: auto; font-size: 0.9em; color: #888;"><span id="stepsPerSec">0</span> steps/sec</div>
+  </div>
+
+  <!-- Plots: loss left, weights right -->
+  <div class="plots-container" style="align-items: center;">
+    <div class="plot-wrapper">
+      <div class="plot-canvas-box" style="height: 300px; margin: 0 40px;">
+        <canvas id="lossPlot"></canvas>
+      </div>
+    </div>
+    <div class="plot-wrapper">
+      <div class="plot-canvas-box square">
+        <canvas id="weightPlot"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>
