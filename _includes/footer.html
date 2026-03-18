@@ -1,26 +1,20 @@
 <div class="text-center p-3" style="background-color: #e8e8e8;">
-  <div class="container ">
-    <div class="row justify-content-md-center">
+  <div class="container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 4rem;">
 
-      <div class="col-2">
-        <p class="text-center">
-          <i class="far fa-envelope"></i>
-          <a href="mailto:{{ site.email }}">{{ site.email }}</a>
-        </p>
+      <div style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
+        <i class="far fa-envelope"></i>
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
       </div>
 
-      <div class="col-2">
-        <p class="text-center">
-          <i class="fab fa-github"></i>
-          <a href="https://github.com/{{site.github_username}}">{{site.github_username}}</a>
-        </p>
+      <div style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
+        <i class="fab fa-github"></i>
+        <a href="https://github.com/{{site.github_username}}">{{site.github_username}}</a>
       </div>
 
-      <div class="col-2">
-        <p class="text-center">
-          <i class="fas fa-graduation-cap"></i>
-          <a href={{site.gscholar_url}}>gScholar</a>
-        </p>
+      <div style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
+        <i class="fas fa-graduation-cap"></i>
+        <a href={{site.gscholar_url}}>gScholar</a>
       </div>
 
     </div>

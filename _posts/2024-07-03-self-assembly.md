@@ -20,7 +20,7 @@ I’ve always liked cute interactive technical projects. This was particularly t
 - a robotic articulated necktie which could grab food and bring it to the wearer's mouth
 - various 3D printed ball mazes
 - [lots of balancing sculptures](https://james-simon.github.io/blog/gravitrees/)
-- and [a campus-wide puzzlehunt](vthunt.com).
+- and [a campus-wide puzzlehunt](https://vthunt.com/).
 
 I thought self-assembling systems and other passive mechanics were particularly cool — some demos that inspired me included [this self-assembling “chair,”](https://www.youtube.com/watch?v=Bnj1sPfo4Ek) [this swarm of cubic robots](https://www.youtube.com/watch?v=6aZbJS6LZbs), and this [robot origami](https://www.youtube.com/watch?v=ZVYz7g-qLjs), all from MIT. As a senior, I got a small grant from the 3D printing service Shapeways to explore 3D printed self-assembling systems.
 
