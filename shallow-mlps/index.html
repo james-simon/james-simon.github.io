@@ -1,0 +1,218 @@
+---
+layout: default
+permalink: /shallow-mlps/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: { scale: 1.0 },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<div class="smlp-container">
+
+  <h1 class="page-title">Shallow MLP Gym</h1>
+
+  <p>
+    Train a two-layer MLP on a synthetic regression task. Data is $\mathbf{x} \sim \mathcal{N}(0, I_d)$.
+    The target is a staircase of low-rank monomials; the student trains to match it via SGD.
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 1em 0 0.6em;">
+
+  <!-- Setup equations -->
+  <div style="margin-bottom: 0.8em;">
+    <div class="section-label" style="margin-bottom: 4px;">Setup</div>
+    <div class="eq-row">
+      <div class="eq-cell">
+        <div class="eq-sublabel">student network</div>
+        <div>$$\hat{f}(\mathbf{x}) = \frac{1}{n} \sum_{i=1}^n a_i\, \sigma\!\left(\frac{\mathbf{w}_i^\top \mathbf{x}}{\sqrt{d}}\right)$$</div>
+      </div>
+      <div class="eq-cell">
+        <div class="eq-sublabel">init &nbsp;($\mu$P)</div>
+        <div>$$W_{ij}(0) \sim \mathcal{N}(0,\alpha^2)$$
+             $$a_i(0) = 0$$</div>
+      </div>
+      <div class="eq-cell">
+        <div class="eq-sublabel">updates &nbsp;($\mu$P)</div>
+        <div>$$\Delta\mathbf{W} = -\eta \cdot n\, \nabla_{\!\mathbf{W}}\,\mathcal{L}$$
+             $$\Delta\mathbf{a} = -\eta \cdot n\, \nabla_{\!\mathbf{a}}\,\mathcal{L}$$</div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 0.6em;">
+
+  <!-- Target function -->
+  <div style="margin-bottom: 0.8em;">
+    <div class="section-label" style="margin-bottom: 4px;">Target function</div>
+    <div style="display: flex; align-items: center; gap: 1.5em; flex-wrap: wrap; margin-bottom: 0.3em;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 0.95em;">type</span>
+        <select id="targetTypeSelect">
+          <option value="staircase">staircase</option>
+          <option value="hermite">Hermite</option>
+          <option value="monomial">monomial</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 0.95em;">order $T$:</span>
+        <input type="range" id="slider_numTerms" min="1" max="5" step="1" value="2" style="width: 100px; accent-color: #555;">
+        <span id="value_numTerms" style="font-size: 0.95em; min-width: 1em; font-family: Monaco, Consolas, monospace;"></span>
+      </div>
+      <div id="targetFormula" style="font-size: 1em;"></div>
+    </div>
+    <div>$$\mathcal{L} = \tfrac{1}{2}\,\mathbb{E}\!\left[(\hat{f} - f^*)^2\right]$$</div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.4em 0 0.6em;">
+
+  <!-- Hyperparameters on left, network diagram on right -->
+  <div style="display: flex; gap: 3em; align-items: flex-start; margin-bottom: 1.4em; flex-wrap: wrap;">
+
+    <!-- Single-column sliders -->
+    <div style="flex-shrink: 0;">
+      <div class="section-label" style="margin-bottom: 10px;">Hyperparameters</div>
+
+      <div class="param-col">
+
+        <div class="param-row">
+          <span class="param-desc">input dimension</span>
+          <span class="param-label">$d$</span>
+          <input type="range" id="slider_d" class="param-slider" min="0" max="100" value="50">
+          <span class="param-value" id="value_d">10</span>
+        </div>
+
+        <div class="param-row">
+          <span class="param-desc">width</span>
+          <span class="param-label">$n$</span>
+          <input type="range" id="slider_n" class="param-slider" min="0" max="100" value="50">
+          <span class="param-value" id="value_n">100</span>
+        </div>
+
+        <div class="param-row">
+          <span class="param-desc">init scale</span>
+          <span class="param-label">$\alpha$</span>
+          <input type="range" id="slider_alpha" class="param-slider" min="0" max="100" value="100">
+          <span class="param-value" id="value_alpha">1</span>
+        </div>
+
+        <div class="param-row">
+          <span class="param-desc">learning rate</span>
+          <span class="param-label">$\eta$</span>
+          <input type="range" id="slider_eta" class="param-slider" min="0" max="100" value="50">
+          <span class="param-value" id="value_eta">0.01</span>
+        </div>
+
+        <div class="param-row">
+          <span class="param-desc">batch size</span>
+          <span class="param-label">$B$</span>
+          <input type="range" id="slider_batchSize" class="param-slider" min="0" max="100" value="50">
+          <span class="param-value" id="value_batchSize">200</span>
+        </div>
+
+      </div>
+
+      <div class="activation-row" style="margin-top: 0.6em;">
+        <span class="param-desc" style="min-width: 7em;">nonlinearity</span>
+        <span class="param-label" style="margin-right: 6px;">$\sigma$</span>
+        <select id="activationSelect">
+          <option value="relu">ReLU</option>
+          <option value="tanh">tanh</option>
+          <option value="gelu">GeLU</option>
+          <option value="linear">linear</option>
+          <option value="cos">√2 cos(·+π/4)</option>
+        </select>
+      </div>
+
+    </div><!-- end sliders -->
+
+    <!-- Network diagram (right) -->
+    <div style="flex-shrink: 0;">
+      <div class="section-label" style="margin-bottom: 8px;">Network</div>
+      <svg id="networkViz" width="380" height="160"></svg>
+    </div>
+
+  </div><!-- end flex row -->
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.2em 0 6px;">
+  <div class="section-label">Simulation</div>
+
+  <div class="controls-row">
+    <div style="display: flex; gap: 0.5em;">
+      <button id="startPauseBtn" class="sim-button">start</button>
+      <button id="resetBtn" class="sim-button">reset</button>
+    </div>
+    <label style="font-size: 0.92em; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+      <input type="checkbox" id="manualSeedCheckbox"> seed
+    </label>
+    <div id="seedInputDiv" style="display: none;">
+      <input type="number" id="seedInput" min="0" step="1" placeholder="seed"
+             style="width: 80px; font-size: 0.9em;">
+    </div>
+    <div class="steps-per-sec"><span id="stepsPerSec">0</span> steps/sec</div>
+  </div>
+
+  <!-- Row 1: loss | coefficients -->
+  <div class="plots-row">
+    <div class="plot-cell">
+      <div class="plot-canvas-box">
+        <canvas id="lossPlot"></canvas>
+      </div>
+    </div>
+    <div class="plot-cell">
+      <div class="plot-canvas-box">
+        <canvas id="coeffPlot"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: combined norms | RMS pre-activations -->
+  <div class="plots-row">
+    <div class="plot-cell">
+      <div class="plot-canvas-box">
+        <canvas id="normPlot"></canvas>
+      </div>
+    </div>
+    <div class="plot-cell">
+      <div class="plot-canvas-box">
+        <canvas id="preActPlot"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Histogram row: one per input direction -->
+  <div id="histRow" style="display: flex; gap: 16px; margin-bottom: 0.4em; flex-wrap: wrap;"></div>
+
+  <!-- Plot controls -->
+  <div class="plot-controls-row">
+    <label><input type="checkbox" id="logScaleX"> log x</label>
+    <label><input type="checkbox" id="logScaleY"> log y</label>
+    <span style="margin-left: 1em;">plot w.r.t.</span>
+    <span class="xaxis-toggle">
+      <a href="javascript:void(0)" id="step-link" class="active" onclick="setXAxisMode('step')">step</a><a href="javascript:void(0)" id="teff-link" onclick="setXAxisMode('teff')">$t_{\mathrm{eff}}$</a>
+    </span>
+    <span style="margin-left: 1em; display: flex; align-items: center; gap: 6px;">
+      <span>ema</span>
+      <input type="range" id="emaSlider" min="0" max="16" step="1" value="0" style="width: 80px; accent-color: #555;">
+      <span id="emaValue" style="font-size: 0.9em; min-width: 2.5em; font-family: Monaco, Consolas, monospace;">off</span>
+    </span>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>
