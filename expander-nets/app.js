@@ -125,7 +125,7 @@ function renderNetworkViz() {
     svg.appendChild(line);
   }
 
-  // Add labels
+  // Add labels to trapezoids (weight matrices)
   const trapezoidLabels = ['$\\mathbf{W}_1$', '$\\mathbf{W}_{\\mathrm{froz}}$', '$\\mathbf{W}_2$'];
   for (let i = 0; i < NETWORK_VIZ.NUM_LAYERS - 1; i++) {
     const centerX = (xPositions[i] + xPositions[i + 1]) / 2;
@@ -143,6 +143,61 @@ function renderNetworkViz() {
     fo.appendChild(div);
     svg.appendChild(fo);
   }
+
+  // Add labels for vertical lines
+  const centerY = height / 2;
+
+  // Line 0 (input): x to the left
+  const fo0 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo0.setAttribute('x', xPositions[0] - 35);
+  fo0.setAttribute('y', centerY - 15);
+  fo0.setAttribute('width', '40');
+  fo0.setAttribute('height', '30');
+  const div0 = document.createElement('div');
+  div0.style.cssText = 'display: flex; justify-content: center; align-items: center; height: 100%; color: #666; font-size: 16px;';
+  div0.textContent = '$\\mathbf{x}$';
+  fo0.appendChild(div0);
+  svg.appendChild(fo0);
+
+  // Line 1: h above the line
+  const h1 = heights[1];
+  const hY = centerY - h1/2 - 28;
+  const fo1 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo1.setAttribute('x', xPositions[1] - 20);
+  fo1.setAttribute('y', hY);
+  fo1.setAttribute('width', '40');
+  fo1.setAttribute('height', '30');
+  const div1 = document.createElement('div');
+  div1.style.cssText = 'display: flex; justify-content: center; align-items: center; height: 100%; color: #666; font-size: 16px;';
+  div1.textContent = '$\\mathbf{h}$';
+  fo1.appendChild(div1);
+  svg.appendChild(fo1);
+
+  // Line 2 (after sigma): sigma above the line
+  const h2 = heights[2];
+  const sigmaY = centerY - h2/2 - 28;
+  const fo2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo2.setAttribute('x', xPositions[2] - 40);
+  fo2.setAttribute('y', sigmaY);
+  fo2.setAttribute('width', '80');
+  fo2.setAttribute('height', '30');
+  const div2 = document.createElement('div');
+  div2.style.cssText = 'display: flex; justify-content: center; align-items: center; height: 100%; color: #666; font-size: 16px;';
+  div2.textContent = '$\\sigma(\\cdot)$';
+  fo2.appendChild(div2);
+  svg.appendChild(fo2);
+
+  // Line 3 (output): f hat to the right
+  const fo3 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+  fo3.setAttribute('x', xPositions[3] + 10);
+  fo3.setAttribute('y', centerY - 15);
+  fo3.setAttribute('width', '80');
+  fo3.setAttribute('height', '30');
+  const div3 = document.createElement('div');
+  div3.style.cssText = 'display: flex; justify-content: left; align-items: center; height: 100%; color: #666; font-size: 16px;';
+  div3.textContent = '$\\hat{f}(\\mathbf{x})$';
+  fo3.appendChild(div3);
+  svg.appendChild(fo3);
 
   // Retypeset MathJax
   if (window.MathJax && window.MathJax.typesetPromise) {
@@ -162,9 +217,11 @@ startPauseButton.addEventListener('click', () => {
     const c = 1;      // Constant (currently unused)
     simulation.captureParams(params.d, params.k, params.gammas, params.alphas, params.eta, params.batchSize, fStar, c);
 
-    // Update EMA initial value based on number of terms
-    const initialLoss = 0.5 * params.numTerms;
-    chartsManager.lossChart.setInitialLoss(initialLoss);
+    // Update EMA initial value ONLY when starting fresh (not resuming)
+    if (!simulation.model) {
+      const initialLoss = 0.5 * params.numTerms;
+      chartsManager.lossChart.setInitialLoss(initialLoss);
+    }
 
     simulation.start();
     startPauseButton.textContent = 'pause';

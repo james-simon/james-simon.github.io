@@ -1,0 +1,71 @@
+---
+layout: default
+permalink: /level-coeffs/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    chtml: { scale: 1.0 },
+    startup: { ready: () => { MathJax.startup.defaultReady(); window.mathJaxReady = true; } }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+
+<div class="container">
+  <h1 class="page-title">Level coefficient comparison</h1>
+
+  <hr class="section-hr">
+  <div class="section-label">ADD ACTIVATION FUNCTION</div>
+
+  <div class="add-row">
+    <span class="add-label">$\sigma(z) =$</span>
+    <input type="text" id="funcInput" class="func-input" placeholder="e.g. tanh(z), z**3, sigmoid(z), relu(z)" spellcheck="false" autocomplete="off">
+    <button id="addBtn" class="sim-button">add</button>
+  </div>
+  <div id="parseError" class="parse-error"></div>
+
+  <hr class="section-hr">
+  <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:0.4em;">
+    <div class="section-label" style="margin-bottom:0;">ACTIVE FUNCTIONS</div>
+    <button id="restoreDefaultsBtn" class="restore-btn">restore defaults</button>
+  </div>
+
+  <!-- Function list (horizontal pill row) -->
+  <div id="fnList" class="fn-list"></div>
+  <div id="fnListEmpty" class="fn-list-empty">no functions added yet</div>
+
+  <!-- Two plots side by side -->
+  <div class="plots-row">
+    <div class="plot-cell" id="plotCellSigma">
+      <div class="plot-title">$\sigma(z)$</div>
+      <button class="plot-gear" id="plotGearSigma">⚙</button>
+      <canvas id="sigmaChart"></canvas>
+    </div>
+    <div class="plot-cell" id="plotCellCoeffs">
+      <div class="plot-title">$c_\ell = [\sigma^{(\ell)}(0)]^2$</div>
+      <button class="plot-gear" id="plotGearCoeffs">⚙</button>
+      <canvas id="coeffsChart"></canvas>
+      <div class="coeffs-method-legend">
+        <span class="method-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#999"/></svg> symbolic</span>
+        <span class="method-legend-item"><svg width="10" height="10" viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" fill="#999"/></svg> numerical</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coefficient detail panel (shown when a pill is selected) -->
+  <div id="coeffDetail" class="coeff-detail" style="display:none;">
+    <div class="coeff-detail-header">
+      <span id="coeffDetailLabel"></span>
+      <button id="coeffDetailClose" class="fn-pill-btn" title="close">✕</button>
+    </div>
+    <pre id="coeffDetailPre" class="coeff-detail-pre"></pre>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.3/lib/browser/math.min.js" defer></script>
+<script type="module" src="app.js" defer></script>

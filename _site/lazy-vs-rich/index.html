@@ -3,36 +3,6 @@
 
   <head>
   
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        tagSide: "right",
-        extensions: ["boldsymbol.js"]
-      },
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-        processEscapes: true
-      }
-    });
-    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
-      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
-        clearTag() {
-          if (!this.global.notags) {
-            this.super(arguments).clearTag.call(this);
-          }
-        }
-      });
-    });
-  </script>
-  <script type="text/javascript" charset="utf-8"
-    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
-  </script>
-
-
-  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
-  
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -50,7 +20,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/">
+  <link rel="canonical" href="http://localhost:4000/lazy-vs-rich/">
   <link rel="alternate" type="application/rss+xml" title="Jamie Simon" href="http://localhost:4000/feed.xml">
 
   <style>
@@ -3784,193 +3754,136 @@
 
     <div class="page-content" style="flex: 1 0 auto;">
       <div class="wrapper">
-        <link rel="stylesheet" href="css/hover_effects.css">
-<style>
-  .headshot-container {
-    position: relative;
-    display: inline-block;
-    margin-top: 1em;
-  }
+        <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: {
+      scale: 1.0
+    },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  .headshot-container img {
-    width: 100%;
-    max-width: 250px;
-    aspect-ratio: 1;
-    object-fit: cover;
-    object-position: left 20%;
-  }
+<link rel="stylesheet" href="styles.css">
 
-  .loading-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background-color: rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
+<div class="lvr-container">
+  <div class="header-container">
+    <h1 class="page-title">Lazy vs. rich training dynamics: it's all in the output multiplier</h1>
+  </div>
 
-  .loading-bar.visible {
-    opacity: 1;
-  }
+  <p>
+    One of the most important ideas in deep learning theory from the last few years is that sometimes, in some settings,
+    training in deep learning may be linearized in its parameters. Training in this &ldquo;lazy&rdquo; regime can be induced
+    just by adding an output multiplier on the network.
+  </p>
 
-  .loading-bar-fill {
-    height: 100%;
-    width: 0;
-    background-color: rgba(255, 255, 255, 0.9);
-    transition: width 3s linear;
-  }
+  <p>
+    Here's an example from <a href="https://arxiv.org/abs/1812.07956">Chizat et al. (2018)</a>.
+    To start, we're going to make a &ldquo;teacher&rdquo; function of the form
+    $$f^*(\mathbf{x}) = \frac{1}{\sqrt{k}} \sum_{i=1}^k a^*_i \,\mathrm{ReLU}\!\left(\langle \mathbf{w}^*_i, \mathbf{x} \rangle\right).$$
+    This teacher is just a ReLU network with random weights. We could have chosen another teacher function,
+    but this one will allow nice visualizations. We let the teacher have $k = 3$ ReLU neurons.
+    The input is two-dimensional: $\mathbf{x} \in \mathbb{R}^2$.
+  </p>
 
-  .loading-bar.no-transition .loading-bar-fill {
-    transition: none;
-  }
+  <p>
+    The &ldquo;student&rdquo; network is the one we will train. Its function is
+    $$\hat{f}(\mathbf{x}) = \frac{\alpha}{n} \sum_{i=1}^n a_i \,\mathrm{ReLU}\!\left(\langle \mathbf{w}_i, \mathbf{x} \rangle\right).$$
+    We let the number of student neurons $n = 200$.
+    We train the parameters $(a_i, \mathbf{w}_i)_{i=1}^n$ to make the student represent the teacher,
+    minimizing the squared loss over Gaussian data
+    $$\mathcal{L} = \mathbb{E}_{\mathbf{x} \sim \mathcal{N}(0,\mathbf{I}_2)}\!\left[\left(\hat{f}(\mathbf{x}) - f^*(\mathbf{x})\right)^2\right].$$
+  </p>
 
-  .loading-bar.active .loading-bar-fill {
-    width: 100%;
-  }
+  <p>
+    <strong>The parameterization and the output multiplier.</strong>
+    The student network has a factor of $\frac{\alpha}{n}$ in front of it.
+    The factor of $\frac{1}{n}$ puts the network in
+    <a href="https://arxiv.org/abs/1804.06561">mean-field parameterization</a>.
+    We initialize all student parameters from $\mathcal{N}(0,1)$ and train with ordinary gradient descent.
+    The extra factor of $\alpha$, however, is our new addition.
+    Making this output multiplier large, small, or order one will fundamentally change how training happens
+    and where the student weights end up.
+  </p>
 
-  .col-md-9 h3 {
-    margin-top: 10px;
-  }
+  <p>
+    Below is an interactive module that lets you see how training changes with different values of $\alpha$.
+    First, try running the simulation at $\alpha = 1$. You will see the loss drop on the left plot,
+    and in the right plot, the student weights (dots) will drift closer to the teacher features (dashed lines).
+    If you use $\alpha \gg 1$, you will find that the dynamics are &ldquo;lazy&rdquo;: the student weights need not
+    change much to drive the loss down. By contrast, when $\alpha \ll 1$, the dynamics are &ldquo;ultra-rich&rdquo;:
+    the student weights need to change enormously, and they grow to strikingly align with the teacher features.
+  </p>
 
-</style>
+  <hr style="border: none; border-top: 1px solid #ddd; margin-top: 1em; margin-bottom: 5px;">
 
-<br>
-<div class="container">
-  <div class="row">
-    <div class="col-md-3">
-      <div class="headshot-container">
-        <img id="headshot" src="/img/pictures_of_me/me_at_collingwood_house_1.jpeg">
-        <div class="loading-bar">
-          <div class="loading-bar-fill"></div>
-        </div>
+  <div class="section-label">SIMULATION</div>
+
+  <!-- Alpha slider -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1.2em;">
+    <span style="font-size: 1.5em;">$\alpha$:</span>
+    <input type="range" id="alphaSlider" min="0" max="100" value="50" style="width: 160px;">
+    <span id="alphaValue" style="font-size: 1.3em; min-width: 3em; text-align: left;"></span>
+    <span id="regimeLabel" style="font-size: 1.1em; color: #555; font-style: normal; min-width: 7em; margin-left: 1.5em;"></span>
+  </div>
+
+  <!-- Simulation controls row -->
+  <div style="display: flex; align-items: center; gap: 1em; margin-bottom: 1.4em; flex-wrap: wrap;">
+    <div style="display: flex; gap: 0.6em;">
+      <button id="startPauseBtn" class="sim-button">start</button>
+      <button id="resetBtn" class="sim-button">reset</button>
+    </div>
+    <label style="font-size: 0.95em; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+      <input type="checkbox" id="manualSeedCheckbox"> manually set random seed
+    </label>
+    <div id="seedInputDiv" style="display: none;">
+      <input type="number" id="seedInput" min="0" step="1" placeholder="random seed"
+             style="width: 120px; font-size: 0.9em; color: #333;">
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; color: #888;">
+      font scale: <input type="range" id="fontScaleSlider" min="50" max="300" value="100" style="width: 100px;">
+      <span id="fontScaleValue">1.0×</span>
+    </div>
+    <div style="margin-left: auto; font-size: 0.9em; color: #888;"><span id="stepsPerSec">0</span> steps/sec</div>
+  </div>
+
+  <!-- Plots: loss left, weights right -->
+  <div class="plots-container" style="align-items: center;">
+    <div class="plot-wrapper">
+      <div class="plot-canvas-box" style="height: 300px; margin: 0 40px;">
+        <canvas id="lossPlot"></canvas>
       </div>
     </div>
-
-    <div class="col-md-9">
-      <h3>Hi! I'm Jamie.</h3>
-      <p>
-        I'm a scientist working on fundamental theory for deep learning. I run a small lab in the <a href="https://redwood.berkeley.edu/">Redwood Center</a> at UC Berkeley, graciously funded by <a href="https://imbue.com/">Imbue</a>, where I'm a research fellow. Reach out if you want to visit! I recently finished my PhD, advised by <a href="https://deweeselab.com/">Mike DeWeese</a>. In my free time, I play music, <a href="/blog/fifty-states-roadtrip/">go into</a> <a href="/blog/boolpool-timelapse/">nature</a>, <a href="/blog/gravitrees/">make</a> <a href="/blog/gravitree-update-2024/">art</a>, and <a href="/blog/egg/">catch eggs in my mouth</a>.
-      </p>
-      <p>
-        You can read about my research <a href="/research/">here</a>. I write about science and other adventures over on my <a href="/blog/">blog</a>. I also make <a href="/puzzles/">puzzles</a>.
-      </p>
-      <p>
-        If you'd like to chat about research or life, feel free to schedule something <a href="https://cal.com/james-simon-w26vvz">here</a>. Whether you're an old friend or a stranger, don't be shy. You can also leave me anonymous feedback <a href="https://forms.gle/ZQ4fZEih46N6b4yv5">here</a>.
-      </p>
+    <div class="plot-wrapper">
+      <div class="plot-canvas-box square">
+        <canvas id="weightPlot"></canvas>
+      </div>
     </div>
   </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin-top: 1.5em; margin-bottom: 5px;">
+
+  <div class="section-label">TODOS</div>
+
+  <ul style="color: #888; font-size: 0.95em; line-height: 1.8em;">
+    <li>Explain what red and blue represent in the weight plot</li>
+    <li>Add intuition at the start for what &ldquo;lazy&rdquo; means: net weights/features don&rsquo;t change much during training</li>
+    <li>Gear ratio analogy: large $\alpha$ is like a large gear ratio&mdash;tiny movements of the weights produce big changes in the output</li>
+  </ul>
+
 </div>
 
-<script>
-(function() {
-  const headshot = document.getElementById('headshot');
-  const container = document.querySelector('.headshot-container');
-  const loadingBar = document.querySelector('.loading-bar');
-
-  // Edit this list to change the photo sequence!
-  // Add or remove filenames from img/pictures_of_me/
-  const photoSequence = [
-    'me_at_collingwood_house_1.jpeg',
-    'me_in_glacier.jpg',
-    'me_grinding.jpeg',
-    'me_in_tux.jpeg',
-    'me_with_lizard.jpeg',
-    'baby_me.jpeg',
-    'baby_me_in_goldfish.jpg',
-    'me_with_gravitree.jpeg',
-    'me_walking_in_texas.jpeg',
-    'dolly_spartan_me.jpeg',
-    'me_surfing.jpeg',
-    'me_on_ski_lift.jpeg',
-    'me_in_sibley_volcanic.jpeg',
-    'me_on_rock.png',
-    'me_on_mechanical_bull.gif',
-  ];
-
-  // Build full paths
-  const images = photoSequence.map(function(filename) {
-    return '/img/pictures_of_me/' + filename;
-  });
-
-  // Set initial image to first in sequence
-  headshot.src = images[0];
-
-  let currentIndex = 0;
-  let timeout = null;
-  let isLoading = false;
-  let isHovering = false;
-
-  function startLoading() {
-    if (isLoading) return;
-
-    isLoading = true;
-
-    // Show and start loading bar animation
-    loadingBar.classList.add('visible');
-    // Small delay to ensure visibility is set before animation starts
-    setTimeout(function() {
-      loadingBar.classList.add('active');
-    }, 10);
-
-    // Set timeout to switch image after 3 seconds
-    timeout = setTimeout(function() {
-      // Toggle to next image
-      currentIndex = (currentIndex + 1) % images.length;
-      headshot.src = images[currentIndex];
-
-      // Reset loading bar without transition
-      loadingBar.classList.add('no-transition');
-      loadingBar.classList.remove('active');
-      loadingBar.classList.remove('visible');
-
-      // Force reflow to apply the reset
-      void loadingBar.offsetWidth;
-
-      // Re-enable transitions
-      loadingBar.classList.remove('no-transition');
-
-      // Reset loading state
-      isLoading = false;
-      timeout = null;
-
-      // If still hovering, start next cycle
-      if (isHovering) {
-        setTimeout(startLoading, 100);
-      }
-    }, 3000);
-  }
-
-  container.addEventListener('mouseenter', function() {
-    isHovering = true;
-    startLoading();
-  });
-
-  container.addEventListener('mouseleave', function() {
-    isHovering = false;
-
-    // Only reset if we haven't completed the load
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
-      isLoading = false;
-
-      // Hide and reset loading bar without transition
-      loadingBar.classList.add('no-transition');
-      loadingBar.classList.remove('visible');
-      loadingBar.classList.remove('active');
-
-      // Force reflow to reset animation
-      void loadingBar.offsetWidth;
-
-      // Re-enable transitions
-      loadingBar.classList.remove('no-transition');
-    }
-  });
-})();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>
 
       </div>
     </div>

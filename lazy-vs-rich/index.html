@@ -99,6 +99,10 @@ skip_mathjax: true
       <input type="number" id="seedInput" min="0" step="1" placeholder="random seed"
              style="width: 120px; font-size: 0.9em; color: #333;">
     </div>
+    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.9em; color: #888;">
+      font scale: <input type="range" id="fontScaleSlider" min="50" max="300" value="100" style="width: 100px;">
+      <span id="fontScaleValue">1.0×</span>
+    </div>
     <div style="margin-left: auto; font-size: 0.9em; color: #888;"><span id="stepsPerSec">0</span> steps/sec</div>
   </div>
 
@@ -115,6 +119,16 @@ skip_mathjax: true
       </div>
     </div>
   </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin-top: 1.5em; margin-bottom: 5px;">
+
+  <div class="section-label">TODOS</div>
+
+  <ul style="color: #888; font-size: 0.95em; line-height: 1.8em;">
+    <li>Explain what red and blue represent in the weight plot</li>
+    <li>Add intuition at the start for what &ldquo;lazy&rdquo; means: net weights/features don&rsquo;t change much during training</li>
+    <li>Gear ratio analogy: large $\alpha$ is like a large gear ratio&mdash;tiny movements of the weights produce big changes in the output</li>
+  </ul>
 
 </div>
 

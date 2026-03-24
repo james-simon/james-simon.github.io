@@ -161,6 +161,14 @@ export class LossChart {
   setLogScale(useLog) {
     this.logScale = useLog;
     this.chart.options.scales.y.type = useLog ? 'logarithmic' : 'linear';
+
+    // Set min for log scale (loss chart uses 1e-5)
+    if (useLog) {
+      this.chart.options.scales.y.min = 1e-5;
+    } else {
+      this.chart.options.scales.y.min = undefined;
+    }
+
     this.chart.update('none');
   }
 
@@ -431,6 +439,14 @@ export class NormChart {
   setLogScale(useLog) {
     this.logScale = useLog;
     this.chart.options.scales.y.type = useLog ? 'logarithmic' : 'linear';
+
+    // Set min for log scale (norm chart uses 1e-1)
+    if (useLog) {
+      this.chart.options.scales.y.min = 1e-1;
+    } else {
+      this.chart.options.scales.y.min = undefined;
+    }
+
     this.chart.update('none');
   }
 

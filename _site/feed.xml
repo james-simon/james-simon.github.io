@@ -5,9 +5,275 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 10 Feb 2026 15:31:03 -0800</pubDate>
-    <lastBuildDate>Tue, 10 Feb 2026 15:31:03 -0800</lastBuildDate>
+    <pubDate>Tue, 24 Mar 2026 16:05:42 -0700</pubDate>
+    <lastBuildDate>Tue, 24 Mar 2026 16:05:42 -0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>The polynomial features of random neural networks</title>
+        <description>&lt;p&gt;&lt;strong&gt;The language of polynomials&lt;/strong&gt; is beautiful and well-developed: millenia of work have furnished a rich, deep theory that spans analysis and algebra, with basics we teach to children and high reaches still under development.
+&lt;strong&gt;The language of neural network features&lt;/strong&gt; has not yet been written, but it promises to be beautiful: empirics show that hidden features can represent complex concepts and form striking circuitry.
+Fortunately, more and more results in fundamental deep learning theory suggest that &lt;strong&gt;the language of polynomials might actually be the language of hidden features,&lt;/strong&gt; at least to a substantial fraction.
+How wonderful if we could fathom the depths of learning and cognition with polynomial algebra!&lt;/p&gt;
+
+&lt;p&gt;My (biased) favorite example of this confluence of languages comes from &lt;a href=&quot;https://arxiv.org/abs/2510.14878&quot;&gt;my recent paper&lt;/a&gt;, which will appear at ICLR in April. We performed a first-principles study of the inductive biases of simple learning methods and found that (a) they treat real image datasets as Gaussian blobs, and that (b) learning on these blobs decomposes into independent learning of Hermite polynomial coefficients. What falls out is a surprisingly simple and beautiful theory of inductive bias which makes excellent (i.e. correct) predictions of test-time performance on different tasks.
+Just look at these curves which we predict using our polynomial language:&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center; margin: 2em 0;&quot;&gt;
+  &lt;img src=&quot;/img/polynomial_features/predicting_lrn_curves_fig_3.png&quot; alt=&quot;Predicted vs. actual kernel regression learning curves&quot; style=&quot;width: 75%;&quot; /&gt;
+  &lt;p style=&quot;margin-top: 0.5em; margin-left: 12.5%; margin-right: 12.5%; text-align: left;&quot;&gt;&lt;small&gt;&lt;em&gt;A figure from our paper &lt;a href=&quot;https://arxiv.org/abs/2510.14878&quot;&gt;Karkada*, Turnbull* et al. (2026)&lt;/a&gt; showing extremely good prediction of kernel regression learning curves from minimal dataset statistics.&lt;/em&gt;&lt;/small&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You might be thinking: reading papers is hard, and that one looks quite technical.
+You might then be wondering: is there a simpler way to see how polynomial language arises in this context?
+If that’s so, dear reader, then you have clicked on the right blogpost.
+The purpose of this note is to walk through the deep underlying reason why Hermite polynomials arise in the description of neural network hidden features.&lt;/p&gt;
+
+&lt;h3 id=&quot;setup&quot;&gt;Setup&lt;/h3&gt;
+
+&lt;p&gt;Consider a data vector $\mathbf{x} \in \mathbb{R}^d$ and a nonlinear transformation $\mathbf{h}(\mathbf{x}) := \sigma(\mathbf{W}\mathbf{x})$ which embeds it in a feature space. Here $\mathbf{W} \in \mathbb{R}^{n \times d}$ is a linear transformation and $\sigma(\cdot)$ is an elementwise nonlinearity. For the picture we want to develop, it’s enough to let $\mathbf{W}$ be random with $W_{ij} \sim \mathcal{N}(0, \frac{\alpha}{d})$. No polynomials yet: since we didn’t require $\sigma$ to be a polynomial, each hidden activation $h_i(\mathbf{x})$ is a complicated, nonpolynomial function.&lt;/p&gt;
+
+&lt;h3 id=&quot;dot-product-kernels-have-polynomial-features&quot;&gt;Dot-product kernels have polynomial features&lt;/h3&gt;
+
+&lt;p&gt;The key idea is that, given one assumption, these secretly &lt;em&gt;are&lt;/em&gt; polynomial features &lt;em&gt;up to rotation.&lt;/em&gt; After a suitable orthogonal transformation on $\mathbf{h}(\mathbf{x})$, we get polynomial features. This is most easily seen with kernel language: take a second data vector $\mathbf{x}’$ and consider the feature kernel $K(\mathbf{x}, \mathbf{x}’) := \frac{1}{n} \langle \mathbf{h}(\mathbf{x}), \mathbf{h}(\mathbf{x}’) \rangle$. Let us make the following assumption on this kernel:&lt;/p&gt;
+
+&lt;div style=&quot;border: 1px solid #aaa; border-radius: 4px; padding: 1em 1.5em; margin: 1.5em 0;&quot;&gt;
+&lt;strong&gt;Assumption A (dot-product feature kernel).&lt;/strong&gt; For all data vectors $\mathbf{x}, \mathbf{x}'$, the feature kernel admits the following form:
+
+$$
+K(\mathbf{x},\mathbf{x}') = K(\langle \mathbf{x}, \mathbf{x}' \rangle) = \sum_{\ell \ge 0} \frac{c_\ell}{\ell!} \langle \mathbf{x}, \mathbf{x}' \rangle^\ell
+$$
+
+for some constants $c_\ell \ge 0$.
+&lt;/div&gt;
+
+&lt;p&gt;From Assumption A, it follows immediately that the hidden features are equivalent up to rotation to polynomial features:&lt;/p&gt;
+
+&lt;div&gt;
+$$
+\exists \ \text{rotation} \ \mathbf{U} \ \text{s.t.} \ \mathbf{U} \mathbf{h}(\mathbf{x}) = \operatorname{vec}\!\left(
+\begin{bmatrix}
+\sqrt{c_0} &amp;amp;
+\sqrt{c_1}\,\mathbf{x} &amp;amp;
+\frac{\sqrt{c_2}}{\sqrt{2!}}\,\mathbf{x}\mathbf{x}^{\top} &amp;amp;
+\frac{\sqrt{c_3}}{\sqrt{3!}}\,\mathbf{x}^{\otimes 3} &amp;amp;
+\cdots
+\end{bmatrix}
+\right) =: \boldsymbol{\psi}_\mathbf{c}(\mathbf{x}),
+$$
+&lt;/div&gt;
+
+&lt;p&gt;where we have defined the &lt;em&gt;prismatic operation&lt;/em&gt; $\boldsymbol{\psi}_\mathbf{c}(\mathbf{x})$ containing all monomial features of $\mathbf{x}$ (more on that to come in a future paper). When the data is Gaussian and the level coefficients $c_\ell$ decay quickly, Gram-Schmidt orthogonalization of the elements of this prismatic feature vector gives the Hermite polynomials (!!) as kernel eigenfunctions. It turns out real image data is often Gaussian enough for the Hermite polynomials to be a good approximation to the kernel eigensystem. This is pretty much the whole story of our paper.&lt;/p&gt;
+
+&lt;h3 id=&quot;when-can-we-take-assumption-a&quot;&gt;When can we take Assumption A?&lt;/h3&gt;
+
+&lt;p&gt;The problem with Assumption A is that, strictly speaking, it’s false. Random feature kernels do not take this exact dot-product form, even in the infinite-width limit.
+Fortunately, we can often make that assumption, and it’s not too wrong.&lt;/p&gt;
+
+&lt;p&gt;Let’s return to the random feature kernel above. As we take width $n \rightarrow \infty$ and take the average over hidden neurons and their associated Gaussian weights, we get the kernel&lt;/p&gt;
+
+&lt;div&gt;
+$$
+K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}'):=\mathbb{E}_{(z_1,z_2)\sim\mathcal{N}(\mathbf{0},\boldsymbol{\Sigma})}\!\left[\sigma(z_1)\sigma(z_2)\right],\qquad\text{where }\boldsymbol{\Sigma}=\frac{\alpha}{d}\begin{bmatrix}\|\mathbf{x}\|^2 &amp;amp; \langle \mathbf{x}, \mathbf{x}' \rangle \\\langle \mathbf{x}, \mathbf{x}' \rangle &amp;amp; \|\mathbf{x}'\|^2\end{bmatrix}.
+$$
+&lt;/div&gt;
+
+&lt;p&gt;This is precisely the neural network Gaussian process (NNGP) kernel of &lt;a href=&quot;https://arxiv.org/abs/1711.00165&quot;&gt;Lee et al. (2017)&lt;/a&gt;. Remember that we’re initializing our random weights as $W_{ij} \sim \mathcal{N}(0, \frac{\alpha}{d})$, so that’s where the $\frac{\alpha}{d}$ comes in.&lt;/p&gt;
+
+&lt;p&gt;The NNGP kernel $K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}’)$ is rotation-invariant: that is, it admits the form&lt;/p&gt;
+
+\[K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}') = K_{\sigma,\alpha}(\|\mathbf{x}\|^2, \|\mathbf{x}'\|^2, \langle\mathbf{x},\mathbf{x}'\rangle).\]
+
+&lt;p&gt;However, it is &lt;em&gt;not&lt;/em&gt; a true dot product kernel; those first two norm arguments are real.&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;
+That said, we can ignore the first two arguments if we know they do not vary over our dataset. For example, if we know that every data vector we will care about lies on a sphere: $\lVert\mathbf{x}_i\rVert = r \ \forall i$, then we can neglect the first two arguments, and we are left with a dot-product kernel.&lt;/p&gt;
+
+&lt;p&gt;Of course, it’s a rare case when our data’s exactly on a sphere, but it’s often the case that the data roughly concentrates in norm, as is the expectation in high dimension. In such cases, we &lt;em&gt;approximately&lt;/em&gt; get a dot-product kernel, and the eigensystem is &lt;em&gt;approximately&lt;/em&gt; built from Hermite polynomials. This approximation is often very reliable in practice: in our paper, we show that assuming concentration of norm allows us to predict the eigensystem of CIFAR-10 with great accuracy (see learning curves above).&lt;/p&gt;
+
+&lt;p&gt;To show how robust this assumption is, it’s worth noting that the data norms of CIFAR-10 really &lt;em&gt;don’t&lt;/em&gt; concentrate very tightly; see the figure below.
+This poor concentration is still good enough to do theory &lt;em&gt;that assumes the norm concentrates.&lt;/em&gt;
+At least in many cases, this a robust assumption.&lt;/p&gt;
+
+&lt;div style=&quot;text-align: center; margin: 2em 0;&quot;&gt;
+  &lt;img src=&quot;/img/polynomial_features/cifar10_norms.png&quot; alt=&quot;CIFAR-10 data vector norms&quot; style=&quot;width: 50%;&quot; /&gt;
+  &lt;p style=&quot;margin-top: 0.5em; margin-left: 25%; margin-right: 25%; text-align: left;&quot;&gt;&lt;small&gt;&lt;em&gt;The data vector norms for CIFAR-10 don't concentrate tightly around their mean (dashed line). Nonetheless, eigensystem calculations based on an assumption of concentration of norm work remarkably well.&lt;/em&gt;&lt;/small&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If I’m honest, I don’t really know why we didn’t have to take corrections involving the width of this distribution into account.
+It’s probably something that some future theory paper will have to go back and understand.
+Moving forward, though, we can reliably take Assumption A for real image datasets, which gives us a dot-product kernel, polynomial features, and a Hermite eigensystem.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;The remainder of this post consists of some technical notes on how to calculate kernel level coefficients. They probably won’t interest you unless (and until) you need them.&lt;sup id=&quot;fnref:joey&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:joey&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;activation-function-rightarrow-kernel-coefficients-on-the-sphere&quot;&gt;Activation function $\rightarrow$ kernel coefficients on the sphere&lt;/h3&gt;
+
+&lt;p&gt;Let’s assume our data lies on a sphere: $\lVert\mathbf{x}_i\rVert = r$. Our NNGP kernel is then&lt;/p&gt;
+
+\[K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}') = K_{\sigma,\alpha,r}(\langle \mathbf{x}, \mathbf{x}' \rangle) = \sum_{\ell \ge 0} \frac{c_\ell}{\ell!} \langle \mathbf{x}, \mathbf{x}' \rangle^\ell.\]
+
+&lt;p&gt;How do the level coefficients $c_\ell$ depend on $(\sigma, \alpha, r)$? There is a simple answer: computing the Gaussian expectation above, we find that&lt;/p&gt;
+
+\[c_\ell = \frac{\ell!}{r^{2\ell}} \left( \mathbb{E}_{z \sim \mathcal{N}(0,1)} \!
+\left[ h_\ell(z) \ \sigma\!\left( r\sqrt{\tfrac{\alpha}{d}}\, \cdot z \right) \right] \right)^2,\]
+
+&lt;p&gt;where $h_\ell(z) = \frac{1}{\sqrt{\ell!}} \text{He}_\ell(z)$ is the $\ell$-th normalized probabilist’s Hermite polynomial. In words, we’re extracting the $\ell$-th Hermite coefficient of the function $z \mapsto \sigma\left( r\sqrt{\tfrac{\alpha}{d}}\, \cdot z \right)$. That prefactor of $r\sqrt{\tfrac{\alpha}{d}}$ makes a lot of sense: it’s the standard deviation of the (Gaussian!) preactivations fed into the activation function $\sigma(\cdot)$. Hermite decompositions of a rescaled activation function often show up in this corner of theoryland.&lt;sup id=&quot;fnref:hermite-history&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:hermite-history&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a powerful result: if you know the Hermite decomposition of $\sigma(\cdot)$, then you know the level coefficients of your kernel and the relative weights of the different orders of monomial features. The Hermite decompositions of common activation functions (e.g. $\text{ReLU}$) can be worked out in closed form. Moreover, a lot can be learned from symmetries and taking note of which Hermite coefficients are exactly zero. For example, $\sigma = \tanh$ is odd, so it will lack all even coefficients: $c_{2\ell} = 0$. In a weirder case, $\sigma = \text{ReLU}$ equals a linear function plus an even function, so it has $c_\ell = 0$ for $\ell = 3, 5, 7, \cdots.$ This particular pathology of $\text{ReLU}$ has cropped up &lt;a href=&quot;/blog/the-expressivity-of-shallow-relu-nets/&quot;&gt;many times&lt;/a&gt; in my research.&lt;/p&gt;
+
+&lt;h3 id=&quot;activation-function-rightarrow-kernel-coefficients-near-the-origin&quot;&gt;Activation function $\rightarrow$ kernel coefficients near the origin&lt;/h3&gt;
+
+&lt;p&gt;Now things are going to get somewhat subtle. So far, when we’ve talked about concentration of norm, we’ve really meant that the norm of the data vectors concentrates in a &lt;em&gt;relative&lt;/em&gt; sense, not in an absolute sense. That is, we care that&lt;/p&gt;
+
+\[\frac{\max_i \|\mathbf{x}_i\|}{\min_j \|\mathbf{x}_j\|} \approx 1, \qquad \text{not that} \qquad \max_i \|\mathbf{x}_i\| - \min_j \|\mathbf{x}_j\| \approx 0.\]
+
+&lt;p&gt;However, there &lt;em&gt;is&lt;/em&gt; a very important solvable limit in which the data vectors concentrate in norm absolutely but &lt;em&gt;not&lt;/em&gt; relatively. This is the limit in which the data vectors all have small norm: $\lVert\mathbf{x}_i\rVert \ll 1$. If all the vectors have the &lt;em&gt;same&lt;/em&gt; small norm (e.g., $\lVert\mathbf{x}_i\rVert = \lVert\mathbf{x}_j\rVert = r \ll 1$), or the variation is also small in a relative sense, then we recover the case above. However, what we really want is an analysis valid for all $\mathbf{x} \in r B^{d}$, where $r \ll 1$ and $B^d$ is the $d$-ball.&lt;/p&gt;
+
+&lt;p&gt;The method of attack here is direct: simply examine the kernel $K_{\sigma,\alpha}(\lVert\mathbf{x}\rVert^2, \lVert\mathbf{x}’\rVert^2, \langle\mathbf{x},\mathbf{x}’\rangle)$ and naively (Taylor-)expand it for small $\lVert\mathbf{x}\rVert^2, \lVert\mathbf{x}’\rVert^2$. Upon trying this, one quickly makes a few observations:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;It is not always possible to take this expansion analytically. For example, the Laplace kernel $e^{-\lVert\mathbf{x} - \mathbf{x}’\rVert}$ is not smooth around zero in these arguments.&lt;/li&gt;
+  &lt;li&gt;This smoothness is related to the smoothness of the &lt;em&gt;activation function&lt;/em&gt; $\sigma$ around zero: if the activation function is analytic around zero, so is the kernel.&lt;/li&gt;
+  &lt;li&gt;The derivatives of $\sigma$ determine the coefficients of the kernel’s Taylor series.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In particular, one finds that so long as the activation function is analytic (on all of $\mathbb{R}$) and integrates nicely against Gaussians, the NNGP kernel is given exactly by&lt;/p&gt;
+
+&lt;div&gt;
+$$
+\begin{aligned}
+K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}')
+&amp;amp;=
+\sum_{\ell\ge 0}
+\frac{1}{\ell!}
+\left(\frac{\alpha}{d}\right)^\ell
+\langle \mathbf{x}, \mathbf{x}' \rangle^\ell
+\left(
+\sum_{q\ge 0}
+\frac{\sigma^{(\ell+2q)}(0)}{2^q q!}
+\left(\frac{\alpha}{d}\right)^q
+\|\mathbf{x}\|^{2q}
+\right)
+\left(
+\sum_{q'\ge 0}
+\frac{\sigma^{(\ell+2q')}(0)}{2^{q'} q'!}
+\left(\frac{\alpha}{d}\right)^{q'}
+\|\mathbf{x}'\|^{2q'}
+\right).
+\end{aligned}
+$$
+&lt;/div&gt;
+
+&lt;p&gt;In the above, $\sigma^{(k)}(0)$ denotes the $k$-th derivative of $\sigma$ evaluated at zero. When the norms are small ($\lVert\mathbf{x}_i\rVert, \lVert\mathbf{x}_j\rVert \ll 1$) the $q, q’ = 0$ terms dominate those with $q, q’ \ge 1$, and we can heuristically approximate&lt;/p&gt;
+
+\[K_{\sigma,\alpha}(\mathbf{x},\mathbf{x}') \approx \sum_{\ell \ge 0} \frac{c_\ell}{\ell!} \langle \mathbf{x}, \mathbf{x}' \rangle^\ell
+\qquad
+\text{where}
+\qquad
+c_\ell = \left(\frac{\alpha}{d} \right)^\ell \cdot \left( \sigma^{(\ell)}(0) \right)^2.\]
+
+&lt;p&gt;This is a main result in what I think of as “wide kernel theory”: the study of kernels which are much wider than the data distributions on which they’re evaluated, often leading to great simplifications and nice polynomial forms.&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;some-examples-for-different-choices-of-sigma&quot;&gt;Some examples for different choices of $\sigma$&lt;/h3&gt;
+
+&lt;p&gt;Here we report values of these small-norm level coefficients for different activation functions. Note that care must be taken to correctly incorporate the right power of $\alpha/d$.&lt;/p&gt;
+
+&lt;div&gt;
+$$
+\begin{array}{c|ccccc}
+&amp;amp;
+c_0
+&amp;amp; c_1 \cdot \left(\frac{\alpha}{d}\right)^{-1}
+&amp;amp; c_2 \cdot \left(\frac{\alpha}{d}\right)^{-2}
+&amp;amp; c_3 \cdot \left(\frac{\alpha}{d}\right)^{-3}
+&amp;amp; c_4 \cdot \left(\frac{\alpha}{d}\right)^{-4}
+\\[0.6em]
+\sigma(z)
+&amp;amp; \sigma(0)^2
+&amp;amp; \sigma'(0)^2
+&amp;amp; \sigma''(0)^2
+&amp;amp; \sigma^{(3)}(0)^2
+&amp;amp; \sigma^{(4)}(0)^2
+\\
+\hline
+\sqrt{2}\cos\!\left(z+\dfrac{\pi}{4}\right)
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+\\
+e^z
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+&amp;amp; 1
+\\
+\tanh(z)
+&amp;amp; 0
+&amp;amp; 1
+&amp;amp; 0
+&amp;amp; 4
+&amp;amp; 0
+\\
+\mathrm{sigmoid}(z)
+&amp;amp; \dfrac{1}{4}
+&amp;amp; \dfrac{1}{16}
+&amp;amp; 0
+&amp;amp; \dfrac{1}{256}
+&amp;amp; 0
+\\
+\tanh\!\left(z+\dfrac{1}{2}\right)
+&amp;amp; 0.214
+&amp;amp; 0.619
+&amp;amp; 0.528
+&amp;amp; 0.319
+&amp;amp; 15.620
+\\
+\mathrm{ReLU}(z)
+&amp;amp; \mathrm{NA}
+&amp;amp; \mathrm{NA}
+&amp;amp; \mathrm{NA}
+&amp;amp; \mathrm{NA}
+&amp;amp; \mathrm{NA}
+\end{array}
+$$
+&lt;/div&gt;
+
+&lt;p style=&quot;text-align: center;&quot;&gt;&lt;small&gt;&lt;em&gt;Derivatives of different activation functions.&lt;/em&gt;&lt;/small&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I used GPT to help with some of the math here. I’ve sense-checked all of it, and the final results have already fed into successful experiments I’ve run, so I feel pretty confident in this, but I own any errors.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;It can be proven that only in the trivial affine case $\sigma(z) = a z + b$ is the NNGP kernel exactly a dot-product kernel. &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:joey&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Looking at you, Joey Turnbull. &lt;a href=&quot;#fnref:joey&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:hermite-history&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;This connection between the Hermite decomposition of the activation function and the level coefficients of the resulting NNGP kernel was first pointed out by &lt;a href=&quot;https://arxiv.org/abs/1602.05897&quot;&gt;Daniely et al. (2016)&lt;/a&gt;, and the NTK version was later given by me and friends in &lt;a href=&quot;https://arxiv.org/abs/2106.03186&quot;&gt;Simon et al. (2021)&lt;/a&gt;. I no longer believe in the importance of that paper’s central story, but our Theorem 3.1 is still great. &lt;a href=&quot;#fnref:hermite-history&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Worth noting that, while I think this heuristic approximation will be pretty much fine, there are some subtleties involved; in particular, since kernels are inverted when they’re used, dropping a small term can change that inverse unless it falls “in the shadow” of larger terms. Dropping these terms might change learning on a small number of norm-sensitive target functions. &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 -0700</pubDate>
+        <link>http://localhost:4000/blog/polynomial-features-random-networks/</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/polynomial-features-random-networks/</guid>
+        
+        
+        <category>kernels</category>
+        
+      </item>
     
       <item>
         <title>Goo</title>
@@ -507,143 +773,6 @@ We should expect to see more such leaps as time goes on, and some of them will t
         <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
         <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
         <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
-        
-        
-        <category>kernels</category>
-        
-      </item>
-    
-      <item>
-        <title>One kernel, many eigensystems</title>
-        <description>&lt;p&gt;&lt;em&gt;This is a technical note on a subtlety of kernel theory. Venture in at your own risk!&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Many problems in the theory of kernel methods begin with a positive semi-definite kernel function $K(\cdot, \cdot)$ and a probability measure $\mu$ and are solved by first finding the kernel eigenfunctions ${\phi_i}$ and nonnegative eigenvalues ${\lambda_i}$ such that&lt;/p&gt;
-
-\[\ \ \ \qquad\qquad \qquad\qquad K(x,x') = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x') \qquad\qquad \qquad\qquad (1)\]
-
-&lt;p&gt;and&lt;/p&gt;
-
-\[\qquad\qquad \qquad\qquad\quad \ \ \ \mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x')] = \delta_{ij}. \qquad\qquad \qquad\qquad\quad (2)\]
-
-&lt;p&gt;Equation 1 gives the spectral decomposition of the kernel, and Equation 2 states that the eigenfunctions are orthonormal with respect to the measure $\mu$.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-&lt;p&gt;By &lt;a href=&quot;https://en.wikipedia.org/wiki/Mercer%27s_theorem&quot;&gt;Mercer’s Theorem&lt;/a&gt;, there always exists such a decomposition, though it will generally be different for different measures $\mu$. In fact, there are infinitely many unique decompositions of the form $K(x,x’) = \sum_i \psi_i(x) \, \psi_i(x’)$, but only one of them (up to relabeling and some other symmetries) is “eigen” for a particular measure $\mu$. It is somewhat intriguing to note that each such decomposition is still equally &lt;em&gt;correct&lt;/em&gt; no matter the measure (the first equation having no dependence on $\mu$).&lt;/p&gt;
-
-&lt;p&gt;Given that every measure $\mu$ corresponds to a unique eigendecomposition, it is worth asking the inverse question: which kernel decompositions are “eigen” for some measure? That is, given a “candidate” eigensystem ${(\lambda_i, \phi_i)}$ such that $K(x,x’) = \sum_i \lambda_i \, \phi_i(x) \, \phi_i(x’)$, when does there exist a measure $\mu$ such that $\mathbb{E}_{x \sim \mu}[\phi_i(x) \, \phi_j(x’)] = \delta_{ij}$, and can we find the measure?&lt;/p&gt;
-
-&lt;h2 id=&quot;functional-rightarrow-vector-language&quot;&gt;Functional $\rightarrow$ vector language&lt;/h2&gt;
-
-&lt;p&gt;To answer this question, we will find it helpful to first move from a continuous setting to a discrete setting, as we may then forgo functional analysis for the simpler language of linear algebra. Let us suppose our measure has support only over $n$ discrete points ${x_i}_{i=1}^n$, and let us construct the kernel matrix $[\mathbf{K}]_{ij} = K(x_i, x_j)$, measure matrix $\mathbf{M} = \mathrm{diag}(\mu(x_1), \ldots, \mu(x_n))$, and candidate eigenvectors $\mathbf{v}_i = (\phi_i(x_1), \ldots, \phi_i(x_n))$. In this linear algebraic language, we begin with the assurance that&lt;/p&gt;
-
-\[\mathbf{K} = \sum_i \lambda_i \mathbf{v}_i \mathbf{v}_i^\top.\]
-
-&lt;p&gt;We would like to determine necessary and sufficient conditions on ${\lambda_i, \mathbf{v}_i}$ such that there exists a positive-definite&lt;sup id=&quot;fnref:4&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; diagonal $\mathbf{M}$ such that&lt;/p&gt;
-
-\[\mathbf{v}_i^{\top} \mathbf{M} \mathbf{v}_j = \delta_{ij}\]
-
-&lt;p&gt;and $\mathrm{Tr}[\mathbf{M}] = 1$.
-We begin by stacking our candidate vectors into a matrix $\mathbf{V} := (\mathbf{v}_1, \ldots, \mathbf{v}_n)$ and likewise defining $\boldsymbol{\Lambda} := \mathrm{diag}(\lambda_1, \ldots, \lambda_n)$. Note that all the matrices we have defined are invertible. We now have that&lt;/p&gt;
-
-\[\mathbf{K} = \mathbf{V \Lambda V^\top}, \qquad \mathbf{V^\top M V} = \mathbf{I}.\]
-
-&lt;p&gt;From the latter equation, we get that $\mathbf{M V V^\top} = \mathbf{I}$, and thus $\mathbf{K M V V^\top} = \mathbf{V \Lambda V^\top}$, and thus we obtain the eigenequation&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
-
-\[\mathbf{K M V} = \mathbf{V \Lambda}.\]
-
-&lt;p&gt;We now find that $\mathbf{M V} = \mathbf{K}^{-1}\mathbf{V \Lambda}$, and thus that $\mathbf{M v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i$ for each eigenindex $i$. We are now in a position to make several observations.&lt;/p&gt;
-
-&lt;p&gt;First, since $\mathbf{v}^\top_i \mathbf{M v}_j = \lambda_i \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_j = \delta_{ij}$, we find the requirement on our candidate eigensystem that $\lambda_i = \left( \mathbf{v}^\top_i \mathbf{K}^{-1} \mathbf{v}_i \right)^{-1}$. This is best viewed as a normalization condition on the eigenvector: it is required that&lt;/p&gt;
-
-\[\boxed{
-
-|\!| \mathbf{v}_i |\!| = \left( \lambda_i \hat{\mathbf{v}}_i^\top \mathbf{K}^{-1} \hat{\mathbf{v}}_i  \right)^{-1/2}
-
-}.\]
-
-&lt;p&gt;Second, since $\mathbf{M}$ is positive and diagonal, we find that&lt;/p&gt;
-
-\[\mathbf{M v}_i = \mathbf{\mu} \circ \mathbf{v}_i = \lambda_i \mathbf{K}^{-1} \mathbf{v}_i\]
-
-&lt;p&gt;where $\circ$ denotes elementwise multiplication of vectors. Therefore a single candidate eigenpair $(\lambda_1, \mathbf{v}_1)$ is potentially valid only if there exists a positive vector $\mathbf{\mu}$ verifying the above equation — that is, if&lt;/p&gt;
-
-\[\boxed{
-m_{ik} := \frac{\lambda_i (\mathbf{K}^{-1} \mathbf{v}_i)[k]}{\mathbf{v}_i[k]} &amp;gt; 0
-\qquad \text{if} \ \  \mathbf{v}_i[k] \neq 0,}\]
-
-&lt;p&gt;where we write $\mathbf{u}[k]$ denote the $k$-th element of a vector. We must additionally have that the different eigenvectors verify the same measure — that is,&lt;/p&gt;
-
-\[\boxed{
-m_{ik} = m_{ik'} := \mu_i
-\qquad
-\forall
-\ \
-k, k'
-}\]
-
-&lt;p&gt;except where one of the two is undefined. Finally, we must have that the measure we obtain is normalized:&lt;/p&gt;
-
-\[\boxed{
-\sum_i
-\mu_i = 1.
-}\]
-
-&lt;p&gt;Together, the boxed equations are necessary and sufficient conditions for the existence of a positive measure $\mathbf{\mu}$ such that ${(\lambda_i, \mathbf{v}_i)}$ indeed comprise an orthogonal eigenbasis with respect to $\mathbf{\mu}$. Interestingly, it follows from the above with no additional requirements that&lt;/p&gt;
-
-\[\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0 \qquad \mathrm{if} \ i \neq j.\]
-
-&lt;p&gt;That is, orthogonality with respect to the measure implies orthogonality with respect to $\mathbf{K}^{-1}$.&lt;/p&gt;
-
-&lt;h2 id=&quot;back-to-functional-language&quot;&gt;Back to functional language&lt;/h2&gt;
-
-&lt;p&gt;To phrase these results in functional language, we need to define the &lt;em&gt;inverse kernel operator.&lt;/em&gt; Define the kernel operator $T_K[g](\cdot) = \int K(\cdot, x) g(x) dx$. Let us assume this operator is invertible and construct the inverse $T^{-1}_K$.&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt; In functional language, we require that&lt;/p&gt;
-
-\[\frac{\lambda_i \, T_K^{-1} [\phi_i](x)}{\phi_i(x)} = \frac{\lambda_j \, T_K^{-1} [\phi_j](x)}{\phi_j(x)} &amp;gt; 0
-\qquad \forall \ i, j, x,\]
-
-&lt;p&gt;except when either ratio is $\frac{0}{0}$. When this condition holds, the equated quantity is then equal to the measure $\mu(x)$ w.r.t. which ${\phi_i}$ are orthogonal.
-Again, a single candidate eigenfunction $\phi_i$ determines the whole measure $\mu$ except where $\phi_i(x) = 0$.
-We also of course require that the measure we find from the above is normalized when integrated over the full domain.&lt;/p&gt;
-
-&lt;p&gt;We also find the (somewhat more inscrutable to me) condition that&lt;/p&gt;
-
-\[\lambda_i = \left(\int \phi_i(x) \, T_K^{-1} [\phi_i](x) dx\right)^{-1},\]
-
-&lt;p&gt;which again may be treated as a normalization condition on the eigenfunctions \(\phi_i\).&lt;/p&gt;
-
-&lt;h2 id=&quot;connection-to-the-rkhs-inner-product&quot;&gt;Connection to the RKHS inner product&lt;/h2&gt;
-
-&lt;p&gt;The usual reproducing kernel Hilbert space (RKHS) inner product is given by&lt;/p&gt;
-
-\[\langle g, h \rangle_K := \int g(x) \, T_K^{-1}[h](x) dx.\]
-
-&lt;p&gt;In our vectorized setting we found that $\mathbf{v}_i^\top \mathbf{K}^{-1} \mathbf{v}_j = 0$ when $i \neq j$, and so we find in the functional setting that &lt;em&gt;for any kernel eigenfunctions w.r.t. any measure, it will hold that&lt;/em&gt; $\langle \phi_i, \phi_j \rangle_K = 0$ when $i \neq j$. That is, no matter which measure you choose, the eigenfunctions which diagonalize the kernel operator will be orthogonal w.r.t. the RKHS. This is remarkable because the RKHS norm does not depend at all on the measure which was chosen! I tend to avoid using RKHSs whenever possible, but this is a nice property.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;p&gt;&lt;em&gt;Thanks to Dhruva Karkada for raising the question that led to this blogpost.&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Astute readers might wonder why we do not also need to take as input the ”eigenequation” that $\mathbb{E}_{x \sim \mu}[K(x, x’) \, \phi_j(x’)] = \lambda_i \, \phi_i(x).$ Somewhat surprisingly (to me), this can actually be deduced from Equations 1 and 2, as we will discuss after vectorizing. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:4&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;Since we have assumed that all eigenvalues are nonnegative, we are assured that $\mathbf{M}$ will be positive &lt;em&gt;definite&lt;/em&gt; instead of merely PSD. &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;This manipulation answers the question raised by Footnote 1: even with a nontrivial measure, the “right eigenequation” follows from the “kernel-compositional” and “measure-orthogonal” equations. We can in fact obtain any one of these equations from the other two. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;To gain some intuition for these operators, note that if $K(\cdot, \cdot)$ is a Gaussian kernel, then $T_K$ performs Gaussian smoothing, while $T_K^{-1}$ performs “unsmoothing.” &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Mon, 07 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/one-kernel-many-eigensystems/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/one-kernel-many-eigensystems/</guid>
         
         
         <category>kernels</category>
