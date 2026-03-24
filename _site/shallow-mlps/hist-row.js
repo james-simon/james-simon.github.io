@@ -36,6 +36,11 @@ export class HistRow {
     if (this._scatter) this._scatter.update(W, a, n, d);
   }
 
+  // Returns the scatter plot's current symmetric half-range, or null if no scatter.
+  getScatterL() {
+    return this._scatter ? this._scatter._L : null;
+  }
+
   _makeCell(canvasId) {
     const cell = document.createElement('div');
     cell.style.cssText = 'flex:1; min-width:0;';

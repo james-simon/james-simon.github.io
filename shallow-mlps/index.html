@@ -66,12 +66,20 @@ skip_mathjax: true
           <option value="staircase">staircase</option>
           <option value="hermite">Hermite</option>
           <option value="monomial">monomial</option>
+          <option value="custom">custom</option>
         </select>
       </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
+      <div id="numTermsDiv" style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 0.95em;">order $T$:</span>
         <input type="range" id="slider_numTerms" min="1" max="5" step="1" value="2" style="width: 100px; accent-color: #555;">
         <span id="value_numTerms" style="font-size: 0.95em; min-width: 1em; font-family: Monaco, Consolas, monospace;"></span>
+      </div>
+      <div id="customExprDiv" style="display: none; align-items: center; gap: 6px;">
+        <span style="font-size: 0.95em; color: #888;">f*(x) =</span>
+        <input type="text" id="customExprInput" spellcheck="false"
+               placeholder="e.g. sin(2*x[1]) * (1 + x[2]**2)"
+               style="font-family: Monaco, Consolas, monospace; font-size: 0.88em;
+                      width: 280px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 3px;">
       </div>
       <div id="targetFormula" style="font-size: 1em;"></div>
     </div>
@@ -135,6 +143,7 @@ skip_mathjax: true
           <option value="gelu">GeLU</option>
           <option value="linear">linear</option>
           <option value="cos">√2 cos(·+π/4)</option>
+          <option value="tanh05">tanh(·+0.5)</option>
         </select>
       </div>
 
@@ -149,8 +158,9 @@ skip_mathjax: true
   </div><!-- end flex row -->
 
   <hr style="border: none; border-top: 1px solid #ddd; margin: 0.2em 0 6px;">
-  <div class="section-label">Simulation</div>
 
+  <!-- SIMULATION -->
+  <div class="section-label">Simulation</div>
   <div class="controls-row">
     <div style="display: flex; gap: 0.5em;">
       <button id="startPauseBtn" class="sim-button">start</button>
@@ -166,42 +176,29 @@ skip_mathjax: true
     <div class="steps-per-sec"><span id="stepsPerSec">0</span> steps/sec</div>
   </div>
 
-  <!-- Row 1: loss | coefficients -->
-  <div class="plots-row">
-    <div class="plot-cell">
-      <div class="plot-canvas-box">
-        <canvas id="lossPlot"></canvas>
-      </div>
-    </div>
-    <div class="plot-cell">
-      <div class="plot-canvas-box">
-        <canvas id="coeffPlot"></canvas>
-      </div>
-    </div>
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 6px;">
+
+  <!-- PLOTS -->
+  <div class="section-label">Plots</div>
+
+  <!-- Checkbox grid -->
+  <div class="plot-checkbox-grid" id="plotCheckboxGrid">
+    <label><input type="checkbox" id="plot-cb-loss"> loss</label>
+    <label><input type="checkbox" id="plot-cb-coefficients"> coefficients</label>
+    <label><input type="checkbox" id="plot-cb-norms"> norms of $\mathbf{W}$, $\mathbf{a}$</label>
+    <label><input type="checkbox" id="plot-cb-preActLine"> RMS of $\mathbf{h} = \mathbf{Wx}$</label>
+    <label><input type="checkbox" id="plot-cb-preActHist"> histogram of $\mathbf{h} = \mathbf{Wx}$</label>
+    <label><input type="checkbox" id="plot-cb-weightHists"> histograms of $W_{:,i}$</label>
+    <label><input type="checkbox" id="plot-cb-scatter"> scatterplot of $(W_{:,1},\,W_{:,2})$</label>
+    <label><input type="checkbox" id="plot-cb-utility"> 2D utility plot</label>
+    <label><input type="checkbox" id="plot-cb-eigenvalues"> kernel eigenvalues</label>
   </div>
 
-  <!-- Row 2: combined norms | RMS pre-activations -->
-  <div class="plots-row">
-    <div class="plot-cell">
-      <div class="plot-canvas-box">
-        <canvas id="normPlot"></canvas>
-      </div>
-    </div>
-    <div class="plot-cell">
-      <div class="plot-canvas-box">
-        <canvas id="preActPlot"></canvas>
-      </div>
-    </div>
-  </div>
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.4em 0 0.5em;">
 
-  <!-- Histogram row: one per input direction -->
-  <div id="histRow" style="display: flex; gap: 16px; margin-bottom: 0.4em; flex-wrap: wrap;"></div>
-
-  <!-- Plot controls -->
+  <!-- Plot controls (x-axis, ema) -->
   <div class="plot-controls-row">
-    <label><input type="checkbox" id="logScaleX"> log x</label>
-    <label><input type="checkbox" id="logScaleY"> log y</label>
-    <span style="margin-left: 1em;">plot w.r.t.</span>
+    <span>plot w.r.t.</span>
     <span class="xaxis-toggle">
       <a href="javascript:void(0)" id="step-link" class="active" onclick="setXAxisMode('step')">step</a><a href="javascript:void(0)" id="teff-link" onclick="setXAxisMode('teff')">$t_{\mathrm{eff}}$</a>
     </span>
@@ -212,7 +209,13 @@ skip_mathjax: true
     </span>
   </div>
 
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.3em 0 0.7em;">
+
+  <!-- Dynamic plot grid -->
+  <div class="plots-grid" id="plotsGrid"></div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/numeric@1.2.6/numeric-1.2.6.min.js"></script>
 <script type="module" src="app.js"></script>

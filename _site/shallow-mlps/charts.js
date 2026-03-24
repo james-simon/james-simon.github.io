@@ -368,6 +368,74 @@ export class PreActChart extends BaseChart {
   }
 }
 
+// ---- Pre-activation histogram chart ----------------------------------------
+// Shows histogram of per-neuron RMS pre-activations ||W[i,:]|| / sqrt(d).
+export class PreActHistChart {
+  constructor(canvasId) {
+    this._L = null;  // upper bound with slow relaxation
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: { datasets: [{ data: [], backgroundColor: 'rgba(0,0,0,0.55)', borderColor: 'rgb(0,0,0)', borderWidth: 1, borderRadius: 0 }] },
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+          title: { display: true, text: 'h RMS per neuron', font: { size: 12, family: MONO }, color: '#666', padding: { top: 4, bottom: 2 } },
+        },
+        layout: { padding: { left: 4, right: 4 } },
+        scales: {
+          x: {
+            type: 'linear',
+            ticks: { maxRotation: 0, font: { size: 10, family: MONO },
+              callback(v) {
+                if (Math.abs(v - this.min) < 1e-9 || Math.abs(v - this.max) < 1e-9) return null;
+                return parseFloat(v.toPrecision(6));
+              },
+            },
+            grid: { color: 'rgba(0,0,0,0.12)' },
+          },
+          y: { type: 'linear', min: 0, ticks: { maxTicksLimit: 4, font: { size: 10, family: MONO } }, grid: { color: 'rgba(0,0,0,0.07)' } },
+        },
+        barPercentage: 1.0,
+        categoryPercentage: 1.0,
+      },
+    });
+  }
+
+  update(preActVals) {
+    if (!preActVals || preActVals.length === 0) return;
+    const n = preActVals.length;
+
+    let maxVal = 0;
+    for (let i = 0; i < n; i++) { if (preActVals[i] > maxVal) maxVal = preActVals[i]; }
+    const rawL = maxVal * 1.05;
+    this._L = this._L === null ? rawL : Math.max(rawL, 0.9 * this._L);
+    const L = this._L;
+
+    const binW = L / N_BINS;
+    const counts = new Int32Array(N_BINS);
+    for (let i = 0; i < n; i++) {
+      const b = Math.floor(preActVals[i] / binW);
+      counts[Math.max(0, Math.min(N_BINS - 1, b))]++;
+    }
+
+    const step = niceStep(L);
+    const pts = Array.from({ length: N_BINS }, (_, i) => ({ x: (i + 0.5) * binW, y: counts[i] }));
+    this.chart.data.datasets[0].data = pts;
+    const xScale = this.chart.options.scales.x;
+    xScale.min = 0;
+    xScale.max = L;
+    xScale.ticks.stepSize = step;
+    this.chart.update('none');
+  }
+
+  destroy() { this.chart.destroy(); }
+}
+
 // ---- Weight histogram chart ------------------------------------------------
 // Shows histogram of W[:,k] — the k-th column of W (one entry per neuron).
 const N_BINS = 40;
@@ -493,10 +561,10 @@ export class WeightScatterChart {
     this.chart = new Chart(ctx, {
       type: 'scatter',
       data: {
-        // dataset 0: a_i > 0 (blue), dataset 1: a_i <= 0 (red)
+        // dataset 0: a_i > 0 (red), dataset 1: a_i <= 0 (blue)
         datasets: [
-          scatterDataset('rgb(80, 110, 210)'),
           scatterDataset('rgb(210, 80, 70)'),
+          scatterDataset('rgb(80, 110, 210)'),
         ],
       },
       options: {

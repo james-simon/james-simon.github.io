@@ -56,6 +56,7 @@ export const ACTIVATIONS = {
   },
   linear: { f: x => x, df: _ => 1 },
   cos:    { f: x => Math.SQRT2 * Math.cos(x + Math.PI / 4), df: x => -Math.SQRT2 * Math.sin(x + Math.PI / 4) },
+  tanh05: { f: x => Math.tanh(x + 0.5), df: x => { const c = Math.cosh(x + 0.5); return 1 / (c * c); } },
 };
 
 // Solve A x = b for x where A is T x T (row-major Float64Array), b is T-vector.
@@ -117,8 +118,9 @@ export class Simulation {
     this.coeffHistory = [];  // [{x, c: [c1..cT], rem}]
     this.params = null;
 
-    this.W = null;  // student first layer: n x d (Float64Array, row-major)
-    this.a = null;  // student second layer: n
+    this.W = null;           // student first layer: n x d (Float64Array, row-major)
+    this.a = null;           // student second layer: n
+    this.preActVals = null;  // per-neuron RMS pre-activation: ||W[i,:]|| / sqrt(d)
   }
 
   // ---- Initialize ----------------------------------------------------------
@@ -250,6 +252,16 @@ export class Simulation {
 
     // RMS pre-activation: sqrt(E_x[||Wx/sqrt(d)||^2]) = ||W||_F / sqrt(n*d)
     const hRms = Math.sqrt(wSq / (n * d));
+
+    // Per-neuron RMS pre-activation: ||W[i,:]|| / sqrt(d)
+    const sqrtD = Math.sqrt(d);
+    if (!this.preActVals || this.preActVals.length !== n) this.preActVals = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      let rowSq = 0;
+      const row = i * d;
+      for (let j = 0; j < d; j++) rowSq += this.W[row + j] * this.W[row + j];
+      this.preActVals[i] = Math.sqrt(rowSq) / sqrtD;
+    }
 
     this.normHistory.push({
       x:    this.iteration,

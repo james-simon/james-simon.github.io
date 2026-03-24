@@ -4,7 +4,7 @@
 
 import { LogarithmicSlider } from './utils/sliders.js';
 import { formatLatex } from './formatters.js';
-import { targetLatex } from './targets.js';
+import { targetLatex, setCustomExpr } from './targets.js';
 
 // ---- Logarithmic slider configs --------------------------------------------
 // numTerms uses a plain integer range [1,5] — handled separately in bindNumTerms
@@ -49,6 +49,16 @@ export function updateTargetFormula(appState) {
   if (!el) return;
   el.innerHTML = `$$${targetLatex(appState.targetType, appState.numTerms)}$$`;
   typeset(el);
+}
+
+// ---- Custom expr input visibility ------------------------------------------
+function updateTargetUIVisibility(targetType) {
+  const numTermsDiv   = document.getElementById('numTermsDiv');
+  const customExprDiv = document.getElementById('customExprDiv');
+  if (!numTermsDiv || !customExprDiv) return;
+  const isCustom = targetType === 'custom';
+  numTermsDiv.style.display   = isCustom ? 'none' : 'flex';
+  customExprDiv.style.display = isCustom ? 'flex' : 'none';
 }
 
 // ---- Network diagram -------------------------------------------------------
@@ -125,14 +135,12 @@ export function renderNetworkViz(appState) {
 // ---- Bind all UI controls --------------------------------------------------
 // onParamChange: called when any hyperparameter slider changes (triggers reset)
 // onTargetChange: called when target type or numTerms changes
-// onSimControl: { start, pause, reset } callbacks
-// onAxisChange: { logX, logY, xMode } callbacks
+// onSimControl: { startPause, reset } callbacks
 // onEmaChange: called with new window value
 export function bindUI(appState, {
   onParamChange,
   onTargetChange,
   onSimControl,
-  onAxisChange,
   onEmaChange,
 }) {
   // Log sliders
@@ -176,12 +184,36 @@ export function bindUI(appState, {
   // Target type select
   const targetTypeSelect = document.getElementById('targetTypeSelect');
   targetTypeSelect.value = appState.targetType;
+  updateTargetUIVisibility(appState.targetType);
   targetTypeSelect.addEventListener('change', () => {
     appState.targetType = targetTypeSelect.value;
     appState.save();
+    updateTargetUIVisibility(appState.targetType);
     updateTargetFormula(appState);
     onTargetChange();
   });
+
+  // Custom expression input
+  const customExprInput = document.getElementById('customExprInput');
+  if (customExprInput) {
+    customExprInput.value = appState.customExpr ?? '';
+    setCustomExpr(appState.customExpr ?? '');
+    customExprInput.addEventListener('input', () => {
+      const expr = customExprInput.value;
+      appState.customExpr = expr;
+      appState.save();
+      setCustomExpr(expr);
+      // Validate: try to compile and show/clear error state
+      try {
+        new Function('x', `return (${expr});`);
+        customExprInput.style.borderColor = '';
+      } catch (e) {
+        customExprInput.style.borderColor = '#c00';
+      }
+      updateTargetFormula(appState);
+      if (appState.targetType === 'custom') onTargetChange();
+    });
+  }
 
   // Sim controls
   const startPauseBtn = document.getElementById('startPauseBtn');
@@ -207,10 +239,6 @@ export function bindUI(appState, {
     appState.save();
     onParamChange();
   });
-
-  // Log scale checkboxes
-  document.getElementById('logScaleX').addEventListener('change', e => onAxisChange.logX(e.target.checked));
-  document.getElementById('logScaleY').addEventListener('change', e => onAxisChange.logY(e.target.checked));
 
   // EMA slider
   const emaSlider  = document.getElementById('emaSlider');
@@ -238,6 +266,11 @@ export function restoreUI(appState) {
   const numTermsVal = document.getElementById('value_numTerms');
   if (numTermsVal) numTermsVal.textContent = String(appState.numTerms);
   for (const key of Object.keys(sliderDefs)) updateSliderDisplay(key, appState);
+  // Restore custom expression
+  setCustomExpr(appState.customExpr ?? '');
+  const customExprInput = document.getElementById('customExprInput');
+  if (customExprInput) customExprInput.value = appState.customExpr ?? '';
+  updateTargetUIVisibility(appState.targetType);
   updateTargetFormula(appState);
   renderNetworkViz(appState);
 }

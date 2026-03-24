@@ -77,8 +77,78 @@ const monomial = {
   coeffLabel(_k) { return 'f*'; },
 };
 
+// ---- Sin2x -----------------------------------------------------------------
+// f*(x) = sin(2x₁)·(1+x₂²) / √3   (normalized under N(0,I))
+// E[sin²(2x₁)] = 1/2, E[(1+x₂²)²] = 6  =>  E[f*²] = 3, norm = √3
+const sin2x = {
+  computeTarget(x, _T) {
+    const y = Math.sin(2 * x[0]) * (1 + x[1] * x[1]) / Math.sqrt(3);
+    return { y, fTerms: new Float64Array([y]) };
+  },
+  numCoeffTerms(_T) { return 1; },
+  latex(_T) {
+    return 'f^*(\\mathbf{x}) = \\tfrac{1}{\\sqrt{3}}\\sin(2x_1)(1+x_2^2)';
+  },
+  coeffLabel(_k) { return 'f*'; },
+};
+
+// ---- Custom ----------------------------------------------------------------
+// f*(x) = user-supplied JS expression, 1-indexed (x[1], x[2], ...)
+// Math.* names are available without the Math. prefix.
+
+let _customFn = null;   // compiled Function, or null if invalid
+let _customExpr = '';
+
+// Math builtins available in custom expressions
+const MATH_NAMES = Object.getOwnPropertyNames(Math);
+const MATH_VALS  = MATH_NAMES.map(k => Math[k]);
+
+export function setCustomExpr(expr) {
+  _customExpr = expr;
+  _customFn = null;
+  if (!expr.trim()) return;
+  try {
+    // Build a function with Math.* names in scope + a 1-indexed x proxy.
+    // We pass x0 (0-indexed Float64Array) and create a Proxy that shifts by 1.
+    _customFn = new Function(...MATH_NAMES, 'x', `return (${expr});`);
+  } catch (e) {
+    _customFn = null;
+  }
+}
+
+function evalCustom(x0) {
+  if (!_customFn) return 0;
+  // Wrap x0 in a 1-indexed proxy: x[1] => x0[0], x[2] => x0[1], etc.
+  const xProxy = new Proxy(x0, {
+    get(target, prop) {
+      const i = Number(prop);
+      return Number.isInteger(i) ? (target[i - 1] ?? 0) : target[prop];
+    },
+  });
+  try {
+    const v = _customFn(...MATH_VALS, xProxy);
+    return (typeof v === 'number' && isFinite(v)) ? v : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+const custom = {
+  computeTarget(x, _T) {
+    const y = evalCustom(x);
+    return { y, fTerms: new Float64Array([y]) };
+  },
+  numCoeffTerms(_T) { return 1; },
+  latex(_T) {
+    return _customExpr
+      ? `f^*(\\mathbf{x}) = \\texttt{${_customExpr.replace(/\\/g, '\\\\').replace(/[{}]/g, '\\$&')}}`
+      : 'f^*(\\mathbf{x}) = \\text{(custom)}';
+  },
+  coeffLabel(_k) { return 'f*'; },
+};
+
 // ---- Registry --------------------------------------------------------------
-const TARGETS = { staircase, hermite, monomial };
+const TARGETS = { staircase, hermite, monomial, sin2x, custom };
 
 export function computeTarget(x, targetType, numTerms) {
   return TARGETS[targetType].computeTarget(x, numTerms);

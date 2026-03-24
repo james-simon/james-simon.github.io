@@ -15,7 +15,10 @@ const DEFAULTS = {
   activation:  'relu',
   manualSeed:  false,
   seedValue:   0,
-  emaPos:      0,
+  emaPos:       0,
+  visiblePlots: ['loss'],
+  customExpr:   'x[1]',
+  plotOptions:  {},   // { [key]: { logX: bool, logY: bool } }
 };
 
 export class AppState {

@@ -97,6 +97,10 @@ input[type="range"] { accent-color: #555; }
   margin-bottom: 2px;
 }
 
+/* Custom expression input */
+#customExprInput:focus { outline: none; border-color: #888; }
+#customExprInput.error { border-color: #c00; }
+
 /* Activation row */
 .activation-row {
   display: flex;
@@ -131,15 +135,100 @@ input[type="range"] { accent-color: #555; }
   font-family: Monaco, Consolas, "Courier New", monospace;
 }
 
-/* Two plots side by side */
-.plots-row {
+/* Checkbox grid for plot toggles */
+.plot-checkbox-grid {
   display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-bottom: 0.7em;
+  font-size: 0.9em;
+}
+.plot-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Gear icon on plot cells */
+.plot-cell,
+.plot-cell-wide,
+.plot-cell-square { position: relative; }
+
+.plot-gear {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.plot-cell:hover      > .plot-gear,
+.plot-cell-wide:hover > .plot-gear,
+.plot-cell-square:hover > .plot-gear { opacity: 1; }
+.plot-gear:hover { background: #fff; border-color: #999; color: #222; }
+.plot-gear-dim { color: #bbb; }
+.plot-gear-dim:hover { color: #bbb; cursor: default; }
+
+/* Gear popup menu */
+.gear-menu {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 6px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  min-width: 100px;
+  font-size: 0.88em;
+}
+.gear-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gear-menu-row:hover { background: #f4f4f4; border-radius: 3px; }
+.gear-menu-empty {
+  color: #aaa;
+  font-size: 0.9em;
+  padding: 2px 2px;
+  white-space: nowrap;
+}
+
+/* Dynamic plot grid */
+.plots-grid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 0.4em;
 }
 .plot-cell {
-  flex: 1;
+  flex: 1 1 420px;
   min-width: 0;
+}
+.plot-cell-wide {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.plot-cell-square {
+  flex: 0 0 420px;
+  width: 420px;
+  height: 420px;
+  position: relative;
 }
 .plot-canvas-box {
   position: relative;
