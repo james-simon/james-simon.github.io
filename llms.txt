@@ -1,0 +1,60 @@
+# Jamie Simon
+
+> Personal site of Jamie Simon — ML researcher and writer. Posts span machine learning theory, physics, math, music, and general curiosity. Based in Berkeley.
+
+## Research
+- [Research overview](https://jamiesimon.io/research/)
+
+## Interactive demos
+- [Shallow MLP Gym](https://jamiesimon.io/shallow-mlps/) — train two-layer MLPs interactively in the browser
+- [t-SNE explorer](https://jamiesimon.io/t-sne/)
+- [Expander nets](https://jamiesimon.io/expander-nets/)
+- [Low-dim flows](https://jamiesimon.io/low-dim-flows/)
+- [Puzzles](https://jamiesimon.io/puzzles/)
+
+## ML theory posts
+- [The polynomial features of random neural networks](https://jamiesimon.io/blog/polynomial-features-random-networks/)
+- [Predicting kernel spectra powerlaw exponents from raw data statistics](https://jamiesimon.io/blog/kernel-spectral-decay-powerlaw/)
+- [A complete characterization of the expressivity of shallow, bias-free ReLU networks](https://jamiesimon.io/blog/the-expressivity-of-shallow-relu-nets/)
+- [Backsolving classical generalization bounds from the modern kernel regression eigenframework](https://jamiesimon.io/blog/backsolving-classical-bounds/)
+- [One kernel, many eigensystems](https://jamiesimon.io/blog/one-kernel-many-eigensystems/)
+- [The eigensystem of the Gaussian kernel w.r.t. a Gaussian measure](https://jamiesimon.io/blog/gaussian-kernel-1d-eigendecomp/)
+- [A theory of generalization for wide neural nets (eigenlearning)](https://jamiesimon.io/blog/eigenlearning/)
+- [An eigenframework for the generalization of 1NN on the torus](https://jamiesimon.io/blog/1nn-eigenframework/)
+- [Infinite-width autoencoders are cursed](https://jamiesimon.io/blog/autoencoders-are-cursed/)
+- [The optimal low-rank solution for multivariate linear regression](https://jamiesimon.io/blog/low-rank-linear-regression-sol/)
+- [It's hard to turn a low-rank matrix into a high-rank matrix](https://jamiesimon.io/blog/transforming-low-rank-matrices/)
+- [Let's solve more learning rules](https://jamiesimon.io/blog/lets-solve-learning-rules/)
+- [Reverse engineering the NTK](https://jamiesimon.io/blog/reverse-engineering/)
+- [Multiplicative neural networks](https://jamiesimon.io/blog/multiplicative-neural-nets/)
+- [Insights into GPT-2's positional encodings](https://jamiesimon.io/blog/gpt2-positional-encs/)
+- [Creating and erasing AI watermarks](https://jamiesimon.io/blog/llm-watermarking/)
+
+## Math and physics posts
+- [Using the Laplacian to take a local average of a function](https://jamiesimon.io/blog/the-laplacian-and-diffusion/)
+- [Modeling time-reversed random walks](https://jamiesimon.io/blog/time-reversed-random-walks/)
+- [Number theory, fractals, and crystallography in rows of crops](https://jamiesimon.io/blog/cropland-crystallography/)
+- [Understanding fractals from iterated maps](https://jamiesimon.io/blog/fractals-in-iterated-maps/)
+- [The principle of least power dissipation](https://jamiesimon.io/blog/least_power_dissipation/)
+- [On the scientific method and its application to the science of deep learning](https://jamiesimon.io/blog/on-the-scientific-method/)
+
+## Science and curiosity posts
+- [What would happen if you made a planet out of fish?](https://jamiesimon.io/blog/fish-planet/)
+- [How hard do you have to hit a chicken to cook it?](https://jamiesimon.io/blog/chicken-cooking/)
+- [Could you propel a spacecraft using sports projectiles?](https://jamiesimon.io/blog/rocketball/)
+- [How would an upside-down candle burn?](https://jamiesimon.io/blog/upside-down-candle/)
+- [The expected cost of breaking quarantine](https://jamiesimon.io/blog/covid-calculation/)
+- [Can a chemical reaction measure the size of its container?](https://jamiesimon.io/blog/volumetric-reaction/)
+- [Ibuprofen vs. aspirin vs naproxen vs acetaminophen](https://jamiesimon.io/blog/otc-pain-relievers/)
+- [How many babies were born during the 2024 eclipse?](https://jamiesimon.io/blog/eclipse-baby/)
+- [Simulating cells fighting to the death](https://jamiesimon.io/blog/cell-fight/)
+- [Experiments in self-assembly](https://jamiesimon.io/blog/self-assembly/)
+- [Reflections on introductory neuroscience reading](https://jamiesimon.io/blog/neuro-learnings/)
+
+## Personal and other posts
+- [On novelty](https://jamiesimon.io/blog/on-novelty/)
+- [Why I am not an experimentalist](https://jamiesimon.io/blog/why-i-am-not-an-experimentalist/)
+- [Why I talk to strangers](https://jamiesimon.io/blog/why-i-talk-to-strangers/)
+- [Reflections upon visiting all 50 states](https://jamiesimon.io/blog/fifty-states-roadtrip/)
+- [Reharmonizing Ode to Joy](https://jamiesimon.io/blog/reharmonizing-ode-to-joy/)
+- [The gravitree](https://jamiesimon.io/blog/gravitrees/)

@@ -8,7 +8,7 @@
 // Loss:     (1/2) * E[(f_hat - f*)^2]  — factor of 1/2 for clean gradient
 // Training: SGD on W, a  with muP scaling (step *= n)
 
-import { computeTarget, numCoeffTerms } from './targets.js';
+import { computeTarget, numCoeffTerms, numInputCoords } from './targets.js';
 
 const TARGET_FRAME_TIME      = 25;   // ms — target ~40fps
 const STEPS_PER_SEC_WINDOW   = 60;
@@ -229,7 +229,8 @@ export class Simulation {
 
   // ---- Frobenius norms + per-direction norms + RMS pre-activations ----------
   _recordNorms() {
-    const { n, d, numTerms } = this.params;
+    const { n, d, numTerms, targetType } = this.params;
+    const nCoords = numInputCoords(targetType, numTerms) ?? d;
 
     // Total norms
     let wSq = 0;
@@ -237,16 +238,16 @@ export class Simulation {
     let aSq = 0;
     for (let i = 0; i < n; i++) aSq += this.a[i] * this.a[i];
 
-    // Per-direction column norms: wDir[k] = ||W[:,k]|| for k=0..numTerms-1
-    // "rest" = sqrt(sum_{j>=numTerms} ||W[:,j]||^2)
-    const wDirSq = new Float64Array(numTerms + 1); // last entry = rest
+    // Per-direction column norms: wDir[k] = ||W[:,k]|| for k=0..nCoords-1
+    // "rest" = sqrt(sum_{j>=nCoords} ||W[:,j]||^2)
+    const wDirSq = new Float64Array(nCoords + 1); // last entry = rest
     for (let i = 0; i < n; i++) {
       const row = i * d;
-      for (let k = 0; k < numTerms; k++) {
+      for (let k = 0; k < nCoords; k++) {
         wDirSq[k] += this.W[row + k] * this.W[row + k];
       }
-      for (let j = numTerms; j < d; j++) {
-        wDirSq[numTerms] += this.W[row + j] * this.W[row + j];
+      for (let j = nCoords; j < d; j++) {
+        wDirSq[nCoords] += this.W[row + j] * this.W[row + j];
       }
     }
 

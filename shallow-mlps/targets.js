@@ -15,6 +15,7 @@ function sub(n) { return String(n).split('').map(c => SUB[+c]).join(''); }
 // ---- Staircase -------------------------------------------------------------
 // f*(x) = x₁ + x₁x₂ + x₁x₂x₃ + ... + x₁…x_T
 const staircase = {
+  numInputCoords(T) { return T; },
   computeTarget(x, T) {
     const fTerms = new Float64Array(T);
     let prod = 1;
@@ -46,6 +47,7 @@ function hermitePoly(x, n) {
 }
 
 const hermite = {
+  numInputCoords(_T) { return 1; },
   computeTarget(x, T) {
     let fac = 1;
     for (let k = 2; k <= T; k++) fac *= k;
@@ -64,6 +66,7 @@ const hermite = {
 // ---- Monomial --------------------------------------------------------------
 // f*(x) = x₁ · x₂ · … · x_T   (normalized under N(0,I))
 const monomial = {
+  numInputCoords(T) { return T; },
   computeTarget(x, T) {
     let y = 1;
     for (let k = 0; k < T; k++) y *= x[k];
@@ -81,6 +84,7 @@ const monomial = {
 // f*(x) = sin(2x₁)·(1+x₂²) / √3   (normalized under N(0,I))
 // E[sin²(2x₁)] = 1/2, E[(1+x₂²)²] = 6  =>  E[f*²] = 3, norm = √3
 const sin2x = {
+  numInputCoords(_T) { return 2; },
   computeTarget(x, _T) {
     const y = Math.sin(2 * x[0]) * (1 + x[1] * x[1]) / Math.sqrt(3);
     return { y, fTerms: new Float64Array([y]) };
@@ -134,6 +138,7 @@ function evalCustom(x0) {
 }
 
 const custom = {
+  numInputCoords(_T) { return null; },   // unknown; caller should use d
   computeTarget(x, _T) {
     const y = evalCustom(x);
     return { y, fTerms: new Float64Array([y]) };
@@ -156,6 +161,11 @@ export function computeTarget(x, targetType, numTerms) {
 
 export function numCoeffTerms(targetType, numTerms) {
   return TARGETS[targetType].numCoeffTerms(numTerms);
+}
+
+// Returns the number of input coordinates the target reads, or null for custom.
+export function numInputCoords(targetType, numTerms) {
+  return TARGETS[targetType].numInputCoords(numTerms);
 }
 
 export function targetLatex(targetType, numTerms) {
