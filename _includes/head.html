@@ -1,51 +1,18 @@
 <head>
-  {% unless page.skip_mathjax %}
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        tagSide: "right",
-        extensions: ["boldsymbol.js"]
-      },
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-        processEscapes: true
-      }
-    });
-    MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
-      MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
-        clearTag() {
-          if (!this.global.notags) {
-            this.super(arguments).clearTag.call(this);
-          }
-        }
-      });
-    });
-  </script>
-  <script type="text/javascript" charset="utf-8"
-    src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML">
-  </script>
-
-
-  <!-- <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
-  {% endunless %}
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="description" content="{% if page.description %}{{ page.description }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
   <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/img/favicon-16x16.png">
 
-  <!-- <link href="{{ site.baseurl }}/bootstrap/css/bootstrap.css" rel="stylesheet">
-  <script src="{{ "/boostrap/js/bootstrap.js" | prepend: site.baseurl }}"></script> -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
 
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
@@ -69,6 +36,35 @@
       text-decoration: underline;
     }
   </style>
+
+  {% unless page.skip_mathjax %}
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"></script>
+  <script>
+    window.MathJax = {
+      TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        tagSide: "right",
+        extensions: ["boldsymbol.js"]
+      },
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      AuthorInit: function() {
+        MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
+          MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
+            clearTag() {
+              if (!this.global.notags) {
+                this.super(arguments).clearTag.call(this);
+              }
+            }
+          });
+        });
+      }
+    };
+  </script>
+  {% endunless %}
 
   {% if jekyll.environment == 'production' %}
   {% include analytics.html %}

@@ -1,7 +1,7 @@
 # Site settings
 author: Jamie Simon
 email: jsi@berkeley.edu
-description: > # this means to ignore newlines until "baseurl:"
+description: "Jamie Simon — ML researcher and writer. Personal site with blog posts on machine learning theory, math, physics, and science."
 baseurl: "" # the subpath of your site, e.g. /blog
 
 title: Jamie Simon
