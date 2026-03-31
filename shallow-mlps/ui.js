@@ -13,7 +13,7 @@ export const sliderDefs = {
   d:         { helper: new LogarithmicSlider(1, 200),    isInt: true  },
   batchSize: { helper: new LogarithmicSlider(1, 10000),  isInt: true  },
   eta:       { helper: new LogarithmicSlider(1e-5, 10),  isInt: false },
-  alpha:     { helper: new LogarithmicSlider(1e-3, 1),   isInt: false },
+  alpha:     { helper: new LogarithmicSlider(1e-6, 1),   isInt: false },
 };
 
 // ---- EMA slider values (shared with charts) --------------------------------
