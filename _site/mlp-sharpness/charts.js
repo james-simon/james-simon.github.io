@@ -155,6 +155,7 @@ export class SharpnessChart extends BaseChart {
     const opts = baseChartOptions('eigenvalue');
     opts.plugins.legend = { display: true, position: 'top', align: 'end',
       labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
+    opts.scales.y.min = undefined;  // allow negative eigenvalues
     this._k = 0; this._bk = 0; this._eta = null;
     this.chart = new Chart(document.getElementById(canvasId), {
       type: 'line', data: { datasets: [] }, options: opts,
