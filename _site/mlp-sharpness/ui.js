@@ -133,6 +133,24 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
   // Sim controls
   document.getElementById('startPauseBtn').addEventListener('click', () => onSimControl.startPause());
   document.getElementById('resetBtn').addEventListener('click',      () => onSimControl.reset());
+
+  // Recommended settings button
+  const presetBtn = document.getElementById('applyDefaultsBtn');
+  if (presetBtn) {
+    presetBtn.addEventListener('click', () => {
+      const rec = {
+        depth: 2, hiddenDim: 20, activation: 'tanh', useBias: false,
+        targetType: 'chebyshev', targetDegree: 6, nPoints: 20,
+        initScale: 1.0, eta: 0.01,
+      };
+      Object.assign(appState, rec);
+      appState.save();
+      restoreUI(appState);
+      onSimControl.reset();
+      presetBtn.textContent = '✓ applied!';
+      setTimeout(() => { presetBtn.textContent = '⚡ recommended settings'; }, 1200);
+    });
+  }
 }
 
 // ---- Restore all UI from state ---------------------------------------------

@@ -98,6 +98,7 @@ input[type="range"] { accent-color: #555; }
 }
 .sim-button:hover  { background-color: #e0e0e0; }
 .sim-button:active { background-color: #d0d0d0; }
+.sim-button-preset { color: #666; font-size: 13px; }
 
 .controls-row {
   display: flex;
