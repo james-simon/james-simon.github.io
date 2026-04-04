@@ -85,13 +85,13 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
   }
 
   // Depth buttons
-  for (const btn of document.querySelectorAll('.depth-btn')) {
+  for (const btn of document.querySelectorAll('.depth-btn:not(.param-btn)')) {
     const d = parseInt(btn.dataset.depth, 10);
     if (d === appState.depth) btn.classList.add('active');
     btn.addEventListener('click', () => {
       appState.depth = d;
       appState.save();
-      document.querySelectorAll('.depth-btn').forEach(b =>
+      document.querySelectorAll('.depth-btn:not(.param-btn)').forEach(b =>
         b.classList.toggle('active', parseInt(b.dataset.depth, 10) === d));
       onParamChange();
     });
@@ -180,7 +180,7 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
 // ---- Restore all UI from state ---------------------------------------------
 export function restoreUI(appState) {
   for (const key of Object.keys(sliderDefs)) updateSliderDisplay(key, appState);
-  document.querySelectorAll('.depth-btn').forEach(b => {
+  document.querySelectorAll('.depth-btn:not(.param-btn)').forEach(b => {
     b.classList.toggle('active', parseInt(b.dataset.depth, 10) === appState.depth);
   });
   document.querySelectorAll('.param-btn').forEach(b =>
