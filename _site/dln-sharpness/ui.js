@@ -26,7 +26,7 @@ class MaxSpsSlider {
 
 // ---- Slider configs --------------------------------------------------------
 export const sliderDefs = {
-  width:         { helper: new IntegerSlider(2, 10),        isInt: true  },
+  width:         { helper: new IntegerSlider(1, 10),        isInt: true  },
   initScale:     { helper: new LogarithmicSlider(1e-4, 10), isInt: false },
   eta:           { helper: new LogarithmicSlider(1e-6, 1),  isInt: false },
   maxStepsPerSec:{ helper: new MaxSpsSlider(),              isInt: false },
