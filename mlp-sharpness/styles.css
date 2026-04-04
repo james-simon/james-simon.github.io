@@ -1,0 +1,219 @@
+/* DLN Sharpness Styles */
+
+.dln-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-title {
+  margin-top: 2em;
+  margin-bottom: 0.3em;
+}
+
+.section-label {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+input[type="range"] { accent-color: #555; }
+
+/* Param rows */
+.param-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.6em;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.param-desc {
+  font-size: 0.82em;
+  color: #888;
+  min-width: 7em;
+  text-align: right;
+}
+
+.param-label {
+  font-size: 1.05em;
+  min-width: 1.6em;
+  text-align: right;
+}
+
+.param-slider {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.param-value {
+  font-size: 0.92em;
+  min-width: 3.5em;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+
+/* Depth buttons */
+.depth-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.depth-btn {
+  padding: 5px 14px;
+  background: #f8f8f8;
+  border: none;
+  border-right: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 0.92em;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+  transition: background 0.15s;
+  color: #555;
+}
+
+.depth-btn:last-child { border-right: none; }
+.depth-btn:hover { background: #eee; color: #222; }
+.depth-btn.active { background: #555; color: #fff; }
+
+/* Sim controls */
+.sim-button {
+  padding: 7px 15px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+.sim-button:hover  { background-color: #e0e0e0; }
+.sim-button:active { background-color: #d0d0d0; }
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+
+.steps-per-sec {
+  margin-left: auto;
+  font-size: 0.85em;
+  color: #aaa;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+
+/* Plot checkbox grid */
+.plot-checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-bottom: 0.7em;
+  font-size: 0.9em;
+}
+.plot-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Plot grid */
+.plots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 0.4em;
+}
+
+.plot-cell {
+  flex: 1 1 420px;
+  max-width: calc(50% - 8px);
+  min-width: 0;
+  position: relative;
+}
+
+.plot-cell-wide {
+  flex: 1 1 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.plot-canvas-box {
+  position: relative;
+  height: 300px;
+}
+
+.plot-cell-title {
+  font-size: 0.8em;
+  color: #999;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* Gear button */
+.plot-cell,
+.plot-cell-wide { position: relative; }
+
+.plot-gear {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.plot-cell:hover      > .plot-gear,
+.plot-cell-wide:hover > .plot-gear { opacity: 1; }
+.plot-gear:hover { background: #fff; border-color: #999; color: #222; }
+
+/* Gear popup menu */
+.gear-menu {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 6px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  min-width: 100px;
+  font-size: 0.88em;
+}
+.gear-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gear-menu-row:hover { background: #f4f4f4; border-radius: 3px; }
+.gear-menu-empty {
+  color: #aaa;
+  font-size: 0.9em;
+  padding: 2px 2px;
+  white-space: nowrap;
+}
