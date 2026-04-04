@@ -5,12 +5,15 @@
 //   depth=2: x -> W1(n×1) -> σ -> W2(1×n) -> output   (one hidden layer)
 //   depth=3: two hidden layers, etc.
 //
+// SP (standard parameterization):
+//   Init:    W^(l) ~ N(0, σ²/n_{in})  all layers  (fan-in scaling)
+//   Updates: ΔW^(l) = -η * ∇_{W^(l)} L            all layers
+//
 // muP parameterization:
-//   Init:    W^(l) ~ N(0, σ²/n_{l-1})  for hidden layers  (fan-in scaling)
-//            W^(out) ~ N(0, σ²)         for output layer
-//            biases (if enabled) ~ N(0, σ²)  (always unscaled)
-//   Updates: ΔW^(l) = -η * n_{l-1} * ∇_{W^(l)} L   for hidden layers
-//            ΔW^(out) = -η * ∇_{W^(out)} L           for output layer
+//   Init:    W^(l) ~ N(0, σ²/n_{in})  for hidden layers
+//            W^(out) = 0               for output layer
+//   Updates: ΔW^(l) = -η * n_{in} * ∇_{W^(l)} L   for hidden layers
+//            ΔW^(out) = -η * ∇_{W^(out)} L          for output layer
 //
 // Loss: L = (1/N) sum_i (f(x_i) - y_i)^2   [full-batch]
 //
@@ -78,9 +81,7 @@ const _rng = {
 // MLP STRUCTURE
 // ============================================================================
 // params.layers: array of layer descriptors built from depth/hiddenDim/useBias
-// Each layer: { W: Float64Array(nOut×nIn), b: Float64Array(nOut)|null,
-//               nIn, nOut, isOutput, muPscale }
-// muPscale: fan-in multiplier for muP update scaling (= nIn for hidden, 1 for output)
+// Each layer: { W: Float64Array(nOut×nIn), b: Float64Array(nOut)|null, nIn, nOut, isOutput }
 
 function buildLayerDims(depth, hiddenDim) {
   // Returns array of [nIn, nOut, isOutput]
@@ -95,12 +96,12 @@ function buildLayerDims(depth, hiddenDim) {
   return dims;
 }
 
-function initWeights(depth, hiddenDim, initScale, useBias) {
+function initWeights(depth, hiddenDim, initScale, useBias, parameterization) {
   const dims = buildLayerDims(depth, hiddenDim);
+  const isMuP = parameterization === 'mup';
   return dims.map(({ nIn, nOut, isOutput }) => {
-    // muP init: hidden ~ N(0, σ²/nIn), output = 0
     const W = new Float64Array(nOut * nIn);
-    if (!isOutput) {
+    if (!(isMuP && isOutput)) {
       const std = initScale / Math.sqrt(nIn);
       for (let i = 0; i < W.length; i++) W[i] = std * _rng.randn();
     }
@@ -403,8 +404,7 @@ export class Simulation {
       this.ys[i] = computeTarget(x, targetType, targetDegree);
     }
 
-    // Init network with muP
-    this.layers = initWeights(depth, hiddenDim, initScale, useBias);
+    this.layers = initWeights(depth, hiddenDim, initScale, useBias, params.parameterization);
 
     this.iteration        = 0;
     this.lossHistory      = [];
@@ -414,25 +414,25 @@ export class Simulation {
     this._recordStats();
   }
 
-  // ---- One full-batch GD step (muP updates) --------------------------------
+  // ---- One full-batch GD step ----------------------------------------------
   step() {
-    const { activation, eta } = this.params;
+    const { activation, eta, parameterization } = this.params;
+    const isMuP = parameterization === 'mup';
     const { grad, loss } = computeGradAndLoss(this.layers, activation, this.xs, this.ys);
 
-    // Apply muP updates: hidden layers scale by fan-in, output layer unscaled
     let offset = 0;
     for (let l = 0; l < this.layers.length; l++) {
       const layer = this.layers[l];
-      const muPscale = layer.isOutput ? 1 : layer.nIn;
+      const scale = (isMuP && !layer.isOutput) ? layer.nIn : 1;
 
       for (let i = 0; i < layer.W.length; i++) {
-        layer.W[i] -= eta * muPscale * grad[offset + i];
+        layer.W[i] -= eta * scale * grad[offset + i];
       }
       offset += layer.W.length;
 
       if (layer.b) {
         for (let i = 0; i < layer.b.length; i++) {
-          layer.b[i] -= eta * grad[offset + i];  // biases always unscaled
+          layer.b[i] -= eta * grad[offset + i];
         }
         offset += layer.b.length;
       }

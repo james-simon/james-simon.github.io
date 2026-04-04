@@ -119,6 +119,19 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
     });
   }
 
+  // Parameterization toggle (SP / muP)
+  for (const btn of document.querySelectorAll('.param-btn')) {
+    const p = btn.dataset.param;
+    if (p === appState.parameterization) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      appState.parameterization = p;
+      appState.save();
+      document.querySelectorAll('.param-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.param === p));
+      onParamChange();
+    });
+  }
+
   // Bias checkbox
   const biasChk = document.getElementById('check_useBias');
   if (biasChk) {
@@ -139,9 +152,9 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
   if (presetBtn) {
     presetBtn.addEventListener('click', () => {
       const rec = {
-        depth: 2, hiddenDim: 20, activation: 'tanh', useBias: false,
+        depth: 2, hiddenDim: 20, activation: 'tanh', parameterization: 'sp', useBias: false,
         targetType: 'chebyshev', targetDegree: 6, nPoints: 20,
-        initScale: 1.0, eta: 0.01,
+        initScale: 1.0, eta: 0.2,
       };
       Object.assign(appState, rec);
       appState.save();
@@ -159,6 +172,8 @@ export function restoreUI(appState) {
   document.querySelectorAll('.depth-btn').forEach(b => {
     b.classList.toggle('active', parseInt(b.dataset.depth, 10) === appState.depth);
   });
+  document.querySelectorAll('.param-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.param === appState.parameterization));
   const actSel = document.getElementById('select_activation');
   if (actSel) actSel.value = appState.activation;
   const tgtSel = document.getElementById('select_targetType');

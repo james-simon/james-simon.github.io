@@ -326,6 +326,7 @@ waitForMathJax(() => {
       depth:           appState.depth,
       hiddenDim:       appState.hiddenDim,
       activation:      appState.activation,
+      parameterization:appState.parameterization,
       useBias:         appState.useBias,
       targetType:      appState.targetType,
       targetDegree:    appState.targetDegree,
