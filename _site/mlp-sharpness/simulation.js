@@ -290,6 +290,7 @@ function lanczos(hvpFn, p, k) {
   Q[0] = q;
 
   let prevBeta = 0, prevQ = null;
+  let mActual = m;  // actual number of Lanczos steps completed
 
   for (let j = 0; j < m; j++) {
     let z = hvpFn(Q[j]);
@@ -305,48 +306,48 @@ function lanczos(hvpFn, p, k) {
     }
     const betaNext = vecNorm(z);
     beta[j] = betaNext;
-    if (betaNext < 1e-12 || j === m-1) { Q[j+1] = new Float64Array(p); break; }
+    if (betaNext < 1e-12 || j === m-1) { mActual = j + 1; break; }
     Q[j+1] = new Float64Array(p);
     for (let i = 0; i < p; i++) Q[j+1][i] = z[i] / betaNext;
     prevBeta = betaNext; prevQ = Q[j];
   }
 
-  // Jacobi on m×m tridiagonal T
-  const T = new Float64Array(m*m);
-  for (let j = 0; j < m; j++) {
-    T[j*m+j] = alpha[j];
-    if (j+1 < m) { T[j*m+(j+1)] = beta[j]; T[(j+1)*m+j] = beta[j]; }
+  // Jacobi on mActual×mActual tridiagonal T
+  const T = new Float64Array(mActual*mActual);
+  for (let j = 0; j < mActual; j++) {
+    T[j*mActual+j] = alpha[j];
+    if (j+1 < mActual) { T[j*mActual+(j+1)] = beta[j]; T[(j+1)*mActual+j] = beta[j]; }
   }
   const D = T.slice();
-  const V = new Float64Array(m*m);
-  for (let i = 0; i < m; i++) V[i*m+i] = 1;
+  const V = new Float64Array(mActual*mActual);
+  for (let i = 0; i < mActual; i++) V[i*mActual+i] = 1;
 
-  for (let iter = 0; iter < 100*m*m; iter++) {
+  for (let iter = 0; iter < 100*mActual*mActual; iter++) {
     let maxVal = 0, p2 = 0, q2 = 1;
-    for (let i = 0; i < m-1; i++)
-      for (let j = i+1; j < m; j++) {
+    for (let i = 0; i < mActual-1; i++)
+      for (let j = i+1; j < mActual; j++) {
         const v2 = Math.abs(D[i*m+j]);
         if (v2 > maxVal) { maxVal = v2; p2 = i; q2 = j; }
       }
     if (maxVal < 1e-14) break;
-    const Dpp = D[p2*m+p2], Dqq = D[q2*m+q2], Dpq = D[p2*m+q2];
+    const Dpp = D[p2*mActual+p2], Dqq = D[q2*mActual+q2], Dpq = D[p2*mActual+q2];
     const tau = (Dqq-Dpp)/(2*Dpq);
     const t   = Math.sign(tau)/(Math.abs(tau)+Math.sqrt(1+tau*tau));
     const c   = 1/Math.sqrt(1+t*t), s = t*c;
-    D[p2*m+p2] = Dpp-t*Dpq; D[q2*m+q2] = Dqq+t*Dpq; D[p2*m+q2] = D[q2*m+p2] = 0;
-    for (let r = 0; r < m; r++) {
+    D[p2*mActual+p2] = Dpp-t*Dpq; D[q2*mActual+q2] = Dqq+t*Dpq; D[p2*mActual+q2] = D[q2*mActual+p2] = 0;
+    for (let r = 0; r < mActual; r++) {
       if (r===p2||r===q2) continue;
-      const Drp=D[r*m+p2],Drq=D[r*m+q2];
-      D[r*m+p2]=D[p2*m+r]=c*Drp-s*Drq; D[r*m+q2]=D[q2*m+r]=s*Drp+c*Drq;
+      const Drp=D[r*mActual+p2],Drq=D[r*mActual+q2];
+      D[r*mActual+p2]=D[p2*mActual+r]=c*Drp-s*Drq; D[r*mActual+q2]=D[q2*mActual+r]=s*Drp+c*Drq;
     }
-    for (let r = 0; r < m; r++) {
-      const Vrp=V[r*m+p2],Vrq=V[r*m+q2];
-      V[r*m+p2]=c*Vrp-s*Vrq; V[r*m+q2]=s*Vrp+c*Vrq;
+    for (let r = 0; r < mActual; r++) {
+      const Vrp=V[r*mActual+p2],Vrq=V[r*mActual+q2];
+      V[r*mActual+p2]=c*Vrp-s*Vrq; V[r*mActual+q2]=s*Vrp+c*Vrq;
     }
   }
 
   const pairs = [];
-  for (let j = 0; j < m; j++) pairs.push({ val: D[j*m+j], col: j });
+  for (let j = 0; j < mActual; j++) pairs.push({ val: D[j*mActual+j], col: j });
   pairs.sort((a,b) => b.val - a.val);
 
   const topK = Math.min(k, pairs.length);
@@ -357,8 +358,8 @@ function lanczos(hvpFn, p, k) {
     values[j] = pairs[j].val;
     const col = pairs[j].col;
     const rv = new Float64Array(p);
-    for (let l = 0; l < m; l++) {
-      const coeff = V[l*m+col];
+    for (let l = 0; l < mActual; l++) {
+      const coeff = V[l*mActual+col];
       if (Math.abs(coeff) < 1e-15) continue;
       for (let i = 0; i < p; i++) rv[i] += coeff * Q[l][i];
     }
