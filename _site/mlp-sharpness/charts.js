@@ -146,6 +146,8 @@ export class LossChart extends BaseChart {
   }
 }
 
+const BOT_COLORS = ['rgb(180,180,180)', 'rgb(110,110,110)', 'rgb(30,30,30)'];
+
 // ---- SharpnessChart --------------------------------------------------------
 export class SharpnessChart extends BaseChart {
   constructor(canvasId) {
@@ -153,7 +155,7 @@ export class SharpnessChart extends BaseChart {
     const opts = baseChartOptions('eigenvalue');
     opts.plugins.legend = { display: true, position: 'top', align: 'end',
       labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
-    this._k = 0; this._eta = null;
+    this._k = 0; this._bk = 0; this._eta = null;
     this.chart = new Chart(document.getElementById(canvasId), {
       type: 'line', data: { datasets: [] }, options: opts,
     });
@@ -161,20 +163,24 @@ export class SharpnessChart extends BaseChart {
 
   update(history, eta) {
     if (history.length === 0) return;
-    const k = history[0].values.length;
-    if (k !== this._k || eta !== this._eta) {
-      this._k = k; this._eta = eta;
+    const k  = history[0].values.length;
+    const bk = history[0].bottomValues ? history[0].bottomValues.length : 0;
+    if (k !== this._k || bk !== this._bk || eta !== this._eta) {
+      this._k = k; this._bk = bk; this._eta = eta;
       const sets = [];
-      for (let j = 0; j < k; j++) sets.push(ds(`λ${j+1}`, svColor(j)));
+      for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
+      for (let j = 0; j < bk; j++) sets.push(ds(`λ_${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
       sets.push(ds('2/η', 'rgba(0,0,0,0.35)', { borderDash: [6,3], borderWidth: 1.5 }));
       this.chart.data.datasets = sets;
     }
     const raw = downsample(history);
-    for (let j = 0; j < k; j++)
+    for (let j = 0; j < k;  j++)
       this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt.values[j] }));
+    for (let j = 0; j < bk; j++)
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt.bottomValues[j] }));
     const lastX = history[history.length-1].x;
     const ref = eta > 0 ? 2/eta : 0;
-    this.chart.data.datasets[k].data = [{ x:0, y:ref }, { x:lastX, y:ref }];
+    this.chart.data.datasets[k + bk].data = [{ x:0, y:ref }, { x:lastX, y:ref }];
     this._setXMax(lastX);
     this.chart.update('none');
   }

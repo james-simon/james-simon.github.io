@@ -26,6 +26,7 @@ const STEPS_PER_SEC_INTERVAL = 250;
 const HVP_EPS                = 1e-5;
 const LANCZOS_ITER           = 40;
 const TOP_K                  = 5;
+const BOT_K                  = 3;
 
 // ---- Activations -----------------------------------------------------------
 export const ACTIVATIONS = {
@@ -362,7 +363,13 @@ function lanczos(hvpFn, p, k) {
     vectors.set(rv, j*p);
   }
 
-  return { values, vectors };
+  // Bottom-k eigenvalues (smallest); pairs is sorted descending so take from end
+  const botK = Math.min(BOT_K, pairs.length);
+  const bottomValues = new Float64Array(botK);
+  for (let j = 0; j < botK; j++)
+    bottomValues[j] = pairs[pairs.length - botK + j].val;
+
+  return { values, vectors, bottomValues };
 }
 
 // ============================================================================
@@ -460,7 +467,7 @@ export class Simulation {
     const p = flatSize(this.layers);
     const hvpFn = (v) => hvp(this.layers, activation, this.xs, this.ys, v);
     const result = lanczos(hvpFn, p, TOP_K);
-    this.sharpnessHistory.push({ x: this.iteration, values: result.values, vectors: result.vectors });
+    this.sharpnessHistory.push({ x: this.iteration, values: result.values, vectors: result.vectors, bottomValues: result.bottomValues });
   }
 
   // ---- Record weight norms per layer --------------------------------------
