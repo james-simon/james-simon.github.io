@@ -347,6 +347,11 @@ waitForMathJax(() => {
     plotManager._simParams = sim.params;
   }
 
+  const invertChk = document.getElementById('check_invertDynamics');
+  if (invertChk) {
+    invertChk.addEventListener('change', () => { sim.invertDynamics = invertChk.checked; });
+  }
+
   sim.onFrameUpdate = () => {
     plotManager.update(sim);
     const el = document.getElementById('stepsPerSec');

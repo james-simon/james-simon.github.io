@@ -391,9 +391,10 @@ export class Simulation {
     this.stepsPerSec      = 0;
     this._lastPerfLog     = null;
 
-    this.iteration   = 0;
-    this.params      = null;
-    this.layers      = null;  // array of layer objects
+    this.iteration      = 0;
+    this.invertDynamics = false;  // live flag — negates η each step
+    this.params         = null;
+    this.layers         = null;  // array of layer objects
     this.xs          = null;  // training inputs Float64Array(N)
     this.ys          = null;  // training targets Float64Array(N)
     this.initYs      = null;  // f(x_i; θ_0) when centering enabled, else null
@@ -440,7 +441,8 @@ export class Simulation {
 
   // ---- One full-batch GD step ----------------------------------------------
   step() {
-    const { activation, eta, parameterization } = this.params;
+    const { activation, parameterization } = this.params;
+    const eta = this.params.eta * (this.invertDynamics ? -1 : 1);
     const isMuP = parameterization === 'mup';
     const { grad, loss } = computeGradAndLoss(this.layers, activation, this.xs, this.ys, this.initYs);
 

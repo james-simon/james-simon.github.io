@@ -172,10 +172,14 @@ skip_mathjax: true
   <!-- Simulation controls -->
   <div class="section-label">Simulation</div>
   <div class="controls-row">
-    <div style="display: flex; gap: 0.5em;">
+    <div style="display: flex; gap: 0.5em; align-items: center; flex-wrap: wrap;">
       <button id="startPauseBtn" class="sim-button">start</button>
       <button id="resetBtn" class="sim-button">reset</button>
       <button id="applyDefaultsBtn" class="sim-button sim-button-preset">⚡ recommended settings</button>
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:0.88em;color:#666;margin-left:0.5em;">
+        <input type="checkbox" id="check_invertDynamics">
+        invert dynamics
+      </label>
     </div>
     <div class="steps-per-sec"><span id="stepsPerSec">0</span> steps/sec</div>
   </div>
