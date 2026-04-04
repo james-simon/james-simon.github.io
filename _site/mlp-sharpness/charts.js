@@ -97,7 +97,7 @@ function ds(label, color, extra = {}) {
 
 // ---- BaseChart -------------------------------------------------------------
 class BaseChart {
-  constructor() { this.logScaleX = false; this.logScaleY = false; this.chart = null; }
+  constructor() { this.logScaleX = false; this.logScaleY = false; this.chart = null; this._yMin = 0; }
 
   setLogScaleX(on) {
     this.logScaleX = on;
@@ -109,7 +109,7 @@ class BaseChart {
   setLogScaleY(on) {
     this.logScaleY = on;
     this.chart.options.scales.y.type = on ? 'logarithmic' : 'linear';
-    this.chart.options.scales.y.min  = on ? undefined : 0;
+    this.chart.options.scales.y.min  = on ? undefined : this._yMin;
     this.chart.options.scales.y.max  = undefined;
     this.chart.update('none');
   }
@@ -156,6 +156,7 @@ export class SharpnessChart extends BaseChart {
     opts.plugins.legend = { display: true, position: 'top', align: 'end',
       labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
     opts.scales.y.min = undefined;  // allow negative eigenvalues
+    this._yMin = undefined;
     this._k = 0; this._bk = 0; this._eta = null;
     this.chart = new Chart(document.getElementById(canvasId), {
       type: 'line', data: { datasets: [] }, options: opts,
