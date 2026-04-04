@@ -98,10 +98,12 @@ function buildLayerDims(depth, hiddenDim) {
 function initWeights(depth, hiddenDim, initScale, useBias) {
   const dims = buildLayerDims(depth, hiddenDim);
   return dims.map(({ nIn, nOut, isOutput }) => {
-    // muP init: hidden ~ N(0, σ²/nIn), output ~ N(0, σ²)
-    const std = isOutput ? initScale : initScale / Math.sqrt(nIn);
+    // muP init: hidden ~ N(0, σ²/nIn), output = 0
     const W = new Float64Array(nOut * nIn);
-    for (let i = 0; i < W.length; i++) W[i] = std * _rng.randn();
+    if (!isOutput) {
+      const std = initScale / Math.sqrt(nIn);
+      for (let i = 0; i < W.length; i++) W[i] = std * _rng.randn();
+    }
     const b = useBias ? new Float64Array(nOut) : null;  // biases init to 0
     return { W, b, nIn, nOut, isOutput };
   });
