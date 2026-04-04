@@ -363,11 +363,11 @@ function lanczos(hvpFn, p, k) {
     vectors.set(rv, j*p);
   }
 
-  // Bottom-k eigenvalues (smallest); pairs is sorted descending so take from end
+  // Bottom-k eigenvalues smallest-first; pairs is sorted descending so reverse from end
   const botK = Math.min(BOT_K, pairs.length);
   const bottomValues = new Float64Array(botK);
   for (let j = 0; j < botK; j++)
-    bottomValues[j] = pairs[pairs.length - botK + j].val;
+    bottomValues[j] = pairs[pairs.length - 1 - j].val;
 
   return { values, vectors, bottomValues };
 }
