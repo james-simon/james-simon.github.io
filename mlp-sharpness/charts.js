@@ -212,11 +212,24 @@ export class WeightNormChart extends BaseChart {
 
 const GRID_PTS = 200;
 
+// Per-frame decay factor for y-range smoothing (~1s time constant at 40fps).
+// Decays to ~37% in 1s: e^(-1/40) ≈ 0.9753
+const Y_DECAY = 0.9753;
+
 export class FunctionPlot {
   constructor(canvasId) {
-    this.canvas = document.getElementById(canvasId);
-    this.ctx    = this.canvas.getContext('2d');
+    this.canvas  = document.getElementById(canvasId);
+    this.ctx     = this.canvas.getContext('2d');
     this._gridXs = null;
+    this._yMid   = null;  // smoothed midpoint
+    this._yHalf  = null;  // smoothed half-range (jumps up instantly, decays slowly)
+  }
+
+  clear() {
+    const canvas = this.canvas;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this._yMid  = null;
+    this._yHalf = null;
   }
 
   update(sim) {
@@ -248,14 +261,26 @@ export class FunctionPlot {
     for (let i = 0; i < GRID_PTS; i++)
       fStar[i] = computeTarget(this._gridXs[i], targetType, targetDegree);
 
-    // Y range
-    let yMin = Infinity, yMax = -Infinity;
-    for (const y of fHat)   { yMin = Math.min(yMin,y); yMax = Math.max(yMax,y); }
-    for (const y of fStar)  { yMin = Math.min(yMin,y); yMax = Math.max(yMax,y); }
-    for (const y of sim.ys) { yMin = Math.min(yMin,y); yMax = Math.max(yMax,y); }
-    const ySpan = yMax - yMin;
-    const yPad  = Math.max(0.1, ySpan * 0.1);
-    yMin -= yPad; yMax += yPad;
+    // Raw y range across all curves + data
+    let rawMin = Infinity, rawMax = -Infinity;
+    for (const y of fHat)   { rawMin = Math.min(rawMin,y); rawMax = Math.max(rawMax,y); }
+    for (const y of fStar)  { rawMin = Math.min(rawMin,y); rawMax = Math.max(rawMax,y); }
+    for (const y of sim.ys) { rawMin = Math.min(rawMin,y); rawMax = Math.max(rawMax,y); }
+    const rawMid  = (rawMin + rawMax) / 2;
+    const rawHalf = Math.max((rawMax - rawMin) / 2, 0.5);
+
+    // Smoothed range: jump up instantly, decay slowly downward
+    if (this._yHalf === null) {
+      this._yMid  = rawMid;
+      this._yHalf = rawHalf;
+    } else {
+      this._yHalf = Math.max(rawHalf, Y_DECAY * this._yHalf);
+      this._yMid  = rawMid;  // midpoint tracks instantly (avoids drift)
+    }
+
+    const yPad = this._yHalf * 0.1;
+    let yMin = this._yMid - this._yHalf - yPad;
+    let yMax = this._yMid + this._yHalf + yPad;
     if (yMax - yMin < 1e-10) { yMin -= 1; yMax += 1; }
 
     const cx = x  => ml + (x + 1) / 2 * pw;
@@ -328,11 +353,6 @@ export class FunctionPlot {
     ctx.strokeStyle = 'rgba(0,0,0,0.15)';
     ctx.lineWidth = 1;
     ctx.strokeRect(ml, mt, pw, ph);
-  }
-
-  clear() {
-    const canvas = this.canvas;
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   destroy() {}
