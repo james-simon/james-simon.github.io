@@ -9,6 +9,7 @@ const DEFAULTS = {
   hiddenDim:       20,         // hidden layer width
   activation:      'tanh',     // relu | tanh | gelu | linear
   parameterization:'sp',       // sp | mup
+  centered:        false,      // subtract f(0) from network output
   useBias:         false,      // add bias terms to each layer
   targetType:      'chebyshev',// chebyshev | sinusoid | monomial
   targetDegree:    6,          // integer slider

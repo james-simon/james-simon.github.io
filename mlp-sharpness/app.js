@@ -327,6 +327,7 @@ waitForMathJax(() => {
       hiddenDim:       appState.hiddenDim,
       activation:      appState.activation,
       parameterization:appState.parameterization,
+      centered:        appState.centered,
       useBias:         appState.useBias,
       targetType:      appState.targetType,
       targetDegree:    appState.targetDegree,

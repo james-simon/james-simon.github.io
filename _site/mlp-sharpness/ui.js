@@ -143,6 +143,17 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
     });
   }
 
+  // Centering checkbox
+  const centeredChk = document.getElementById('check_centered');
+  if (centeredChk) {
+    centeredChk.checked = appState.centered;
+    centeredChk.addEventListener('change', () => {
+      appState.centered = centeredChk.checked;
+      appState.save();
+      onParamChange();
+    });
+  }
+
   // Sim controls
   document.getElementById('startPauseBtn').addEventListener('click', () => onSimControl.startPause());
   document.getElementById('resetBtn').addEventListener('click',      () => onSimControl.reset());
@@ -180,4 +191,6 @@ export function restoreUI(appState) {
   if (tgtSel) tgtSel.value = appState.targetType;
   const biasChk = document.getElementById('check_useBias');
   if (biasChk) biasChk.checked = appState.useBias;
+  const centeredChk = document.getElementById('check_centered');
+  if (centeredChk) centeredChk.checked = appState.centered;
 }
