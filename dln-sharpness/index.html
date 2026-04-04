@@ -1,0 +1,140 @@
+---
+layout: default
+permalink: /dln-sharpness/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: { scale: 1.0 },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<div class="dln-container">
+
+  <h1 class="page-title">DLN Sharpness</h1>
+
+  <p>
+    Train a deep linear network on a matrix factorization task via full-batch gradient descent.
+    All weight matrices are $n \times n$; the goal is to recover a random target $M^*$.
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 1em 0 0.6em;">
+
+  <!-- Setup equations -->
+  <div style="margin-bottom: 0.8em;">
+    <div class="section-label" style="margin-bottom: 4px;">Setup</div>
+    <div style="display: flex; gap: 2.5em; flex-wrap: wrap; align-items: flex-start;">
+      <div>
+        <div style="font-size: 0.82em; color: #999; margin-bottom: 2px;">network ($M = W_1 \cdots W_L$)</div>
+        <div id="formulaDisplay">$$\mathcal{L} = \left\| M^* - W_1 W_2 \right\|_F^2$$</div>
+      </div>
+      <div>
+        <div style="font-size: 0.82em; color: #999; margin-bottom: 2px;">target</div>
+        <div>$$M^*_{ij} \overset{\text{iid}}{\sim} \mathcal{N}(0,\,1)$$</div>
+      </div>
+      <div>
+        <div style="font-size: 0.82em; color: #999; margin-bottom: 2px;">initialization</div>
+        <div>$$(W_k)_{ij}(0) \overset{\text{iid}}{\sim} \mathcal{N}(0,\, \sigma^2)$$</div>
+      </div>
+      <div>
+        <div style="font-size: 0.82em; color: #999; margin-bottom: 2px;">update</div>
+        <div>$$W_k \leftarrow W_k - \eta \,\nabla_{W_k}\mathcal{L}$$</div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 0.6em;">
+
+  <!-- Hyperparameters -->
+  <div style="margin-bottom: 1.2em;">
+    <div class="section-label" style="margin-bottom: 10px;">Hyperparameters</div>
+
+    <div class="param-col">
+
+      <div class="param-row">
+        <span class="param-desc">depth</span>
+        <span class="param-label">$d$</span>
+        <div class="depth-btn-group">
+          <button class="depth-btn" data-depth="2">2</button>
+          <button class="depth-btn" data-depth="3">3</button>
+          <button class="depth-btn" data-depth="4">4</button>
+        </div>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">width</span>
+        <span class="param-label">$n$</span>
+        <input type="range" id="slider_width" class="param-slider" min="0" max="100" value="50">
+        <span class="param-value" id="value_width">4</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">init scale</span>
+        <span class="param-label">$\sigma$</span>
+        <input type="range" id="slider_initScale" class="param-slider" min="0" max="100" value="50">
+        <span class="param-value" id="value_initScale">0.1</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">learning rate</span>
+        <span class="param-label">$\eta$</span>
+        <input type="range" id="slider_eta" class="param-slider" min="0" max="100" value="50">
+        <span class="param-value" id="value_eta">0.001</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">max steps/sec</span>
+        <span class="param-label"></span>
+        <input type="range" id="slider_maxStepsPerSec" class="param-slider" min="0" max="100" value="100">
+        <span class="param-value" id="value_maxStepsPerSec">no limit</span>
+      </div>
+
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.2em 0 6px;">
+
+  <!-- Simulation controls -->
+  <div class="section-label">Simulation</div>
+  <div class="controls-row">
+    <div style="display: flex; gap: 0.5em;">
+      <button id="startPauseBtn" class="sim-button">start</button>
+      <button id="resetBtn" class="sim-button">reset</button>
+    </div>
+    <div class="steps-per-sec"><span id="stepsPerSec">0</span> steps/sec</div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 6px;">
+
+  <!-- Plots -->
+  <div class="section-label">Plots</div>
+
+  <div class="plot-checkbox-grid" id="plotCheckboxGrid">
+    <label><input type="checkbox" id="plot-cb-loss"> loss</label>
+    <label><input type="checkbox" id="plot-cb-productSVs"> singular values of $M = W_1 \cdots W_L$</label>
+    <label><input type="checkbox" id="plot-cb-weightSVs"> singular values of each $W_k$</label>
+    <label><input type="checkbox" id="plot-cb-weightNorms"> Frobenius norms $\|W_k\|_F$</label>
+    <label><input type="checkbox" id="plot-cb-sharpness"> sharpness (top Hessian eigenvalues)</label>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.3em 0 0.7em;">
+
+  <div class="plots-grid" id="plotsGrid"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>
