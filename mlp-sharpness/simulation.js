@@ -15,7 +15,11 @@
 //   Updates: ΔW^(l) = -η * n_{in} * ∇_{W^(l)} L   for hidden layers
 //            ΔW^(out) = -η * ∇_{W^(out)} L          for output layer
 //
-// Loss: L = (1/N) sum_i (f(x_i) - y_i)^2   [full-batch]
+// Centering: when enabled, f̃(x;θ) = f(x;θ) - f(x;θ_0) where θ_0 is
+//   the initial weights. Since θ_0 is fixed, ∂f̃/∂θ = ∂f/∂θ — the
+//   gradient computation is unchanged except the residuals use f̃.
+//
+// Loss: L = (1/N) sum_i (f̃(x_i) - y_i)^2   [full-batch]
 //
 // Hessian: top-k eigenpairs via Lanczos + centered finite-diff HVPs
 // ============================================================================
@@ -153,24 +157,23 @@ function forward(layers, activation, x) {
 // Returns flat Float64Array of all gradients: [vec(dW_1), vec(db_1), ..., vec(dW_L), vec(db_L)]
 // Also returns loss.
 // ============================================================================
-function computeGradAndLoss(layers, activation, xs, ys, centered = false) {
+// initYs: optional Float64Array of f(x_i; θ_0) — when provided, residuals
+// use (f(x_i;θ) - initYs[i] - ys[i]) instead of (f(x_i;θ) - ys[i]).
+// Since initYs doesn't depend on current θ, no gradient correction needed.
+function computeGradAndLoss(layers, activation, xs, ys, initYs = null) {
   const dsigma = ACTIVATIONS[activation].df;
   const N = xs.length;
-
-  const f0 = centered ? forward(layers, activation, 0).output : 0;
 
   // Accumulate gradients
   const dWs = layers.map(l => new Float64Array(l.nOut * l.nIn));
   const dBs = layers.map(l => l.b ? new Float64Array(l.nOut) : null);
 
   let totalLoss = 0;
-  let sumErr = 0;
 
   for (let s = 0; s < N; s++) {
     const { output, preActs, acts } = forward(layers, activation, xs[s]);
-    const err = (output - f0) - ys[s];
+    const err = output - (initYs ? initYs[s] : 0) - ys[s];
     totalLoss += err * err;
-    sumErr += err;
 
     // Backprop: delta[l] = dL/d(pre_l)
     const deltas = new Array(layers.length);
@@ -203,31 +206,6 @@ function computeGradAndLoss(layers, activation, xs, ys, centered = false) {
   }
 
   totalLoss /= N;
-
-  // Centering correction: subtract (2/N * sumErr) * ∂f(0)/∂θ
-  if (centered) {
-    const { preActs: preActs0, acts: acts0 } = forward(layers, activation, 0);
-    const deltas0 = new Array(layers.length);
-    for (let l = layers.length - 1; l >= 0; l--) {
-      const { nIn, nOut, isOutput } = layers[l];
-      deltas0[l] = new Float64Array(nOut);
-      if (isOutput) {
-        deltas0[l][0] = (2 / N) * sumErr;
-      } else {
-        const { W: Wn, nIn: nIn1 } = layers[l+1];
-        for (let i = 0; i < nOut; i++) {
-          let s2 = 0;
-          for (let j = 0; j < layers[l+1].nOut; j++) s2 += Wn[j*nIn1 + i] * deltas0[l+1][j];
-          deltas0[l][i] = s2 * dsigma(preActs0[l][i]);
-        }
-      }
-      const hIn = acts0[l];
-      for (let i = 0; i < nOut; i++) {
-        for (let j = 0; j < nIn; j++) dWs[l][i*nIn + j] -= deltas0[l][i] * hIn[j];
-        if (dBs[l]) dBs[l][i] -= deltas0[l][i];
-      }
-    }
-  }
 
   // Pack into flat vector
   const p = flatSize(layers);
@@ -276,7 +254,7 @@ function unpackWeights(layers, v) {
 // ============================================================================
 // HVP via centered finite differences
 // ============================================================================
-function hvp(layers, activation, xs, ys, v, centered = false) {
+function hvp(layers, activation, xs, ys, v, initYs = null) {
   const eps = HVP_EPS;
   const theta = packWeights(layers);
   const p = theta.length;
@@ -288,8 +266,8 @@ function hvp(layers, activation, xs, ys, v, centered = false) {
   const lP = unpackWeights(layers, thetaP);
   const lM = unpackWeights(layers, thetaM);
 
-  const gp = computeGradAndLoss(lP, activation, xs, ys, centered).grad;
-  const gm = computeGradAndLoss(lM, activation, xs, ys, centered).grad;
+  const gp = computeGradAndLoss(lP, activation, xs, ys, initYs).grad;
+  const gm = computeGradAndLoss(lM, activation, xs, ys, initYs).grad;
 
   const result = new Float64Array(p);
   for (let i = 0; i < p; i++) result[i] = (gp[i] - gm[i]) / (2*eps);
@@ -418,6 +396,8 @@ export class Simulation {
     this.layers      = null;  // array of layer objects
     this.xs          = null;  // training inputs Float64Array(N)
     this.ys          = null;  // training targets Float64Array(N)
+    this.initYs      = null;  // f(x_i; θ_0) when centering enabled, else null
+    this.initLayers  = null;  // frozen copy of initial weights for evaluate()
 
     this.lossHistory      = [];
     this.sharpnessHistory = [];
@@ -439,6 +419,17 @@ export class Simulation {
 
     this.layers = initWeights(depth, hiddenDim, initScale, useBias, params.parameterization);
 
+    // Centering: store frozen initial weights and f(x_i; θ_0)
+    if (params.centered) {
+      this.initLayers = unpackWeights(this.layers, packWeights(this.layers));
+      this.initYs = new Float64Array(nPoints);
+      for (let i = 0; i < nPoints; i++)
+        this.initYs[i] = forward(this.layers, activation, this.xs[i]).output;
+    } else {
+      this.initLayers = null;
+      this.initYs = null;
+    }
+
     this.iteration        = 0;
     this.lossHistory      = [];
     this.sharpnessHistory = [];
@@ -449,9 +440,9 @@ export class Simulation {
 
   // ---- One full-batch GD step ----------------------------------------------
   step() {
-    const { activation, eta, parameterization, centered } = this.params;
+    const { activation, eta, parameterization } = this.params;
     const isMuP = parameterization === 'mup';
-    const { grad, loss } = computeGradAndLoss(this.layers, activation, this.xs, this.ys, centered);
+    const { grad, loss } = computeGradAndLoss(this.layers, activation, this.xs, this.ys, this.initYs);
 
     let offset = 0;
     for (let l = 0; l < this.layers.length; l++) {
@@ -479,11 +470,12 @@ export class Simulation {
 
   // ---- Evaluate network on a grid of x values (for function plot) ----------
   evaluate(xs) {
-    const { activation, centered } = this.params;
-    const f0 = centered ? forward(this.layers, activation, 0).output : 0;
+    const { activation } = this.params;
     const ys = new Float64Array(xs.length);
     for (let i = 0; i < xs.length; i++) {
-      ys[i] = forward(this.layers, activation, xs[i]).output - f0;
+      const y = forward(this.layers, activation, xs[i]).output;
+      const y0 = this.initLayers ? forward(this.initLayers, activation, xs[i]).output : 0;
+      ys[i] = y - y0;
     }
     return ys;
   }
@@ -493,8 +485,7 @@ export class Simulation {
     if (!this.params || !this.layers) return;
     const { activation } = this.params;
     const p = flatSize(this.layers);
-    const { centered } = this.params;
-    const hvpFn = (v) => hvp(this.layers, activation, this.xs, this.ys, v, centered);
+    const hvpFn = (v) => hvp(this.layers, activation, this.xs, this.ys, v, this.initYs);
     const result = lanczos(hvpFn, p, TOP_K);
     this.sharpnessHistory.push({ x: this.iteration, values: result.values, vectors: result.vectors, bottomValues: result.bottomValues });
   }
