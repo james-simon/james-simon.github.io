@@ -104,7 +104,7 @@ function initWeights(depth, hiddenDim, initScale, useBias) {
       const std = initScale / Math.sqrt(nIn);
       for (let i = 0; i < W.length; i++) W[i] = std * _rng.randn();
     }
-    const b = useBias ? new Float64Array(nOut) : null;  // biases init to 0
+    const b = useBias ? Float64Array.from({length: nOut}, () => _rng.randn()) : null;
     return { W, b, nIn, nOut, isOutput };
   });
 }
