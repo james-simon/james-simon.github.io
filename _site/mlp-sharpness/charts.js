@@ -200,23 +200,24 @@ export class HessTermChart extends BaseChart {
     this._yMin = undefined;
     opts.plugins.legend = { display: true, position: 'top', align: 'end',
       labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
-    this._k = 0; this._bk = 0;
+    this._k = 0; this._bk = 0; this._eta = null;
     this.chart = new Chart(document.getElementById(canvasId), {
       type: 'line', data: { datasets: [] }, options: opts,
     });
   }
 
-  update(history) {
+  update(history, eta) {
     if (history.length === 0) return;
     const vk  = this._valuesKey;
     const bvk = this._bottomValuesKey;
     const k  = history[0][vk]  ? history[0][vk].length  : 0;
     const bk = history[0][bvk] ? history[0][bvk].length : 0;
-    if (k !== this._k || bk !== this._bk) {
-      this._k = k; this._bk = bk;
+    if (k !== this._k || bk !== this._bk || eta !== this._eta) {
+      this._k = k; this._bk = bk; this._eta = eta;
       const sets = [];
       for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
       for (let j = 0; j < bk; j++) sets.push(ds(`λ₋${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
+      sets.push(ds('2/η', 'rgba(0,0,0,0.35)', { borderDash: [6,3], borderWidth: 1.5 }));
       this.chart.data.datasets = sets;
     }
     const raw = downsample(history);
@@ -224,7 +225,10 @@ export class HessTermChart extends BaseChart {
       this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt[vk][j] }));
     for (let j = 0; j < bk; j++)
       this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt[bvk][j] }));
-    this._setXMax(history[history.length-1].x);
+    const lastX = history[history.length-1].x;
+    const ref = eta > 0 ? 2/eta : 0;
+    this.chart.data.datasets[k + bk].data = [{ x:0, y:ref }, { x:lastX, y:ref }];
+    this._setXMax(lastX);
     this.chart.update('none');
   }
 }

@@ -151,10 +151,10 @@ class PlotManager {
       this._charts.gradProj.update(sim.sharpnessHistory);
 
     if (visible.has('gaussNewton') && this._charts.gaussNewton && sim.hessTermsHistory.length > 0)
-      this._charts.gaussNewton.update(sim.hessTermsHistory);
+      this._charts.gaussNewton.update(sim.hessTermsHistory, sim.params.eta);
 
     if (visible.has('residual') && this._charts.residual && sim.hessTermsHistory.length > 0)
-      this._charts.residual.update(sim.hessTermsHistory);
+      this._charts.residual.update(sim.hessTermsHistory, sim.params.eta);
 
     if (visible.has('weightNorms') && this._charts.weightNorms && sim.weightNormHistory.length > 0)
       this._charts.weightNorms.update(sim.weightNormHistory, depth);
