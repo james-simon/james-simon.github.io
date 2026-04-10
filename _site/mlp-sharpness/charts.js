@@ -171,7 +171,7 @@ export class SharpnessChart extends BaseChart {
       this._k = k; this._bk = bk; this._eta = eta;
       const sets = [];
       for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
-      for (let j = 0; j < bk; j++) sets.push(ds(`λ_${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
+      for (let j = 0; j < bk; j++) sets.push(ds(`λ₋${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
       sets.push(ds('2/η', 'rgba(0,0,0,0.35)', { borderDash: [6,3], borderWidth: 1.5 }));
       this.chart.data.datasets = sets;
     }
@@ -210,7 +210,7 @@ export class GradProjChart extends BaseChart {
       this._k = k; this._bk = bk;
       const sets = [];
       for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
-      for (let j = 0; j < bk; j++) sets.push(ds(`λ_${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
+      for (let j = 0; j < bk; j++) sets.push(ds(`λ₋${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
       this.chart.data.datasets = sets;
     }
     const raw = downsample(history);
