@@ -163,7 +163,7 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
   if (presetBtn) {
     presetBtn.addEventListener('click', () => {
       const rec = {
-        depth: 2, hiddenDim: 20, activation: 'tanh', parameterization: 'sp', useBias: true,
+        depth: 3, hiddenDim: 20, activation: 'tanh', parameterization: 'sp', useBias: true,
         targetType: 'chebyshev', targetDegree: 6, nPoints: 20,
         initScale: 1.0, eta: 0.2,
       };
