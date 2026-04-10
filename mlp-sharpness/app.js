@@ -4,7 +4,7 @@
 
 import { AppState } from './state.js';
 import { Simulation } from './simulation.js';
-import { LossChart, SharpnessChart, WeightNormChart, GradProjChart, FunctionPlot } from './charts.js';
+import { LossChart, SharpnessChart, HessTermChart, WeightNormChart, GradProjChart, FunctionPlot } from './charts.js';
 import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 
 // ============================================================================
@@ -13,10 +13,12 @@ import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 
 const PLOT_LABELS = {
   loss:       'loss',
-  sharpness:  'sharpness (top Hessian eigenvalues)',
-  gradProj:   'gradient projections onto eigenvectors',
-  weightNorms:'Frobenius norms $\\|W_k\\|_F$',
   function:   'function fit',
+  weightNorms:'Frobenius norms $\\|W_k\\|_F$',
+  sharpness:  'sharpness (top Hessian eigenvalues)',
+  gaussNewton:'Gauss-Newton term eigenvalues',
+  residual:   'residual term eigenvalues',
+  gradProj:   'gradient projections onto eigenvectors',
 };
 
 // ============================================================================
@@ -148,6 +150,12 @@ class PlotManager {
     if (visible.has('gradProj') && this._charts.gradProj && sim.sharpnessHistory.length > 0)
       this._charts.gradProj.update(sim.sharpnessHistory);
 
+    if (visible.has('gaussNewton') && this._charts.gaussNewton && sim.hessTermsHistory.length > 0)
+      this._charts.gaussNewton.update(sim.hessTermsHistory);
+
+    if (visible.has('residual') && this._charts.residual && sim.hessTermsHistory.length > 0)
+      this._charts.residual.update(sim.hessTermsHistory);
+
     if (visible.has('weightNorms') && this._charts.weightNorms && sim.weightNormHistory.length > 0)
       this._charts.weightNorms.update(sim.weightNormHistory, depth);
 
@@ -195,6 +203,32 @@ class PlotManager {
       if (opts.logX) chart.setLogScaleX(true);
       if (opts.logY) chart.setLogScaleY(true);
       this._charts.sharpness = chart;
+
+    } else if (key === 'gaussNewton') {
+      canvas.id = 'gaussNewtonPlot';
+      title.textContent = 'Gauss-Newton term';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new HessTermChart('gaussNewtonPlot', 'eigenvalue', 'gnValues', 'gnBottomValues');
+      const opts = this._opts(key);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._charts.gaussNewton = chart;
+
+    } else if (key === 'residual') {
+      canvas.id = 'residualPlot';
+      title.textContent = 'residual term';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new HessTermChart('residualPlot', 'eigenvalue', 'resValues', 'resBottomValues');
+      const opts = this._opts(key);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._charts.residual = chart;
 
     } else if (key === 'gradProj') {
       canvas.id = 'gradProjPlot';
@@ -256,7 +290,7 @@ class PlotManager {
 
     if (key === 'function') return fields;
 
-    const chartKey = { loss: 'loss', sharpness: 'sharpness', gradProj: 'gradProj', weightNorms: 'weightNorms' }[key];
+    const chartKey = { loss: 'loss', sharpness: 'sharpness', gaussNewton: 'gaussNewton', residual: 'residual', gradProj: 'gradProj', weightNorms: 'weightNorms' }[key];
     if (!chartKey) return fields;
 
     const opts = this._opts(key);

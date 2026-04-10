@@ -188,6 +188,47 @@ export class SharpnessChart extends BaseChart {
   }
 }
 
+// ---- HessTermChart — top/bottom eigenvalues of one Hessian term ------------
+// valuesKey / bottomValuesKey: keys into each history point
+export class HessTermChart extends BaseChart {
+  constructor(canvasId, yTitle, valuesKey, bottomValuesKey) {
+    super();
+    this._valuesKey       = valuesKey;
+    this._bottomValuesKey = bottomValuesKey;
+    const opts = baseChartOptions(yTitle);
+    opts.scales.y.min = undefined;
+    this._yMin = undefined;
+    opts.plugins.legend = { display: true, position: 'top', align: 'end',
+      labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
+    this._k = 0; this._bk = 0;
+    this.chart = new Chart(document.getElementById(canvasId), {
+      type: 'line', data: { datasets: [] }, options: opts,
+    });
+  }
+
+  update(history) {
+    if (history.length === 0) return;
+    const vk  = this._valuesKey;
+    const bvk = this._bottomValuesKey;
+    const k  = history[0][vk]  ? history[0][vk].length  : 0;
+    const bk = history[0][bvk] ? history[0][bvk].length : 0;
+    if (k !== this._k || bk !== this._bk) {
+      this._k = k; this._bk = bk;
+      const sets = [];
+      for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
+      for (let j = 0; j < bk; j++) sets.push(ds(`λ₋${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
+      this.chart.data.datasets = sets;
+    }
+    const raw = downsample(history);
+    for (let j = 0; j < k;  j++)
+      this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt[vk][j] }));
+    for (let j = 0; j < bk; j++)
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt[bvk][j] }));
+    this._setXMax(history[history.length-1].x);
+    this.chart.update('none');
+  }
+}
+
 // ---- GradProjChart ---------------------------------------------------------
 export class GradProjChart extends BaseChart {
   constructor(canvasId) {

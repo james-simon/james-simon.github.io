@@ -3939,11 +3939,19 @@
   <div class="section-label">Plots</div>
 
   <div class="plot-checkbox-grid" id="plotCheckboxGrid">
-    <label><input type="checkbox" id="plot-cb-loss"> loss</label>
-    <label><input type="checkbox" id="plot-cb-sharpness"> sharpness (top Hessian eigenvalues)</label>
-    <label><input type="checkbox" id="plot-cb-gradProj"> gradient projections onto eigenvectors</label>
-    <label><input type="checkbox" id="plot-cb-weightNorms"> Frobenius norms $\|W_k\|_F$</label>
-    <label><input type="checkbox" id="plot-cb-function"> function fit</label>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">training</div>
+      <label><input type="checkbox" id="plot-cb-loss"> loss</label>
+      <label><input type="checkbox" id="plot-cb-function"> function fit</label>
+      <label><input type="checkbox" id="plot-cb-weightNorms"> weight norms $\|W_k\|_F$</label>
+    </div>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">Hessian</div>
+      <label><input type="checkbox" id="plot-cb-sharpness"> sharpness</label>
+      <label><input type="checkbox" id="plot-cb-gaussNewton"> Gauss-Newton term</label>
+      <label><input type="checkbox" id="plot-cb-residual"> residual term</label>
+      <label><input type="checkbox" id="plot-cb-gradProj"> gradient projections</label>
+    </div>
   </div>
 
   <hr style="border: none; border-top: 1px solid #ddd; margin: 0.3em 0 0.7em;">

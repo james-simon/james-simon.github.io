@@ -119,9 +119,21 @@ input[type="range"] { accent-color: #555; }
 .plot-checkbox-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 20px;
+  gap: 8px 24px;
   margin-bottom: 0.7em;
   font-size: 0.9em;
+}
+.plot-cb-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.plot-cb-group-label {
+  font-size: 0.75em;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 1px;
 }
 .plot-checkbox-grid label {
   display: flex;

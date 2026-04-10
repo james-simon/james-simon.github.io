@@ -252,6 +252,64 @@ function unpackWeights(layers, v) {
 }
 
 // ============================================================================
+// JACOBIAN (per-sample gradient of output w.r.t. params, backprop with delta=1)
+// Returns flat Float64Array of length p.
+// ============================================================================
+function jacobianVec(layers, activation, x) {
+  const dsigma = ACTIVATIONS[activation].df;
+  const { preActs, acts } = forward(layers, activation, x);
+  const p = flatSize(layers);
+  const jac = new Float64Array(p);
+
+  // Backprop with output delta = 1
+  const deltas = new Array(layers.length);
+  for (let l = layers.length - 1; l >= 0; l--) {
+    const { nIn, nOut, isOutput } = layers[l];
+    deltas[l] = new Float64Array(nOut);
+    if (isOutput) {
+      deltas[l][0] = 1;
+    } else {
+      const { W: Wn, nIn: nIn1 } = layers[l+1];
+      for (let i = 0; i < nOut; i++) {
+        let s = 0;
+        for (let j = 0; j < layers[l+1].nOut; j++) s += Wn[j*nIn1+i] * deltas[l+1][j];
+        deltas[l][i] = s * dsigma(preActs[l][i]);
+      }
+    }
+  }
+
+  let offset = 0;
+  for (let l = 0; l < layers.length; l++) {
+    const { nIn, nOut } = layers[l];
+    const hIn = acts[l];
+    for (let i = 0; i < nOut; i++)
+      for (let j = 0; j < nIn; j++)
+        jac[offset + i*nIn + j] = deltas[l][i] * hIn[j];
+    offset += nOut * nIn;
+    if (layers[l].b) {
+      for (let i = 0; i < nOut; i++) jac[offset + i] = deltas[l][i];
+      offset += nOut;
+    }
+  }
+  return jac;
+}
+
+// ============================================================================
+// Gauss-Newton HVP: GN·v = (2/N) Σ_i J_i (J_i·v)
+// ============================================================================
+function gnHvp(layers, activation, xs, ys, v, initYs = null) {
+  const N = xs.length;
+  const p = v.length;
+  const result = new Float64Array(p);
+  for (let s = 0; s < N; s++) {
+    const ji = jacobianVec(layers, activation, xs[s]);
+    const c = vecDot(ji, v);
+    for (let i = 0; i < p; i++) result[i] += (2 / N) * c * ji[i];
+  }
+  return result;
+}
+
+// ============================================================================
 // HVP via centered finite differences
 // ============================================================================
 function hvp(layers, activation, xs, ys, v, initYs = null) {
@@ -415,6 +473,7 @@ export class Simulation {
 
     this.lossHistory      = [];
     this.sharpnessHistory = [];
+    this.hessTermsHistory = [];
     this.weightNormHistory = [];
   }
 
@@ -447,6 +506,7 @@ export class Simulation {
     this.iteration        = 0;
     this.lossHistory      = [];
     this.sharpnessHistory = [];
+    this.hessTermsHistory = [];
     this.weightNormHistory = [];
 
     this._recordStats();
@@ -495,11 +555,13 @@ export class Simulation {
     return ys;
   }
 
-  // ---- Compute sharpness + gradient projections ----------------------------
+  // ---- Compute sharpness + gradient projections + Hessian term decomposition
   computeSharpness() {
     if (!this.params || !this.layers) return;
     const { activation } = this.params;
     const p = flatSize(this.layers);
+
+    // Full Hessian eigenpairs
     const hvpFn = (v) => hvp(this.layers, activation, this.xs, this.ys, v, this.initYs);
     const result = lanczos(hvpFn, p, TOP_K);
 
@@ -528,6 +590,23 @@ export class Simulation {
       values: result.values, vectors: result.vectors,
       bottomValues: result.bottomValues, bottomVectors: result.bottomVectors,
       gradProjs, bottomGradProjs,
+    });
+
+    // Hessian term decomposition: GN term and residual term
+    const gnFn  = (v) => gnHvp(this.layers, activation, this.xs, this.ys, v, this.initYs);
+    const resFn = (v) => {
+      const full = hvpFn(v);
+      const gn   = gnFn(v);
+      const res  = new Float64Array(p);
+      for (let i = 0; i < p; i++) res[i] = full[i] - gn[i];
+      return res;
+    };
+    const gnResult  = lanczos(gnFn,  p, TOP_K);
+    const resResult = lanczos(resFn, p, TOP_K);
+    this.hessTermsHistory.push({
+      x: this.iteration,
+      gnValues: gnResult.values, gnBottomValues: gnResult.bottomValues,
+      resValues: resResult.values, resBottomValues: resResult.bottomValues,
     });
   }
 
