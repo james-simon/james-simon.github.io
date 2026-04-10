@@ -368,13 +368,25 @@ function lanczos(hvpFn, p, k) {
     vectors.set(rv, j*p);
   }
 
-  // Bottom-k eigenvalues smallest-first; pairs is sorted descending so reverse from end
+  // Bottom-k eigenpairs smallest-first; pairs is sorted descending so reverse from end
   const botK = Math.min(BOT_K, pairs.length);
-  const bottomValues = new Float64Array(botK);
-  for (let j = 0; j < botK; j++)
+  const bottomValues  = new Float64Array(botK);
+  const bottomVectors = new Float64Array(botK * p);
+  for (let j = 0; j < botK; j++) {
     bottomValues[j] = pairs[pairs.length - 1 - j].val;
+    const col = pairs[pairs.length - 1 - j].col;
+    const rv = new Float64Array(p);
+    for (let l = 0; l < mActual; l++) {
+      const coeff = V[l*mActual+col];
+      if (Math.abs(coeff) < 1e-15) continue;
+      for (let i = 0; i < p; i++) rv[i] += coeff * Q[l][i];
+    }
+    const rn = vecNorm(rv);
+    if (rn > 1e-12) for (let i = 0; i < p; i++) rv[i] /= rn;
+    bottomVectors.set(rv, j*p);
+  }
 
-  return { values, vectors, bottomValues };
+  return { values, vectors, bottomValues, bottomVectors };
 }
 
 // ============================================================================
@@ -483,14 +495,40 @@ export class Simulation {
     return ys;
   }
 
-  // ---- Compute sharpness ---------------------------------------------------
+  // ---- Compute sharpness + gradient projections ----------------------------
   computeSharpness() {
     if (!this.params || !this.layers) return;
     const { activation } = this.params;
     const p = flatSize(this.layers);
     const hvpFn = (v) => hvp(this.layers, activation, this.xs, this.ys, v, this.initYs);
     const result = lanczos(hvpFn, p, TOP_K);
-    this.sharpnessHistory.push({ x: this.iteration, values: result.values, vectors: result.vectors, bottomValues: result.bottomValues });
+
+    // Gradient projections: <v_i, g>^2 / ||g||^2
+    const { grad } = computeGradAndLoss(this.layers, activation, this.xs, this.ys, this.initYs);
+    const gradNormSq = vecDot(grad, grad);
+    const k  = result.values.length;
+    const bk = result.bottomValues.length;
+    const gradProjs       = new Float64Array(k);
+    const bottomGradProjs = new Float64Array(bk);
+    if (gradNormSq > 1e-30) {
+      for (let j = 0; j < k; j++) {
+        const v = result.vectors.subarray(j*p, (j+1)*p);
+        const d = vecDot(v, grad);
+        gradProjs[j] = d*d / gradNormSq;
+      }
+      for (let j = 0; j < bk; j++) {
+        const v = result.bottomVectors.subarray(j*p, (j+1)*p);
+        const d = vecDot(v, grad);
+        bottomGradProjs[j] = d*d / gradNormSq;
+      }
+    }
+
+    this.sharpnessHistory.push({
+      x: this.iteration,
+      values: result.values, vectors: result.vectors,
+      bottomValues: result.bottomValues, bottomVectors: result.bottomVectors,
+      gradProjs, bottomGradProjs,
+    });
   }
 
   // ---- Record weight norms per layer --------------------------------------

@@ -4,7 +4,7 @@
 
 import { AppState } from './state.js';
 import { Simulation } from './simulation.js';
-import { LossChart, SharpnessChart, WeightNormChart, FunctionPlot } from './charts.js';
+import { LossChart, SharpnessChart, WeightNormChart, GradProjChart, FunctionPlot } from './charts.js';
 import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 
 // ============================================================================
@@ -14,6 +14,7 @@ import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 const PLOT_LABELS = {
   loss:       'loss',
   sharpness:  'sharpness (top Hessian eigenvalues)',
+  gradProj:   'gradient projections onto eigenvectors',
   weightNorms:'Frobenius norms $\\|W_k\\|_F$',
   function:   'function fit',
 };
@@ -144,6 +145,9 @@ class PlotManager {
     if (visible.has('sharpness') && this._charts.sharpness && sim.sharpnessHistory.length > 0)
       this._charts.sharpness.update(sim.sharpnessHistory, sim.params.eta);
 
+    if (visible.has('gradProj') && this._charts.gradProj && sim.sharpnessHistory.length > 0)
+      this._charts.gradProj.update(sim.sharpnessHistory);
+
     if (visible.has('weightNorms') && this._charts.weightNorms && sim.weightNormHistory.length > 0)
       this._charts.weightNorms.update(sim.weightNormHistory, depth);
 
@@ -192,6 +196,19 @@ class PlotManager {
       if (opts.logY) chart.setLogScaleY(true);
       this._charts.sharpness = chart;
 
+    } else if (key === 'gradProj') {
+      canvas.id = 'gradProjPlot';
+      title.textContent = 'gradient projections';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new GradProjChart('gradProjPlot');
+      const opts = this._opts(key);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._charts.gradProj = chart;
+
     } else if (key === 'weightNorms') {
       canvas.id = 'weightNormPlot';
       title.textContent = 'weight norms';
@@ -239,7 +256,7 @@ class PlotManager {
 
     if (key === 'function') return fields;
 
-    const chartKey = { loss: 'loss', sharpness: 'sharpness', weightNorms: 'weightNorms' }[key];
+    const chartKey = { loss: 'loss', sharpness: 'sharpness', gradProj: 'gradProj', weightNorms: 'weightNorms' }[key];
     if (!chartKey) return fields;
 
     const opts = this._opts(key);

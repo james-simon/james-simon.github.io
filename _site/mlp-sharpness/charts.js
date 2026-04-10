@@ -188,6 +188,41 @@ export class SharpnessChart extends BaseChart {
   }
 }
 
+// ---- GradProjChart ---------------------------------------------------------
+export class GradProjChart extends BaseChart {
+  constructor(canvasId) {
+    super();
+    const opts = baseChartOptions('⟨vᵢ,∇L⟩²/‖∇L‖²');
+    opts.scales.y.max = 1;
+    opts.plugins.legend = { display: true, position: 'top', align: 'end',
+      labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
+    this._k = 0; this._bk = 0;
+    this.chart = new Chart(document.getElementById(canvasId), {
+      type: 'line', data: { datasets: [] }, options: opts,
+    });
+  }
+
+  update(history) {
+    if (history.length === 0) return;
+    const k  = history[0].gradProjs       ? history[0].gradProjs.length       : 0;
+    const bk = history[0].bottomGradProjs ? history[0].bottomGradProjs.length : 0;
+    if (k !== this._k || bk !== this._bk) {
+      this._k = k; this._bk = bk;
+      const sets = [];
+      for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
+      for (let j = 0; j < bk; j++) sets.push(ds(`λ_${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
+      this.chart.data.datasets = sets;
+    }
+    const raw = downsample(history);
+    for (let j = 0; j < k;  j++)
+      this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt.gradProjs[j] }));
+    for (let j = 0; j < bk; j++)
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt.bottomGradProjs[j] }));
+    this._setXMax(history[history.length-1].x);
+    this.chart.update('none');
+  }
+}
+
 // ---- WeightNormChart -------------------------------------------------------
 export class WeightNormChart extends BaseChart {
   constructor(canvasId) {
