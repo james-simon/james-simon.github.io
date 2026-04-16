@@ -1,0 +1,202 @@
+---
+layout: default
+permalink: /hopfield-nets/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    chtml: { scale: 1.0 },
+    startup: {
+      ready: () => {
+        MathJax.startup.defaultReady();
+        window.mathJaxReady = true;
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<div class="hn-container">
+
+  <h1 class="page-title">Hopfield Nets</h1>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 1em 0 0.6em;">
+
+  <!-- Setup equations -->
+  <div style="margin-bottom: 0.8em;">
+    <div class="section-label" style="margin-bottom: 4px;">Setup</div>
+    <div class="eq-row">
+      <div class="eq-cell">
+        <div class="eq-sublabel">patterns</div>
+        <div>$$\boldsymbol{\xi}^\mu \in \{-1,+1\}^d, \quad \mu = 1,\ldots,N$$</div>
+        <div style="font-size:0.85em; color:#777; margin-top:4px;">i.i.d. Rademacher; load ratio $\alpha := N/d$</div>
+      </div>
+      <div class="eq-cell">
+        <div class="eq-sublabel">weight matrix (Hebbian)</div>
+        <div>$$W = \frac{1}{d} \sum_{\mu=1}^{N} \boldsymbol{\xi}^\mu (\boldsymbol{\xi}^\mu)^\top$$</div>
+      </div>
+      <div class="eq-cell">
+        <div class="eq-sublabel">update rule (sequential async)</div>
+        <div>$$s_i \leftarrow \mathrm{sign}(h_i), \quad h_i = \sum_\mu m^\mu \xi^\mu_i - \alpha s_i$$</div>
+        <div style="font-size:0.85em; color:#777; margin-top:4px;">one step = one full random-order sweep of all $d$ neurons; overlaps $m^\mu$ updated after each flip</div>
+      </div>
+      <div class="eq-cell">
+        <div class="eq-sublabel">masked query</div>
+        <div>$$\mathbf{s}(0)_i = \begin{cases} \xi^1_i & \text{w.p. } 1-p \\ 0 & \text{w.p. } p \end{cases}$$</div>
+        <div style="font-size:0.85em; color:#777; margin-top:4px;">fraction $p$ of entries zeroed out</div>
+      </div>
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 0.8em;">
+
+  <!-- ── Shared parameters ── -->
+  <div style="margin-bottom: 0.8em;">
+    <div class="section-label" style="margin-bottom: 10px;">Shared parameters</div>
+    <div class="param-col">
+
+      <div class="param-row">
+        <span class="param-desc">dimension</span>
+        <span class="param-label">$d$</span>
+        <input type="range" id="slider_d" class="param-slider" min="0" max="100" value="30">
+        <span class="param-value" id="value_d">100</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">perturbation</span>
+        <span class="param-label">$p$</span>
+        <input type="range" id="slider_p" class="param-slider" min="0" max="100" value="20">
+        <span class="param-value" id="value_p">0.20</span>
+        <span style="font-size:0.82em; color:#aaa; margin-left:4px;">fraction masked</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">max steps</span>
+        <span class="param-label">$T$</span>
+        <input type="range" id="slider_T" class="param-slider" min="0" max="100" value="30">
+        <span class="param-value" id="value_T">30</span>
+        <span style="font-size:0.82em; color:#aaa; margin-left:4px;">update steps</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">trials</span>
+        <span class="param-label">$K$</span>
+        <input type="range" id="slider_K" class="param-slider" min="0" max="100" value="50">
+        <span class="param-value" id="value_K">100</span>
+        <span style="font-size:0.82em; color:#aaa; margin-left:4px;">per point</span>
+      </div>
+
+      <div class="param-row">
+        <span class="param-desc">converge after</span>
+        <span class="param-label" style="font-size:0.85em; min-width:3em;">steps</span>
+        <input type="range" id="slider_convSteps" class="param-slider" min="0" max="100" value="50">
+        <span class="param-value" id="value_convSteps">10</span>
+        <span style="font-size:0.82em; color:#aaa; margin-left:4px;">unchanged</span>
+      </div>
+
+
+    </div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 0.8em;">
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Alpha sweep section                                                    -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section-label" style="margin-bottom: 10px;">Alpha sweep</div>
+
+  <!-- Dual-handle alpha range slider -->
+  <div class="param-row" style="margin-bottom: 0.8em; align-items: center;">
+    <span class="param-desc">$\alpha$ range</span>
+    <span class="param-label" style="min-width:0;"></span>
+    <div class="dual-range-wrap">
+      <div class="dual-range-track"></div>
+      <div class="dual-range-fill" id="sweepRangeFill"></div>
+      <input type="range" id="slider_alphaMin" class="dual-range" min="0" max="100" value="2">
+      <input type="range" id="slider_alphaMax" class="dual-range" min="0" max="100" value="70">
+    </div>
+    <span style="font-size:0.9em; font-family: Monaco, Consolas, monospace; min-width: 9em;">
+      [<span id="value_alphaMin">0.01</span>, <span id="value_alphaMax">0.30</span>]
+    </span>
+    <span style="font-size:0.82em; color:#aaa;">40 points</span>
+  </div>
+
+  <!-- Sweep controls -->
+  <div class="controls-row">
+    <div style="display: flex; gap: 0.5em;">
+      <button id="sweepRunBtn" class="sim-button">run sweep</button>
+      <button id="sweepStopBtn" class="sim-button" disabled>stop</button>
+    </div>
+    <div class="steps-per-sec"><span id="sweepStatusText">idle</span></div>
+  </div>
+
+  <!-- Stacked bar chart -->
+  <div style="position:relative; height:300px; margin-top: 0.6em;">
+    <canvas id="sweepPlot"></canvas>
+  </div>
+  <div style="display:flex; gap:1.4em; font-size:0.82em; color:#666; margin-top:6px; margin-left:2px;">
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(40,160,40,0.75);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>recovery</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(200,60,40,0.75);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>spurious</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:rgba(180,180,180,0.75);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>no convergence</span>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 1.4em 0 0.8em;">
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Single-point debug section                                             -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+
+  <div class="section-label" style="margin-bottom: 10px;">Single parameter setting</div>
+
+  <div class="param-col" style="margin-bottom:0.8em;">
+    <div class="param-row">
+      <span class="param-desc">load ratio</span>
+      <span class="param-label">$\alpha$</span>
+      <input type="range" id="slider_alpha" class="param-slider" min="0" max="100" value="25">
+      <span class="param-value" id="value_alpha">0.10</span>
+      <span style="font-size:0.82em; color:#aaa; margin-left:4px;">($N = $ <span id="value_N">10</span>)</span>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <div style="display: flex; gap: 0.5em;">
+      <button id="runBtn" class="sim-button">run</button>
+      <button id="resetBtn" class="sim-button">reset</button>
+    </div>
+    <label style="font-size: 0.92em; color: #555; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+      <input type="checkbox" id="autorunCheckbox"> auto-run on change
+    </label>
+    <div class="steps-per-sec"><span id="statusText">idle</span></div>
+  </div>
+
+  <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 0.8em;">
+
+  <table id="resultsTable" class="results-table" style="display:none;">
+    <thead>
+      <tr><th>outcome</th><th>fraction</th></tr>
+    </thead>
+    <tbody>
+      <tr class="row-recovery"><td>successful recovery</td><td id="result-recovery">—</td></tr>
+      <tr class="row-spurious"><td>spurious memory</td><td id="result-spurious">—</td></tr>
+      <tr class="row-noconv"><td>did not converge</td><td id="result-noconv">—</td></tr>
+    </tbody>
+  </table>
+
+  <div id="trajPlotWrap" style="display:none; margin-top: 1.2em;">
+    <div class="eq-sublabel" style="margin-bottom: 6px;">magnetization $m^1(t) = \frac{1}{d}\,\boldsymbol{\xi}^1 \cdot \mathbf{s}(t)$ vs. step</div>
+    <div style="position:relative; height:280px;">
+      <canvas id="trajPlot"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>
