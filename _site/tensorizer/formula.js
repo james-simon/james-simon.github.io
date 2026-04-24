@@ -67,15 +67,22 @@ function generateTensorFormula() {
   return `$$${leftSide} = ${rightSide}$$`;
 }
 
+let _lastFormula = null;
+
 // Update the formula display element
 function updateFormulaDisplay() {
   const formulaElement = document.getElementById('formulaDisplay');
   if (formulaElement) {
     const formula = generateTensorFormula();
-    formulaElement.innerHTML = formula;
+
+    // Skip if formula hasn't changed (avoids fighting the render loop)
+    if (formula === _lastFormula) return;
+    _lastFormula = formula;
 
     // Trigger MathJax to re-render
     if (window.MathJax && window.MathJax.typesetPromise) {
+      MathJax.typesetClear([formulaElement]);
+      formulaElement.innerHTML = formula;
       MathJax.typesetPromise([formulaElement]).then(() => {
         // Auto-rescale if content is too wide
         const container = formulaElement;
@@ -96,6 +103,10 @@ function updateFormulaDisplay() {
           }
         }
       }).catch((err) => console.log('MathJax error:', err));
+    } else {
+      // MathJax not ready yet — set text and clear cache so we retry when it loads
+      formulaElement.innerHTML = formula;
+      _lastFormula = null;
     }
   }
 }

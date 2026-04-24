@@ -41,33 +41,6 @@
   </style>
 
   
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"></script>
-  <script>
-    window.MathJax = {
-      TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        tagSide: "right",
-        extensions: ["boldsymbol.js"]
-      },
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-        processEscapes: true
-      },
-      AuthorInit: function() {
-        MathJax.Hub.Register.StartupHook("TeX AMSmath Ready", function () {
-          MathJax.InputJax.TeX.Stack.Item.AMSarray.Augment({
-            clearTag() {
-              if (!this.global.notags) {
-                this.super(arguments).clearTag.call(this);
-              }
-            }
-          });
-        });
-      }
-    };
-  </script>
-  
 
   
 
