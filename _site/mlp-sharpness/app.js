@@ -4,7 +4,7 @@
 
 import { AppState } from './state.js';
 import { Simulation } from './simulation.js';
-import { LossChart, SharpnessChart, HessTermChart, WeightNormChart, GradProjChart, FunctionPlot } from './charts.js';
+import { LossChart, SharpnessChart, HessTermChart, WeightNormChart, GradProjChart, FunctionPlot, EigenvecSVChart, EigenvecHistPlot, JacobianSVFnPlot } from './charts.js';
 import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 
 // ============================================================================
@@ -19,6 +19,9 @@ const PLOT_LABELS = {
   gaussNewton:'Gauss-Newton term eigenvalues',
   residual:   'residual term eigenvalues',
   gradProj:   'gradient projections onto eigenvectors',
+  eigenvecSV:   'singular values of top Hessian eigenvector',
+  eigenvecHist: 'histogram of top Hessian eigenvector elements',
+  jacobianSVFn: 'Jacobian right singular vectors (data space)',
 };
 
 // ============================================================================
@@ -161,6 +164,15 @@ class PlotManager {
 
     if (visible.has('function') && this._charts.function)
       this._charts.function.update(sim);
+
+    if (visible.has('eigenvecSV') && this._charts.eigenvecSV && sim.sharpnessHistory.length > 0 && sim.layers)
+      this._charts.eigenvecSV.update(sim.sharpnessHistory, sim.layers);
+
+    if (visible.has('eigenvecHist') && this._charts.eigenvecHist && sim.sharpnessHistory.length > 0)
+      this._charts.eigenvecHist.update(sim.sharpnessHistory);
+
+    if (visible.has('jacobianSVFn') && this._charts.jacobianSVFn && sim.sharpnessHistory.length > 0)
+      this._charts.jacobianSVFn.update(sim.sharpnessHistory, sim.xs);
   }
 
   // ---- private ---------------------------------------------------------------
@@ -193,7 +205,7 @@ class PlotManager {
 
     } else if (key === 'sharpness') {
       canvas.id = 'sharpnessPlot';
-      title.textContent = 'sharpness';
+      title.textContent = 'sharpness (full Hessian)';
       box.appendChild(canvas);
       cell.appendChild(title);
       cell.appendChild(box);
@@ -265,6 +277,41 @@ class PlotManager {
       cell.appendChild(box);
       this._grid.appendChild(cell);
       this._charts.function = new FunctionPlot('functionPlot');
+
+    } else if (key === 'jacobianSVFn') {
+      canvas.id = 'jacobianSVFnPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'NTK eigenfns';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.jacobianSVFn = new JacobianSVFnPlot('jacobianSVFnPlot');
+
+    } else if (key === 'eigenvecHist') {
+      canvas.id = 'eigenvecHistPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'eigenvec histogram';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.eigenvecHist = new EigenvecHistPlot('eigenvecHistPlot');
+
+    } else if (key === 'eigenvecSV') {
+      canvas.id = 'eigenvecSVPlot';
+      title.textContent = 'eigenvec singular values';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new EigenvecSVChart('eigenvecSVPlot');
+      const opts = this._opts(key);
+      const layerIdx = this._resolveEigenvecLayer(opts.layerIdx);
+      chart.setLayerIdx(layerIdx);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._charts.eigenvecSV = chart;
     }
 
     this._attachGear(key, cell);
@@ -289,8 +336,10 @@ class PlotManager {
     const fields = [];
 
     if (key === 'function') return fields;
+    if (key === 'eigenvecHist') return fields;
+    if (key === 'jacobianSVFn') return fields;
 
-    const chartKey = { loss: 'loss', sharpness: 'sharpness', gaussNewton: 'gaussNewton', residual: 'residual', gradProj: 'gradProj', weightNorms: 'weightNorms' }[key];
+    const chartKey = { loss: 'loss', sharpness: 'sharpness', gaussNewton: 'gaussNewton', residual: 'residual', gradProj: 'gradProj', weightNorms: 'weightNorms', eigenvecSV: 'eigenvecSV' }[key];
     if (!chartKey) return fields;
 
     const opts = this._opts(key);
@@ -324,7 +373,47 @@ class PlotManager {
       });
     }
 
+    if (key === 'eigenvecSV') {
+      const eligible = this._eligibleLayers();
+      if (eligible.length > 0) {
+        const opts = this._opts(key);
+        const current = this._resolveEigenvecLayer(opts.layerIdx);
+        const choices = eligible.map(l => ({ label: `layer ${l+1}`, value: l }));
+        fields.push({
+          type: 'select', label: 'layer', value: current,
+          choices,
+          onChange: (v) => {
+            opts.layerIdx = v; save();
+            const ch = this._charts.eigenvecSV;
+            if (ch) { ch.setLayerIdx(v); ch.clear(); }
+          },
+        });
+      }
+    }
+
     return fields;
+  }
+
+  // Returns eligible layer indices (nIn>1 and nOut>1) for eigenvecSV plot.
+  _eligibleLayers() {
+    if (!this._simParams) return [];
+    const { depth, hiddenDim } = this._simParams;
+    const eligible = [];
+    // layer dims: [1,hiddenDim], [hiddenDim,hiddenDim]*(depth-2), [hiddenDim,1]
+    for (let l = 0; l < depth; l++) {
+      const nIn  = l === 0         ? 1         : hiddenDim;
+      const nOut = l === depth - 1 ? 1         : hiddenDim;
+      if (nIn > 1 && nOut > 1) eligible.push(l);
+    }
+    return eligible;
+  }
+
+  // Resolve stored layerIdx to a valid eligible layer (or first eligible, or null).
+  _resolveEigenvecLayer(stored) {
+    const eligible = this._eligibleLayers();
+    if (eligible.length === 0) return null;
+    if (stored !== undefined && stored !== null && eligible.includes(stored)) return stored;
+    return eligible[0];
   }
 
   _destroy(key) {
@@ -435,7 +524,7 @@ waitForMathJax(() => {
     },
   });
 
-  // Initial setup
-  plotManager.sync();
+  // Initial setup — preSample first so _simParams is set before sync creates plots
   preSample();
+  plotManager.sync();
 });

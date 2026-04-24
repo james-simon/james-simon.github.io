@@ -218,6 +218,7 @@ input[type="range"] { accent-color: #555; }
 }
 .plot-cell {
   flex: 1 1 420px;
+  max-width: calc(50% - 8px);
   min-width: 0;
 }
 .plot-cell-wide {
@@ -232,7 +233,7 @@ input[type="range"] { accent-color: #555; }
 }
 .plot-canvas-box {
   position: relative;
-  height: 260px;
+  height: 300px;
 }
 
 /* Plot controls */

@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jamie Simon</title>
-    <description></description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 24 Mar 2026 16:05:42 -0700</pubDate>
-    <lastBuildDate>Tue, 24 Mar 2026 16:05:42 -0700</lastBuildDate>
+    <description>Jamie Simon — ML researcher and writer. Personal site with blog posts on machine learning theory, math, physics, and science.</description>
+    <link>https://jamiesimon.io/</link>
+    <atom:link href="https://jamiesimon.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 24 Apr 2026 00:15:01 -0300</pubDate>
+    <lastBuildDate>Fri, 24 Apr 2026 00:15:01 -0300</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -266,9 +266,9 @@ $$
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 18 Mar 2026 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/polynomial-features-random-networks/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/polynomial-features-random-networks/</guid>
+        <pubDate>Wed, 18 Mar 2026 04:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/polynomial-features-random-networks/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/polynomial-features-random-networks/</guid>
         
         
         <category>kernels</category>
@@ -298,9 +298,9 @@ $$
 
 &lt;p&gt;&lt;em&gt;Credit to my brother Sam for the guitar backing. The other instruments are actually the same harmonica, played way low for the bass and high for the solo. Thanks also to Bennett Witcher, who’s sent this recording back to me multiple times after I’ve lost it. For your services, I hereby confer upon you the title of Eternal Steward of the Goo.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Fri, 06 Feb 2026 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/goo/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/goo/</guid>
+        <pubDate>Fri, 06 Feb 2026 05:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/goo/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/goo/</guid>
         
         
         <category>music</category>
@@ -416,9 +416,9 @@ c_{|\boldsymbol{\alpha}|}
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Wed, 28 Jan 2026 23:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/kernel-spectral-decay-powerlaw/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/kernel-spectral-decay-powerlaw/</guid>
+        <pubDate>Thu, 29 Jan 2026 04:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/kernel-spectral-decay-powerlaw/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/kernel-spectral-decay-powerlaw/</guid>
         
         
         <category>kernels</category>
@@ -476,9 +476,9 @@ So I figured out how scripting worked in the design software, and I wrote some P
 
 &lt;p&gt;In August 2019, I left Sweden and started my PhD at Berkeley. I switched gears away from experiment, and then away from quantum physics altogether, and joined a lab studying, among other things, the fundamental theory of deep learning, and that got me to where I am today. But now, as I use a computer, and run things with GPUs, and stand by as tech giants fill warehouses with upwards of millions of GPUs and $10^{17}$ transistors total, it’s illuminating and remarkable and a deeply privileged feeling to have gotten to see how computer chips are made.&lt;/p&gt;
 </description>
-        <pubDate>Wed, 21 Jan 2026 23:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/why-i-am-not-an-experimentalist/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/why-i-am-not-an-experimentalist/</guid>
+        <pubDate>Thu, 22 Jan 2026 04:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/why-i-am-not-an-experimentalist/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/why-i-am-not-an-experimentalist/</guid>
         
         
         <category>physics</category>
@@ -505,9 +505,9 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Credit to Isaac Harris for the guitar accompaniament, my uncle Kevin Simon for help with the “bugle” solo, and of course Tom Zimmer, to whom I have promised royalties.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 18 Jan 2026 04:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/ballad-of-the-crane-breeder/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/ballad-of-the-crane-breeder/</guid>
+        <pubDate>Sun, 18 Jan 2026 09:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/ballad-of-the-crane-breeder/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/ballad-of-the-crane-breeder/</guid>
         
         
         <category>music</category>
@@ -525,9 +525,9 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;p&gt;Even though it’s really short, this was a lot of fun to work on. It was really satisfying to see how adding sevenths to chords made the progression feel jazzier, and how throwing in unusual chords like major thirds and sixths made it feel more tangy and colorful, and how bringing it back to the tonic at the end makes it feel like you’ve wandered afield and come back home. I really had no feel for chord progressions before starting to teach myself music theory some two years ago, but playing around with different ideas and listening very closely to the results in this and known songs and a lot of improvisation has really helped. It’s wonderful to see that there are deeper ideas in music besides the notes, behind the notes, and the structure there is really magical to see and feel.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 11 Jan 2026 02:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/reharmonizing-ode-to-joy/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/reharmonizing-ode-to-joy/</guid>
+        <pubDate>Sun, 11 Jan 2026 07:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/reharmonizing-ode-to-joy/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/reharmonizing-ode-to-joy/</guid>
         
         
         <category>music</category>
@@ -547,9 +547,9 @@ Please enjoy my rendition of the teenage occupation of one Tom Zimmer.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Congratulations to Isaac Harris and Sophia Mock, thanks to Bennett Witcher for some good Muppet noises, and apologies to Jim Henson. Bonus points if you noticed that the voices are singing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;re&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mi&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fa&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sol&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;la&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ti&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 11 Jan 2026 01:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/wedding-march-muppets/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/wedding-march-muppets/</guid>
+        <pubDate>Sun, 11 Jan 2026 06:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/wedding-march-muppets/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/wedding-march-muppets/</guid>
         
         
         <category>music</category>
@@ -565,9 +565,9 @@ and the pieces rearranged acefgiikllmmnnnooosstttuuvwyy&lt;br /&gt;
 and put together in new configurations aacdeeekllmmrssvyy&lt;br /&gt;
 in an ever-changing dance of parts deeeikllmmoorsstttuuwyy&lt;/p&gt;
 </description>
-        <pubDate>Mon, 17 Nov 2025 00:00:00 -0800</pubDate>
-        <link>http://localhost:4000/blog/on-novelty/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-novelty/</guid>
+        <pubDate>Mon, 17 Nov 2025 00:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/on-novelty/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/on-novelty/</guid>
         
         
         <category>poetry</category>
@@ -696,9 +696,9 @@ We should expect to see more such leaps as time goes on, and some of them will t
   &lt;/ol&gt;
 &lt;/div&gt;
 </description>
-        <pubDate>Sun, 20 Jul 2025 02:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/on-the-scientific-method/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/on-the-scientific-method/</guid>
+        <pubDate>Sun, 20 Jul 2025 02:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/on-the-scientific-method/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/on-the-scientific-method/</guid>
         
         
         <category>essays</category>
@@ -770,9 +770,9 @@ We should expect to see more such leaps as time goes on, and some of them will t
 
 &lt;p&gt;That is, the ratio of test error with $n$ samples to the naive test error of the zero predictor is controlled by the ratio of the RKHS norm of the target function to the $L^2$ norm of the target function.&lt;/p&gt;
 </description>
-        <pubDate>Wed, 09 Apr 2025 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/blog/backsolving-classical-bounds/</link>
-        <guid isPermaLink="true">http://localhost:4000/blog/backsolving-classical-bounds/</guid>
+        <pubDate>Wed, 09 Apr 2025 00:00:00 -0300</pubDate>
+        <link>https://jamiesimon.io/blog/backsolving-classical-bounds/</link>
+        <guid isPermaLink="true">https://jamiesimon.io/blog/backsolving-classical-bounds/</guid>
         
         
         <category>kernels</category>

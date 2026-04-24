@@ -1,0 +1,111 @@
+/* ============================================================
+   t-SNE Chess widget styles
+   ============================================================ */
+
+.tsne-chess-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1em 1em 2em;
+  font-family: inherit;
+}
+
+.tsne-chess-container .page-title {
+  font-size: 1.8em;
+  margin-bottom: 0.5em;
+}
+
+.tsne-chess-container p {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+/* ---- Controls ---- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  flex-wrap: wrap;
+  margin-bottom: 0.8em;
+}
+
+.sim-button {
+  padding: 6px 18px;
+  font-size: 0.95em;
+  background: #fff;
+  border: 1.5px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.sim-button:hover {
+  background: #f0f0f0;
+  border-color: #666;
+}
+
+#status {
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* ---- Main visualization container ---- */
+
+#tsne-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 70vh;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* keep it square but respect viewport */
+@media (max-aspect-ratio: 1/1) {
+  #tsne-container {
+    height: 90vw;
+    max-height: 90vw;
+  }
+}
+
+/* ---- Canvas for edges (sits below nodes) ---- */
+
+#edge-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ---- Individual square nodes ---- */
+
+.sq-node {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: monospace;
+  letter-spacing: 0.02em;
+  cursor: default;
+  user-select: none;
+  border: 1.5px solid rgba(0,0,0,0.18);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  z-index: 2;
+}
+
+.sq-node:hover {
+  z-index: 10;
+  border-color: rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transform: translate(-50%, -50%) scale(1.25);
+}

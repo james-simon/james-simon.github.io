@@ -295,6 +295,77 @@ function jacobianVec(layers, activation, x) {
 }
 
 // ============================================================================
+// Top-k right singular vectors of J (N×N Jacobi on J^T J)
+// Returns { rightVecs: Float64Array(k*N), singularValues: Float64Array(k) }
+// rightVecs[j*N .. (j+1)*N] = j-th right singular vector (in data space)
+// ============================================================================
+function jacRightSingVecs(layers, activation, xs, k) {
+  const N = xs.length;
+
+  // Build J column by column: J[:,s] = jacobianVec at xs[s], shape P×N
+  // We need J^T J which is N×N: (J^T J)[s,t] = dot(J[:,s], J[:,t])
+  const jacs = [];
+  for (let s = 0; s < N; s++) jacs.push(jacobianVec(layers, activation, xs[s]));
+
+  const JtJ = new Float64Array(N * N);
+  for (let s = 0; s < N; s++) {
+    for (let t = s; t < N; t++) {
+      const d = vecDot(jacs[s], jacs[t]);
+      JtJ[s*N+t] = d;
+      JtJ[t*N+s] = d;
+    }
+  }
+
+  // Jacobi eigensolver on N×N symmetric JtJ
+  const D = JtJ.slice();
+  const V = new Float64Array(N * N);
+  for (let i = 0; i < N; i++) V[i*N+i] = 1;
+
+  for (let iter = 0; iter < 100*N*N; iter++) {
+    let maxVal = 0, p = 0, q = 1;
+    for (let i = 0; i < N-1; i++)
+      for (let j = i+1; j < N; j++) {
+        const v = Math.abs(D[i*N+j]);
+        if (v > maxVal) { maxVal = v; p = i; q = j; }
+      }
+    if (maxVal < 1e-14) break;
+    const Dpp = D[p*N+p], Dqq = D[q*N+q], Dpq = D[p*N+q];
+    const tau = (Dqq - Dpp) / (2*Dpq);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+    const c   = 1 / Math.sqrt(1 + t*t), s = t*c;
+    D[p*N+p] = Dpp - t*Dpq; D[q*N+q] = Dqq + t*Dpq; D[p*N+q] = D[q*N+p] = 0;
+    for (let r = 0; r < N; r++) {
+      if (r === p || r === q) continue;
+      const Drp = D[r*N+p], Drq = D[r*N+q];
+      D[r*N+p] = D[p*N+r] = c*Drp - s*Drq;
+      D[r*N+q] = D[q*N+r] = s*Drp + c*Drq;
+    }
+    for (let r = 0; r < N; r++) {
+      const Vrp = V[r*N+p], Vrq = V[r*N+q];
+      V[r*N+p] = c*Vrp - s*Vrq;
+      V[r*N+q] = s*Vrp + c*Vrq;
+    }
+  }
+
+  // Sort eigenvalues descending
+  const pairs = [];
+  for (let i = 0; i < N; i++) pairs.push({ val: D[i*N+i], col: i });
+  pairs.sort((a, b) => b.val - a.val);
+
+  const topK = Math.min(k, N);
+  const singularValues = new Float64Array(topK);
+  const rightVecs      = new Float64Array(topK * N);
+
+  for (let j = 0; j < topK; j++) {
+    singularValues[j] = Math.sqrt(Math.max(0, pairs[j].val));
+    const col = pairs[j].col;
+    for (let r = 0; r < N; r++) rightVecs[j*N+r] = V[r*N+col];
+  }
+
+  return { rightVecs, singularValues };
+}
+
+// ============================================================================
 // Gauss-Newton HVP: GN·v = (2/N) Σ_i J_i (J_i·v)
 // ============================================================================
 function gnHvp(layers, activation, xs, ys, v, initYs = null) {
@@ -384,7 +455,7 @@ function lanczos(hvpFn, p, k) {
     let maxVal = 0, p2 = 0, q2 = 1;
     for (let i = 0; i < mActual-1; i++)
       for (let j = i+1; j < mActual; j++) {
-        const v2 = Math.abs(D[i*m+j]);
+        const v2 = Math.abs(D[i*mActual+j]);
         if (v2 > maxVal) { maxVal = v2; p2 = i; q2 = j; }
       }
     if (maxVal < 1e-14) break;
@@ -585,11 +656,15 @@ export class Simulation {
       }
     }
 
+    // Right singular vectors of J (data-space functions)
+    const jacSV = jacRightSingVecs(this.layers, activation, this.xs, TOP_K);
+
     this.sharpnessHistory.push({
       x: this.iteration,
       values: result.values, vectors: result.vectors,
       bottomValues: result.bottomValues, bottomVectors: result.bottomVectors,
       gradProjs, bottomGradProjs,
+      jacRightVecs: jacSV.rightVecs,  // Float64Array(TOP_K * N), in data space
     });
 
     // Hessian term decomposition: GN term and residual term
@@ -608,6 +683,15 @@ export class Simulation {
       gnValues: gnResult.values, gnBottomValues: gnResult.bottomValues,
       resValues: resResult.values, resBottomValues: resResult.bottomValues,
     });
+
+    // Weyl sanity check: |λ_1(H) - λ_1(GN)| <= ||R||_2 = max(λ_1(R), -λ_min(R))
+    const a = result.values[0];
+    const b = gnResult.values[0];
+    const c = Math.max(resResult.values[0], -resResult.bottomValues[0]);
+    const lhs = Math.abs(a - b);
+    if (lhs > c * 1.01) {  // 1% tolerance for numerical noise
+      console.warn(`Weyl violated at step ${this.iteration}: |a-b|=${lhs.toFixed(4)}, ||R||=${c.toFixed(4)}, a=${a.toFixed(4)}, b=${b.toFixed(4)}, λ1(R)=${resResult.values[0].toFixed(4)}, λmin(R)=${resResult.bottomValues[0].toFixed(4)}`);
+    }
   }
 
   // ---- Record weight norms per layer --------------------------------------

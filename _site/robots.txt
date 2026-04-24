@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jamiesimon.io/sitemap.xml

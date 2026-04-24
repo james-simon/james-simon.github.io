@@ -15,6 +15,15 @@ const SV_COLORS = [
   'rgb( 40, 160, 200)',
 ];
 
+// Greens for eigenvec singular value plot (dark → light)
+const EIG_SV_COLORS = [
+  'rgb( 20, 110,  40)',
+  'rgb( 40, 155,  55)',
+  'rgb( 70, 195,  80)',
+  'rgb(120, 220, 120)',
+  'rgb(175, 235, 175)',
+];
+
 const LAYER_COLORS = [
   'rgb( 70, 120, 210)',
   'rgb(200,  80,  60)',
@@ -427,7 +436,7 @@ export class FunctionPlot {
 
     // y-axis ticks (3)
     ctx.textAlign = 'right';
-    const yTicks = [yMin+yPad, (yMin+yMax)/2, yMax-yPad];
+    const yTicks = [yMin+yPad, 0, yMax-yPad];
     for (const yv of yTicks) {
       const py = cy(yv);
       ctx.fillStyle = '#888';
@@ -444,4 +453,339 @@ export class FunctionPlot {
   }
 
   destroy() {}
+}
+
+// ---- JacobianSVFnPlot — right singular vectors of J plotted over x ---------
+// Shows top-k right singular vectors as functions over training x values.
+// Colors match the sharpness eigenvalue plot (SV_COLORS).
+export class JacobianSVFnPlot {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx    = this.canvas.getContext('2d');
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  update(sharpnessHistory, xs) {
+    if (sharpnessHistory.length === 0) return;
+    const last = sharpnessHistory[sharpnessHistory.length - 1];
+    if (!last.jacRightVecs) return;
+
+    const N    = xs.length;
+    const k    = Math.min(last.values.length, last.jacRightVecs.length / N);
+
+    const canvas = this.canvas;
+    const ctx    = this.ctx;
+    const w = canvas.clientWidth  || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx.clearRect(0, 0, w, h);
+
+    // Legend dimensions
+    const legendFontSize = 10;
+    const legendLineH    = 16;
+    const legendPad      = 6;
+    const legendLineW    = 18;
+    const legendGap      = 4;
+    const legendW        = legendPad*2 + legendLineW + legendGap + 28;
+    const legendH        = legendPad*2 + k * legendLineH;
+
+    const ml = 44, mr = 12 + legendW + 6, mt = 12, mb = 28;
+    const pw = w - ml - mr;
+    const ph = h - mt - mb;
+
+    // y range: find max abs value across all vectors
+    let maxAbs = 0;
+    for (let j = 0; j < k; j++)
+      for (let i = 0; i < N; i++)
+        maxAbs = Math.max(maxAbs, Math.abs(last.jacRightVecs[j*N+i]));
+    if (maxAbs < 1e-12) maxAbs = 1;
+    const yPad = maxAbs * 0.12;
+    const yMin = -maxAbs - yPad, yMax = maxAbs + yPad;
+
+    const cx = x => ml + (x + 1) / 2 * pw;
+    const cy = y => mt + (1 - (y - yMin) / (yMax - yMin)) * ph;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(ml, mt, pw, ph);
+
+    // Zero axes
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 1;
+    const y0 = cy(0);
+    ctx.beginPath(); ctx.moveTo(ml, y0); ctx.lineTo(ml + pw, y0); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx(0), mt); ctx.lineTo(cx(0), mt + ph); ctx.stroke();
+
+    // Sort xs to ensure left-to-right drawing (they should already be sorted)
+    const order = Array.from({length: N}, (_, i) => i).sort((a, b) => xs[a] - xs[b]);
+
+    // Draw each right singular vector
+    for (let j = k - 1; j >= 0; j--) {
+      const color = SV_COLORS[j % SV_COLORS.length];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let ii = 0; ii < N; ii++) {
+        const i = order[ii];
+        const px = cx(xs[i]);
+        const py = cy(last.jacRightVecs[j*N+i]);
+        ii === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      // Dots
+      ctx.fillStyle = color;
+      for (let i = 0; i < N; i++) {
+        ctx.beginPath();
+        ctx.arc(cx(xs[i]), cy(last.jacRightVecs[j*N+i]), 2.5, 0, 2*Math.PI);
+        ctx.fill();
+      }
+    }
+
+    // x-axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = `11px ${MONO}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('-1', cx(-1), mt + ph + 18);
+    ctx.fillText('0',  cx( 0), mt + ph + 18);
+    ctx.fillText('1',  cx( 1), mt + ph + 18);
+
+    // y-axis ticks
+    ctx.textAlign = 'right';
+    for (const yv of [yMin + yPad, 0, yMax - yPad]) {
+      const py = cy(yv);
+      ctx.fillStyle = '#888';
+      ctx.fillText(formatY(yv), ml - 4, py + 4);
+      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(ml, py); ctx.lineTo(ml + pw, py); ctx.stroke();
+    }
+
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ml, mt, pw, ph);
+
+    // Legend (top-right, outside plot area)
+    const lx = ml + pw + 6;
+    const ly = mt;
+    ctx.font = `${legendFontSize}px ${MONO}`;
+    for (let j = 0; j < k; j++) {
+      const color = SV_COLORS[j % SV_COLORS.length];
+      const rowY = ly + legendPad + j * legendLineH + legendLineH / 2;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(lx, rowY); ctx.lineTo(lx + legendLineW, rowY); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(lx + legendLineW / 2, rowY, 2.5, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.textAlign = 'left';
+      const sub = '₁₂₃₄₅'[j] ?? String(j+1);
+      ctx.fillText(`φ${sub}`, lx + legendLineW + legendGap, rowY + 4);
+    }
+  }
+
+  destroy() {}
+}
+
+// ---- EigenvecHistPlot — histogram of elements of top Hessian eigenvector ---
+const HIST_BINS = 40;
+
+export class EigenvecHistPlot {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx    = this.canvas.getContext('2d');
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  update(sharpnessHistory) {
+    if (sharpnessHistory.length === 0) return;
+    const last = sharpnessHistory[sharpnessHistory.length - 1];
+    const p = last.vectors.length / last.values.length;
+    const vec = last.vectors.subarray(0, p);  // top eigenvector
+
+    // Compute histogram
+    let vMin = Infinity, vMax = -Infinity;
+    for (let i = 0; i < p; i++) { vMin = Math.min(vMin, vec[i]); vMax = Math.max(vMax, vec[i]); }
+    if (vMax - vMin < 1e-12) { vMin -= 0.5; vMax += 0.5; }
+
+    const counts = new Int32Array(HIST_BINS);
+    for (let i = 0; i < p; i++) {
+      let b = Math.floor((vec[i] - vMin) / (vMax - vMin) * HIST_BINS);
+      if (b >= HIST_BINS) b = HIST_BINS - 1;
+      counts[b]++;
+    }
+    const maxCount = Math.max(...counts);
+
+    // Draw
+    const canvas = this.canvas;
+    const ctx    = this.ctx;
+    const w = canvas.clientWidth  || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx.clearRect(0, 0, w, h);
+
+    const ml = 44, mr = 12, mt = 12, mb = 28;
+    const pw = w - ml - mr;
+    const ph = h - mt - mb;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(ml, mt, pw, ph);
+
+    // Bars
+    const barW = pw / HIST_BINS;
+    ctx.fillStyle = 'rgb(80, 120, 200)';
+    for (let b = 0; b < HIST_BINS; b++) {
+      const bh = maxCount > 0 ? (counts[b] / maxCount) * ph : 0;
+      ctx.fillRect(ml + b * barW, mt + ph - bh, barW - 1, bh);
+    }
+
+    // Zero line
+    if (vMin < 0 && vMax > 0) {
+      const x0 = ml + (-vMin / (vMax - vMin)) * pw;
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0, mt); ctx.lineTo(x0, mt + ph); ctx.stroke();
+    }
+
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ml, mt, pw, ph);
+
+    // x-axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = `11px ${MONO}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(formatY(vMin), ml, mt + ph + 18);
+    ctx.fillText(formatY((vMin + vMax) / 2), ml + pw / 2, mt + ph + 18);
+    ctx.fillText(formatY(vMax), ml + pw, mt + ph + 18);
+
+    // y-axis: just show max count
+    ctx.textAlign = 'right';
+    ctx.fillText(String(maxCount), ml - 4, mt + 10);
+    ctx.fillText('0', ml - 4, mt + ph);
+  }
+
+  destroy() {}
+}
+
+// ---- SVD helpers -----------------------------------------------------------
+// Compute singular values of an (nOut × nIn) matrix M stored row-major.
+// Returns Float64Array of singular values, sorted descending.
+// Uses eigendecomposition of M^T M (nIn×nIn symmetric), then sqrt.
+function singularValues(M, nOut, nIn) {
+  const n = nIn;
+  // Build M^T M
+  const MtM = new Float64Array(n * n);
+  for (let i = 0; i < n; i++) {
+    for (let j = i; j < n; j++) {
+      let s = 0;
+      for (let r = 0; r < nOut; r++) s += M[r*nIn + i] * M[r*nIn + j];
+      MtM[i*n+j] = s;
+      MtM[j*n+i] = s;
+    }
+  }
+  // Jacobi eigendecomposition on MtM
+  const D = MtM.slice();
+  for (let iter = 0; iter < 100*n*n; iter++) {
+    let maxVal = 0, p = 0, q = 1;
+    for (let i = 0; i < n-1; i++)
+      for (let j = i+1; j < n; j++) {
+        const v = Math.abs(D[i*n+j]);
+        if (v > maxVal) { maxVal = v; p = i; q = j; }
+      }
+    if (maxVal < 1e-14) break;
+    const Dpp = D[p*n+p], Dqq = D[q*n+q], Dpq = D[p*n+q];
+    const tau = (Dqq - Dpp) / (2*Dpq);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+    const c   = 1 / Math.sqrt(1 + t*t), s = t*c;
+    D[p*n+p] = Dpp - t*Dpq; D[q*n+q] = Dqq + t*Dpq; D[p*n+q] = D[q*n+p] = 0;
+    for (let r = 0; r < n; r++) {
+      if (r === p || r === q) continue;
+      const Drp = D[r*n+p], Drq = D[r*n+q];
+      D[r*n+p] = D[p*n+r] = c*Drp - s*Drq;
+      D[r*n+q] = D[q*n+r] = s*Drp + c*Drq;
+    }
+  }
+  const svs = new Float64Array(n);
+  for (let i = 0; i < n; i++) svs[i] = Math.sqrt(Math.max(0, D[i*n+i]));
+  svs.sort((a, b) => b - a);
+  return svs;
+}
+
+// Compute byte offset into flat param vector for layer idx's W matrix.
+// Accounts for biases of prior layers.
+function layerWOffset(layers, idx) {
+  let off = 0;
+  for (let l = 0; l < idx; l++) {
+    off += layers[l].W.length;
+    if (layers[l].b) off += layers[l].b.length;
+  }
+  return off;
+}
+
+// ---- EigenvecSVChart -------------------------------------------------------
+// Plots singular values of the top Hessian eigenvector reshaped into a
+// chosen layer's weight matrix.
+export class EigenvecSVChart extends BaseChart {
+  constructor(canvasId) {
+    super();
+    const opts = baseChartOptions('relative singular value');
+    opts.plugins.legend = { display: true, position: 'top', align: 'end',
+      labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
+    this._layerIdx = null;
+    this._nSV = 0;
+    this.chart = new Chart(document.getElementById(canvasId), {
+      type: 'line', data: { datasets: [] }, options: opts,
+    });
+  }
+
+  setLayerIdx(idx) { this._layerIdx = idx; }
+
+  update(sharpnessHistory, layers) {
+    if (sharpnessHistory.length === 0 || this._layerIdx === null) return;
+    const idx = this._layerIdx;
+    if (idx >= layers.length) return;
+
+    const layer = layers[idx];
+    const { nIn, nOut } = layer;
+    const p = sharpnessHistory[0].vectors.length / sharpnessHistory[0].values.length;
+    // p is total param count (vectors is topK * p flat)
+
+    const wOff = layerWOffset(layers, idx);
+    const wLen = nOut * nIn;
+
+    const nSV = Math.min(5, Math.min(nIn, nOut));
+
+    if (nSV !== this._nSV) {
+      this._nSV = nSV;
+      this.chart.data.datasets = Array.from({length: nSV}, (_, j) =>
+        ds(`σ${j+1}`, EIG_SV_COLORS[j % EIG_SV_COLORS.length])
+      );
+    }
+
+    const raw = downsample(sharpnessHistory);
+    const seriesData = Array.from({length: nSV}, () => []);
+
+    for (const pt of raw) {
+      // Top eigenvector is first p entries of pt.vectors
+      const topVec = pt.vectors.subarray(0, p);
+      const wSlice = topVec.subarray(wOff, wOff + wLen);
+      const svs = singularValues(wSlice, nOut, nIn);
+      // Normalize so singular values sum to 1
+      let total = 0;
+      for (let j = 0; j < svs.length; j++) total += svs[j];
+      if (total > 1e-15) for (let j = 0; j < svs.length; j++) svs[j] /= total;
+      for (let j = 0; j < nSV; j++) seriesData[j].push({ x: pt.x, y: svs[j] });
+    }
+
+    for (let j = 0; j < nSV; j++) this.chart.data.datasets[j].data = seriesData[j];
+    this._setXMax(sharpnessHistory[sharpnessHistory.length-1].x);
+    this.chart.update('none');
+  }
 }

@@ -4,12 +4,12 @@
 
 import { AppState } from './state.js';
 import { Simulation } from './simulation.js';
-import { numCoeffTerms } from './targets.js';
+import { numCoeffTerms, numInputCoords } from './targets.js';
 import { LossChart, NormChart, CoeffChart, PreActChart, PreActHistChart,
          WeightHistChart, WeightScatterChart } from './charts.js';
 import { UtilityPlot } from './utility-plot.js';
 import { EigenvaluePlot } from './eigenvalue-plot.js';
-import { bindUI, restoreUI, waitForMathJax, renderNetworkViz } from './ui.js';
+import { bindUI, restoreUI, waitForMathJax, renderNetworkViz, sliderDefs } from './ui.js';
 
 // ============================================================================
 // PLOT DEFINITIONS
@@ -165,7 +165,8 @@ class PlotManager {
       this._charts.coefficients.clear();
     }
     if (this._charts.norms) {
-      this._charts.norms.setNumTerms(params.numTerms);
+      const nCoords = numInputCoords(params.targetType, params.numTerms) ?? params.d;
+      this._charts.norms.setNumTerms(nCoords);
       this._charts.norms.clear();
     }
     if (visible.has('weightHists')) {
@@ -243,11 +244,13 @@ class PlotManager {
     const params = this._params;
 
     if (key === 'weightHists') {
-      const T = params ? params.numTerms : 1;
+      const numCols = params
+        ? (numInputCoords(params.targetType, params.numTerms) ?? params.d)
+        : 1;
       const hists = [];
       const wrapper = this._makeWrapper(key);
       this._grid.appendChild(wrapper);
-      for (let k = 0; k < T; k++) {
+      for (let k = 0; k < numCols; k++) {
         const id = `histPlot_${k}`;
         wrapper.appendChild(this._makeCanvas(id));
         hists.push(new WeightHistChart(id, k));
@@ -328,8 +331,10 @@ class PlotManager {
 
     if (key === 'coefficients' && params)
       chart.setNumTerms(numCoeffTerms(params.targetType, params.numTerms), params.targetType);
-    if (key === 'norms' && params)
-      chart.setNumTerms(params.numTerms);
+    if (key === 'norms' && params) {
+      const nCoords = numInputCoords(params.targetType, params.numTerms) ?? params.d;
+      chart.setNumTerms(nCoords);
+    }
     if (key === 'loss' || key === 'coefficients')
       chart.setEmaWindow(this.emaWindow);
 
@@ -506,8 +511,18 @@ waitForMathJax(() => {
   function buildParams() {
     const T = appState.numTerms;
     const tt = appState.targetType;
-    const minD = tt === 'sin2x' ? 2 : tt === 'custom' ? 1 : T;
+    const coordsNeeded = numInputCoords(tt, T);
+    const minD = coordsNeeded ?? 1;
     const d = Math.max(Math.round(appState.d), minD);
+    // Snap slider and state if d was clamped
+    if (d !== Math.round(appState.d)) {
+      appState.d = d;
+      appState.save();
+      const sliderEl = document.getElementById('slider_d');
+      const valEl    = document.getElementById('value_d');
+      if (sliderEl) sliderEl.value = sliderDefs.d.helper.valueToSlider(d);
+      if (valEl) valEl.textContent = String(d);
+    }
     return {
       n:          Math.round(appState.n),
       d,
