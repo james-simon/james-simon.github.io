@@ -1,3 +1,27 @@
+- id: there-will-be-a-scientific-theory
+  title: "There will be a scientific theory of deep learning"
+  authors: "Jamie Simon, Daniel Kunin, Alexander Atanasov, Enric Boix-Adserà, Blake Bordelon, Jeremy Cohen, Nikhil Ghosh, Florentin Guth, Arthur Jacot, Mason Kamb, Dhruva Karkada, Eric J. Michaud, Berkan Ottlik, Joseph Turnbull"
+  category: research-philosophy
+  year: 2026
+  venue: ""
+  description: "Sure will be. Wir müssen wissen, wir werden wissen!"
+  image: ""
+  links:
+    - type: arXiv
+      url: https://arxiv.org/abs/2604.21691
+
+- id: scientific-method-two-steps
+  title: "The scientific method in two steps"
+  authors: "James B. Simon"
+  category: research-philosophy
+  year: 2026
+  venue: ""
+  description: "A perspective on how to go about developing theory that matters."
+  image: ""
+  links:
+    - type: lm.pub
+      url: https://learningmechanics.pub/perspectives/scientific-method/
+
 - id: predicting-kernel-learning-curves
   title: Predicting kernel regression learning curves from only raw data statistics
   authors: "Dhruva Karkada*, Joey Turnbull*, Yuxi Liu, James B. Simon"

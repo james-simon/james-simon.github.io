@@ -7,6 +7,9 @@ emoji: ⚗️
 favorite: true
 ---
 
+*This essay is now cross-posted on [learningmechanics.pub](https://learningmechanics.pub/perspectives/scientific-method/).*
+
+***
 
 I have recently found myself involved in many discussions centered on the question of how we might develop a satisfactory science of modern machine learning. It certainly seems likely that such a science should be possible, as every important human feat of engineering has eventually admitted an explanatory science. Given such a science, engineering artifacts are revealed as points in a space of viable constructions: with an understanding of mechanics and materials science, we see the Taj Mahal and the Colosseum are two points in the space of stable freestanding structures made of stone, and we can describe the boundaries of this set. It is of course one of the great scientific questions of our time whether current foundation models and their inevitable successors may be located within such a scientific framework.
 
