@@ -1,0 +1,170 @@
+---
+layout: default
+permalink: /driving-problem/
+skip_mathjax: true
+---
+
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+    chtml: { scale: 1.0 },
+    startup: { ready: () => { MathJax.startup.defaultReady(); window.mathJaxReady = true; } }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<div class="dp-container">
+
+  <h1 class="page-title">Driving Problem</h1>
+
+  <p>
+    Given a two-layer MLP with fixed random initialization $\theta_0$, and a target parameter
+    vector $\theta^*$, can we engineer a sequence of inputs $x_1, x_2, \ldots$ such that
+    gradient steps drive $\theta \to \theta^*$?
+  </p>
+  <p>
+    Here we explore the simplest version: at each step, sample a random $x$, compute the
+    gradient $g(x)$, and take the step along $\hat{g}(x)$ that best closes the gap.
+  </p>
+
+  <hr class="dp-hr">
+
+  <!-- Update rule -->
+  <div class="section-label">Update rule</div>
+  <div class="math-box">
+    <div class="math-row">
+      <div class="math-cell">
+        <div class="math-sublabel">residual gap</div>
+        <div>$$\Delta\theta_t = \theta^* - \theta_t$$</div>
+      </div>
+      <div class="math-cell">
+        <div class="math-sublabel">optimal step size along $\hat{g}(x_t)$</div>
+        <div>$$\alpha_t^* = \langle \Delta\theta_t,\, \hat{g}(x_t) \rangle$$</div>
+      </div>
+      <div class="math-cell">
+        <div class="math-sublabel">update</div>
+        <div>$$\theta_{t+1} = \theta_t + \alpha_t^*\, \hat{g}(x_t)$$</div>
+      </div>
+      <div class="math-cell">
+        <div class="math-sublabel">new distance</div>
+        <div>$$\|\Delta\theta_{t+1}\| = \|\Delta\theta_t\|\cdot|\!\sin\angle(g_t, \Delta\theta_t)|$$</div>
+      </div>
+    </div>
+    <div style="font-size:0.83em; color:#888; margin-top:6px;">
+      Sign of $r$ (residual) is chosen to make $\alpha_t^* \ge 0$. Each step shrinks
+      $\|\Delta\theta\|$ by $|\!\sin|$ of the alignment angle — so a high cosine-sim step
+      is geometrically decisive.
+    </div>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- Architecture -->
+  <div class="section-label">Architecture</div>
+  <div class="param-col" style="margin-bottom:0.9em;">
+    <div class="param-row">
+      <span class="param-desc">input dim</span>
+      <span class="param-label">$d_{in}$</span>
+      <input type="range" id="slider_din" class="param-slider" min="0" max="100" value="40">
+      <span class="param-value" id="value_din">5</span>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">hidden dim</span>
+      <span class="param-label">$d_h$</span>
+      <input type="range" id="slider_dh" class="param-slider" min="0" max="100" value="50">
+      <span class="param-value" id="value_dh">10</span>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">output dim</span>
+      <span class="param-label">$d_{out}$</span>
+      <input type="range" id="slider_dout" class="param-slider" min="0" max="100" value="0">
+      <span class="param-value" id="value_dout">1</span>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">activation</span>
+      <span class="param-label"></span>
+      <div class="btn-group" id="actGroup">
+        <button class="toggle-btn" data-val="relu">ReLU</button>
+        <button class="toggle-btn" data-val="tanh">tanh</button>
+        <button class="toggle-btn" data-val="linear">linear</button>
+      </div>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">$x$ distribution</span>
+      <span class="param-label"></span>
+      <div class="btn-group" id="xDistGroup">
+        <button class="toggle-btn" data-val="gaussian">$\mathcal{N}(0,I)$</button>
+        <button class="toggle-btn" data-val="sphere">sphere</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- Speed -->
+  <div class="section-label">Speed</div>
+  <div class="param-col" style="margin-bottom:0.9em;">
+    <div class="param-row">
+      <span class="param-desc">max steps/sec</span>
+      <span class="param-label"></span>
+      <input type="range" id="slider_maxStepsPerSec" class="param-slider" min="0" max="100" value="100">
+      <span class="param-value" id="value_maxStepsPerSec">no limit</span>
+    </div>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- Simulation controls -->
+  <div class="section-label">Simulation</div>
+  <div class="controls-row" style="margin-bottom:0.9em;">
+    <button id="startPauseBtn" class="sim-button">start</button>
+    <button id="reinitBtn"     class="sim-button">reinit</button>
+    <span class="steps-display">
+      step <span id="iterCount">0</span>
+      &nbsp;·&nbsp;
+      <span id="stepsPerSec">0</span> steps/sec
+    </span>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- Plots -->
+  <div class="section-label">Distance to target &nbsp;$\|\theta^* - \theta\|$</div>
+  <div class="plot-canvas-box" style="height:200px; margin-bottom:1em;">
+    <canvas id="distCanvas"></canvas>
+  </div>
+
+  <div style="display:flex;align-items:baseline;gap:1.4em;margin-bottom:8px;flex-wrap:wrap;">
+    <div class="section-label" style="margin-bottom:0;">Convergence rate &nbsp;$-d\|\Delta\theta\|/dt$</div>
+    <span style="display:flex;align-items:center;gap:6px;font-size:0.82em;color:#aaa;">
+      EMA window
+      <input type="range" id="slider_emaWindow" class="param-slider" min="0" max="100" value="50" style="width:90px;">
+      <span id="value_emaWindow" style="font-family:Monaco,monospace;font-size:0.95em;min-width:2.5em;">20</span>
+    </span>
+  </div>
+  <div class="plot-canvas-box" style="height:200px; margin-bottom:1em;">
+    <canvas id="ddistCanvas"></canvas>
+  </div>
+
+  <div class="section-label">Per-step $\|\Delta\theta\| \cdot \cos^2(g(x),\, \Delta\theta)$</div>
+  <div class="plot-canvas-box" style="height:200px; margin-bottom:1em;">
+    <canvas id="cosSimStepCanvas"></canvas>
+  </div>
+
+  <div class="section-label">Cosine similarity — distribution (last 1000 steps)</div>
+  <div id="statsBar" class="stats-bar" style="margin-bottom:4px;"></div>
+  <div class="plot-canvas-box" style="height:180px; margin-bottom:1.2em;">
+    <canvas id="histCanvas"></canvas>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- Weight heatmaps -->
+  <div class="section-label">Weight matrices</div>
+  <div id="weightsRow" class="matrices-row"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script type="module" src="app.js"></script>

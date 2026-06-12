@@ -1,0 +1,205 @@
+/* Driving Problem */
+
+.dp-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-title {
+  margin-top: 2em;
+  margin-bottom: 0.3em;
+}
+
+.dp-hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 0.8em 0;
+}
+
+.section-label {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: none;
+  margin-bottom: 8px;
+}
+
+/* Math callout */
+.math-box {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 10px 16px 8px;
+  margin-bottom: 0.4em;
+}
+
+.math-row {
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.math-cell {
+  min-width: 0;
+}
+
+.math-sublabel {
+  font-size: 0.78em;
+  color: #aaa;
+  margin-bottom: 2px;
+}
+
+/* Param rows */
+.param-col { display: flex; flex-direction: column; gap: 4px; }
+
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.param-desc {
+  font-size: 0.82em;
+  color: #888;
+  min-width: 8em;
+  text-align: right;
+}
+
+.param-label {
+  font-size: 1.05em;
+  min-width: 2.2em;
+  text-align: right;
+}
+
+.param-slider {
+  width: 130px;
+  flex-shrink: 0;
+  accent-color: #555;
+}
+
+.param-value {
+  font-size: 0.92em;
+  min-width: 4em;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+
+/* Toggle buttons */
+.btn-group {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.toggle-btn {
+  padding: 5px 12px;
+  background: #f8f8f8;
+  border: none;
+  border-right: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 0.88em;
+  color: #555;
+  transition: background 0.12s;
+}
+.toggle-btn:last-child { border-right: none; }
+.toggle-btn:hover      { background: #eee; color: #222; }
+.toggle-btn.active     { background: #555; color: #fff; }
+
+/* Sim controls */
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+.sim-button {
+  padding: 6px 14px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.15s;
+}
+.sim-button:hover  { background-color: #e0e0e0; }
+.sim-button:active { background-color: #d0d0d0; }
+
+.steps-display {
+  margin-left: auto;
+  font-size: 0.85em;
+  color: #aaa;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+
+/* Plots */
+.plot-canvas-box {
+  position: relative;
+}
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.stat-pill {
+  font-size: 0.82em;
+  background: #f4f4f4;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #555;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+.stat-pill strong { color: #222; }
+
+/* Weight matrices */
+.matrices-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 2em;
+}
+
+.matrix-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.matrix-section-label {
+  font-size: 0.8em;
+  color: #888;
+  font-style: italic;
+}
+
+.matrix-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.matrix-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.matrix-label {
+  font-size: 0.78em;
+  color: #999;
+  margin-bottom: 3px;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
+
+.matrix-range {
+  font-size: 0.72em;
+  color: #bbb;
+  margin-top: 2px;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+}
