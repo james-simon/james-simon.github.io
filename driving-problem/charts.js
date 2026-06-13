@@ -4,29 +4,29 @@
 
 const MAX_PTS = 1000;   // max points sent to Chart.js per dataset
 
-// Power-of-2 stride downsampling — always includes last point
-function downsample(data, maxPts) {
-  if (data.length <= maxPts) return data;
+// Downsample a flat number array to ≤ maxPts indices (power-of-2 stride).
+// Returns {indices, stride} — indices into the original array.
+function downsampleIndices(len, maxPts) {
   let stride = 1;
-  while (data.length / stride > maxPts) stride *= 2;
+  while (len / stride > maxPts) stride *= 2;
   const out = [];
-  for (let i = 0; i < data.length; i += stride) out.push(data[i]);
-  if (out[out.length - 1] !== data[data.length - 1]) out.push(data[data.length - 1]);
+  for (let i = 0; i < len; i += stride) out.push(i);
+  if (out.length === 0 || out[out.length - 1] !== len - 1) out.push(len - 1);
   return out;
 }
 
-// Centered EMA: forward pass then backward pass over already-downsampled data
-function centeredEMA(data, window) {
-  if (window <= 1 || data.length === 0) return data;
+// Centered EMA on {x,y} array (runs after downsampling, so always O(MAX_PTS)).
+function centeredEMA(pts, window) {
+  if (window <= 1 || pts.length === 0) return pts;
   const alpha = 1 / window;
-  const n = data.length;
+  const n = pts.length;
   const fwd = new Float64Array(n);
-  fwd[0] = data[0].y;
-  for (let i = 1; i < n; i++) fwd[i] = alpha * data[i].y + (1 - alpha) * fwd[i - 1];
+  fwd[0] = pts[0].y;
+  for (let i = 1; i < n; i++) fwd[i] = alpha * pts[i].y + (1 - alpha) * fwd[i - 1];
   const bwd = new Float64Array(n);
   bwd[n - 1] = fwd[n - 1];
   for (let i = n - 2; i >= 0; i--) bwd[i] = alpha * fwd[i] + (1 - alpha) * bwd[i + 1];
-  return data.map((pt, i) => ({ x: pt.x, y: bwd[i] }));
+  return pts.map((pt, i) => ({ x: pt.x, y: bwd[i] }));
 }
 
 const SUPERSCRIPTS = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
@@ -80,8 +80,10 @@ export class DistanceChart {
     });
   }
 
+  // history: flat number array, history[i] = dist at step i
   update(history, xMax) {
-    this._chart.data.datasets[0].data = downsample(history, MAX_PTS);
+    const idx = downsampleIndices(history.length, MAX_PTS);
+    this._chart.data.datasets[0].data = idx.map(i => ({ x: i, y: history[i] }));
     setXBounds(this._chart, xMax);
     this._chart.update('none');
   }
@@ -116,9 +118,10 @@ export class DDistChart {
     });
   }
 
+  // history: flat number array, history[i] = ddist at step i+1
   update(history, xMax, emaWindow) {
-    const pos = history.map(pt => ({ x: pt.x, y: Math.max(1e-12, -pt.y) }));
-    const ds  = downsample(pos, MAX_PTS);
+    const idx = downsampleIndices(history.length, MAX_PTS);
+    const ds  = idx.map(i => ({ x: i + 1, y: Math.max(1e-12, -history[i]) }));
     const smoothed = centeredEMA(ds, emaWindow);
     this._chart.data.datasets[0].data = ds;
     this._chart.data.datasets[1].data = smoothed;
@@ -161,9 +164,10 @@ export class CosSImPerStepChart {
     });
   }
 
+  // projHistory: flat number array, projHistory[i] = ||Δθ||·cos² at step i+1
   update(projHistory, xMax, emaWindow) {
-    const pos = projHistory.map(pt => ({ x: pt.x, y: Math.max(1e-12, pt.y) }));
-    const ds  = downsample(pos, MAX_PTS);
+    const idx = downsampleIndices(projHistory.length, MAX_PTS);
+    const ds  = idx.map(i => ({ x: i + 1, y: Math.max(1e-12, projHistory[i]) }));
     const smoothed = centeredEMA(ds, emaWindow);
     this._chart.data.datasets[0].data = ds;
     this._chart.data.datasets[1].data = smoothed;
@@ -223,10 +227,13 @@ export class CosSimHistChart {
   }
 
   update(cosims) {
-    const n = cosims.length;
+    // only look at last N_HIST entries to keep this O(1) in total history length
+    const N_HIST = 1000;
+    const start = Math.max(0, cosims.length - N_HIST);
+    const n = cosims.length - start;
     if (n === 0) return;
     let lo = Infinity, hi = -Infinity;
-    for (let i = 0; i < n; i++) {
+    for (let i = start; i < cosims.length; i++) {
       if (cosims[i] < lo) lo = cosims[i];
       if (cosims[i] > hi) hi = cosims[i];
     }
@@ -238,7 +245,7 @@ export class CosSimHistChart {
     const bins    = new Float64Array(N_BINS);
     const centers = new Float64Array(N_BINS);
     for (let i = 0; i < N_BINS; i++) centers[i] = xMin + (i + 0.5) * w;
-    for (let i = 0; i < n; i++) {
+    for (let i = start; i < cosims.length; i++) {
       const b = Math.min(N_BINS - 1, Math.floor((cosims[i] - xMin) / w));
       if (b >= 0) bins[b]++;
     }

@@ -6,6 +6,7 @@ import { AppState }      from './state.js';
 import { Simulation }   from './simulation.js';
 import { DistanceChart, DDistChart, CosSImPerStepChart, CosSimHistChart } from './charts.js';
 import { bindUI, setStartPauseLabel }        from './ui.js';
+import { XOptimizer }   from './xOptimizer.js';
 
 // ---- Matrix heatmap ---------------------------------------------------------
 
@@ -81,28 +82,35 @@ class HeatmapManager {
   build(containerEl) {
     containerEl.innerHTML = '';
     const { mlp, thetaStar } = this._sim;
-    const { din, dh, dout }  = mlp;
+    const { din, dh, dout, bias, depth } = mlp;
     this._panels = {};
+    const dims = mlp._layerDims();
+    const SUB  = ['₁','₂','₃'];
 
-    // Split thetaStar into weight shapes
-    const tsW1 = thetaStar.slice(0, dh*din);
-    const tsb1 = thetaStar.slice(dh*din, dh*din+dh);
-    const tsW2 = thetaStar.slice(dh*din+dh, dh*din+dh+dout*dh);
-    const tsb2 = thetaStar.slice(dh*din+dh+dout*dh);
+    // Split thetaStar and build current/target items in one pass
+    let off = 0;
+    const currentItems = [], targetItems = [];
+    for (let k = 0; k < depth; k++) {
+      const { rows, cols } = dims[k];
+      const isOut = k === depth - 1;
+      const label  = SUB[k];
+      const wKey   = `W${k}`, bKey = `b${k}`;
+      const tsWKey = `tsW${k}`, tsBKey = `tsb${k}`;
+
+      currentItems.push({ key: wKey,  data: mlp.W[k], rows, cols, title: `W${label}` });
+      if (bias) currentItems.push({ key: bKey, data: mlp.b[k], rows, cols: 1, title: `b${label}` });
+
+      const tsW = thetaStar.slice(off, off += rows * cols);
+      targetItems.push({ key: tsWKey, data: tsW, rows, cols, title: `W${label}*` });
+      if (bias) {
+        const tsB = thetaStar.slice(off, off += rows);
+        targetItems.push({ key: tsBKey, data: tsB, rows, cols: 1, title: `b${label}*` });
+      }
+    }
 
     const sections = [
-      { label: 'Current weights θ', items: [
-        { key:'W1', data: mlp.W1, rows: dh, cols: din,  title: 'W₁' },
-        { key:'b1', data: mlp.b1, rows: dh, cols: 1,    title: 'b₁' },
-        { key:'W2', data: mlp.W2, rows: dout, cols: dh, title: 'W₂' },
-        { key:'b2', data: mlp.b2, rows: dout, cols: 1,  title: 'b₂' },
-      ]},
-      { label: 'Target weights θ*', items: [
-        { key:'tsW1', data: tsW1, rows: dh, cols: din,  title: 'W₁*' },
-        { key:'tsb1', data: tsb1, rows: dh, cols: 1,    title: 'b₁*' },
-        { key:'tsW2', data: tsW2, rows: dout, cols: dh, title: 'W₂*' },
-        { key:'tsb2', data: tsb2, rows: dout, cols: 1,  title: 'b₂*' },
-      ]},
+      { label: 'Current weights θ', items: currentItems },
+      { label: 'Target weights θ*', items: targetItems },
     ];
 
     for (const sec of sections) {
@@ -129,39 +137,42 @@ class HeatmapManager {
 
   refresh() {
     const { mlp } = this._sim;
-    const { din, dh, dout } = mlp;
+    const { bias, depth } = mlp;
+    const dims = mlp._layerDims();
 
-    const updates = [
-      { key:'W1', data: mlp.W1, rows: dh,   cols: din },
-      { key:'b1', data: mlp.b1, rows: dh,   cols: 1   },
-      { key:'W2', data: mlp.W2, rows: dout, cols: dh  },
-      { key:'b2', data: mlp.b2, rows: dout, cols: 1   },
-    ];
-
-    for (const u of updates) {
-      const p = this._panels[u.key];
-      if (!p) continue;
-      const m = absMax(u.data);
-      p.rangeEl.textContent = `±${m.toFixed(2)}`;
-      drawMatrix(p.canvas, u.data, u.rows, u.cols, m);
+    for (let k = 0; k < depth; k++) {
+      const { rows, cols } = dims[k];
+      for (const [key, data, r, c] of [
+        [`W${k}`, mlp.W[k], rows, cols],
+        ...(bias ? [[`b${k}`, mlp.b[k], rows, 1]] : []),
+      ]) {
+        const p = this._panels[key];
+        if (!p) continue;
+        const m = absMax(data);
+        p.rangeEl.textContent = `±${m.toFixed(2)}`;
+        drawMatrix(p.canvas, data, r, c, m);
+      }
     }
   }
 }
 
 // ---- Stats bar --------------------------------------------------------------
 
+const STATS_N = 1000;
 function updateStatsBar(cosims) {
   const bar = document.getElementById('statsBar');
   if (!bar || cosims.length === 0) return;
+  const start = Math.max(0, cosims.length - STATS_N);
+  const slice = cosims.slice(start);   // at most STATS_N entries
   let sum = 0, max = -Infinity;
-  for (const v of cosims) { sum += v; if (v > max) max = v; }
-  const mean   = sum / cosims.length;
-  const sorted = cosims.slice().sort((a,b) => a-b);
+  for (const v of slice) { sum += v; if (v > max) max = v; }
+  const mean   = sum / slice.length;
+  const sorted = slice.slice().sort((a,b) => a-b);
   const med    = sorted[Math.floor(sorted.length / 2)];
   const p95    = sorted[Math.floor(0.95 * sorted.length)];
   let var_ = 0;
-  for (const v of cosims) var_ += (v - mean) ** 2;
-  const std = Math.sqrt(var_ / cosims.length);
+  for (const v of slice) var_ += (v - mean) ** 2;
+  const std = Math.sqrt(var_ / slice.length);
 
   const fmt = v => v.toFixed(3);
   bar.innerHTML = `
@@ -170,7 +181,7 @@ function updateStatsBar(cosims) {
     <span class="stat-pill">median <strong>${fmt(med)}</strong></span>
     <span class="stat-pill">p95 <strong>${fmt(p95)}</strong></span>
     <span class="stat-pill">max <strong>${fmt(max)}</strong></span>
-    <span class="stat-pill" style="color:#aaa;">last ${cosims.length.toLocaleString()} steps</span>
+    <span class="stat-pill" style="color:#aaa;">last ${slice.length.toLocaleString()} steps</span>
   `;
 }
 
@@ -188,8 +199,8 @@ let heatmaps     = null;
 
 function reinit() {
   if (sim.running) { sim.pause(); setStartPauseLabel(false); }
-  const { din, dh, dout, act } = appState;
-  sim.initialize(din, dh, dout, act);
+  const { din, dh, dout, act, bias, depth } = appState;
+  sim.initialize(din, dh, dout, act, bias, depth);
 
   distChart.clear();
   ddistChart.clear();
@@ -219,6 +230,61 @@ function onFrameUpdate() {
     sim.iteration.toLocaleString();
 }
 
+// ---- X optimizer ------------------------------------------------------------
+
+const xOpt = new XOptimizer();
+
+function setXProvider() {
+  if (appState.useOptX) {
+    sim.xProvider = (mlp, delta) => xOpt.bestX(mlp, delta, appState.xOptLr, appState.xOptSteps, appState.xSigma);
+  } else {
+    sim.xProvider = null;
+  }
+}
+
+function initXOptimizer() {
+
+  // Two small charts
+  const cosCtx  = document.getElementById('xOptCosCanvas').getContext('2d');
+  const normCtx = document.getElementById('xOptNormCanvas').getContext('2d');
+
+  const makeChart = (ctx, yLabel, color) => new Chart(ctx, {
+    type: 'line',
+    data: { datasets: [{ data: [], borderColor: color, borderWidth: 1.5, pointRadius: 0, tension: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { type: 'linear', ticks: { maxTicksLimit: 6 } },
+        y: { beginAtZero: true },
+      },
+    },
+  });
+
+  const cosChart  = makeChart(cosCtx,  '|cos|', 'rgba(80,120,200,0.9)');
+  const normChart = makeChart(normCtx, '||x||', 'rgba(180,80,60,0.9)');
+
+  function refreshCharts() {
+    const h = xOpt.history;
+    cosChart.data.datasets[0].data  = h.map(p => ({ x: p.step, y: p.cosSim }));
+    normChart.data.datasets[0].data = h.map(p => ({ x: p.step, y: p.xNorm  }));
+    cosChart.update('none');
+    normChart.update('none');
+  }
+
+  document.getElementById('xOptRunBtn').addEventListener('click', () => {
+    if (!sim.mlp) return;
+    const status = document.getElementById('xOptStatus');
+    status.textContent = 'running…';
+    // synchronous — completes in <10ms for typical settings
+    const delta = sim.deltaTheta();
+    xOpt.run(sim.mlp, delta, appState.xOptLr, appState.xOptSteps, appState.xSigma);
+    refreshCharts();
+    const best = xOpt.history.reduce((a, b) => b.cosSim > a.cosSim ? b : a, xOpt.history[0]);
+    status.textContent = `done — best |cos| = ${best?.cosSim.toFixed(4) ?? '?'}`;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   distChart       = new DistanceChart('distCanvas');
   ddistChart      = new DDistChart('ddistCanvas');
@@ -230,6 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
     onParamChange(key) {
       if (key === 'maxStepsPerSec' && sim.running)
         sim._maxStepsPerSec = appState.maxStepsPerSec;
+      if (key === 'xSigma')
+        sim._xSigma = appState.xSigma;
       if (key === 'emaWindow') {
         const t = sim.iteration;
         if (sim.ddistHistory.length > 0)
@@ -237,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sim.projHistory.length > 0)
           cosSimStepChart.update(sim.projHistory, t, appState.emaWindow);
       }
+      if (key === 'useOptX') setXProvider();
       appState.save();
     },
     startPause() {
@@ -245,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sim.pause();
         setStartPauseLabel(false);
       } else {
-        sim.start(appState.xDist, appState.maxStepsPerSec);
+        sim.start(appState.xDist, appState.xSigma, appState.maxStepsPerSec);
         setStartPauseLabel(true);
       }
     },
@@ -255,5 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sim.onFrameUpdate   = onFrameUpdate;
   sim.onHeatmapUpdate = () => heatmaps.refresh();
 
+  initXOptimizer();
+  setXProvider();
   reinit();
 });

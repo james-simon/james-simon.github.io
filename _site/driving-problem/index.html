@@ -3795,15 +3795,6 @@
         <div class="math-sublabel">update</div>
         <div>$$\theta_{t+1} = \theta_t + \alpha_t^*\, \hat{g}(x_t)$$</div>
       </div>
-      <div class="math-cell">
-        <div class="math-sublabel">new distance</div>
-        <div>$$\|\Delta\theta_{t+1}\| = \|\Delta\theta_t\|\cdot|\!\sin\angle(g_t, \Delta\theta_t)|$$</div>
-      </div>
-    </div>
-    <div style="font-size:0.83em; color:#888; margin-top:6px;">
-      Sign of $r$ (residual) is chosen to make $\alpha_t^* \ge 0$. Each step shrinks
-      $\|\Delta\theta\|$ by $|\!\sin|$ of the alignment angle — so a high cosine-sim step
-      is geometrically decisive.
     </div>
   </div>
 
@@ -3831,12 +3822,30 @@
       <span class="param-value" id="value_dout">1</span>
     </div>
     <div class="param-row">
+      <span class="param-desc">depth</span>
+      <span class="param-label"></span>
+      <div class="btn-group" id="depthGroup">
+        <button class="toggle-btn" data-val="2">2 layers</button>
+        <button class="toggle-btn" data-val="3">3 layers</button>
+      </div>
+    </div>
+    <div class="param-row">
       <span class="param-desc">activation</span>
       <span class="param-label"></span>
       <div class="btn-group" id="actGroup">
         <button class="toggle-btn" data-val="relu">ReLU</button>
         <button class="toggle-btn" data-val="tanh">tanh</button>
+        <button class="toggle-btn" data-val="tanh+">tanh(z+.2)</button>
+        <button class="toggle-btn" data-val="sin">sin</button>
         <button class="toggle-btn" data-val="linear">linear</button>
+      </div>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">biases</span>
+      <span class="param-label"></span>
+      <div class="btn-group" id="biasGroup">
+        <button class="toggle-btn" data-val="true">on</button>
+        <button class="toggle-btn" data-val="false">off</button>
       </div>
     </div>
     <div class="param-row">
@@ -3846,6 +3855,12 @@
         <button class="toggle-btn" data-val="gaussian">$\mathcal{N}(0,I)$</button>
         <button class="toggle-btn" data-val="sphere">sphere</button>
       </div>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">$x$ scale</span>
+      <span class="param-label">$\sigma$</span>
+      <input type="range" id="slider_xSigma" class="param-slider" min="0" max="100" value="50">
+      <span class="param-value" id="value_xSigma">1.0</span>
     </div>
   </div>
 
@@ -3869,6 +3884,10 @@
   <div class="controls-row" style="margin-bottom:0.9em;">
     <button id="startPauseBtn" class="sim-button">start</button>
     <button id="reinitBtn"     class="sim-button">reinit</button>
+    <div class="btn-group" id="useOptXGroup" style="margin-left:0.4em;">
+      <button class="toggle-btn" data-val="false">random $x$</button>
+      <button class="toggle-btn" data-val="true">optimized $x$</button>
+    </div>
     <span class="steps-display">
       step <span id="iterCount">0</span>
       &nbsp;·&nbsp;
@@ -3905,6 +3924,49 @@
   <div id="statsBar" class="stats-bar" style="margin-bottom:4px;"></div>
   <div class="plot-canvas-box" style="height:180px; margin-bottom:1.2em;">
     <canvas id="histCanvas"></canvas>
+  </div>
+
+  <hr class="dp-hr">
+
+  <!-- X optimizer -->
+  <div class="section-label">Optimize $x$ to maximize $|\cos(g(x),\,\Delta\theta)|$</div>
+  <p style="font-size:0.88em;color:#777;margin-bottom:0.7em;">
+    Gradient ascent on $x$ via finite differences on the scalar objective.
+  </p>
+
+  <div class="param-col" style="margin-bottom:0.8em;">
+    <div class="param-row">
+      <span class="param-desc">learning rate</span>
+      <span class="param-label">$\eta_x$</span>
+      <input type="range" id="slider_xOptLr" class="param-slider" min="0" max="100" value="50">
+      <span class="param-value" id="value_xOptLr">0.1</span>
+    </div>
+    <div class="param-row">
+      <span class="param-desc">steps</span>
+      <span class="param-label"></span>
+      <input type="range" id="slider_xOptSteps" class="param-slider" min="0" max="100" value="60">
+      <span class="param-value" id="value_xOptSteps">500</span>
+    </div>
+  </div>
+
+  <div class="controls-row" style="margin-bottom:0.8em;">
+    <button id="xOptRunBtn" class="sim-button">run</button>
+    <span id="xOptStatus" style="font-size:0.82em;color:#aaa;margin-left:0.5em;"></span>
+  </div>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:1.2em;">
+    <div style="flex:1;min-width:260px;">
+      <div class="section-label" style="margin-bottom:4px;">$|\cos(g(x),\,\Delta\theta)|$ vs. step</div>
+      <div class="plot-canvas-box" style="height:180px;">
+        <canvas id="xOptCosCanvas"></canvas>
+      </div>
+    </div>
+    <div style="flex:1;min-width:260px;">
+      <div class="section-label" style="margin-bottom:4px;">$\|x\|$ vs. step</div>
+      <div class="plot-canvas-box" style="height:180px;">
+        <canvas id="xOptNormCanvas"></canvas>
+      </div>
+    </div>
   </div>
 
   <hr class="dp-hr">

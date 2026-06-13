@@ -33,9 +33,10 @@ export class Simulation {
     this.distHistory    = [];   // {x, y} — ||delta_theta|| over time
     this.cosSimHistory  = [];   // rolling last N_HIST cosines
 
-    // callbacks set by app
-    this.onFrameUpdate  = null;
+    // callbacks / providers set by app
+    this.onFrameUpdate   = null;
     this.onHeatmapUpdate = null;
+    this.xProvider       = null;   // (mlp, delta) => x, or null for random
 
     this._totalSteps  = 0;
     this._spsCounts   = [];
@@ -46,10 +47,9 @@ export class Simulation {
 
   // ---- Init -----------------------------------------------------------------
 
-  initialize(din, dh, dout, act) {
-    this.mlp = new MLP(din, dh, dout, act);
-    // target: separate MLP, just use its flat params
-    const target = new MLP(din, dh, dout, act);
+  initialize(din, dh, dout, act, bias, depth) {
+    this.mlp = new MLP(din, dh, dout, act, bias, depth);
+    const target = new MLP(din, dh, dout, act, bias, depth);
     this.thetaStar = target.flatParams();
 
     this.iteration      = 0;
@@ -58,6 +58,7 @@ export class Simulation {
     this.cosSimHistory  = [];
     this.projHistory    = [];
     this._lastHeatmap   = 0;
+    this._diag          = null;
 
     this._recordDist();
   }
@@ -69,7 +70,8 @@ export class Simulation {
     const theta     = mlp.flatParams();
     const delta     = vecSub(thetaStar, theta);   // theta* - theta
 
-    const x         = mlp.sampleX(this._xDist);
+    // xProvider is set by app when using optimized x mode
+    const x = this.xProvider ? this.xProvider(mlp, delta) : mlp.sampleX(this._xDist, this._xSigma);
     const { g, cosSim } = mlp.gradientBestSign(x, delta);
 
     // alpha* = <delta, g-hat>  — g is already unit-norm from gradientBestSign
@@ -90,7 +92,7 @@ export class Simulation {
     this.iteration++;
 
     this.cosSimHistory.push(cosSim);
-    this.projHistory.push({ x: this.iteration, y: dist * cosSim * cosSim });
+    this.projHistory.push(dist * cosSim * cosSim);
 
     this._recordDist();
     return cosSim;
@@ -101,10 +103,10 @@ export class Simulation {
     const delta = vecSub(this.thetaStar, theta);
     const dist  = vecNorm(delta);
     const prev  = this.distHistory.length > 0
-      ? this.distHistory[this.distHistory.length - 1].y : dist;
-    this.distHistory.push({ x: this.iteration, y: dist });
+      ? this.distHistory[this.distHistory.length - 1] : dist;
+    this.distHistory.push(dist);
     if (this.iteration > 0)
-      this.ddistHistory.push({ x: this.iteration, y: dist - prev });
+      this.ddistHistory.push(dist - prev);
   }
 
   // ---- Current delta_theta --------------------------------------------------
@@ -115,9 +117,10 @@ export class Simulation {
 
   // ---- Loop control ---------------------------------------------------------
 
-  start(xDist, maxStepsPerSec) {
+  start(xDist, xSigma, maxStepsPerSec) {
     if (this.running) return;
     this._xDist          = xDist;
+    this._xSigma         = xSigma;
     this._maxStepsPerSec = maxStepsPerSec;
     this.running         = true;
     this._avgStepTime    = 1;
@@ -149,16 +152,49 @@ export class Simulation {
       this._avgStepTime = 0.15 * (performance.now() - t0) + 0.85 * this._avgStepTime;
       steps++;
     }
+    const afterSteps = performance.now();
 
     this._updateSps(steps, frameStart);
 
     const needHeatmap = (this.iteration - this._lastHeatmap) >= HEATMAP_INTERVAL;
+    let heatmapMs = 0;
     if (needHeatmap) {
       this._lastHeatmap = this.iteration;
+      const t0 = performance.now();
       if (this.onHeatmapUpdate) this.onHeatmapUpdate();
+      heatmapMs = performance.now() - t0;
     }
 
+    const beforeFrame = performance.now();
     if (this.onFrameUpdate) this.onFrameUpdate();
+    const frameUpdateMs = performance.now() - beforeFrame;
+
+    // Diagnostics: accumulate and log every 5 seconds
+    if (!this._diag) this._diag = { frames: 0, stepMs: 0, frameMs: 0, heatmapMs: 0, stepsTotal: 0, lastLog: frameStart, startTime: frameStart };
+    const d = this._diag;
+    d.frames++;
+    d.stepMs     += afterSteps - frameStart;
+    d.frameMs    += frameUpdateMs;
+    d.heatmapMs  += heatmapMs;
+    d.stepsTotal += steps;
+    const elapsed = frameStart - d.startTime;
+    const logInterval = elapsed < 2000 ? 250 : 5000;
+    if (frameStart - d.lastLog > logInterval) {
+      const f = d.frames;
+      const stepMs    = d.stepMs / f;
+      const plotMs    = d.frameMs / f;
+      const totalMs   = stepMs + plotMs;
+      const plotPct   = totalMs > 0 ? (plotMs / totalMs * 100).toFixed(0) : '?';
+      console.log(
+        `[perf] iter=${this.iteration} | `+
+        `sim=${stepMs.toFixed(1)}ms/frame  plot=${plotMs.toFixed(1)}ms/frame  (${plotPct}% plotting) | `+
+        `steps/frame=${(d.stepsTotal/f).toFixed(0)}  sps=${Math.round(this.stepsPerSec).toLocaleString()} | `+
+        `histLen=${this.distHistory.length}`
+      );
+      d.frames = d.stepMs = d.frameMs = d.heatmapMs = d.stepsTotal = 0;
+      d.lastLog = frameStart;
+    }
+
     this._rafId = requestAnimationFrame(() => this._loop());
   }
 

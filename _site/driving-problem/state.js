@@ -8,11 +8,17 @@ const DEFAULTS = {
   din:         5,
   dh:          10,
   dout:        1,
+  depth:       2,
   act:         'relu',
+  bias:        true,
   xDist:       'gaussian',
+  xSigma:      1.0,
   nSamples:    1000,
   maxStepsPerSec: Infinity,
   emaWindow:      20,
+  xOptLr:         1.0,
+  xOptSteps:      100,
+  useOptX:        false,
 };
 
 export class AppState {
