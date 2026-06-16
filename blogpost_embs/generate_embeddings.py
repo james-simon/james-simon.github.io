@@ -90,6 +90,10 @@ def main():
             print(f"  Skipping {post_file.name} - no front matter")
             continue
 
+        if metadata.get('published', 'true').lower() == 'false':
+            print(f"  Skipping {post_file.name} - unpublished")
+            continue
+
         # Clean content for embedding
         clean_text = clean_content(content)
 
