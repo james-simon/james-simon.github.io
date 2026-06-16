@@ -40,7 +40,7 @@ $$
 </div>
 </div>
 
-I find this really nice — the second derivatives are proportional, with the rather surprising constant of proportionality of $- \left( \frac{d s}{d t} \right)^{-3}$. (Wonder if there's some intuition for that other than a dimensionality argument…)
+I find this really nice — the second derivatives are proportional, with the rather surprising constant of proportionality of $- \left( \frac{d s}{d t} \right)^{-3}$. Even though it didn't solve the particular research problem I hoped it would, seems like it might eventually be useful for something. (Wonder if there's some intuition for that other than a dimensionality argument…)
 
 **The third derivative.** Again applying the chain rule, taking $\frac{d^3 t}{ds^3} = \frac{dt}{ds} \cdot \frac{d}{dt} \frac{d^2 s}{dt^2}$, we find that
 
