@@ -3,7 +3,7 @@ layout: post
 title: "Explainability as a form of system closure"
 date: 2026-06-29 07:00:00
 category: dl-science
-emoji: 🔒
+emoji: 🦋
 ---
 
 There's a question that's ringing out all over the machine learning world these days: *what the hell counts as an "explanation" of a complex system?* If you listen for a while to conversations in the labs of practitioners, the forums of mechanistic interpretability, the ivory halls of theory, or even the labs of AI-savvy neuroscientists or biologists, you'll start hearing this question thrumming behind lots and lots of more tactical conversations. Everybody wants to explain something about AI — what it's doing, why it's doing it, or how to make it do something different, depending on the person — and, invariably, everyone's struggling to do it. It's enough to make someone who's been at it for a few years start to seriously question the premise.
