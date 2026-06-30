@@ -40,17 +40,17 @@ $$
 </div>
 </div>
 
-I find this really nice — the second derivatives are proportional, with the rather surprising constant of proportionality of $- \left( \frac{d s}{d t} \right)^{-3}$. Even though it didn't solve the particular research problem I hoped it would, seems like it might eventually be useful for something. (Wonder if there's some intuition for that other than a dimensionality argument…)
+I find this really nice — the second derivatives are proportional, with the rather surprising ratio of $- \left( \frac{d s}{d t} \right)^{-3}$. Even though it didn't solve the particular research problem I hoped it would, seems like it might eventually be useful for something. (Wonder if there's some intuition for that other than a dimensionality argument…)
 
-**The third derivative.** Again applying the chain rule, taking $\frac{d^3 t}{ds^3} = \frac{dt}{ds} \cdot \frac{d}{dt} \frac{d^2 s}{dt^2}$, we find that
+**The third derivative.** Again applying the chain rule, taking $\frac{d^3 t}{ds^3} = \frac{dt}{ds} \cdot \frac{d}{dt} \frac{d^2 t}{ds^2}$, we find that
 
 <div style="text-align: center; margin-bottom: 1.5em;">
 <div style="border: 1px solid black; padding: 2px 10px; display: inline-block;">
 $$
 \frac{d^3 t}{ds^3}
-= - \left( \frac{d s}{d t} \right)^{-5} \left[3\left(\frac{d^2 s}{d t^2}\right)^2 - \frac{d s}{d t} \cdot \frac{d^3 s}{dt^3}\right].
+= \left( \frac{d s}{d t} \right)^{-5} \left[3\left(\frac{d^2 s}{d t^2}\right)^2 - \frac{d s}{d t} \cdot \frac{d^3 s}{dt^3}\right].
 $$
 </div>
 </div>
 
-Not as pretty, and you lose the nice constant of proportionality between $s^{(k)}(t)$ and $t^{(k)}(s)$. Thanks to the chain rule, things only get more complicated from here on out.
+Not as pretty, and you lose the nice proportionality between $s^{(k)}(t)$ and $t^{(k)}(s)$. Thanks to the chain rule, things only get more complicated from here on out.
