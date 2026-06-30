@@ -1,0 +1,73 @@
+# Widget registry. Set hidden: true to remove from the widgets page.
+# slug must match the top-level directory name (used to build the URL).
+
+- slug: tensorizer
+  title: Tensorizer
+  desc: ""
+  hidden: false
+
+- slug: mlp-sharpness
+  title: MLP Sharpness
+  desc: ""
+  hidden: false
+
+- slug: shallow-mlps
+  title: Shallow MLPs
+  desc: ""
+  hidden: false
+
+- slug: lazy-vs-rich
+  title: Lazy vs. Rich Learning
+  desc: ""
+  hidden: false
+
+- slug: eigenhybridization
+  title: Eigenhybridization
+  desc: ""
+  hidden: true
+
+- slug: dln-sharpness
+  title: DLN Sharpness
+  desc: ""
+  hidden: false
+
+- slug: low-dim-flows
+  title: Low-Dimensional Flows
+  desc: ""
+  hidden: false
+
+- slug: driving-problem
+  title: The Driving Problem
+  desc: ""
+  hidden: false
+
+- slug: expander-nets
+  title: Expander Nets
+  desc: ""
+  hidden: false
+
+- slug: circular-law
+  title: Circular Law
+  desc: ""
+  hidden: true
+
+- slug: tsne-chess
+  title: t-SNE Chess
+  desc: ""
+  hidden: false
+
+- slug: level-coeffs
+  title: Level Coefficients
+  desc: ""
+  hidden: false
+
+- slug: hopfield-nets
+  title: Hopfield Nets
+  desc: ""
+  hidden: false
+
+- slug: t-sne
+  title: t-SNE
+  desc: ""
+  hidden: true
+

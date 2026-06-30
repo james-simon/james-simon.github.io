@@ -1,0 +1,67 @@
+---
+layout: default
+permalink: /widgets/
+---
+
+<style>
+  h1 { margin-top: 1.5em; }
+  .hr-thick {
+    border: none; height: 2px;
+    color: #aaaaaa; background-color: #aaaaaa;
+  }
+  .widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2em;
+    margin: 1.5em 0;
+  }
+  .widget-card {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1em 1.2em;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    display: block;
+  }
+  .widget-card:hover {
+    background: #f5f5f5;
+    border-color: #aaa;
+    text-decoration: none;
+    color: inherit;
+  }
+  .widget-card-title {
+    font-size: 1.05em;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+  }
+  .widget-card-desc {
+    font-size: 0.85em;
+    color: #666;
+  }
+</style>
+
+<div class="container">
+  <h1><i class="fas fa-gears"></i> Widgets</h1>
+  <hr class="hr-thick">
+
+  <p>
+    Interactive widgets I've vibecoded, usually for a research purpose. Usually intended for use by me and my collaborators, so might not make sense if you're not one of those. Explore at your own risk.
+  </p>
+
+  <div class="widget-grid">
+
+    {% comment %}To hide a widget, add `hidden: true` to its entry below.{% endcomment %}
+
+    {% assign widgets = site.data.widgets %}
+    {% for w in widgets %}
+      {% unless w.hidden %}
+        <a class="widget-card" href="{{site.baseurl}}/{{ w.slug }}/">
+          <div class="widget-card-title">{{ w.title }}</div>
+          {% if w.desc %}<div class="widget-card-desc">{{ w.desc }}</div>{% endif %}
+        </a>
+      {% endunless %}
+    {% endfor %}
+
+  </div>
+</div>
