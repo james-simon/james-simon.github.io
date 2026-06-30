@@ -29,7 +29,7 @@ Wortsman and Loureiro find that the kernel eigenvalues asymptotically decay as $
 I find that, when studying machine learning, it's always a good idea to go check your results against experiment. So what happens if we try this prediction with a real kernel function? To try this, I drew $n = 10^4$ samples of Gaussian data with eigenvalues $\gamma_i \propto i^{-a}$ with exponent $a= 1.5$ and unit trace $\sum_i \gamma_i = 1$, with data dimension $d = 10^4$. I then computed the spectrum of a Gaussian kernel $K_\sigma(\mathbf{x}, \mathbf{x}') = e^{-\frac{1}{2 \sigma^2} \|\mathbf{x} - \mathbf{x}'\|^2}$ with different kernel widths $\sigma$ over this dataset and plotted the spectrum. Here's what I found:
 
 <div style="text-align: center;">
-<img src="{{site.baseurl}}/img/raw_eigenvalue_plots.png" alt="Kernel eigenvalue spectra for different sigma values" style="width: 90%;">
+<img src="{{site.baseurl}}/img/kernel_spectral_decay_powerlaw/raw_eigenvalue_plots.png" alt="Kernel eigenvalue spectra for different sigma values" style="width: 90%;">
 </div>
 
 A few observations. First, the spectrum is… kind of a nice powerlaw in the middle? But the transient effects at the head and finite-size effects at the tail make it annoying to tell; we'll have to deal with these. Second, even if you squint, it's hard to argue that the decays all look like powerlaws with $a = 1.5$. Third, the decay rates actually seem to *change:* the plots with larger $\sigma$ seem to have a faster decay and a larger exponent. This wasn't in the prediction of Wortsman and Loureiro (2025). What gives, and can we predict the decay rates we actually see here?
@@ -67,7 +67,7 @@ In words: the set of all kernel eigenvalues (the left-hand side) equals the set 
 The HEA isn't exact, and it isn't perfect, but in our paper, we show that it's empirically very accurate in basically every case we hoped it would be, including Gaussian-data cases like the one we're studying here. Let's check: I'll add the theoretical spectrum predicted by simple enumeration of the HEA eigenvalues to the plots.
 
 <div style="text-align: center;">
-<img src="{{site.baseurl}}/img/eigenvalue_plots_with_hea_vals.png" alt="Comparison of experimental vs HEA-predicted spectra" style="width: 90%;">
+<img src="{{site.baseurl}}/img/kernel_spectral_decay_powerlaw/eigenvalue_plots_with_hea_vals.png" alt="Comparison of experimental vs HEA-predicted spectra" style="width: 90%;">
 </div>
 
 Pretty good! It's not perfect, but it's pretty close, and the discrepancy in the tails is probably due to finite-size effects in the experiment. I trust the HEA more there, and the HEA seems to show a fairly nice powerlaw that spans several decades! It looks reasonably like the eigenvalues actually follow a powerlaw with a *different* slope $a' \neq a$. I didn't draw those lines because I wasn't totally sold, but I'm close to buying it.
@@ -91,7 +91,7 @@ $$
 where $r = \Big(\sigma^{-2}\gamma_1\Big)^{1/a}$. So does this work? Let's add it to the plot:
 
 <div style="text-align: center;">
-<img src="{{site.baseurl}}/img/eigenvalue_plots_with_hea_and_saddle_pt_theory.png" alt="Adding ChatGPT's prediction to the plots" style="width: 90%;">
+<img src="{{site.baseurl}}/img/kernel_spectral_decay_powerlaw/eigenvalue_plots_with_hea_and_saddle_pt_theory.png" alt="Adding ChatGPT's prediction to the plots" style="width: 90%;">
 </div>
 
 Not really. I'm not sure why. Even after adding more terms (i.e. considering a higher-order expansion around the saddle point), it doesn't work. It's possible that GPT's calculation was just wrong; I haven't checked in detail (and that's a first thing to do were I to take up this problem seriously). It's better than just assuming a powerlaw with exponent $a$, though.
@@ -99,7 +99,7 @@ Not really. I'm not sure why. Even after adding more terms (i.e. considering a h
 Let's ignore the discrepancy and study the function $f(j; \sigma, a)$ anyways. A first observation is that it actually *does* asymptotically decay like $j^{-a}$. A second observation, though, is that it can take a *really, really long time to get there.* Here's a plot of the slope on a log-log plot:
 
 <div style="text-align: center;">
-<img src="{{site.baseurl}}/img/log_log_slope_plot.png" alt="Slope on a log-log plot" style="width: 40%;">
+<img src="{{site.baseurl}}/img/kernel_spectral_decay_powerlaw/log_log_slope_plot.png" alt="Slope on a log-log plot" style="width: 40%;">
 <p style="font-size: 0.9em; margin-top: 0.5em;">Slope on a log-log plot of $\lambda(j) = f(j; \sigma, a)$ with $a = 1.5$. Note that it takes an extremely long time to converge to the asymptotic slope of $-a = -1.5$!</p>
 </div>
 
