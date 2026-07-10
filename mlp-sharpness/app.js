@@ -4,7 +4,7 @@
 
 import { AppState } from './state.js';
 import { Simulation } from './simulation.js';
-import { LossChart, SharpnessChart, HessTermChart, WeightNormChart, GradProjChart, FunctionPlot } from './charts.js';
+import { LossChart, SharpnessChart, HessTermChart, WeightNormChart, GradProjChart, FunctionPlot, EigenvecSVChart, EigenvecHistPlot, JacobianSVFnPlot, SpectralDensityPlot } from './charts.js';
 import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 
 // ============================================================================
@@ -12,13 +12,20 @@ import { bindUI, restoreUI, waitForMathJax } from './ui.js';
 // ============================================================================
 
 const PLOT_LABELS = {
-  loss:       'loss',
-  function:   'function fit',
-  weightNorms:'Frobenius norms $\\|W_k\\|_F$',
-  sharpness:  'sharpness (top Hessian eigenvalues)',
-  gaussNewton:'Gauss-Newton term eigenvalues',
-  residual:   'residual term eigenvalues',
-  gradProj:   'gradient projections onto eigenvectors',
+  loss:           'loss',
+  function:       'function fit',
+  weightNorms:    'Frobenius norms $\\|W_k\\|_F$',
+  gradNorm:       'gradient norm $\\|\\nabla L\\|$',
+  sharpness:      'sharpness (top Hessian eigenvalues)',
+  sharpnessESD:   'sharpness (ESD)',
+  gaussNewton:    'Gauss-Newton term eigenvalues',
+  gaussNewtonESD: 'Gauss-Newton term (ESD)',
+  residual:       'residual term eigenvalues',
+  residualESD:    'residual term (ESD)',
+  gradProj:       'gradient projections onto eigenvectors',
+  eigenvecSV:     'singular values of top Hessian eigenvector',
+  eigenvecHist:   'histogram of top Hessian eigenvector elements',
+  jacobianSVFn:   'Jacobian right singular vectors (data space)',
 };
 
 // ============================================================================
@@ -106,6 +113,12 @@ class PlotManager {
     this._charts    = {};
     this._cells     = {};
     this._simParams = null;
+    this.useEffTime = appState.useEffTime ?? false;
+    this._eta       = 0.01;
+  }
+
+  _applyEffTime(chart) {
+    if (this.useEffTime) chart.setEffectiveTime(true, this._eta);
   }
 
   _opts(key) {
@@ -136,31 +149,82 @@ class PlotManager {
     }
   }
 
+  setEffectiveTime(on, eta) {
+    this.useEffTime = on;
+    this._eta = eta;
+    const TIME_SERIES_KEYS = ['loss', 'gradNorm', 'sharpness', 'gaussNewton', 'residual', 'gradProj', 'weightNorms', 'eigenvecSV'];
+    for (const key of TIME_SERIES_KEYS) {
+      if (this._charts[key]) this._charts[key].setEffectiveTime(on, eta);
+    }
+  }
+
+  activeESDPlots() {
+    const vis = new Set(this._state.visiblePlots);
+    const out = new Set();
+    if (vis.has('sharpnessESD'))   out.add('sharpnessESD');
+    if (vis.has('gaussNewtonESD')) out.add('gaussNewtonESD');
+    if (vis.has('residualESD'))    out.add('residualESD');
+    if (vis.has('residualESD') && (this._opts('residualESD').showGrad ?? false))
+      out.add('residualESD_grad');
+    return out;
+  }
+
+  slqProbesMap() {
+    const m = new Map();
+    for (const key of ['sharpnessESD', 'gaussNewtonESD', 'residualESD']) {
+      const v = this._opts(key).slqProbes;
+      if (v != null) m.set(key, v);
+    }
+    return m;
+  }
+
   update(sim) {
     if (!sim.params) return;
     const visible = new Set(this._state.visiblePlots);
     const depth = sim.params.depth;
+    const eta   = sim.params.eta;
 
     if (visible.has('loss') && this._charts.loss && sim.lossHistory.length > 0)
       this._charts.loss.update(sim.lossHistory);
 
+    if (visible.has('gradNorm') && this._charts.gradNorm && sim.gradNormHistory.length > 0)
+      this._charts.gradNorm.update(sim.gradNormHistory);
+
     if (visible.has('sharpness') && this._charts.sharpness && sim.sharpnessHistory.length > 0)
-      this._charts.sharpness.update(sim.sharpnessHistory, sim.params.eta);
+      this._charts.sharpness.update(sim.sharpnessHistory, eta);
+
+    if (visible.has('sharpnessESD') && this._charts.sharpnessESD && sim.sharpnessHistory.length > 0)
+      this._charts.sharpnessESD.update(sim.sharpnessHistory, eta);
 
     if (visible.has('gradProj') && this._charts.gradProj && sim.sharpnessHistory.length > 0)
       this._charts.gradProj.update(sim.sharpnessHistory);
 
     if (visible.has('gaussNewton') && this._charts.gaussNewton && sim.hessTermsHistory.length > 0)
-      this._charts.gaussNewton.update(sim.hessTermsHistory, sim.params.eta);
+      this._charts.gaussNewton.update(sim.hessTermsHistory, eta);
+
+    if (visible.has('gaussNewtonESD') && this._charts.gaussNewtonESD && sim.hessTermsHistory.length > 0)
+      this._charts.gaussNewtonESD.update(sim.hessTermsHistory, eta);
 
     if (visible.has('residual') && this._charts.residual && sim.hessTermsHistory.length > 0)
-      this._charts.residual.update(sim.hessTermsHistory, sim.params.eta);
+      this._charts.residual.update(sim.hessTermsHistory, eta);
+
+    if (visible.has('residualESD') && this._charts.residualESD && sim.hessTermsHistory.length > 0)
+      this._charts.residualESD.update(sim.hessTermsHistory, eta);
 
     if (visible.has('weightNorms') && this._charts.weightNorms && sim.weightNormHistory.length > 0)
       this._charts.weightNorms.update(sim.weightNormHistory, depth);
 
     if (visible.has('function') && this._charts.function)
       this._charts.function.update(sim);
+
+    if (visible.has('eigenvecSV') && this._charts.eigenvecSV && sim.sharpnessHistory.length > 0 && sim.layers)
+      this._charts.eigenvecSV.update(sim.sharpnessHistory, sim.layers);
+
+    if (visible.has('eigenvecHist') && this._charts.eigenvecHist && sim.sharpnessHistory.length > 0)
+      this._charts.eigenvecHist.update(sim.sharpnessHistory);
+
+    if (visible.has('jacobianSVFn') && this._charts.jacobianSVFn && sim.sharpnessHistory.length > 0)
+      this._charts.jacobianSVFn.update(sim.sharpnessHistory, sim.xs);
   }
 
   // ---- private ---------------------------------------------------------------
@@ -189,20 +253,47 @@ class PlotManager {
       const opts = this._opts(key);
       if (opts.logX) chart.setLogScaleX(true);
       if (opts.logY) chart.setLogScaleY(true);
-      this._charts.loss = chart;
+      this._applyEffTime(chart); this._charts.loss = chart;
+
+    } else if (key === 'gradNorm') {
+      canvas.id = 'gradNormPlot';
+      title.textContent = 'gradient norm';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new LossChart('gradNormPlot');  // same shape as loss chart
+      const opts = this._opts(key);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._applyEffTime(chart); this._charts.gradNorm = chart;
 
     } else if (key === 'sharpness') {
       canvas.id = 'sharpnessPlot';
-      title.textContent = 'sharpness';
+      title.textContent = 'sharpness (full Hessian)';
       box.appendChild(canvas);
       cell.appendChild(title);
       cell.appendChild(box);
       this._grid.appendChild(cell);
       const chart = new SharpnessChart('sharpnessPlot');
       const opts = this._opts(key);
-      if (opts.logX) chart.setLogScaleX(true);
-      if (opts.logY) chart.setLogScaleY(true);
-      this._charts.sharpness = chart;
+      if (opts.logX)   chart.setLogScaleX(true);
+      if (opts.logY)   chart.setLogScaleY(true);
+      if (opts.zoomNeg) chart.setZoomNeg(true);
+      this._applyEffTime(chart); this._charts.sharpness = chart;
+
+    } else if (key === 'sharpnessESD') {
+      canvas.id = 'sharpnessESDPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'sharpness (ESD)';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.sharpnessESD = new SpectralDensityPlot('sharpnessESDPlot', {
+        spectrumKey: 'spectrum', topValuesKey: 'values', botValuesKey: 'bottomValues',
+      });
+      if (this._opts(key).logY) this._charts.sharpnessESD.setLogScaleY(true);
 
     } else if (key === 'gaussNewton') {
       canvas.id = 'gaussNewtonPlot';
@@ -213,9 +304,23 @@ class PlotManager {
       this._grid.appendChild(cell);
       const chart = new HessTermChart('gaussNewtonPlot', 'eigenvalue', 'gnValues', 'gnBottomValues');
       const opts = this._opts(key);
-      if (opts.logX) chart.setLogScaleX(true);
-      if (opts.logY) chart.setLogScaleY(true);
-      this._charts.gaussNewton = chart;
+      if (opts.logX)    chart.setLogScaleX(true);
+      if (opts.logY)    chart.setLogScaleY(true);
+      if (opts.zoomNeg) chart.setZoomNeg(true);
+      this._applyEffTime(chart); this._charts.gaussNewton = chart;
+
+    } else if (key === 'gaussNewtonESD') {
+      canvas.id = 'gaussNewtonESDPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'Gauss-Newton term (ESD)';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.gaussNewtonESD = new SpectralDensityPlot('gaussNewtonESDPlot', {
+        spectrumKey: 'gnSpectrum', topValuesKey: 'gnValues', botValuesKey: 'gnBottomValues',
+      });
+      if (this._opts(key).logY) this._charts.gaussNewtonESD.setLogScaleY(true);
 
     } else if (key === 'residual') {
       canvas.id = 'residualPlot';
@@ -224,11 +329,27 @@ class PlotManager {
       cell.appendChild(title);
       cell.appendChild(box);
       this._grid.appendChild(cell);
-      const chart = new HessTermChart('residualPlot', 'eigenvalue', 'resValues', 'resBottomValues');
+      const chart = new HessTermChart('residualPlot', 'eigenvalue', 'resValues', 'resBottomValues', false);
       const opts = this._opts(key);
-      if (opts.logX) chart.setLogScaleX(true);
-      if (opts.logY) chart.setLogScaleY(true);
-      this._charts.residual = chart;
+      if (opts.logX)    chart.setLogScaleX(true);
+      if (opts.logY)    chart.setLogScaleY(true);
+      if (opts.zoomNeg) chart.setZoomNeg(true);
+      this._applyEffTime(chart); this._charts.residual = chart;
+
+    } else if (key === 'residualESD') {
+      canvas.id = 'residualESDPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'residual term (ESD)';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.residualESD = new SpectralDensityPlot('residualESDPlot', {
+        spectrumKey: 'resSpectrum', topValuesKey: 'resValues', botValuesKey: 'resBottomValues',
+        gradSpectrumKey: 'resGradSpectrum',
+      });
+      if (this._opts(key).logY)    this._charts.residualESD.setLogScaleY(true);
+      if (this._opts(key).showGrad) this._charts.residualESD.setShowGrad(true);
 
     } else if (key === 'gradProj') {
       canvas.id = 'gradProjPlot';
@@ -241,7 +362,7 @@ class PlotManager {
       const opts = this._opts(key);
       if (opts.logX) chart.setLogScaleX(true);
       if (opts.logY) chart.setLogScaleY(true);
-      this._charts.gradProj = chart;
+      this._applyEffTime(chart); this._charts.gradProj = chart;
 
     } else if (key === 'weightNorms') {
       canvas.id = 'weightNormPlot';
@@ -254,7 +375,7 @@ class PlotManager {
       const opts = this._opts(key);
       if (opts.logX) chart.setLogScaleX(true);
       if (opts.logY) chart.setLogScaleY(true);
-      this._charts.weightNorms = chart;
+      this._applyEffTime(chart); this._charts.weightNorms = chart;
 
     } else if (key === 'function') {
       canvas.id = 'functionPlot';
@@ -265,6 +386,41 @@ class PlotManager {
       cell.appendChild(box);
       this._grid.appendChild(cell);
       this._charts.function = new FunctionPlot('functionPlot');
+
+    } else if (key === 'jacobianSVFn') {
+      canvas.id = 'jacobianSVFnPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'NTK eigenfns';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.jacobianSVFn = new JacobianSVFnPlot('jacobianSVFnPlot');
+
+    } else if (key === 'eigenvecHist') {
+      canvas.id = 'eigenvecHistPlot';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;';
+      title.textContent = 'eigenvec histogram';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      this._charts.eigenvecHist = new EigenvecHistPlot('eigenvecHistPlot');
+
+    } else if (key === 'eigenvecSV') {
+      canvas.id = 'eigenvecSVPlot';
+      title.textContent = 'eigenvec singular values';
+      box.appendChild(canvas);
+      cell.appendChild(title);
+      cell.appendChild(box);
+      this._grid.appendChild(cell);
+      const chart = new EigenvecSVChart('eigenvecSVPlot');
+      const opts = this._opts(key);
+      const layerIdx = this._resolveEigenvecLayer(opts.layerIdx);
+      chart.setLayerIdx(layerIdx);
+      if (opts.logX) chart.setLogScaleX(true);
+      if (opts.logY) chart.setLogScaleY(true);
+      this._applyEffTime(chart); this._charts.eigenvecSV = chart;
     }
 
     this._attachGear(key, cell);
@@ -288,9 +444,51 @@ class PlotManager {
     const save = () => this._saveOpts();
     const fields = [];
 
-    if (key === 'function') return fields;
+    // ESD plots: log y + probe count + compute-interval options
+    const ESD_KEYS = new Set(['sharpnessESD', 'gaussNewtonESD', 'residualESD']);
+    if (ESD_KEYS.has(key)) {
+      const opts = this._opts(key);
+      fields.push({
+        type: 'checkbox', label: 'log y', value: opts.logY ?? false,
+        onChange: (v) => {
+          opts.logY = v; save();
+          const ch = this._charts[key];
+          if (ch && ch.setLogScaleY) ch.setLogScaleY(v);
+        },
+      });
+      fields.push({
+        type: 'select', label: '# probes', value: opts.slqProbes ?? 10,
+        choices: [10, 20, 40, 80].map(v => ({ label: String(v), value: v })),
+        onChange: (v) => { opts.slqProbes = v; save(); },
+      });
+      if (key === 'residualESD') {
+        fields.push({
+          type: 'checkbox', label: 'overlay gradient power', value: opts.showGrad ?? false,
+          onChange: (v) => {
+            opts.showGrad = v; save();
+            const ch = this._charts.residualESD;
+            if (ch) ch.setShowGrad(v);
+          },
+        });
+      }
+      const INTERVAL_CHOICES = [1, 2, 5, 10, 20, 50, 100, 200, 500].map(v => ({ label: `every ${v}`, value: v }));
+      fields.push({
+        type: 'select', label: 'compute', value: this._state.hessianInterval,
+        choices: INTERVAL_CHOICES,
+        onChange: (v) => {
+          this._state.hessianInterval = v;
+          this._state.save();
+          if (this._simParams) this._simParams.hessianInterval = v;
+        },
+      });
+      return fields;
+    }
 
-    const chartKey = { loss: 'loss', sharpness: 'sharpness', gaussNewton: 'gaussNewton', residual: 'residual', gradProj: 'gradProj', weightNorms: 'weightNorms' }[key];
+    if (key === 'function') return fields;
+    if (key === 'eigenvecHist') return fields;
+    if (key === 'jacobianSVFn') return fields;
+
+    const chartKey = { loss: 'loss', gradNorm: 'gradNorm', sharpness: 'sharpness', gaussNewton: 'gaussNewton', residual: 'residual', gradProj: 'gradProj', weightNorms: 'weightNorms', eigenvecSV: 'eigenvecSV' }[key];
     if (!chartKey) return fields;
 
     const opts = this._opts(key);
@@ -311,6 +509,17 @@ class PlotManager {
       },
     });
 
+    if (['sharpness', 'gaussNewton', 'residual'].includes(key)) {
+      fields.push({
+        type: 'checkbox', label: 'zoom on neg eigvals', value: opts.zoomNeg ?? false,
+        onChange: (v) => {
+          opts.zoomNeg = v; save();
+          const ch = this._charts[chartKey];
+          if (ch && ch.setZoomNeg) ch.setZoomNeg(v);
+        },
+      });
+    }
+
     if (key === 'sharpness') {
       const INTERVAL_CHOICES = [1, 2, 5, 10, 20, 50, 100, 200, 500].map(v => ({ label: `every ${v}`, value: v }));
       fields.push({
@@ -324,7 +533,47 @@ class PlotManager {
       });
     }
 
+    if (key === 'eigenvecSV') {
+      const eligible = this._eligibleLayers();
+      if (eligible.length > 0) {
+        const opts = this._opts(key);
+        const current = this._resolveEigenvecLayer(opts.layerIdx);
+        const choices = eligible.map(l => ({ label: `layer ${l+1}`, value: l }));
+        fields.push({
+          type: 'select', label: 'layer', value: current,
+          choices,
+          onChange: (v) => {
+            opts.layerIdx = v; save();
+            const ch = this._charts.eigenvecSV;
+            if (ch) { ch.setLayerIdx(v); ch.clear(); }
+          },
+        });
+      }
+    }
+
     return fields;
+  }
+
+  // Returns eligible layer indices (nIn>1 and nOut>1) for eigenvecSV plot.
+  _eligibleLayers() {
+    if (!this._simParams) return [];
+    const { depth, hiddenDim } = this._simParams;
+    const eligible = [];
+    // layer dims: [1,hiddenDim], [hiddenDim,hiddenDim]*(depth-2), [hiddenDim,1]
+    for (let l = 0; l < depth; l++) {
+      const nIn  = l === 0         ? 1         : hiddenDim;
+      const nOut = l === depth - 1 ? 1         : hiddenDim;
+      if (nIn > 1 && nOut > 1) eligible.push(l);
+    }
+    return eligible;
+  }
+
+  // Resolve stored layerIdx to a valid eligible layer (or first eligible, or null).
+  _resolveEigenvecLayer(stored) {
+    const eligible = this._eligibleLayers();
+    if (eligible.length === 0) return null;
+    if (stored !== undefined && stored !== null && eligible.includes(stored)) return stored;
+    return eligible[0];
   }
 
   _destroy(key) {
@@ -396,12 +645,34 @@ waitForMathJax(() => {
     plotManager.rebuild();
     sim.initialize(buildParams());
     plotManager._simParams = sim.params;
+    plotManager._eta = appState.eta;
+    if (plotManager.useEffTime) plotManager.setEffectiveTime(true, appState.eta);
   }
 
   const invertChk = document.getElementById('check_invertDynamics');
   if (invertChk) {
     invertChk.addEventListener('change', () => { sim.invertDynamics = invertChk.checked; });
   }
+
+  // x-axis step / t_eff toggle
+  const useEffTime = appState.useEffTime ?? false;
+  plotManager.useEffTime = useEffTime;
+  document.getElementById('step-link').classList.toggle('active', !useEffTime);
+  document.getElementById('teff-link').classList.toggle('active',  useEffTime);
+
+  function setXAxisMode(mode) {
+    const on = (mode === 'teff');
+    appState.useEffTime = on;
+    appState.save();
+    plotManager.setEffectiveTime(on, appState.eta);
+    document.getElementById('step-link').classList.toggle('active', !on);
+    document.getElementById('teff-link').classList.toggle('active',  on);
+    return false;
+  }
+  window.setXAxisMode = setXAxisMode;
+
+  sim.getActiveESDPlots = () => plotManager.activeESDPlots();
+  sim.getSlqProbes      = () => plotManager.slqProbesMap();
 
   sim.onFrameUpdate = () => {
     plotManager.update(sim);
@@ -435,7 +706,7 @@ waitForMathJax(() => {
     },
   });
 
-  // Initial setup
-  plotManager.sync();
+  // Initial setup — preSample first so _simParams is set before sync creates plots
   preSample();
+  plotManager.sync();
 });

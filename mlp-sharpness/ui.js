@@ -28,7 +28,7 @@ class MaxSpsSlider {
 export const sliderDefs = {
   hiddenDim:     { helper: new IntegerSlider(1, 100),      isInt: true  },
   targetDegree:  { helper: new IntegerSlider(1, 12),       isInt: true  },
-  nPoints:       { helper: new IntegerSlider(5, 100),      isInt: true  },
+  nPoints:       { helper: new LogarithmicSlider(1, 100),  isInt: true  },
   initScale:     { helper: new LogarithmicSlider(1e-4, 10), isInt: false },
   eta:           { helper: new LogarithmicSlider(1e-6, 1), isInt: false },
   maxStepsPerSec:{ helper: new MaxSpsSlider(),             isInt: false },
@@ -165,7 +165,7 @@ export function bindUI(appState, { onParamChange, onSimControl }) {
       const rec = {
         depth: 3, hiddenDim: 20, activation: 'tanh', parameterization: 'sp', useBias: true,
         targetType: 'chebyshev', targetDegree: 6, nPoints: 20,
-        initScale: 1.0, eta: 0.2,
+        initScale: 1.0, eta: 0.1,
       };
       Object.assign(appState, rec);
       appState.save();

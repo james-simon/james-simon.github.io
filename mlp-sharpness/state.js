@@ -18,6 +18,7 @@ const DEFAULTS = {
   eta:             0.01,       // learning rate
   hessianInterval: 10,
   maxStepsPerSec:  Infinity,
+  useEffTime:      false,
   visiblePlots:    ['loss', 'sharpness', 'function'],
   plotOptions:     {},
 };

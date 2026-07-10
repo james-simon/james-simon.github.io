@@ -31,6 +31,8 @@ const HVP_EPS                = 1e-5;
 const LANCZOS_ITER           = 40;
 const TOP_K                  = 5;
 const BOT_K                  = 3;
+const SLQ_PROBES             = 10;
+const SLQ_ITER               = 40;
 
 // ---- Activations -----------------------------------------------------------
 export const ACTIVATIONS = {
@@ -295,6 +297,77 @@ function jacobianVec(layers, activation, x) {
 }
 
 // ============================================================================
+// Top-k right singular vectors of J (N×N Jacobi on J^T J)
+// Returns { rightVecs: Float64Array(k*N), singularValues: Float64Array(k) }
+// rightVecs[j*N .. (j+1)*N] = j-th right singular vector (in data space)
+// ============================================================================
+function jacRightSingVecs(layers, activation, xs, k) {
+  const N = xs.length;
+
+  // Build J column by column: J[:,s] = jacobianVec at xs[s], shape P×N
+  // We need J^T J which is N×N: (J^T J)[s,t] = dot(J[:,s], J[:,t])
+  const jacs = [];
+  for (let s = 0; s < N; s++) jacs.push(jacobianVec(layers, activation, xs[s]));
+
+  const JtJ = new Float64Array(N * N);
+  for (let s = 0; s < N; s++) {
+    for (let t = s; t < N; t++) {
+      const d = vecDot(jacs[s], jacs[t]);
+      JtJ[s*N+t] = d;
+      JtJ[t*N+s] = d;
+    }
+  }
+
+  // Jacobi eigensolver on N×N symmetric JtJ
+  const D = JtJ.slice();
+  const V = new Float64Array(N * N);
+  for (let i = 0; i < N; i++) V[i*N+i] = 1;
+
+  for (let iter = 0; iter < 100*N*N; iter++) {
+    let maxVal = 0, p = 0, q = 1;
+    for (let i = 0; i < N-1; i++)
+      for (let j = i+1; j < N; j++) {
+        const v = Math.abs(D[i*N+j]);
+        if (v > maxVal) { maxVal = v; p = i; q = j; }
+      }
+    if (maxVal < 1e-14) break;
+    const Dpp = D[p*N+p], Dqq = D[q*N+q], Dpq = D[p*N+q];
+    const tau = (Dqq - Dpp) / (2*Dpq);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+    const c   = 1 / Math.sqrt(1 + t*t), s = t*c;
+    D[p*N+p] = Dpp - t*Dpq; D[q*N+q] = Dqq + t*Dpq; D[p*N+q] = D[q*N+p] = 0;
+    for (let r = 0; r < N; r++) {
+      if (r === p || r === q) continue;
+      const Drp = D[r*N+p], Drq = D[r*N+q];
+      D[r*N+p] = D[p*N+r] = c*Drp - s*Drq;
+      D[r*N+q] = D[q*N+r] = s*Drp + c*Drq;
+    }
+    for (let r = 0; r < N; r++) {
+      const Vrp = V[r*N+p], Vrq = V[r*N+q];
+      V[r*N+p] = c*Vrp - s*Vrq;
+      V[r*N+q] = s*Vrp + c*Vrq;
+    }
+  }
+
+  // Sort eigenvalues descending
+  const pairs = [];
+  for (let i = 0; i < N; i++) pairs.push({ val: D[i*N+i], col: i });
+  pairs.sort((a, b) => b.val - a.val);
+
+  const topK = Math.min(k, N);
+  const singularValues = new Float64Array(topK);
+  const rightVecs      = new Float64Array(topK * N);
+
+  for (let j = 0; j < topK; j++) {
+    singularValues[j] = Math.sqrt(Math.max(0, pairs[j].val));
+    const col = pairs[j].col;
+    for (let r = 0; r < N; r++) rightVecs[j*N+r] = V[r*N+col];
+  }
+
+  return { rightVecs, singularValues };
+}
+
+// ============================================================================
 // Gauss-Newton HVP: GN·v = (2/N) Σ_i J_i (J_i·v)
 // ============================================================================
 function gnHvp(layers, activation, xs, ys, v, initYs = null) {
@@ -384,7 +457,7 @@ function lanczos(hvpFn, p, k) {
     let maxVal = 0, p2 = 0, q2 = 1;
     for (let i = 0; i < mActual-1; i++)
       for (let j = i+1; j < mActual; j++) {
-        const v2 = Math.abs(D[i*m+j]);
+        const v2 = Math.abs(D[i*mActual+j]);
         if (v2 > maxVal) { maxVal = v2; p2 = i; q2 = j; }
       }
     if (maxVal < 1e-14) break;
@@ -448,6 +521,173 @@ function lanczos(hvpFn, p, k) {
 }
 
 // ============================================================================
+// STOCHASTIC LANCZOS QUADRATURE — spectral density estimation
+// Runs `numProbes` Lanczos chains; each yields (eigenvalue, weight) pairs from
+// the tridiagonal T. Returns flat arrays of all (θ, w) pairs for KDE/histogram.
+// ============================================================================
+function slqSpectrum(hvpFn, p, numProbes, m) {
+  const mActual = Math.min(m, p);
+  const thetas  = [];  // eigenvalues across all probes
+  const weights = [];  // corresponding weights (τ_j²), normalized per probe
+
+  for (let probe = 0; probe < numProbes; probe++) {
+    // Random unit probe vector
+    let q = new Float64Array(p);
+    for (let i = 0; i < p; i++) q[i] = Math.random() - 0.5;
+    const qn = vecNorm(q);
+    for (let i = 0; i < p; i++) q[i] /= qn;
+
+    const Q     = [q];
+    const alpha = new Float64Array(mActual);
+    const beta  = new Float64Array(mActual);
+    let mDone   = mActual;
+
+    let prevBeta = 0, prevQ = null;
+    for (let j = 0; j < mActual; j++) {
+      let z = hvpFn(Q[j]);
+      alpha[j] = vecDot(Q[j], z);
+      for (let i = 0; i < p; i++) {
+        z[i] -= alpha[j] * Q[j][i];
+        if (prevQ !== null) z[i] -= prevBeta * prevQ[i];
+      }
+      // Full re-orthogonalization
+      for (let l = 0; l <= j; l++) {
+        const dot = vecDot(Q[l], z);
+        for (let i = 0; i < p; i++) z[i] -= dot * Q[l][i];
+      }
+      const betaNext = vecNorm(z);
+      beta[j] = betaNext;
+      if (betaNext < 1e-12 || j === mActual - 1) { mDone = j + 1; break; }
+      Q[j + 1] = new Float64Array(p);
+      for (let i = 0; i < p; i++) Q[j + 1][i] = z[i] / betaNext;
+      prevBeta = betaNext; prevQ = Q[j];
+    }
+
+    // Jacobi eigendecomposition of mDone×mDone tridiagonal T
+    const T = new Float64Array(mDone * mDone);
+    for (let j = 0; j < mDone; j++) {
+      T[j * mDone + j] = alpha[j];
+      if (j + 1 < mDone) { T[j * mDone + (j+1)] = beta[j]; T[(j+1) * mDone + j] = beta[j]; }
+    }
+    const D = T.slice();
+    const V = new Float64Array(mDone * mDone);
+    for (let i = 0; i < mDone; i++) V[i * mDone + i] = 1;
+
+    for (let iter = 0; iter < 100 * mDone * mDone; iter++) {
+      let maxVal = 0, p2 = 0, q2 = 1;
+      for (let i = 0; i < mDone - 1; i++)
+        for (let j = i + 1; j < mDone; j++) {
+          const v = Math.abs(D[i * mDone + j]);
+          if (v > maxVal) { maxVal = v; p2 = i; q2 = j; }
+        }
+      if (maxVal < 1e-14) break;
+      const Dpp = D[p2*mDone+p2], Dqq = D[q2*mDone+q2], Dpq = D[p2*mDone+q2];
+      const tau = (Dqq - Dpp) / (2 * Dpq);
+      const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+      const c   = 1 / Math.sqrt(1 + t*t), s = t * c;
+      D[p2*mDone+p2] = Dpp - t*Dpq; D[q2*mDone+q2] = Dqq + t*Dpq; D[p2*mDone+q2] = D[q2*mDone+p2] = 0;
+      for (let r = 0; r < mDone; r++) {
+        if (r === p2 || r === q2) continue;
+        const Drp = D[r*mDone+p2], Drq = D[r*mDone+q2];
+        D[r*mDone+p2] = D[p2*mDone+r] = c*Drp - s*Drq;
+        D[r*mDone+q2] = D[q2*mDone+r] = s*Drp + c*Drq;
+      }
+      for (let r = 0; r < mDone; r++) {
+        const Vrp = V[r*mDone+p2], Vrq = V[r*mDone+q2];
+        V[r*mDone+p2] = c*Vrp - s*Vrq;
+        V[r*mDone+q2] = s*Vrp + c*Vrq;
+      }
+    }
+
+    // Collect (eigenvalue, weight = τ_j²) where τ_j = V[0, col_j] (first row of eigenvectors)
+    for (let j = 0; j < mDone; j++) {
+      const tau0 = V[0 * mDone + j];  // first component of j-th eigenvector
+      thetas.push(D[j * mDone + j]);
+      weights.push(tau0 * tau0);
+    }
+  }
+
+  return { thetas, weights };
+}
+
+// ============================================================================
+// SINGLE-PROBE SLQ — gradient spectral density
+// One Lanczos run from a fixed unit start vector q0.
+// Returns { thetas, weights } where weights are τ_j² (sum ≈ 1).
+// ============================================================================
+function singleProbeSlq(hvpFn, q0, p, m) {
+  const mActual = Math.min(m, p);
+  const Q     = [q0.slice()];
+  const alpha = new Float64Array(mActual);
+  const beta  = new Float64Array(mActual);
+  let mDone   = mActual;
+  let prevBeta = 0, prevQ = null;
+
+  for (let j = 0; j < mActual; j++) {
+    let z = hvpFn(Q[j]);
+    alpha[j] = vecDot(Q[j], z);
+    for (let i = 0; i < p; i++) {
+      z[i] -= alpha[j] * Q[j][i];
+      if (prevQ !== null) z[i] -= prevBeta * prevQ[i];
+    }
+    for (let l = 0; l <= j; l++) {
+      const dot = vecDot(Q[l], z);
+      for (let i = 0; i < p; i++) z[i] -= dot * Q[l][i];
+    }
+    const betaNext = vecNorm(z);
+    beta[j] = betaNext;
+    if (betaNext < 1e-12 || j === mActual - 1) { mDone = j + 1; break; }
+    Q[j + 1] = new Float64Array(p);
+    for (let i = 0; i < p; i++) Q[j + 1][i] = z[i] / betaNext;
+    prevBeta = betaNext; prevQ = Q[j];
+  }
+
+  // Jacobi on mDone×mDone tridiagonal
+  const T = new Float64Array(mDone * mDone);
+  for (let j = 0; j < mDone; j++) {
+    T[j * mDone + j] = alpha[j];
+    if (j + 1 < mDone) { T[j*mDone+(j+1)] = beta[j]; T[(j+1)*mDone+j] = beta[j]; }
+  }
+  const D = T.slice();
+  const V = new Float64Array(mDone * mDone);
+  for (let i = 0; i < mDone; i++) V[i * mDone + i] = 1;
+
+  for (let iter = 0; iter < 100 * mDone * mDone; iter++) {
+    let maxVal = 0, p2 = 0, q2 = 1;
+    for (let i = 0; i < mDone - 1; i++)
+      for (let j = i + 1; j < mDone; j++) {
+        const v = Math.abs(D[i*mDone+j]);
+        if (v > maxVal) { maxVal = v; p2 = i; q2 = j; }
+      }
+    if (maxVal < 1e-14) break;
+    const Dpp = D[p2*mDone+p2], Dqq = D[q2*mDone+q2], Dpq = D[p2*mDone+q2];
+    const tau = (Dqq - Dpp) / (2 * Dpq);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+    const c   = 1 / Math.sqrt(1 + t*t), s = t * c;
+    D[p2*mDone+p2] = Dpp-t*Dpq; D[q2*mDone+q2] = Dqq+t*Dpq; D[p2*mDone+q2] = D[q2*mDone+p2] = 0;
+    for (let r = 0; r < mDone; r++) {
+      if (r === p2 || r === q2) continue;
+      const Drp = D[r*mDone+p2], Drq = D[r*mDone+q2];
+      D[r*mDone+p2] = D[p2*mDone+r] = c*Drp - s*Drq;
+      D[r*mDone+q2] = D[q2*mDone+r] = s*Drp + c*Drq;
+    }
+    for (let r = 0; r < mDone; r++) {
+      const Vrp = V[r*mDone+p2], Vrq = V[r*mDone+q2];
+      V[r*mDone+p2] = c*Vrp - s*Vrq;
+      V[r*mDone+q2] = s*Vrp + c*Vrq;
+    }
+  }
+
+  const thetas = [], weights = [];
+  for (let j = 0; j < mDone; j++) {
+    const tau0 = V[0 * mDone + j];
+    thetas.push(D[j * mDone + j]);
+    weights.push(tau0 * tau0);
+  }
+  return { thetas, weights };
+}
+
+// ============================================================================
 // SIMULATION CLASS
 // ============================================================================
 export class Simulation {
@@ -455,6 +695,7 @@ export class Simulation {
     this.running          = false;
     this.animationFrameId = null;
     this.onFrameUpdate    = null;
+    this.getActiveESDPlots = null;  // optional () => Set<string> — set by app
     this.avgStepTime      = 1;
     this._totalSteps      = 0;
     this._stepCounts      = [];
@@ -472,6 +713,7 @@ export class Simulation {
     this.initLayers  = null;  // frozen copy of initial weights for evaluate()
 
     this.lossHistory      = [];
+    this.gradNormHistory  = [];
     this.sharpnessHistory = [];
     this.hessTermsHistory = [];
     this.weightNormHistory = [];
@@ -505,6 +747,7 @@ export class Simulation {
 
     this.iteration        = 0;
     this.lossHistory      = [];
+    this.gradNormHistory  = [];
     this.sharpnessHistory = [];
     this.hessTermsHistory = [];
     this.weightNormHistory = [];
@@ -539,6 +782,7 @@ export class Simulation {
 
     this.iteration++;
     this.lossHistory.push({ x: this.iteration, y: loss });
+    this.gradNormHistory.push({ x: this.iteration, y: Math.sqrt(vecDot(grad, grad)) });
     this._recordStats();
     return loss;
   }
@@ -556,7 +800,10 @@ export class Simulation {
   }
 
   // ---- Compute sharpness + gradient projections + Hessian term decomposition
-  computeSharpness() {
+  // activeESDPlots: Set of plot keys whose ESD is currently visible
+  // slqProbes: Map<plotKey, numProbes> — probe count per active ESD plot
+  computeSharpness(activeESDPlots = new Set(), slqProbes = new Map()) {
+    const nProbes = (key) => slqProbes.get(key) ?? SLQ_PROBES;
     if (!this.params || !this.layers) return;
     const { activation } = this.params;
     const p = flatSize(this.layers);
@@ -585,11 +832,19 @@ export class Simulation {
       }
     }
 
+    // Right singular vectors of J (data-space functions)
+    const jacSV = jacRightSingVecs(this.layers, activation, this.xs, TOP_K);
+
+    const sharpnessSpectrum = activeESDPlots.has('sharpnessESD')
+      ? slqSpectrum(hvpFn, p, nProbes('sharpnessESD'), SLQ_ITER) : null;
+
     this.sharpnessHistory.push({
       x: this.iteration,
       values: result.values, vectors: result.vectors,
       bottomValues: result.bottomValues, bottomVectors: result.bottomVectors,
       gradProjs, bottomGradProjs,
+      jacRightVecs: jacSV.rightVecs,
+      spectrum: sharpnessSpectrum,
     });
 
     // Hessian term decomposition: GN term and residual term
@@ -603,11 +858,37 @@ export class Simulation {
     };
     const gnResult  = lanczos(gnFn,  p, TOP_K);
     const resResult = lanczos(resFn, p, TOP_K);
+
+    const gnSpectrum  = activeESDPlots.has('gaussNewtonESD')
+      ? slqSpectrum(gnFn,  p, nProbes('gaussNewtonESD'), SLQ_ITER) : null;
+    const resSpectrum = activeESDPlots.has('residualESD')
+      ? slqSpectrum(resFn, p, nProbes('residualESD'),    SLQ_ITER) : null;
+
+    let resGradSpectrum = null;
+    if (activeESDPlots.has('residualESD_grad')) {
+      const gNorm = Math.sqrt(gradNormSq);
+      if (gNorm > 1e-15) {
+        const q0 = new Float64Array(p);
+        for (let i = 0; i < p; i++) q0[i] = grad[i] / gNorm;
+        resGradSpectrum = singleProbeSlq(resFn, q0, p, SLQ_ITER);
+      }
+    }
+
     this.hessTermsHistory.push({
       x: this.iteration,
-      gnValues: gnResult.values, gnBottomValues: gnResult.bottomValues,
+      gnValues: gnResult.values,   gnBottomValues: gnResult.bottomValues,
       resValues: resResult.values, resBottomValues: resResult.bottomValues,
+      gnSpectrum, resSpectrum, resGradSpectrum,
     });
+
+    // Weyl sanity check: |λ_1(H) - λ_1(GN)| <= ||R||_2 = max(λ_1(R), -λ_min(R))
+    const a = result.values[0];
+    const b = gnResult.values[0];
+    const c = Math.max(resResult.values[0], -resResult.bottomValues[0]);
+    const lhs = Math.abs(a - b);
+    if (lhs > c * 1.01) {
+      console.warn(`Weyl violated at step ${this.iteration}: |a-b|=${lhs.toFixed(4)}, ||R||=${c.toFixed(4)}, a=${a.toFixed(4)}, b=${b.toFixed(4)}, λ1(R)=${resResult.values[0].toFixed(4)}, λmin(R)=${resResult.bottomValues[0].toFixed(4)}`);
+    }
   }
 
   // ---- Record weight norms per layer --------------------------------------
@@ -676,7 +957,11 @@ export class Simulation {
       const lastComputed = this.sharpnessHistory.length > 0
         ? this.sharpnessHistory[this.sharpnessHistory.length-1].x : -Infinity;
       const nextDue = Math.ceil((lastComputed+1)/interval)*interval;
-      if (this.iteration >= nextDue && this.iteration > lastComputed) this.computeSharpness();
+      if (this.iteration >= nextDue && this.iteration > lastComputed) {
+        const activeESD = this.getActiveESDPlots ? this.getActiveESDPlots() : new Set();
+        const slqProbes = this.getSlqProbes      ? this.getSlqProbes()      : new Map();
+        this.computeSharpness(activeESD, slqProbes);
+      }
     }
 
     this._updateStepsPerSec(stepsThisFrame, frameStart);

@@ -15,6 +15,15 @@ const SV_COLORS = [
   'rgb( 40, 160, 200)',
 ];
 
+// Greens for eigenvec singular value plot (dark → light)
+const EIG_SV_COLORS = [
+  'rgb( 20, 110,  40)',
+  'rgb( 40, 155,  55)',
+  'rgb( 70, 195,  80)',
+  'rgb(120, 220, 120)',
+  'rgb(175, 235, 175)',
+];
+
 const LAYER_COLORS = [
   'rgb( 70, 120, 210)',
   'rgb(200,  80,  60)',
@@ -31,6 +40,24 @@ function downsample(arr) {
   const out = arr.filter((_, i) => i % stride === 0);
   if (out.length === 0 || out[out.length-1] !== arr[arr.length-1]) out.push(arr[arr.length-1]);
   return out;
+}
+
+// Nice linear tick generator — returns round-number ticks covering [min, max].
+// targetCount is a hint; actual count may vary by 1-2.
+function niceLinearTicks(min, max, targetCount = 5) {
+  const span = max - min;
+  if (span <= 0 || !isFinite(span)) return [min, max];
+  const roughStep = span / targetCount;
+  const mag  = Math.pow(10, Math.floor(Math.log10(roughStep)));
+  const norm = roughStep / mag;
+  const step = norm < 1.5 ? mag : norm < 3.5 ? 2 * mag : norm < 7.5 ? 5 * mag : 10 * mag;
+  const start = Math.ceil(min / step) * step;
+  const ticks = [];
+  for (let v = start; v <= max + step * 1e-9; v += step) {
+    const rounded = Math.round(v / step) * step;  // kill floating-point drift
+    if (rounded >= min - step * 1e-9 && rounded <= max + step * 1e-9) ticks.push(rounded);
+  }
+  return ticks;
 }
 
 function makeXTickCallback() {
@@ -97,12 +124,26 @@ function ds(label, color, extra = {}) {
 
 // ---- BaseChart -------------------------------------------------------------
 class BaseChart {
-  constructor() { this.logScaleX = false; this.logScaleY = false; this.chart = null; this._yMin = 0; }
+  constructor() {
+    this.logScaleX = false; this.logScaleY = false; this.zoomNeg = false;
+    this.chart = null; this._yMin = 0;
+    this.useEffectiveTime = false; this.eta = 1;
+  }
+
+  setEffectiveTime(on, eta) {
+    this.useEffectiveTime = on;
+    if (eta !== undefined) this.eta = eta;
+    this.chart.options.scales.x.title.text = on ? 't_eff' : 'step';
+    this.chart.options.scales.x.min = (on && this.logScaleX) ? this.eta : (this.logScaleX ? 1 : 0);
+    this.chart.update('none');
+  }
+
+  _toX(step) { return this.useEffectiveTime ? step * this.eta : step; }
 
   setLogScaleX(on) {
     this.logScaleX = on;
     this.chart.options.scales.x.type = on ? 'logarithmic' : 'linear';
-    this.chart.options.scales.x.min  = on ? 1 : 0;
+    this.chart.options.scales.x.min  = on ? (this.useEffectiveTime ? this.eta : 1) : 0;
     this.chart.update('none');
   }
 
@@ -114,8 +155,16 @@ class BaseChart {
     this.chart.update('none');
   }
 
+  setZoomNeg(on) {
+    this.zoomNeg = on;
+    this.chart.options.scales.y.max = on ? 0 : undefined;
+    this.chart.options.scales.y.min = on ? undefined : this._yMin;
+    this.chart.update('none');
+  }
+
   _setXMax(lastStep) {
-    this.chart.options.scales.x.max = Math.max(10, Math.ceil(lastStep/10)*10);
+    const x = this._toX(lastStep);
+    this.chart.options.scales.x.max = Math.max(this._toX(10), Math.ceil(x / 10) * 10);
   }
 
   clear() {
@@ -140,7 +189,7 @@ export class LossChart extends BaseChart {
 
   update(lossHistory) {
     if (lossHistory.length === 0) return;
-    this.chart.data.datasets[0].data = downsample(lossHistory);
+    this.chart.data.datasets[0].data = downsample(lossHistory).map(pt => ({ x: this._toX(pt.x), y: pt.y }));
     this._setXMax(lossHistory[lossHistory.length-1].x);
     this.chart.update('none');
   }
@@ -177,12 +226,12 @@ export class SharpnessChart extends BaseChart {
     }
     const raw = downsample(history);
     for (let j = 0; j < k;  j++)
-      this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt.values[j] }));
+      this.chart.data.datasets[j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt.values[j] }));
     for (let j = 0; j < bk; j++)
-      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt.bottomValues[j] }));
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt.bottomValues[j] }));
     const lastX = history[history.length-1].x;
     const ref = eta > 0 ? 2/eta : 0;
-    this.chart.data.datasets[k + bk].data = [{ x:0, y:ref }, { x:lastX, y:ref }];
+    this.chart.data.datasets[k + bk].data = [{ x: 0, y: ref }, { x: this._toX(lastX), y: ref }];
     this._setXMax(lastX);
     this.chart.update('none');
   }
@@ -191,10 +240,11 @@ export class SharpnessChart extends BaseChart {
 // ---- HessTermChart — top/bottom eigenvalues of one Hessian term ------------
 // valuesKey / bottomValuesKey: keys into each history point
 export class HessTermChart extends BaseChart {
-  constructor(canvasId, yTitle, valuesKey, bottomValuesKey) {
+  constructor(canvasId, yTitle, valuesKey, bottomValuesKey, showRef = true) {
     super();
     this._valuesKey       = valuesKey;
     this._bottomValuesKey = bottomValuesKey;
+    this._showRef         = showRef;
     const opts = baseChartOptions(yTitle);
     opts.scales.y.min = undefined;
     this._yMin = undefined;
@@ -217,18 +267,20 @@ export class HessTermChart extends BaseChart {
       const sets = [];
       for (let j = 0; j < k;  j++) sets.push(ds(`λ${j+1}`, svColor(j)));
       for (let j = 0; j < bk; j++) sets.push(ds(`λ₋${j+1}`, BOT_COLORS[j % BOT_COLORS.length], { borderWidth: 1 }));
-      sets.push(ds('2/η', 'rgba(0,0,0,0.35)', { borderDash: [6,3], borderWidth: 1.5 }));
+      if (this._showRef) sets.push(ds('2/η', 'rgba(0,0,0,0.35)', { borderDash: [6,3], borderWidth: 1.5 }));
       this.chart.data.datasets = sets;
     }
     const raw = downsample(history);
     for (let j = 0; j < k;  j++)
-      this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt[vk][j] }));
+      this.chart.data.datasets[j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt[vk][j] }));
     for (let j = 0; j < bk; j++)
-      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt[bvk][j] }));
-    const lastX = history[history.length-1].x;
-    const ref = eta > 0 ? 2/eta : 0;
-    this.chart.data.datasets[k + bk].data = [{ x:0, y:ref }, { x:lastX, y:ref }];
-    this._setXMax(lastX);
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt[bvk][j] }));
+    if (this._showRef) {
+      const lastX = history[history.length-1].x;
+      const ref = eta > 0 ? 2/eta : 0;
+      this.chart.data.datasets[k + bk].data = [{ x: 0, y: ref }, { x: this._toX(lastX), y: ref }];
+    }
+    this._setXMax(history[history.length-1].x);
     this.chart.update('none');
   }
 }
@@ -260,9 +312,9 @@ export class GradProjChart extends BaseChart {
     }
     const raw = downsample(history);
     for (let j = 0; j < k;  j++)
-      this.chart.data.datasets[j].data = raw.map(pt => ({ x: pt.x, y: pt.gradProjs[j] }));
+      this.chart.data.datasets[j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt.gradProjs[j] }));
     for (let j = 0; j < bk; j++)
-      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: pt.x, y: pt.bottomGradProjs[j] }));
+      this.chart.data.datasets[k + j].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt.bottomGradProjs[j] }));
     this._setXMax(history[history.length-1].x);
     this.chart.update('none');
   }
@@ -289,7 +341,7 @@ export class WeightNormChart extends BaseChart {
     }
     const raw = downsample(normHistory);
     for (let k = 0; k < depth; k++)
-      this.chart.data.datasets[k].data = raw.map(pt => ({ x: pt.x, y: pt.norms[k] }));
+      this.chart.data.datasets[k].data = raw.map(pt => ({ x: this._toX(pt.x), y: pt.norms[k] }));
     this._setXMax(normHistory[normHistory.length-1].x);
     this.chart.update('none');
   }
@@ -427,7 +479,7 @@ export class FunctionPlot {
 
     // y-axis ticks (3)
     ctx.textAlign = 'right';
-    const yTicks = [yMin+yPad, (yMin+yMax)/2, yMax-yPad];
+    const yTicks = [yMin+yPad, 0, yMax-yPad];
     for (const yv of yTicks) {
       const py = cy(yv);
       ctx.fillStyle = '#888';
@@ -444,4 +496,532 @@ export class FunctionPlot {
   }
 
   destroy() {}
+}
+
+// ---- JacobianSVFnPlot — right singular vectors of J plotted over x ---------
+// Shows top-k right singular vectors as functions over training x values.
+// Colors match the sharpness eigenvalue plot (SV_COLORS).
+export class JacobianSVFnPlot {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx    = this.canvas.getContext('2d');
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  update(sharpnessHistory, xs) {
+    if (sharpnessHistory.length === 0) return;
+    const last = sharpnessHistory[sharpnessHistory.length - 1];
+    if (!last.jacRightVecs) return;
+
+    const N    = xs.length;
+    const k    = Math.min(last.values.length, last.jacRightVecs.length / N);
+
+    const canvas = this.canvas;
+    const ctx    = this.ctx;
+    const w = canvas.clientWidth  || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx.clearRect(0, 0, w, h);
+
+    // Legend dimensions
+    const legendFontSize = 10;
+    const legendLineH    = 16;
+    const legendPad      = 6;
+    const legendLineW    = 18;
+    const legendGap      = 4;
+    const legendW        = legendPad*2 + legendLineW + legendGap + 28;
+    const legendH        = legendPad*2 + k * legendLineH;
+
+    const ml = 44, mr = 12 + legendW + 6, mt = 12, mb = 28;
+    const pw = w - ml - mr;
+    const ph = h - mt - mb;
+
+    // y range: find max abs value across all vectors
+    let maxAbs = 0;
+    for (let j = 0; j < k; j++)
+      for (let i = 0; i < N; i++)
+        maxAbs = Math.max(maxAbs, Math.abs(last.jacRightVecs[j*N+i]));
+    if (maxAbs < 1e-12) maxAbs = 1;
+    const yPad = maxAbs * 0.12;
+    const yMin = -maxAbs - yPad, yMax = maxAbs + yPad;
+
+    const cx = x => ml + (x + 1) / 2 * pw;
+    const cy = y => mt + (1 - (y - yMin) / (yMax - yMin)) * ph;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(ml, mt, pw, ph);
+
+    // Zero axes
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 1;
+    const y0 = cy(0);
+    ctx.beginPath(); ctx.moveTo(ml, y0); ctx.lineTo(ml + pw, y0); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx(0), mt); ctx.lineTo(cx(0), mt + ph); ctx.stroke();
+
+    // Sort xs to ensure left-to-right drawing (they should already be sorted)
+    const order = Array.from({length: N}, (_, i) => i).sort((a, b) => xs[a] - xs[b]);
+
+    // Draw each right singular vector
+    for (let j = k - 1; j >= 0; j--) {
+      const color = SV_COLORS[j % SV_COLORS.length];
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let ii = 0; ii < N; ii++) {
+        const i = order[ii];
+        const px = cx(xs[i]);
+        const py = cy(last.jacRightVecs[j*N+i]);
+        ii === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      // Dots
+      ctx.fillStyle = color;
+      for (let i = 0; i < N; i++) {
+        ctx.beginPath();
+        ctx.arc(cx(xs[i]), cy(last.jacRightVecs[j*N+i]), 2.5, 0, 2*Math.PI);
+        ctx.fill();
+      }
+    }
+
+    // x-axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = `11px ${MONO}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('-1', cx(-1), mt + ph + 18);
+    ctx.fillText('0',  cx( 0), mt + ph + 18);
+    ctx.fillText('1',  cx( 1), mt + ph + 18);
+
+    // y-axis ticks
+    ctx.textAlign = 'right';
+    for (const yv of [yMin + yPad, 0, yMax - yPad]) {
+      const py = cy(yv);
+      ctx.fillStyle = '#888';
+      ctx.fillText(formatY(yv), ml - 4, py + 4);
+      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(ml, py); ctx.lineTo(ml + pw, py); ctx.stroke();
+    }
+
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ml, mt, pw, ph);
+
+    // Legend (top-right, outside plot area)
+    const lx = ml + pw + 6;
+    const ly = mt;
+    ctx.font = `${legendFontSize}px ${MONO}`;
+    for (let j = 0; j < k; j++) {
+      const color = SV_COLORS[j % SV_COLORS.length];
+      const rowY = ly + legendPad + j * legendLineH + legendLineH / 2;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(lx, rowY); ctx.lineTo(lx + legendLineW, rowY); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(lx + legendLineW / 2, rowY, 2.5, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.textAlign = 'left';
+      const sub = '₁₂₃₄₅'[j] ?? String(j+1);
+      ctx.fillText(`φ${sub}`, lx + legendLineW + legendGap, rowY + 4);
+    }
+  }
+
+  destroy() {}
+}
+
+// ---- EigenvecHistPlot — histogram of elements of top Hessian eigenvector ---
+const HIST_BINS = 40;
+
+export class EigenvecHistPlot {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx    = this.canvas.getContext('2d');
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  update(sharpnessHistory) {
+    if (sharpnessHistory.length === 0) return;
+    const last = sharpnessHistory[sharpnessHistory.length - 1];
+    const p = last.vectors.length / last.values.length;
+    const vec = last.vectors.subarray(0, p);  // top eigenvector
+
+    // Compute histogram
+    let vMin = Infinity, vMax = -Infinity;
+    for (let i = 0; i < p; i++) { vMin = Math.min(vMin, vec[i]); vMax = Math.max(vMax, vec[i]); }
+    if (vMax - vMin < 1e-12) { vMin -= 0.5; vMax += 0.5; }
+
+    const counts = new Int32Array(HIST_BINS);
+    for (let i = 0; i < p; i++) {
+      let b = Math.floor((vec[i] - vMin) / (vMax - vMin) * HIST_BINS);
+      if (b >= HIST_BINS) b = HIST_BINS - 1;
+      counts[b]++;
+    }
+    const maxCount = Math.max(...counts);
+
+    // Draw
+    const canvas = this.canvas;
+    const ctx    = this.ctx;
+    const w = canvas.clientWidth  || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx.clearRect(0, 0, w, h);
+
+    const ml = 44, mr = 12, mt = 12, mb = 28;
+    const pw = w - ml - mr;
+    const ph = h - mt - mb;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(ml, mt, pw, ph);
+
+    // Bars
+    const barW = pw / HIST_BINS;
+    ctx.fillStyle = 'rgb(80, 120, 200)';
+    for (let b = 0; b < HIST_BINS; b++) {
+      const bh = maxCount > 0 ? (counts[b] / maxCount) * ph : 0;
+      ctx.fillRect(ml + b * barW, mt + ph - bh, barW - 1, bh);
+    }
+
+    // Zero line
+    if (vMin < 0 && vMax > 0) {
+      const x0 = ml + (-vMin / (vMax - vMin)) * pw;
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0, mt); ctx.lineTo(x0, mt + ph); ctx.stroke();
+    }
+
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ml, mt, pw, ph);
+
+    // x-axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = `11px ${MONO}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(formatY(vMin), ml, mt + ph + 18);
+    ctx.fillText(formatY((vMin + vMax) / 2), ml + pw / 2, mt + ph + 18);
+    ctx.fillText(formatY(vMax), ml + pw, mt + ph + 18);
+
+    // y-axis: just show max count
+    ctx.textAlign = 'right';
+    ctx.fillText(String(maxCount), ml - 4, mt + 10);
+    ctx.fillText('0', ml - 4, mt + ph);
+  }
+
+  destroy() {}
+}
+
+// ---- SpectralDensityPlot — SLQ spectral density for any matrix ----
+// cfg.spectrumKey:    key on the history point holding { thetas, weights }
+// cfg.topValuesKey:   key on the history point for top Lanczos eigenvalues
+// cfg.botValuesKey:   key on the history point for bottom Lanczos eigenvalues
+// cfg.history:        'sharpness' | 'hessTerms'  (determines which array to read)
+const SD_BINS         = 80;
+const BOT_TICK_COLORS = ['rgb(180,180,180)', 'rgb(110,110,110)', 'rgb(30,30,30)'];
+
+export class SpectralDensityPlot {
+  constructor(canvasId, cfg) {
+    this.canvas    = document.getElementById(canvasId);
+    this.ctx       = this.canvas.getContext('2d');
+    this._cfg      = cfg;
+    this.logScaleY = false;
+    this.showGrad  = false;
+  }
+
+  setLogScaleY(on) { this.logScaleY = on; }
+  setShowGrad(on)  { this.showGrad  = on; }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  update(history, eta) {
+    if (history.length === 0) return;
+    const last = history[history.length - 1];
+    const spectrum = last[this._cfg.spectrumKey];
+    if (!spectrum) return;
+
+    const { thetas, weights } = spectrum;
+    if (thetas.length === 0) return;
+
+    const canvas = this.canvas;
+    const ctx    = this.ctx;
+    const w = canvas.clientWidth  || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    ctx.clearRect(0, 0, w, h);
+
+    const ml = 44, mr = 12, mt = 12, mb = 28;
+    const pw = w - ml - mr;
+    const ph = h - mt - mb;
+
+    // x range: span of SLQ + Lanczos eigenvalues
+    let xMin = Infinity, xMax = -Infinity;
+    for (const t of thetas) { xMin = Math.min(xMin, t); xMax = Math.max(xMax, t); }
+    const topVals = last[this._cfg.topValuesKey];
+    const botVals = last[this._cfg.botValuesKey];
+    if (topVals) for (const v of topVals) { xMin = Math.min(xMin, v); xMax = Math.max(xMax, v); }
+    if (botVals) for (const v of botVals) { xMin = Math.min(xMin, v); xMax = Math.max(xMax, v); }
+    const xPad = Math.max((xMax - xMin) * 0.08, 0.1);
+    xMin -= xPad; xMax += xPad;
+    if (xMax - xMin < 1e-10) { xMin -= 1; xMax += 1; }
+
+    // Weighted histogram (no smoothing)
+    const density = new Float64Array(SD_BINS);
+    const totalW  = weights.reduce((s, v) => s + v, 0);
+    const binW    = (xMax - xMin) / SD_BINS;
+    for (let i = 0; i < thetas.length; i++) {
+      let b = Math.floor((thetas[i] - xMin) / binW);
+      if (b < 0) b = 0;
+      if (b >= SD_BINS) b = SD_BINS - 1;
+      density[b] += weights[i] / totalW;
+    }
+    const maxDensity = Math.max(...density);
+    const minNonzero = density.reduce((m, v) => v > 0 ? Math.min(m, v) : m, Infinity);
+
+    const cx = x => ml + (x - xMin) / (xMax - xMin) * pw;
+
+    // y mapping: linear or log
+    let yTop, yBot, cy, cyBar;
+    if (this.logScaleY && maxDensity > 0 && isFinite(minNonzero)) {
+      yTop = Math.log10(maxDensity);
+      yBot = Math.log10(minNonzero) - 0.5;  // half-decade below smallest nonzero
+      cy    = y => y > 0 ? mt + (1 - (Math.log10(y) - yBot) / (yTop - yBot)) * ph : mt + ph;
+      cyBar = v  => v > 0 ? mt + (1 - (Math.log10(v) - yBot) / (yTop - yBot)) * ph : mt + ph;
+    } else {
+      yTop = maxDensity;
+      yBot = 0;
+      cy    = y => mt + (1 - y / (maxDensity > 0 ? maxDensity : 1)) * ph;
+      cyBar = cy;
+    }
+
+    // White plot area
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(ml, mt, pw, ph);
+
+    // Zero axis (x)
+    if (xMin < 0 && xMax > 0) {
+      ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx(0), mt); ctx.lineTo(cx(0), mt + ph); ctx.stroke();
+    }
+
+    // 2/η reference line
+    if (eta > 0) {
+      const ref = 2 / eta;
+      if (ref >= xMin && ref <= xMax) {
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 3]);
+        ctx.beginPath(); ctx.moveTo(cx(ref), mt); ctx.lineTo(cx(ref), mt + ph); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Density bars
+    ctx.fillStyle = 'rgba(220, 80, 60, 0.55)';
+    for (let b = 0; b < SD_BINS; b++) {
+      if (density[b] <= 0) continue;
+      const bx  = ml + b * pw / SD_BINS;
+      const top = cyBar(density[b]);
+      ctx.fillRect(bx, top, pw / SD_BINS + 0.5, mt + ph - top);
+    }
+
+    // Gradient power overlay
+    if (this.showGrad && this._cfg.gradSpectrumKey) {
+      const gradSpectrum = last[this._cfg.gradSpectrumKey];
+      if (gradSpectrum && gradSpectrum.thetas.length > 0) {
+        const gDensity = new Float64Array(SD_BINS);
+        const gTotalW  = gradSpectrum.weights.reduce((s, v) => s + v, 0);
+        if (gTotalW > 0) {
+          for (let i = 0; i < gradSpectrum.thetas.length; i++) {
+            let b = Math.floor((gradSpectrum.thetas[i] - xMin) / (xMax - xMin) * SD_BINS);
+            if (b < 0) b = 0;
+            if (b >= SD_BINS) b = SD_BINS - 1;
+            gDensity[b] += gradSpectrum.weights[i] / gTotalW;
+          }
+          // Scale grad bars to same y-axis as ESD (normalize to maxDensity)
+          const gMax = Math.max(...gDensity);
+          const gScale = gMax > 0 ? maxDensity / gMax : 1;
+          ctx.fillStyle = 'rgba(60, 120, 220, 0.55)';
+          for (let b = 0; b < SD_BINS; b++) {
+            if (gDensity[b] <= 0) continue;
+            const bx  = ml + b * pw / SD_BINS;
+            const top = cyBar(gDensity[b] * gScale);
+            ctx.fillRect(bx, top, pw / SD_BINS + 0.5, mt + ph - top);
+          }
+        }
+      }
+    }
+
+    // Lanczos top eigenvalue ticks
+    const tickH = 10;
+    if (topVals) {
+      for (let j = 0; j < topVals.length; j++) {
+        const lx = cx(topVals[j]);
+        if (lx < ml || lx > ml + pw) continue;
+        ctx.strokeStyle = SV_COLORS[j % SV_COLORS.length];
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(lx, mt + ph - tickH); ctx.lineTo(lx, mt + ph + 4); ctx.stroke();
+      }
+    }
+    // Lanczos bottom eigenvalue ticks
+    if (botVals) {
+      for (let j = 0; j < botVals.length; j++) {
+        const lx = cx(botVals[j]);
+        if (lx < ml || lx > ml + pw) continue;
+        ctx.strokeStyle = BOT_TICK_COLORS[j % BOT_TICK_COLORS.length];
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(lx, mt + ph - tickH); ctx.lineTo(lx, mt + ph + 4); ctx.stroke();
+      }
+    }
+
+    // x-axis nice ticks
+    ctx.fillStyle = '#888';
+    ctx.font = `11px ${MONO}`;
+    ctx.textAlign = 'center';
+    const xTicks = niceLinearTicks(xMin, xMax, Math.max(3, Math.floor(pw / 60)));
+    for (const xv of xTicks) {
+      const px = cx(xv);
+      if (px < ml - 1 || px > ml + pw + 1) continue;
+      ctx.fillText(formatY(xv), px, mt + ph + 18);
+      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(px, mt); ctx.lineTo(px, mt + ph); ctx.stroke();
+    }
+
+    // y-axis labels
+    ctx.textAlign = 'right';
+    ctx.fillText(formatY(maxDensity), ml - 4, mt + 10);
+    if (!this.logScaleY) ctx.fillText('0', ml - 4, mt + ph);
+
+    // Border
+    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(ml, mt, pw, ph);
+  }
+
+  destroy() {}
+}
+
+// ---- SVD helpers -----------------------------------------------------------
+// Compute singular values of an (nOut × nIn) matrix M stored row-major.
+// Returns Float64Array of singular values, sorted descending.
+// Uses eigendecomposition of M^T M (nIn×nIn symmetric), then sqrt.
+function singularValues(M, nOut, nIn) {
+  const n = nIn;
+  // Build M^T M
+  const MtM = new Float64Array(n * n);
+  for (let i = 0; i < n; i++) {
+    for (let j = i; j < n; j++) {
+      let s = 0;
+      for (let r = 0; r < nOut; r++) s += M[r*nIn + i] * M[r*nIn + j];
+      MtM[i*n+j] = s;
+      MtM[j*n+i] = s;
+    }
+  }
+  // Jacobi eigendecomposition on MtM
+  const D = MtM.slice();
+  for (let iter = 0; iter < 100*n*n; iter++) {
+    let maxVal = 0, p = 0, q = 1;
+    for (let i = 0; i < n-1; i++)
+      for (let j = i+1; j < n; j++) {
+        const v = Math.abs(D[i*n+j]);
+        if (v > maxVal) { maxVal = v; p = i; q = j; }
+      }
+    if (maxVal < 1e-14) break;
+    const Dpp = D[p*n+p], Dqq = D[q*n+q], Dpq = D[p*n+q];
+    const tau = (Dqq - Dpp) / (2*Dpq);
+    const t   = Math.sign(tau) / (Math.abs(tau) + Math.sqrt(1 + tau*tau));
+    const c   = 1 / Math.sqrt(1 + t*t), s = t*c;
+    D[p*n+p] = Dpp - t*Dpq; D[q*n+q] = Dqq + t*Dpq; D[p*n+q] = D[q*n+p] = 0;
+    for (let r = 0; r < n; r++) {
+      if (r === p || r === q) continue;
+      const Drp = D[r*n+p], Drq = D[r*n+q];
+      D[r*n+p] = D[p*n+r] = c*Drp - s*Drq;
+      D[r*n+q] = D[q*n+r] = s*Drp + c*Drq;
+    }
+  }
+  const svs = new Float64Array(n);
+  for (let i = 0; i < n; i++) svs[i] = Math.sqrt(Math.max(0, D[i*n+i]));
+  svs.sort((a, b) => b - a);
+  return svs;
+}
+
+// Compute byte offset into flat param vector for layer idx's W matrix.
+// Accounts for biases of prior layers.
+function layerWOffset(layers, idx) {
+  let off = 0;
+  for (let l = 0; l < idx; l++) {
+    off += layers[l].W.length;
+    if (layers[l].b) off += layers[l].b.length;
+  }
+  return off;
+}
+
+// ---- EigenvecSVChart -------------------------------------------------------
+// Plots singular values of the top Hessian eigenvector reshaped into a
+// chosen layer's weight matrix.
+export class EigenvecSVChart extends BaseChart {
+  constructor(canvasId) {
+    super();
+    const opts = baseChartOptions('relative singular value');
+    opts.plugins.legend = { display: true, position: 'top', align: 'end',
+      labels: { usePointStyle: false, boxWidth: 20, boxHeight: 2, font: { size: 10, family: MONO } } };
+    this._layerIdx = null;
+    this._nSV = 0;
+    this.chart = new Chart(document.getElementById(canvasId), {
+      type: 'line', data: { datasets: [] }, options: opts,
+    });
+  }
+
+  setLayerIdx(idx) { this._layerIdx = idx; }
+
+  update(sharpnessHistory, layers) {
+    if (sharpnessHistory.length === 0 || this._layerIdx === null) return;
+    const idx = this._layerIdx;
+    if (idx >= layers.length) return;
+
+    const layer = layers[idx];
+    const { nIn, nOut } = layer;
+    const p = sharpnessHistory[0].vectors.length / sharpnessHistory[0].values.length;
+    // p is total param count (vectors is topK * p flat)
+
+    const wOff = layerWOffset(layers, idx);
+    const wLen = nOut * nIn;
+
+    const nSV = Math.min(5, Math.min(nIn, nOut));
+
+    if (nSV !== this._nSV) {
+      this._nSV = nSV;
+      this.chart.data.datasets = Array.from({length: nSV}, (_, j) =>
+        ds(`σ${j+1}`, EIG_SV_COLORS[j % EIG_SV_COLORS.length])
+      );
+    }
+
+    const raw = downsample(sharpnessHistory);
+    const seriesData = Array.from({length: nSV}, () => []);
+
+    for (const pt of raw) {
+      // Top eigenvector is first p entries of pt.vectors
+      const topVec = pt.vectors.subarray(0, p);
+      const wSlice = topVec.subarray(wOff, wOff + wLen);
+      const svs = singularValues(wSlice, nOut, nIn);
+      // Normalize so singular values sum to 1
+      let total = 0;
+      for (let j = 0; j < svs.length; j++) total += svs[j];
+      if (total > 1e-15) for (let j = 0; j < svs.length; j++) svs[j] /= total;
+      for (let j = 0; j < nSV; j++) seriesData[j].push({ x: this._toX(pt.x), y: svs[j] });
+    }
+
+    for (let j = 0; j < nSV; j++) this.chart.data.datasets[j].data = seriesData[j];
+    this._setXMax(sharpnessHistory[sharpnessHistory.length-1].x);
+    this.chart.update('none');
+  }
 }

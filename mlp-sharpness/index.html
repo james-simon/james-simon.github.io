@@ -187,7 +187,13 @@ skip_mathjax: true
   <hr style="border: none; border-top: 1px solid #ddd; margin: 0.6em 0 6px;">
 
   <!-- Plots -->
-  <div class="section-label">Plots</div>
+  <div class="section-label" style="display:flex;align-items:center;gap:0.7em;">
+    Plots
+    <span style="font-size:0.8em;color:#aaa;font-weight:normal;letter-spacing:0;text-transform:none;">x-axis:</span>
+    <span class="xaxis-toggle" style="text-transform:none;letter-spacing:0;">
+      <a href="javascript:void(0)" id="step-link" class="active" onclick="setXAxisMode('step')">step</a><a href="javascript:void(0)" id="teff-link" onclick="setXAxisMode('teff')">$t_{\mathrm{eff}}$</a>
+    </span>
+  </div>
 
   <div class="plot-checkbox-grid" id="plotCheckboxGrid">
     <div class="plot-cb-group">
@@ -197,11 +203,34 @@ skip_mathjax: true
       <label><input type="checkbox" id="plot-cb-weightNorms"> weight norms $\|W_k\|_F$</label>
     </div>
     <div class="plot-cb-group">
+      <div class="plot-cb-group-label">gradient</div>
+      <label><input type="checkbox" id="plot-cb-gradNorm"> grad norm</label>
+    </div>
+    <div class="plot-cb-row-break"></div>
+    <div class="plot-cb-group">
       <div class="plot-cb-group-label">Hessian</div>
-      <label><input type="checkbox" id="plot-cb-sharpness"> sharpness</label>
-      <label><input type="checkbox" id="plot-cb-gaussNewton"> Gauss-Newton term</label>
-      <label><input type="checkbox" id="plot-cb-residual"> residual term</label>
+      <label><input type="checkbox" id="plot-cb-sharpness"> top eigvals</label>
+      <label><input type="checkbox" id="plot-cb-sharpnessESD"> ESD</label>
       <label><input type="checkbox" id="plot-cb-gradProj"> gradient projections</label>
+    </div>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">Gauss-Newton term</div>
+      <label><input type="checkbox" id="plot-cb-gaussNewton"> top eigvals</label>
+      <label><input type="checkbox" id="plot-cb-gaussNewtonESD"> ESD</label>
+    </div>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">residual term</div>
+      <label><input type="checkbox" id="plot-cb-residual"> top eigvals</label>
+      <label><input type="checkbox" id="plot-cb-residualESD"> ESD</label>
+    </div>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">NTK + Jacobian</div>
+      <label><input type="checkbox" id="plot-cb-jacobianSVFn"> NTK eigenfns</label>
+    </div>
+    <div class="plot-cb-group">
+      <div class="plot-cb-group-label">reshaped eigenvecs</div>
+      <label><input type="checkbox" id="plot-cb-eigenvecSV"> top singular vals</label>
+      <label><input type="checkbox" id="plot-cb-eigenvecHist"> histogram</label>
     </div>
   </div>
 
