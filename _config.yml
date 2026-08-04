@@ -19,9 +19,12 @@ excerpt_separator: <!--exc-->
 permalink: /blog/:title/
 
 collections:
- puzzles:
+  puzzles:
     name: Puzzles
     output: true
+  crosswords:
+    name: Crosswords
+    output: false
 
 # Build settings
 markdown: kramdown

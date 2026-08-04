@@ -1,0 +1,602 @@
+---
+layout: default
+title: Crossword
+skip_mathjax: true
+---
+
+<style>
+  :root {
+    --cell-size: 40px;
+    --black: #111;
+    --hl-word: #a7d8ff;
+    --hl-cell: #f7c948;
+    --border: #333;
+    --toolbar-bg: #f4f4f0;
+  }
+
+  #xw-root {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    max-width: 920px;
+    margin: 1.5em auto;
+  }
+
+  #xw-title  { font-size: 1.4em; font-weight: bold; margin-bottom: 0.1em; }
+  #xw-byline { font-size: 0.9em; color: #666; margin-bottom: 1em; }
+
+  #xw-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1em;
+    padding: 8px 10px;
+    background: var(--toolbar-bg);
+    border-radius: 6px;
+    border: 1px solid #ddd;
+  }
+
+  #xw-toolbar button {
+    font-size: 0.82em;
+    padding: 4px 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  #xw-toolbar button:hover { background: #e8e8e8; }
+  .tb-sep { width: 1px; background: #ccc; margin: 0 2px; }
+
+  #xw-main { display: flex; gap: 24px; align-items: flex-start; }
+
+  /* Grid */
+  #xw-grid {
+    display: grid;
+    border-top: 2px solid var(--border);
+    border-left: 2px solid var(--border);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .xc {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-right: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: white;
+  }
+  .xc.black { background: var(--black); cursor: default; }
+  .xc.hl-word { background: var(--hl-word); }
+  .xc.hl-cell { background: var(--hl-cell); }
+
+  .xc-num {
+    position: absolute; top: 2px; left: 2px;
+    font-size: 9px; line-height: 1; color: #333;
+    pointer-events: none;
+  }
+  .xc-letter {
+    font-size: 20px; font-weight: bold;
+    text-transform: uppercase; pointer-events: none; color: #111;
+  }
+  .xc-letter.revealed  { color: #777; font-weight: normal; }
+  .xc-letter.correct   { color: #1a4d8f; }
+  .xc-letter.incorrect { color: #c00; }
+
+  /* Clues */
+  #xw-clues { display: flex; gap: 20px; flex: 1; min-width: 0; max-height: 520px; overflow-y: auto; }
+
+  .xw-clue-col { flex: 1; min-width: 0; }
+  .xw-clue-col h3 {
+    font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.08em;
+    border-bottom: 2px solid #333; padding-bottom: 4px; margin: 0 0 8px;
+  }
+
+  .xw-clue {
+    font-size: 0.85em; line-height: 1.4; padding: 3px 5px;
+    border-radius: 3px; cursor: pointer; margin-bottom: 2px;
+    display: flex; gap: 6px;
+  }
+  .xw-clue:hover { background: #eee; }
+  .xw-clue.active { background: var(--hl-word); font-weight: 600; }
+  .xw-clue-num { flex-shrink: 0; font-weight: bold; min-width: 22px; text-align: right; }
+
+  #xw-active-clue { margin-top: 10px; font-size: 0.95em; min-height: 1.4em; color: #444; font-style: italic; }
+  #xw-msg { margin-top: 6px; font-size: 0.85em; color: #c00; min-height: 1.2em; }
+  #xw-load-error { color: #c00; margin-top: 2em; }
+</style>
+
+<div id="xw-root">
+  <div id="xw-title"></div>
+  <div id="xw-byline"></div>
+
+  <div id="xw-toolbar">
+    <button id="btn-check-letter">Check Letter</button>
+    <button id="btn-check-word">Check Word</button>
+    <button id="btn-check-grid">Check Grid</button>
+    <div class="tb-sep"></div>
+    <button id="btn-reveal-letter">Reveal Letter</button>
+    <button id="btn-reveal-word">Reveal Word</button>
+    <button id="btn-reveal-all">Reveal All</button>
+    <div class="tb-sep"></div>
+    <button id="btn-clear">Clear</button>
+  </div>
+
+  <div id="xw-main">
+    <div id="xw-grid-wrap">
+      <div id="xw-grid"></div>
+      <div id="xw-active-clue"></div>
+      <div id="xw-msg"></div>
+    </div>
+    <div id="xw-clues">
+      <div class="xw-clue-col" id="col-across"><h3>Across</h3></div>
+      <div class="xw-clue-col" id="col-down"><h3>Down</h3></div>
+    </div>
+  </div>
+
+  <div id="xw-load-error" style="display:none"></div>
+</div>
+
+<script src="/js/puz.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // puzjs 1.0.2 exposes global `Puz` with .decode(Uint8Array) and .encode(puzzle)
+  // decode returns: { grid (2D array), meta {title,author,copyright}, clues {across,down} (sparse arrays by num), ... }
+
+  const params = new URLSearchParams(window.location.search);
+  const puzzleId = params.get('id') || 'mini';
+
+  // ── State ──
+  let sol2d = [];      // 2D array of solution letters (or '.' for black)
+  let fill2d = [];     // 2D array of user fill ('' for empty, letter for filled)
+  let revealed2d = [];
+  let checked2d = [];  // 2D array of null | 'correct' | 'incorrect'
+  let W = 0, H = 0;
+  let nums = [];    // 2D array of clue numbers (0 if none)
+  let entries = []; // [{num, dir, row, col, len, clue, clueEl}]
+  let curR = 0, curC = 0, curDir = 'across';
+
+  fetch('/crosswords/data/' + puzzleId + '.puz')
+    .then(r => { if (!r.ok) throw new Error('Not found: ' + puzzleId); return r.arrayBuffer(); })
+    .then(buf => {
+      const puz = Puz.decode(new Uint8Array(buf));
+      init(puz);
+    })
+    .catch(err => {
+      const el = document.getElementById('xw-load-error');
+      el.style.display = '';
+      el.textContent = 'Error loading puzzle: ' + err.message;
+    });
+
+  function init(puz) {
+    H = puz.grid.length;
+    W = puz.grid[0].length;
+    sol2d = puz.grid;
+    fill2d = Array.from({length: H}, () => Array(W).fill(''));
+    revealed2d = Array.from({length: H}, () => Array(W).fill(false));
+    checked2d = Array.from({length: H}, () => Array(W).fill(null));
+
+    document.getElementById('xw-title').textContent = puz.meta.title || '';
+    document.getElementById('xw-byline').textContent =
+      [puz.meta.author, puz.meta.copyright].filter(Boolean).join(' · ');
+
+    numberGrid();
+    buildEntries(puz.clues);
+    renderGrid();
+    renderClues();
+    // select first white cell with an across entry
+    outer: for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      if (!isBlack(r, c)) { curR = r; curC = c; curDir = 'across'; break outer; }
+    }
+    updateHighlights();
+  }
+
+  function isBlack(r, c) { return sol2d[r][c] === '.'; }
+  function inBounds(r, c) { return r >= 0 && r < H && c >= 0 && c < W; }
+  function isWhite(r, c) { return inBounds(r, c) && !isBlack(r, c); }
+
+  function numberGrid() {
+    nums = Array.from({length: H}, () => Array(W).fill(0));
+    let n = 1;
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      if (!isWhite(r, c)) continue;
+      const sA = (c === 0 || !isWhite(r, c-1)) && isWhite(r, c+1);
+      const sD = (r === 0 || !isWhite(r-1, c)) && isWhite(r+1, c);
+      if (sA || sD) nums[r][c] = n++;
+    }
+  }
+
+  function buildEntries(clues) {
+    entries = [];
+    // puz.clues.across and .down are sparse arrays where index = clue number, value = clue string
+    const acArr = clues.across || [];
+    const dnArr = clues.down   || [];
+
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      const n = nums[r][c];
+      if (!n) continue;
+      const sA = (c === 0 || !isWhite(r, c-1)) && isWhite(r, c+1);
+      const sD = (r === 0 || !isWhite(r-1, c)) && isWhite(r+1, c);
+
+      if (sA) {
+        let len = 0; while (isWhite(r, c + len)) len++;
+        entries.push({ num: n, dir: 'across', row: r, col: c, len, clue: acArr[n] || '', clueEl: null });
+      }
+      if (sD) {
+        let len = 0; while (isWhite(r + len, c)) len++;
+        entries.push({ num: n, dir: 'down',   row: r, col: c, len, clue: dnArr[n] || '', clueEl: null });
+      }
+    }
+  }
+
+  // ── Render ──
+  function renderGrid() {
+    const el = document.getElementById('xw-grid');
+    el.style.gridTemplateColumns = `repeat(${W}, var(--cell-size))`;
+    el.innerHTML = '';
+
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      const black = isBlack(r, c);
+      const div = document.createElement('div');
+      div.className = 'xc' + (black ? ' black' : '');
+      div.dataset.r = r; div.dataset.c = c;
+
+      const numSp = document.createElement('span');
+      numSp.className = 'xc-num';
+      if (nums[r][c]) numSp.textContent = nums[r][c];
+      div.appendChild(numSp);
+
+      if (!black) {
+        const letSp = document.createElement('span');
+        letSp.className = 'xc-letter';
+        letSp.id = `cell-${r}-${c}`;
+        div.appendChild(letSp);
+        div.addEventListener('click', () => onCellClick(r, c));
+      }
+      el.appendChild(div);
+    }
+    document.addEventListener('keydown', onKey);
+  }
+
+  function renderClues() {
+    const acCol = document.getElementById('col-across');
+    const dnCol = document.getElementById('col-down');
+    while (acCol.children.length > 1) acCol.removeChild(acCol.lastChild);
+    while (dnCol.children.length > 1) dnCol.removeChild(dnCol.lastChild);
+
+    entries.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'xw-clue';
+      div.innerHTML = `<span class="xw-clue-num">${e.num}</span><span>${e.clue}</span>`;
+      div.addEventListener('click', () => jumpToEntry(e));
+      e.clueEl = div;
+      (e.dir === 'across' ? acCol : dnCol).appendChild(div);
+    });
+  }
+
+  function cellLetterEl(r, c) { return document.getElementById(`cell-${r}-${c}`); }
+
+  function refreshCell(r, c) {
+    const el = cellLetterEl(r, c);
+    if (!el) return;
+    el.textContent = fill2d[r][c];
+    const chk = checked2d[r][c];
+    el.className = 'xc-letter' + (revealed2d[r][c] ? ' revealed' : chk ? ' ' + chk : '');
+  }
+
+  function checkCells(coords) {
+    coords.forEach(([r, c]) => {
+      if (!fill2d[r][c]) return;
+      checked2d[r][c] = fill2d[r][c] === sol2d[r][c] ? 'correct' : 'incorrect';
+      refreshCell(r, c);
+    });
+  }
+
+  function clearChecked(r, c) {
+    if (checked2d[r][c]) { checked2d[r][c] = null; refreshCell(r, c); }
+  }
+
+  function cellDiv(r, c) { return document.querySelector(`.xc[data-r="${r}"][data-c="${c}"]`); }
+
+  function updateHighlights() {
+    document.querySelectorAll('.xc:not(.black)').forEach(el => el.classList.remove('hl-word', 'hl-cell'));
+    document.querySelectorAll('.xw-clue').forEach(el => el.classList.remove('active'));
+
+    const entry = activeEntry();
+    if (!entry) return;
+
+    for (let i = 0; i < entry.len; i++) {
+      const r = entry.dir === 'across' ? entry.row       : entry.row + i;
+      const c = entry.dir === 'across' ? entry.col + i   : entry.col;
+      cellDiv(r, c)?.classList.add('hl-word');
+    }
+    cellDiv(curR, curC)?.classList.add('hl-cell');
+
+    if (entry.clueEl) {
+      entry.clueEl.classList.add('active');
+      entry.clueEl.scrollIntoView({ block: 'nearest' });
+    }
+
+    document.getElementById('xw-active-clue').textContent =
+      `${entry.num} ${entry.dir === 'across' ? 'Across' : 'Down'}: ${entry.clue}`;
+  }
+
+  // ── Selection ──
+  function activeEntry() {
+    return entries.find(e => {
+      if (e.dir !== curDir) return false;
+      if (e.dir === 'across') return e.row === curR && curC >= e.col && curC < e.col + e.len;
+      return e.col === curC && curR >= e.row && curR < e.row + e.len;
+    }) || null;
+  }
+
+  function hasEntryAt(r, c, dir) {
+    return entries.some(e => {
+      if (e.dir !== dir) return false;
+      if (dir === 'across') return e.row === r && c >= e.col && c < e.col + e.len;
+      return e.col === c && r >= e.row && r < e.row + e.len;
+    });
+  }
+
+  function jumpToEntry(e) {
+    curDir = e.dir; curR = e.row; curC = e.col;
+    updateHighlights();
+  }
+
+  function onCellClick(r, c) {
+    clearMsg();
+    if (curR === r && curC === c) {
+      const newDir = curDir === 'across' ? 'down' : 'across';
+      if (hasEntryAt(r, c, newDir)) curDir = newDir;
+    } else {
+      curR = r; curC = c;
+      if (!hasEntryAt(r, c, curDir)) {
+        const flip = curDir === 'across' ? 'down' : 'across';
+        if (hasEntryAt(r, c, flip)) curDir = flip;
+      }
+    }
+    updateHighlights();
+  }
+
+  // ── Keyboard ──
+  function onKey(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key === 'Tab') { e.preventDefault(); shiftEntry(e.shiftKey ? -1 : 1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); moveArrow(0, 1); return; }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); moveArrow(0, -1); return; }
+    if (e.key === 'ArrowDown')  { e.preventDefault(); moveArrow(1, 0); return; }
+    if (e.key === 'ArrowUp')    { e.preventDefault(); moveArrow(-1, 0); return; }
+    if (e.key === 'Backspace' || e.key === 'Delete') { e.preventDefault(); backspace(); return; }
+    if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+      e.preventDefault();
+      fill2d[curR][curC] = e.key.toUpperCase();
+      revealed2d[curR][curC] = false;
+      checked2d[curR][curC] = null;
+      refreshCell(curR, curC);
+      clearMsg();
+      checkCompletion();
+      advance();
+    }
+  }
+
+  function moveArrow(dr, dc) {
+    let r = curR + dr, c = curC + dc;
+    while (inBounds(r, c)) { if (isWhite(r, c)) { curR = r; curC = c; break; } r += dr; c += dc; }
+    if (dr !== 0) curDir = 'down';
+    if (dc !== 0) curDir = 'across';
+    updateHighlights();
+  }
+
+  function advance() {
+    const e = activeEntry();
+    if (!e) return;
+    if (e.dir === 'across') { if (curC + 1 < e.col + e.len) curC++; else shiftEntry(1); }
+    else                    { if (curR + 1 < e.row + e.len) curR++; else shiftEntry(1); }
+    updateHighlights();
+  }
+
+  function shiftEntry(delta) {
+    const sameDir = entries.filter(en => en.dir === curDir);
+    const cur = activeEntry();
+    const i = cur ? sameDir.indexOf(cur) : -1;
+    const next = sameDir[(i + delta + sameDir.length) % sameDir.length];
+    if (next) { curR = next.row; curC = next.col; updateHighlights(); }
+  }
+
+  function backspace() {
+    if (fill2d[curR][curC]) {
+      fill2d[curR][curC] = '';
+      revealed2d[curR][curC] = false;
+      checked2d[curR][curC] = null;
+      refreshCell(curR, curC);
+    } else {
+      const e = activeEntry();
+      if (e) {
+        if (e.dir === 'across' && curC > e.col) curC--;
+        else if (e.dir === 'down' && curR > e.row) curR--;
+        fill2d[curR][curC] = '';
+        revealed2d[curR][curC] = false;
+        checked2d[curR][curC] = null;
+        refreshCell(curR, curC);
+      }
+    }
+    updateHighlights();
+  }
+
+  // ── Check / Reveal ──
+  function flashMsg(msg, ms = 2200) {
+    const el = document.getElementById('xw-msg');
+    el.textContent = msg;
+    setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, ms);
+  }
+  function clearMsg() { document.getElementById('xw-msg').textContent = ''; }
+
+  document.getElementById('btn-check-letter').addEventListener('click', () => {
+    if (!fill2d[curR][curC]) return;
+    checkCells([[curR, curC]]);
+  });
+
+  document.getElementById('btn-check-word').addEventListener('click', () => {
+    const e = activeEntry(); if (!e) return;
+    const coords = [];
+    for (let i = 0; i < e.len; i++) {
+      const r = e.dir === 'across' ? e.row : e.row + i;
+      const c = e.dir === 'across' ? e.col + i : e.col;
+      coords.push([r, c]);
+    }
+    checkCells(coords);
+  });
+
+  document.getElementById('btn-check-grid').addEventListener('click', () => {
+    const coords = [];
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      if (!isBlack(r, c) && fill2d[r][c]) coords.push([r, c]);
+    }
+    checkCells(coords);
+  });
+
+  document.getElementById('btn-reveal-letter').addEventListener('click', () => {
+    fill2d[curR][curC] = sol2d[curR][curC];
+    revealed2d[curR][curC] = true;
+    refreshCell(curR, curC);
+    checkCompletion();
+    advance();
+  });
+
+  document.getElementById('btn-reveal-word').addEventListener('click', () => {
+    const e = activeEntry(); if (!e) return;
+    for (let i = 0; i < e.len; i++) {
+      const r = e.dir === 'across' ? e.row : e.row + i;
+      const c = e.dir === 'across' ? e.col + i : e.col;
+      fill2d[r][c] = sol2d[r][c]; revealed2d[r][c] = true; refreshCell(r, c);
+    }
+    checkCompletion();
+  });
+
+  document.getElementById('btn-reveal-all').addEventListener('click', () => {
+    if (!confirm('Reveal the entire puzzle?')) return;
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      if (!isBlack(r, c)) { fill2d[r][c] = sol2d[r][c]; revealed2d[r][c] = true; refreshCell(r, c); }
+    }
+    flashMsg('Puzzle revealed.');
+    checkCompletion();
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (!confirm('Clear all entries?')) return;
+    for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+      if (!isBlack(r, c)) { fill2d[r][c] = ''; revealed2d[r][c] = false; refreshCell(r, c); }
+    }
+  });
+
+  // ── Completion check ──
+  function isPuzzleComplete() {
+    for (let r = 0; r < H; r++)
+      for (let c = 0; c < W; c++)
+        if (!isBlack(r, c) && !fill2d[r][c]) return false;
+    return true;
+  }
+
+  function checkCompletion() {
+    if (isPuzzleComplete()) launchEggplants();
+  }
+
+  // ── Eggplant explosion ──
+  let eggplantAnimId = null;
+
+  function launchEggplants() {
+    if (eggplantAnimId) cancelAnimationFrame(eggplantAnimId);
+    const existing = document.getElementById('xw-eggplant-canvas');
+    if (existing) existing.remove();
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'xw-eggplant-canvas';
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    const W2 = canvas.width  = window.innerWidth;
+    const H2 = canvas.height = window.innerHeight;
+
+    const DURATION = 25000;
+    const GRAVITY = 0.3;
+    const FONT_SIZE = 28;
+    const start = performance.now();
+
+    const BASE_DAMPEN = 0.47;
+
+    // Rate ramps from r0 at t=0 to 5*r0 at t=DURATION.
+    // r(t) = r0 * (1 + 4*t/T). Integral = r0 * T * (1 + 2) = 3 * r0 * T.
+    // We want ~2250 total (5x the original 450), so r0 = 2250 / (3 * T).
+    // Inverse CDF for u in [0,1]: solve u*3*T = t + 2*t^2/T
+    // => 2/T * t^2 + t - 3*u*T = 0
+    // => t = T * (-1 + sqrt(1 + 24*u)) / 4
+    const COUNT = 22500;
+    const plants = Array.from({length: COUNT}, () => {
+      const u = Math.random();
+      const delay = DURATION * (-1 + Math.sqrt(1 + 24 * u)) / 4;
+      const dampen = BASE_DAMPEN * (0.8 + Math.random() * 0.4);
+      return {
+        x:       Math.random() * W2,
+        y:       -FONT_SIZE - Math.random() * FONT_SIZE * 3,
+        vx:      (Math.random() - 0.5) * 6,
+        vy:      Math.random() * 0.5,
+        dampen,
+        bounces: 0,
+        dead:    false,
+        delay,
+      };
+    });
+
+    function draw(now) {
+      const elapsed = now - start;
+      // Stop spawning after DURATION but keep animating until all are dead
+      const allDead = elapsed > DURATION && plants.every(p => p.dead || elapsed < p.delay);
+      if (allDead) {
+        canvas.remove();
+        eggplantAnimId = null;
+        return;
+      }
+
+      ctx.clearRect(0, 0, W2, H2);
+      ctx.font = `${FONT_SIZE}px serif`;
+      ctx.textBaseline = 'top';
+
+      plants.forEach(p => {
+        if (p.dead || elapsed < p.delay) return;
+
+        p.vy += GRAVITY;
+        p.x  += p.vx;
+        p.y  += p.vy;
+
+        if (p.y + FONT_SIZE >= H2) {
+          if (p.bounces >= 1) {
+            // Second ground contact: fall straight through, no more bouncing
+            p.dead = true;
+            return;
+          }
+          p.y  = H2 - FONT_SIZE;
+          p.vy = -Math.abs(p.vy) * p.dampen;
+          p.vx *= 0.92;
+          p.bounces++;
+        }
+
+        if (p.y > H2 + FONT_SIZE * 2) p.dead = true;
+
+        if (!p.dead) ctx.fillText('🍆', p.x, p.y);
+      });
+
+      eggplantAnimId = requestAnimationFrame(draw);
+    }
+
+    eggplantAnimId = requestAnimationFrame(draw);
+  }
+})();
+</script>
