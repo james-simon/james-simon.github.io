@@ -138,22 +138,24 @@
 .fm-map {
   width: 100%;
   height: 520px;
-  border: 1px solid #ddd;
+  border: 1px solid #e2e2e2;
   border-radius: 4px;
-  background: #f4f4f4;
+  background: #f7f7f5;
 }
 
 /* pins */
 .fm-pin {
-  width: 14px; height: 14px;
+  width: 12px; height: 12px;
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  background: #b0b0b0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  background: #bcbcbc;
+  transition: background 0.12s, width 0.12s, height 0.12s;
 }
 .fm-pin-wrap.is-active .fm-pin {
-  background: #d24d3d;
-  width: 17px; height: 17px;
+  background: #e8452c;
+  width: 18px; height: 18px;
+  box-shadow: 0 0 0 3px rgba(232,69,44,0.22), 0 1px 3px rgba(0,0,0,0.3);
 }
 .fm-pin-wrap.is-selected .fm-pin {
   background: #1e78c8;
@@ -170,9 +172,10 @@
   line-height: 1.15;
   font-weight: 600;
   color: #222;
-  background: rgba(255,255,255,0.86);
+  background: rgba(255,255,255,0.92);
   border-radius: 3px;
-  padding: 1px 4px;
+  padding: 1px 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
   white-space: nowrap;
   max-width: 190px;
   overflow: hidden;

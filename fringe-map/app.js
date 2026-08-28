@@ -41,9 +41,12 @@
   // ---------- map ----------
 
   var map = L.map('map', { scrollWheelZoom: true, zoomControl: true });
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
+  // Minimal light-grey canvas: no labels, no terrain, no POI clutter, so the
+  // pins carry all the information.
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 19,
+    maxNativeZoom: 18
   }).addTo(map);
   map.setView([55.9467, -3.1883], 14);   // central Edinburgh, replaced by fitBounds
 
