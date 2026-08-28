@@ -30,23 +30,34 @@ robots: noindex
     <div class="fm-timeline" id="timeline">
       <div class="fm-track"></div>
       <div class="fm-ticks" id="ticks"></div>
-      <div class="fm-events" id="eventTicks"></div>
       <div class="fm-selection" id="selection"></div>
       <div class="fm-handle fm-handle-lo" id="handleLo"></div>
       <div class="fm-handle fm-handle-hi" id="handleHi"></div>
     </div>
+
     <div class="fm-timeline-foot">
       <button class="fm-btn" id="btnAll">whole day</button>
       <button class="fm-btn" id="btnNow">now +2h</button>
       <span class="fm-hint">drag the handles, or drag the shaded band to slide it</span>
     </div>
+
+    <!-- draft itinerary: one row per non-overlapping set of picks -->
+    <div class="fm-itinerary" id="itinerary">
+      <div class="fm-itin-empty" id="itinEmpty">
+        No picks yet — click a pin, then <strong>+ add to itinerary</strong>.
+      </div>
+      <div class="fm-itin-lanes" id="itinLanes"></div>
+    </div>
   </div>
 
-  <!-- Map -->
-  <div id="map" class="fm-map"></div>
-
-  <!-- Details panel -->
-  <div class="fm-details" id="details" hidden></div>
+  <!-- Map + details, side by side -->
+  <div class="fm-main">
+    <div id="map" class="fm-map"></div>
+    <div class="fm-side">
+      <div class="fm-details" id="details" hidden></div>
+      <div class="fm-side-hint" id="sideHint">Click a pin to see what's on there.</div>
+    </div>
+  </div>
 
   <!-- Data entry -->
   <details class="fm-data" id="dataPanel">

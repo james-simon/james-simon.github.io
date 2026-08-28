@@ -4,6 +4,7 @@
   'use strict';
 
   var STORAGE_KEY = 'fringe-map-events-v1';
+  var PICKS_KEY = 'fringe-map-picks-v1';
   var DAY_PAD = 30;            // minutes of slack around the day's extent
   var MAX_LABEL_DY = 60;       // stop labelling once a stack gets this deep
 
@@ -16,7 +17,9 @@
     handleLo: document.getElementById('handleLo'),
     handleHi: document.getElementById('handleHi'),
     ticks: document.getElementById('ticks'),
-    eventTicks: document.getElementById('eventTicks'),
+    itinerary: document.getElementById('itinerary'),
+    itinLanes: document.getElementById('itinLanes'),
+    itinEmpty: document.getElementById('itinEmpty'),
     windowLabel: document.getElementById('windowLabel'),
     activeCount: document.getElementById('activeCount'),
     details: document.getElementById('details'),
@@ -24,6 +27,7 @@
     errors: document.getElementById('errors'),
     dataStatus: document.getElementById('dataStatus'),
     dataPanel: document.getElementById('dataPanel'),
+    sideHint: document.getElementById('sideHint'),
     btnApply: document.getElementById('btnApply'),
     btnReset: document.getElementById('btnReset'),
     btnAll: document.getElementById('btnAll'),
@@ -35,8 +39,31 @@
     venues: [],          // events grouped by rounded lat/lng
     lo: 600, hi: 780,    // selected window, in minutes
     domainLo: 540, domainHi: 1500,
-    selectedVenue: null
+    selectedVenue: null,
+    picks: {}            // event id -> true, the draft itinerary
   };
+
+  try {
+    state.picks = JSON.parse(localStorage.getItem(PICKS_KEY) || '{}') || {};
+  } catch (e) { state.picks = {}; }
+
+  function savePicks() {
+    try { localStorage.setItem(PICKS_KEY, JSON.stringify(state.picks)); } catch (e) { /* ignore */ }
+  }
+
+  function isPicked(ev) { return !!state.picks[ev.id]; }
+
+  function pickedEvents() {
+    return state.events.filter(isPicked);
+  }
+
+  // The span an event occupies for conflict purposes. For multi-session shows we
+  // use the session the user is most likely to mean: the first one, unless a
+  // later session avoids a clash (resolved in packLanes).
+  function eventSpan(ev) {
+    var spans = ev.sessions || [{ start: ev.start, end: ev.end }];
+    return spans[0];
+  }
 
   // ---------- map ----------
 
@@ -75,8 +102,10 @@
 
   // ---------- rendering ----------
 
-  function makeIcon(venue, active, selected, labelText, labelDy) {
-    var cls = 'fm-pin-wrap' + (active ? ' is-active' : '') + (selected ? ' is-selected' : '');
+  function makeIcon(venue, active, selected, labelText, labelDy, picked) {
+    var cls = 'fm-pin-wrap' +
+      (picked ? ' is-picked' : (active ? ' is-active' : '')) +
+      (selected ? ' is-selected' : '');
     var badge = venue.shows.length > 1
       ? '<span class="fm-pin-badge">' + venue.shows.length + '</span>' : '';
     var label = labelText
@@ -124,7 +153,9 @@
   }
 
   function renderMap() {
-    var actives = state.venues.filter(function (v) { return activeShows(v).length > 0; });
+    var actives = state.venues.filter(function (v) {
+      return activeShows(v).length > 0 || v.shows.some(isPicked);
+    });
     // north-to-south so the topmost label keeps its natural position
     actives.sort(function (a, b) { return b.lat - a.lat; });
     assignLabelOffsets(actives);
@@ -132,17 +163,23 @@
     state.venues.forEach(function (venue) {
       var act = activeShows(venue);
       var isActive = act.length > 0;
+      var picks = venue.shows.filter(isPicked);
+      var hasPick = picks.length > 0;
       var isSel = state.selectedVenue === venue.key;
 
       var labelText = null;
-      if (isActive && venue._labelDy <= MAX_LABEL_DY) {
-        labelText = esc(act[0].name);
-        if (act.length > 1) {
-          labelText += ' <span class="fm-pin-count">+' + (act.length - 1) + '</span>';
+      if ((isActive || hasPick) && venue._labelDy <= MAX_LABEL_DY) {
+        // Prefer naming a picked show, since that is the committed plan.
+        var lead = hasPick ? picks[0] : act[0];
+        var extra = (hasPick ? picks.length : act.length) - 1;
+        labelText = esc(lead.name);
+        if (extra > 0) {
+          labelText += ' <span class="fm-pin-count">+' + extra + '</span>';
         }
       }
 
-      var icon = makeIcon(venue, isActive, isSel, labelText, isActive ? venue._labelDy : 0);
+      var icon = makeIcon(venue, isActive, isSel, labelText,
+        (isActive || hasPick) ? venue._labelDy : 0, hasPick);
       if (!venue.marker) {
         venue.marker = L.marker([venue.lat, venue.lng], {
           icon: icon,
@@ -174,12 +211,6 @@
     }).length;
     els.activeCount.textContent = n + ' of ' + state.events.length +
       (n === 1 ? ' event' : ' events');
-
-    // event ticks reflect the current window
-    Array.prototype.forEach.call(els.eventTicks.children, function (node) {
-      var ev = state.events[+node.dataset.idx];
-      node.classList.toggle('active', P.isActive(ev, state.lo, state.hi));
-    });
   }
 
   function buildTicks() {
@@ -202,23 +233,80 @@
     }
   }
 
-  function buildEventTicks() {
-    var span = state.domainHi - state.domainLo;
-    els.eventTicks.innerHTML = '';
-    state.events.forEach(function (ev, i) {
-      var spans = ev.sessions || [{ start: ev.start, end: ev.end }];
-      spans.forEach(function (s) {
-        var a = ((s.start - state.domainLo) / span) * 100;
-        var b = ((Math.max(s.end, s.start + 5) - state.domainLo) / span) * 100;
-        var tick = document.createElement('div');
-        tick.className = 'fm-event-tick';
-        tick.style.left = a + '%';
-        tick.style.width = Math.max(0.4, b - a) + '%';
-        tick.dataset.idx = i;
-        tick.title = fmt(s.start) + ' ' + ev.name;
-        els.eventTicks.appendChild(tick);
-      });
+  // Greedy interval packing: each pick goes on the first lane where it doesn't
+  // overlap anything already placed. Overlapping picks therefore stack.
+  function packLanes(events) {
+    var sorted = events.slice().sort(function (a, b) {
+      return eventSpan(a).start - eventSpan(b).start;
     });
+    var lanes = [];
+    sorted.forEach(function (ev) {
+      var sp = eventSpan(ev);
+      for (var i = 0; i < lanes.length; i++) {
+        var fits = lanes[i].every(function (o) {
+          var os = eventSpan(o);
+          return sp.start >= os.end || sp.end <= os.start;
+        });
+        if (fits) { lanes[i].push(ev); return; }
+      }
+      lanes.push([ev]);
+    });
+    return lanes;
+  }
+
+  function renderItinerary() {
+    var picks = pickedEvents();
+    els.itinEmpty.style.display = picks.length ? 'none' : '';
+    els.itinLanes.innerHTML = '';
+    if (!picks.length) return;
+
+    var lanes = packLanes(picks);
+    var span = state.domainHi - state.domainLo;
+
+    lanes.forEach(function (lane) {
+      var row = document.createElement('div');
+      row.className = 'fm-itin-lane';
+      lane.forEach(function (ev) {
+        var sp = eventSpan(ev);
+        var a = ((sp.start - state.domainLo) / span) * 100;
+        var b = ((Math.max(sp.end, sp.start + 10) - state.domainLo) / span) * 100;
+        var block = document.createElement('div');
+        // A pick sharing a lane index > 0 necessarily clashes with something.
+        block.className = 'fm-itin-block' + (lanes.length > 1 && lanes.indexOf(lane) > 0 ? ' conflict' : '');
+        block.style.left = a + '%';
+        block.style.width = Math.max(1.2, b - a) + '%';
+        block.textContent = ev.name;
+        block.title = fmt(sp.start) + '–' + fmt(sp.end) + '  ' + ev.name +
+          (ev.venueName ? '  ·  ' + ev.venueName : '') + '\n(click to remove)';
+        block.addEventListener('click', function () {
+          delete state.picks[ev.id];
+          savePicks();
+          renderItinerary();
+          renderMap();
+          if (state.selectedVenue) {
+            var v = state.venues.filter(function (x) { return x.key === state.selectedVenue; })[0];
+            if (v) showDetail(v);
+          }
+        });
+        row.appendChild(block);
+      });
+      els.itinLanes.appendChild(row);
+    });
+
+    // count genuine pairwise clashes for the summary line
+    var clashes = 0;
+    for (var i = 0; i < picks.length; i++) {
+      for (var j = i + 1; j < picks.length; j++) {
+        var x = eventSpan(picks[i]), y = eventSpan(picks[j]);
+        if (x.start < y.end && y.start < x.end) clashes++;
+      }
+    }
+    var sum = document.createElement('div');
+    sum.className = 'fm-itin-summary';
+    sum.innerHTML = picks.length + (picks.length === 1 ? ' pick' : ' picks') +
+      (clashes ? ' · <span class="fm-itin-warn">' + clashes + ' time clash' +
+        (clashes > 1 ? 'es' : '') + '</span>' : ' · no clashes');
+    els.itinLanes.appendChild(sum);
   }
 
   // ---------- details ----------
@@ -254,15 +342,35 @@
 
       if (ev.blurb) html += '<div class="fm-detail-blurb">' + esc(ev.blurb) + '</div>';
       if (ev.note) html += '<div class="fm-detail-note">' + esc(ev.note) + '</div>';
+
+      var picked = isPicked(ev);
+      html += '<button class="fm-add-btn' + (picked ? ' added' : '') +
+        '" data-ev="' + esc(ev.id) + '">' +
+        (picked ? '\u2713 in itinerary — click to remove' : '+ add to itinerary') +
+        '</button>';
       html += '</div>';
     });
 
     els.details.innerHTML = html;
     els.details.hidden = false;
+    if (els.sideHint) els.sideHint.style.display = 'none';
     document.getElementById('detClose').addEventListener('click', function () {
       state.selectedVenue = null;
       els.details.hidden = true;
+      if (els.sideHint) els.sideHint.style.display = '';
       renderMap();
+    });
+
+    Array.prototype.forEach.call(els.details.querySelectorAll('.fm-add-btn'), function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.dataset.ev;
+        if (state.picks[id]) delete state.picks[id];
+        else state.picks[id] = true;
+        savePicks();
+        showDetail(venue);      // re-render so the button label flips
+        renderItinerary();
+        renderMap();
+      });
     });
   }
 
@@ -391,9 +499,15 @@
 
     clearMarkers();
     state.events = res.events;
+    // Drop picks whose events are no longer present in the loaded data.
+    var live = {};
+    res.events.forEach(function (e) { if (state.picks[e.id]) live[e.id] = true; });
+    state.picks = live;
+    savePicks();
     state.venues = groupByVenue(res.events);
     state.selectedVenue = null;
     els.details.hidden = true;
+    if (els.sideHint) els.sideHint.style.display = '';
 
     // Domain covers the day's events, padded and rounded to the hour.
     var minStart = Math.min.apply(null, res.events.map(function (e) { return e.start; }));
@@ -416,8 +530,8 @@
       (label ? ', ' + label : '') + ', ' + state.venues.length + ' venues';
 
     buildTicks();
-    buildEventTicks();
     renderTimeline();
+    renderItinerary();
     renderMap();
 
     var bounds = L.latLngBounds(state.venues.map(function (v) { return [v.lat, v.lng]; }));
