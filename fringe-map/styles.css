@@ -343,6 +343,7 @@
   transition: background 0.12s;
 }
 .fm-itin-block:hover { background: #268050; }
+.fm-itin-block:active { transform: translateY(1px); }
 .fm-itin-block.conflict {
   background: #d99000;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
@@ -411,4 +412,13 @@
 @media (max-width: 860px) {
   .fm-main { grid-template-columns: 1fr; }
   .fm-side { position: static; max-height: none; }
+}
+
+/* the show a click arrived at, briefly emphasised */
+.fm-detail-show.focus {
+  background: #f1f8f3;
+  border-radius: 4px;
+  margin: 0 -0.5em;
+  padding: 0.4em 0.5em;
+  box-shadow: inset 0 0 0 1px rgba(46,158,91,0.25);
 }

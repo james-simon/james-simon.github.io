@@ -277,16 +277,16 @@
         block.style.width = Math.max(1.2, b - a) + '%';
         block.textContent = ev.name;
         block.title = fmt(sp.start) + '–' + fmt(sp.end) + '  ' + ev.name +
-          (ev.venueName ? '  ·  ' + ev.venueName : '') + '\n(click to remove)';
+          (ev.venueName ? '  ·  ' + ev.venueName : '') + '\n(click to open)';
+        // Clicking a block opens that show's venue, scrolled to the show itself.
         block.addEventListener('click', function () {
-          delete state.picks[ev.id];
-          savePicks();
-          renderItinerary();
+          var key = venueKey(ev);
+          var v = state.venues.filter(function (x) { return x.key === key; })[0];
+          if (!v) return;
+          state.selectedVenue = key;
+          showDetail(v, ev.id);
           renderMap();
-          if (state.selectedVenue) {
-            var v = state.venues.filter(function (x) { return x.key === state.selectedVenue; })[0];
-            if (v) showDetail(v);
-          }
+          map.panTo([v.lat, v.lng], { animate: true, duration: 0.4 });
         });
         row.appendChild(block);
       });
@@ -311,7 +311,7 @@
 
   // ---------- details ----------
 
-  function showDetail(venue) {
+  function showDetail(venue, focusId) {
     var shows = venue.shows.slice().sort(function (a, b) { return a.start - b.start; });
     var html = '<button class="fm-details-close" id="detClose" title="close">&times;</button>';
     html += '<div style="font-size:0.8em;color:#888;margin-bottom:0.5em">' +
@@ -319,7 +319,8 @@
 
     shows.forEach(function (ev) {
       var on = P.isActive(ev, state.lo, state.hi);
-      html += '<div class="fm-detail-show" style="opacity:' + (on ? 1 : 0.45) + '">';
+      html += '<div class="fm-detail-show' + (focusId === ev.id ? ' focus' : '') +
+        '" data-show="' + esc(ev.id) + '" style="opacity:' + (on ? 1 : 0.45) + '">';
       html += '<h3>' + esc(ev.name);
       if (ev.confidence && ev.confidence !== 'high') {
         html += '<span class="fm-badge fm-badge-' + esc(ev.confidence) + '">' +
@@ -361,13 +362,20 @@
       renderMap();
     });
 
+    if (focusId) {
+      var target = els.details.querySelector('[data-show="' + focusId + '"]');
+      if (target && target.scrollIntoView) {
+        target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
     Array.prototype.forEach.call(els.details.querySelectorAll('.fm-add-btn'), function (btn) {
       btn.addEventListener('click', function () {
         var id = btn.dataset.ev;
         if (state.picks[id]) delete state.picks[id];
         else state.picks[id] = true;
         savePicks();
-        showDetail(venue);      // re-render so the button label flips
+        showDetail(venue, id);  // re-render so the button label flips
         renderItinerary();
         renderMap();
       });
