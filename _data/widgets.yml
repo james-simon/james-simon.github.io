@@ -1,6 +1,11 @@
 # Widget registry. Set hidden: true to remove from the widgets page.
 # slug must match the top-level directory name (used to build the URL).
 
+- slug: gd-implicit-bias
+  title: GD Implicit Bias
+  desc: ""
+  hidden: false
+
 - slug: tensorizer
   title: Tensorizer
   desc: ""
@@ -71,3 +76,7 @@
   desc: ""
   hidden: true
 
+- slug: fringe-map
+  title: Fringe Map
+  desc: ""
+  hidden: true

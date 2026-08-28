@@ -1,0 +1,76 @@
+---
+layout: default
+permalink: /fringe-map/
+skip_mathjax: true
+sitemap: false
+robots: noindex
+---
+
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+
+<div class="fm-container">
+
+  <h1 class="page-title">Fringe Map</h1>
+  <hr class="fm-rule">
+
+  <p class="fm-intro">
+    Paste a day's events below, then drag the timeline to see what's on. Events
+    overlapping the window light up; everything else stays grey. Click a pin for details.
+  </p>
+
+  <!-- Timeline brush -->
+  <div class="fm-timeline-wrap">
+    <div class="fm-timeline-head">
+      <span class="fm-window-label" id="windowLabel">—</span>
+      <span class="fm-count" id="activeCount"></span>
+    </div>
+    <div class="fm-timeline" id="timeline">
+      <div class="fm-track"></div>
+      <div class="fm-ticks" id="ticks"></div>
+      <div class="fm-events" id="eventTicks"></div>
+      <div class="fm-selection" id="selection"></div>
+      <div class="fm-handle fm-handle-lo" id="handleLo"></div>
+      <div class="fm-handle fm-handle-hi" id="handleHi"></div>
+    </div>
+    <div class="fm-timeline-foot">
+      <button class="fm-btn" id="btnAll">whole day</button>
+      <button class="fm-btn" id="btnNow">now +2h</button>
+      <span class="fm-hint">drag the handles, or drag the shaded band to slide it</span>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="map" class="fm-map"></div>
+
+  <!-- Details panel -->
+  <div class="fm-details" id="details" hidden></div>
+
+  <!-- Data entry -->
+  <details class="fm-data" id="dataPanel">
+    <summary>Event data <span class="fm-data-status" id="dataStatus"></span></summary>
+    <p class="fm-data-help">
+      Paste JSON — either <code>{"meta":…, "shows":[…]}</code> or a bare array. Each entry needs
+      a <code>name</code>, a <code>start</code> (and <code>end</code> or <code>durationMin</code>),
+      and coordinates in <code>venue.lat</code> / <code>venue.lng</code>. Optional:
+      <code>genre</code>, <code>blurb</code>, <code>note</code>, <code>status</code>,
+      <code>venue.room</code>, <code>venue.address</code>, <code>venue.confidence</code>,
+      and <code>sessions</code> for shows with several slots.
+      Saved to this browser only.
+    </p>
+    <textarea id="eventsInput" class="fm-textarea" spellcheck="false"></textarea>
+    <div class="fm-data-actions">
+      <button class="fm-btn fm-btn-primary" id="btnApply">Apply</button>
+      <button class="fm-btn" id="btnReset">Reset to sample</button>
+      <span class="fm-errors" id="errors"></span>
+    </div>
+  </details>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="sample-data.js"></script>
+<script src="parse.js"></script>
+<script src="app.js"></script>

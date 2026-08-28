@@ -1,0 +1,312 @@
+.fm-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-title { margin-top: 2em; margin-bottom: 0.3em; }
+
+.fm-rule {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1em 0 0.8em;
+}
+
+.fm-intro {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 1.4em;
+}
+
+/* ---------- timeline ---------- */
+
+.fm-timeline-wrap { margin-bottom: 1.1em; }
+
+.fm-timeline-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  margin-bottom: 0.45em;
+}
+
+.fm-window-label {
+  font-family: Monaco, Consolas, "Courier New", monospace;
+  font-size: 1.02em;
+  font-weight: 600;
+}
+
+.fm-count { font-size: 0.85em; color: #888; }
+
+.fm-timeline {
+  position: relative;
+  height: 54px;
+  user-select: none;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.fm-track {
+  position: absolute;
+  top: 24px;
+  left: 0; right: 0;
+  height: 6px;
+  background: #e6e6e6;
+  border-radius: 3px;
+}
+
+.fm-selection {
+  position: absolute;
+  top: 24px;
+  height: 6px;
+  background: #d24d3d;
+  border-radius: 3px;
+  cursor: grab;
+}
+.fm-selection.dragging { cursor: grabbing; }
+
+.fm-handle {
+  position: absolute;
+  top: 17px;
+  width: 13px;
+  height: 20px;
+  margin-left: -6.5px;
+  background: #fff;
+  border: 2px solid #d24d3d;
+  border-radius: 3px;
+  cursor: ew-resize;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+.fm-handle:hover, .fm-handle.dragging { background: #ffecea; }
+
+/* hour labels */
+.fm-ticks { position: absolute; top: 34px; left: 0; right: 0; height: 18px; }
+.fm-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.68em;
+  color: #999;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+  white-space: nowrap;
+}
+.fm-tick-mark {
+  position: absolute;
+  top: 30px;
+  width: 1px;
+  height: 4px;
+  background: #ccc;
+}
+
+/* one small mark per event, above the track */
+.fm-events { position: absolute; top: 0; left: 0; right: 0; height: 20px; }
+.fm-event-tick {
+  position: absolute;
+  top: 8px;
+  height: 10px;
+  min-width: 2px;
+  background: #c9c9c9;
+  border-radius: 1px;
+}
+.fm-event-tick.active { background: #d24d3d; }
+
+.fm-timeline-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
+
+.fm-hint { font-size: 0.76em; color: #aaa; }
+
+/* ---------- buttons ---------- */
+
+.fm-btn {
+  font: inherit;
+  font-size: 0.8em;
+  padding: 0.25em 0.7em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #444;
+  cursor: pointer;
+}
+.fm-btn:hover { background: #f0f0f0; border-color: #aaa; }
+.fm-btn-primary { background: #d24d3d; border-color: #d24d3d; color: #fff; }
+.fm-btn-primary:hover { background: #b93f30; border-color: #b93f30; }
+
+/* ---------- map ---------- */
+
+.fm-map {
+  width: 100%;
+  height: 520px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f4f4f4;
+}
+
+/* pins */
+.fm-pin {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  background: #b0b0b0;
+}
+.fm-pin-wrap.is-active .fm-pin {
+  background: #d24d3d;
+  width: 17px; height: 17px;
+}
+.fm-pin-wrap.is-selected .fm-pin {
+  background: #1e78c8;
+  box-shadow: 0 0 0 4px rgba(30,120,200,0.3), 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* label that rides along with an active pin */
+.fm-pin-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 19px;
+  font-size: 0.72em;
+  line-height: 1.15;
+  font-weight: 600;
+  color: #222;
+  background: rgba(255,255,255,0.86);
+  border-radius: 3px;
+  padding: 1px 4px;
+  white-space: nowrap;
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.fm-pin-count {
+  font-weight: 400;
+  color: #777;
+}
+
+/* stacked venues: dot count badge */
+.fm-pin-badge {
+  position: absolute;
+  top: -5px; right: -7px;
+  background: #444;
+  color: #fff;
+  font-size: 0.6em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid #fff;
+}
+.fm-pin-wrap.is-active .fm-pin-badge { background: #d24d3d; }
+
+/* ---------- details ---------- */
+
+.fm-details {
+  margin-top: 1em;
+  border: 1px solid #ddd;
+  border-left: 3px solid #d24d3d;
+  border-radius: 4px;
+  padding: 0.9em 1.1em;
+  background: #fcfcfc;
+}
+.fm-details h3 {
+  margin: 0 0 0.15em;
+  font-size: 1.05em;
+}
+.fm-detail-show + .fm-detail-show {
+  margin-top: 0.9em;
+  padding-top: 0.9em;
+  border-top: 1px dashed #e0e0e0;
+}
+.fm-detail-when {
+  font-family: Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.88em;
+  color: #d24d3d;
+  font-weight: 600;
+}
+.fm-detail-meta { font-size: 0.85em; color: #666; margin-top: 0.2em; }
+.fm-detail-blurb { font-size: 0.88em; color: #444; margin-top: 0.35em; font-style: italic; }
+.fm-detail-note {
+  font-size: 0.8em;
+  color: #8a6d1f;
+  background: #fdf7e3;
+  border-radius: 3px;
+  padding: 0.3em 0.5em;
+  margin-top: 0.4em;
+}
+.fm-badge {
+  display: inline-block;
+  font-size: 0.72em;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  background: #eee;
+  color: #666;
+  margin-left: 0.4em;
+  vertical-align: middle;
+}
+.fm-badge-low { background: #fdecea; color: #b3261e; }
+.fm-badge-medium { background: #fdf7e3; color: #8a6d1f; }
+.fm-details-close {
+  float: right;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 1.1em;
+  line-height: 1;
+  border: none;
+  background: none;
+  padding: 0 0 0 0.5em;
+}
+.fm-details-close:hover { color: #666; }
+
+/* ---------- data panel ---------- */
+
+.fm-data {
+  margin-top: 1.6em;
+  border-top: 1px solid #eee;
+  padding-top: 0.8em;
+}
+.fm-data summary {
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #666;
+  outline: none;
+}
+.fm-data-status { color: #aaa; font-size: 0.88em; }
+.fm-data-help {
+  font-size: 0.8em;
+  color: #777;
+  margin: 0.7em 0 0.5em;
+  line-height: 1.5;
+}
+.fm-data-help code {
+  font-size: 0.95em;
+  background: #f3f3f3;
+  padding: 0.05em 0.3em;
+  border-radius: 2px;
+}
+.fm-textarea {
+  width: 100%;
+  height: 240px;
+  font-family: Monaco, Consolas, "Courier New", monospace;
+  font-size: 0.76em;
+  line-height: 1.45;
+  padding: 0.6em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.fm-data-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+  flex-wrap: wrap;
+}
+.fm-errors { font-size: 0.78em; color: #b3261e; }
+.fm-errors.ok { color: #2e7d32; }
+
+@media (max-width: 640px) {
+  .fm-map { height: 380px; }
+  .fm-hint { display: none; }
+}
