@@ -13,9 +13,7 @@
 
   var els = {
     timeline: document.getElementById('timeline'),
-    selection: document.getElementById('selection'),
-    handleLo: document.getElementById('handleLo'),
-    handleHi: document.getElementById('handleHi'),
+    playhead: document.getElementById('playhead'),
     ticks: document.getElementById('ticks'),
     itinerary: document.getElementById('itinerary'),
     itinLanes: document.getElementById('itinLanes'),
@@ -30,14 +28,13 @@
     sideHint: document.getElementById('sideHint'),
     btnApply: document.getElementById('btnApply'),
     btnReset: document.getElementById('btnReset'),
-    btnAll: document.getElementById('btnAll'),
     btnNow: document.getElementById('btnNow')
   };
 
   var state = {
     events: [],
     venues: [],          // events grouped by rounded lat/lng
-    lo: 600, hi: 780,    // selected window, in minutes
+    t: 630,              // selected time of day, in minutes
     domainLo: 540, domainHi: 1500,
     selectedVenue: null,
     picks: {}            // event id -> true, the draft itinerary
@@ -52,6 +49,11 @@
   }
 
   function isPicked(ev) { return !!state.picks[ev.id]; }
+
+  var TIME_KEY = 'fringe-map-time-v1';
+  function saveWindow() {
+    try { localStorage.setItem(TIME_KEY, String(state.t)); } catch (e) { /* ignore */ }
+  }
 
   function pickedEvents() {
     return state.events.filter(isPicked);
@@ -126,7 +128,7 @@
   }
 
   function activeShows(venue) {
-    return venue.shows.filter(function (ev) { return P.isActive(ev, state.lo, state.hi); });
+    return venue.shows.filter(function (ev) { return P.isActive(ev, state.t); });
   }
 
   // Active labels are placed in map-pixel space; venues that would overprint
@@ -196,21 +198,14 @@
 
   function renderTimeline() {
     var span = state.domainHi - state.domainLo;
-    var pctLo = ((state.lo - state.domainLo) / span) * 100;
-    var pctHi = ((state.hi - state.domainLo) / span) * 100;
-
-    els.selection.style.left = pctLo + '%';
-    els.selection.style.width = Math.max(0, pctHi - pctLo) + '%';
-    els.handleLo.style.left = pctLo + '%';
-    els.handleHi.style.left = pctHi + '%';
-
-    els.windowLabel.textContent = fmt(state.lo) + ' – ' + fmt(state.hi);
+    var pct = ((state.t - state.domainLo) / span) * 100;
+    els.playhead.style.left = pct + '%';
+    els.windowLabel.textContent = fmt(state.t);
 
     var n = state.events.filter(function (ev) {
-      return P.isActive(ev, state.lo, state.hi);
+      return P.isActive(ev, state.t);
     }).length;
-    els.activeCount.textContent = n + ' of ' + state.events.length +
-      (n === 1 ? ' event' : ' events');
+    els.activeCount.textContent = n + (n === 1 ? ' show running' : ' shows running');
   }
 
   function buildTicks() {
@@ -318,7 +313,7 @@
       esc(venue.name || 'Venue') + '</div>';
 
     shows.forEach(function (ev) {
-      var on = P.isActive(ev, state.lo, state.hi);
+      var on = P.isActive(ev, state.t);
       html += '<div class="fm-detail-show' + (focusId === ev.id ? ' focus' : '') +
         '" data-show="' + esc(ev.id) + '" style="opacity:' + (on ? 1 : 0.45) + '">';
       html += '<h3>' + esc(ev.name);
@@ -399,86 +394,56 @@
     return Math.round(m / 5) * 5;      // snap to 5 minutes
   }
 
-  var drag = null;
+  var dragging = false;
 
-  function onDown(e, mode) {
+  function setTime(m, opts) {
+    state.t = Math.max(state.domainLo, Math.min(m, state.domainHi));
+    renderTimeline();
+    renderMap();
+    if ((!opts || opts.saveWindow !== false)) saveWindow();
+  }
+
+  function onDown(e) {
     e.preventDefault();
+    dragging = true;
+    els.playhead.classList.add('dragging');
     var x = e.touches ? e.touches[0].clientX : e.clientX;
-    drag = { mode: mode, startX: x, lo0: state.lo, hi0: state.hi };
-    if (mode === 'lo') els.handleLo.classList.add('dragging');
-    if (mode === 'hi') els.handleHi.classList.add('dragging');
-    if (mode === 'band') els.selection.classList.add('dragging');
+    setTime(pxToMinutes(x));
   }
 
   function onMove(e) {
-    if (!drag) return;
+    if (!dragging) return;
     e.preventDefault();
     var x = e.touches ? e.touches[0].clientX : e.clientX;
-
-    if (drag.mode === 'lo') {
-      state.lo = Math.min(pxToMinutes(x), state.hi - 5);
-    } else if (drag.mode === 'hi') {
-      state.hi = Math.max(pxToMinutes(x), state.lo + 5);
-    } else if (drag.mode === 'band') {
-      var rect = els.timeline.getBoundingClientRect();
-      var perPx = (state.domainHi - state.domainLo) / rect.width;
-      var delta = Math.round(((x - drag.startX) * perPx) / 5) * 5;
-      var width = drag.hi0 - drag.lo0;
-      var lo = drag.lo0 + delta;
-      lo = Math.max(state.domainLo, Math.min(lo, state.domainHi - width));
-      state.lo = lo;
-      state.hi = lo + width;
-    }
-    state.lo = Math.max(state.domainLo, state.lo);
-    state.hi = Math.min(state.domainHi, state.hi);
-    renderTimeline();
-    renderMap();
+    setTime(pxToMinutes(x));
   }
 
   function onUp() {
-    if (!drag) return;
-    drag = null;
-    els.handleLo.classList.remove('dragging');
-    els.handleHi.classList.remove('dragging');
-    els.selection.classList.remove('dragging');
+    if (!dragging) return;
+    dragging = false;
+    els.playhead.classList.remove('dragging');
   }
 
-  els.handleLo.addEventListener('mousedown', function (e) { onDown(e, 'lo'); });
-  els.handleHi.addEventListener('mousedown', function (e) { onDown(e, 'hi'); });
-  els.selection.addEventListener('mousedown', function (e) { onDown(e, 'band'); });
-  els.handleLo.addEventListener('touchstart', function (e) { onDown(e, 'lo'); }, { passive: false });
-  els.handleHi.addEventListener('touchstart', function (e) { onDown(e, 'hi'); }, { passive: false });
-  els.selection.addEventListener('touchstart', function (e) { onDown(e, 'band'); }, { passive: false });
+  els.playhead.addEventListener('mousedown', onDown);
+  els.playhead.addEventListener('touchstart', onDown, { passive: false });
+  els.timeline.addEventListener('mousedown', onDown);
+  els.timeline.addEventListener('touchstart', onDown, { passive: false });
   window.addEventListener('mousemove', onMove);
   window.addEventListener('touchmove', onMove, { passive: false });
   window.addEventListener('mouseup', onUp);
   window.addEventListener('touchend', onUp);
 
-  // Click on empty track: recentre the window there, keeping its width.
-  els.timeline.addEventListener('click', function (e) {
-    if (e.target === els.selection || e.target === els.handleLo || e.target === els.handleHi) return;
-    if (drag) return;
-    var m = pxToMinutes(e.touches ? e.touches[0].clientX : e.clientX);
-    var width = state.hi - state.lo;
-    var lo = Math.max(state.domainLo, Math.min(m - width / 2, state.domainHi - width));
-    state.lo = Math.round(lo / 5) * 5;
-    state.hi = state.lo + width;
-    renderTimeline();
-    renderMap();
-  });
-
-  els.btnAll.addEventListener('click', function () {
-    state.lo = state.domainLo; state.hi = state.domainHi;
-    renderTimeline(); renderMap();
+  // Arrow keys nudge the playhead once the timeline has focus.
+  els.timeline.setAttribute('tabindex', '0');
+  els.timeline.addEventListener('keydown', function (e) {
+    var step = e.shiftKey ? 60 : 5;
+    if (e.key === 'ArrowLeft') { e.preventDefault(); setTime(state.t - step); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); setTime(state.t + step); }
   });
 
   els.btnNow.addEventListener('click', function () {
     var now = new Date();
-    var m = now.getHours() * 60 + now.getMinutes();
-    m = Math.max(state.domainLo, Math.min(m, state.domainHi - 120));
-    state.lo = Math.round(m / 5) * 5;
-    state.hi = Math.min(state.domainHi, state.lo + 120);
-    renderTimeline(); renderMap();
+    setTime(now.getHours() * 60 + now.getMinutes());
   });
 
   // ---------- data loading ----------
@@ -527,11 +492,9 @@
     state.domainHi = Math.ceil((maxEnd + DAY_PAD) / 60) * 60;
 
     if (opts.resetWindow !== false) {
-      state.lo = state.domainLo;
-      state.hi = Math.min(state.domainHi, state.domainLo + 180);
+      state.t = state.domainLo + 90;
     }
-    state.lo = Math.max(state.domainLo, Math.min(state.lo, state.domainHi));
-    state.hi = Math.max(state.lo + 5, Math.min(state.hi, state.domainHi));
+    state.t = Math.max(state.domainLo, Math.min(state.t, state.domainHi));
 
     var label = res.meta && res.meta.date ? res.meta.date : '';
     els.dataStatus.textContent = '— ' + res.events.length + ' events' +
@@ -566,8 +529,12 @@
   var saved = null;
   try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
 
+  var savedTime = null;
+  try { savedTime = localStorage.getItem(TIME_KEY); } catch (e) { /* ignore */ }
+
   var initial = saved || JSON.stringify(window.FRINGE_SAMPLE, null, 2);
   els.input.value = initial;
-  load(initial, { quiet: true });
+  load(initial, { quiet: true, resetWindow: savedTime === null });
+  if (savedTime !== null) setTime(parseFloat(savedTime), { saveWindow: false });
   if (!saved) els.dataPanel.open = false;
 })();

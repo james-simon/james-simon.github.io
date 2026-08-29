@@ -54,29 +54,39 @@
   border-radius: 3px;
 }
 
-.fm-selection {
+/* single playhead marking the selected time */
+.fm-playhead {
   position: absolute;
-  top: 10px;
-  height: 6px;
-  background: #d24d3d;
-  border-radius: 3px;
-  cursor: grab;
-}
-.fm-selection.dragging { cursor: grabbing; }
-
-.fm-handle {
-  position: absolute;
-  top: 3px;
-  width: 13px;
-  height: 20px;
-  margin-left: -6.5px;
-  background: #fff;
-  border: 2px solid #d24d3d;
-  border-radius: 3px;
+  top: 2px;
+  width: 3px;
+  height: 22px;
+  margin-left: -1.5px;
+  background: #e8452c;
+  border-radius: 2px;
   cursor: ew-resize;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
 }
-.fm-handle:hover, .fm-handle.dragging { background: #ffecea; }
+.fm-playhead::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 13px;
+  background: #e8452c;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.fm-playhead:hover::after, .fm-playhead.dragging::after {
+  background: #c93a22;
+  transform: translateX(-50%) scale(1.12);
+}
+.fm-timeline:focus { outline: none; }
+.fm-timeline:focus-visible .fm-playhead::after {
+  box-shadow: 0 0 0 3px rgba(232,69,44,0.35);
+}
 
 /* hour labels */
 .fm-ticks { position: absolute; top: 20px; left: 0; right: 0; height: 18px; }

@@ -168,13 +168,17 @@
     return { events: events, errors: errors, meta: meta };
   }
 
-  // An event is active if any of its sessions overlaps [lo, hi].
-  function isActive(ev, lo, hi) {
+  // An event is active if any of its sessions is running at time t.
+  // End times are exclusive, so a show ending at 11:00 is not "on" at 11:00.
+  function isActive(ev, t) {
     var spans = ev.sessions || [{ start: ev.start, end: ev.end }];
     for (var i = 0; i < spans.length; i++) {
       var s = spans[i];
-      var e = s.end === s.start ? s.start : s.end;
-      if (s.start <= hi && e >= lo) return true;
+      if (s.end === s.start) {
+        if (s.start === t) return true;      // zero-length: exact match only
+      } else if (t >= s.start && t < s.end) {
+        return true;
+      }
     }
     return false;
   }
