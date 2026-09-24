@@ -27,7 +27,7 @@ This is a big deal because it connects data statistics to representational geome
 
 ### Finding a needle
 
-After seeing this a bunch of times and staring at it for a while, I was feeling in the mood to poke a hole in this beautiful result, and so I bet Dhruva a beer that I could find a collection of *other, seemingly-unrelated words* that form a circle + circulant matrix in the same way. He (and most others I told) thought this was crazy, since the circle clearly comes from the special relationship between the words. We settled on the terms of the bet: I had to find ten words that, plotted, gave a clear + compelling circle.
+After seeing this a bunch of times and staring at it for a while, I was feeling in the mood to poke a hole in this beautiful result, and so I bet Dhruva a beer that I could find a collection of *other, seemingly-unrelated words* that form a circle + circulant matrix in the same way. He (and most others I told) thought this was crazy, since the circle clearly comes from the special relationship between the words. We settled on the terms of the bet: I had to find ten random-seeming words whose `word2vec` embeddings, when plotted as the above, made a clear and compelling circle.
 
 Why'd I think this was possible? Well, we have vocabulary of $25000$ words to choose from. That gives you $N = \binom{25000}{10} \approx 3 \times 10^{37}$ sets to select from. I figured that if you threw ten darts at a board that many times, you'd definitely make a circle at least once. Info-theoretically speaking, you have $\log\_2 N \approx 124$ bits of information, and surely you can make a decent 10-point circle with that amount of resolving power. The question's just how you find a set of ten good words in the haystack.
 
