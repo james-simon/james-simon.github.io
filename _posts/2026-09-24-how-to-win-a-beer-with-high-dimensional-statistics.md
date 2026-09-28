@@ -38,7 +38,7 @@ Here's how I did it:
 - I upgraded it to an iterative search, where at every step, we drop the worst point and choose the best replacement from the vocabulary. That worked pretty well.
 - I also changed the objective from "looks circular on a PCA plot" to "matches a target circulant Gram matrix." That worked really damn well.
 
-This all took an afternoon with a coding agent.
+Note that the embedding size $d = 10000$ never entered into this. This all took an afternoon with a coding agent.
 
 Here's what I got:
 
@@ -48,7 +48,7 @@ Here's what I got:
 
 That's circular. You can just find other sets of random-looking words that form circles!
 
-### Is there any actual significance of this?
+### Does this have any actual significance?
 
 This raises certain open questions, including "how can one man be so wrong?", which I am not qualified to answer.
 
