@@ -179,3 +179,7 @@ and not use it all to serve your fellow man.</p>
 <p style="margin:1.2em 0; line-height:1.7;">and that&#x27;s why<br>
 I&#x27;ve got the technocapitalist AI-powered blues</p>
 </div>
+
+***
+
+*Thanks to Emmet Eckman for timekeeping on the spoons.*
