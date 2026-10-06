@@ -20,7 +20,7 @@ It was developed in the 1960s as a safer alternative to aspirin.
 
 **Aspirin** (which apparently has no brand names) is a different NSAID.
 It's sometimes prescribed for long-term use as a means of reducing the risk of heart attacks.
-It also works by binding to COX enzymes, but interesting, in the case of aspirin, this binding is permanent -- it stays bound until the enzyme is destroyed!
+It also works by binding to COX enzymes, but interestingly, in the case of aspirin, this binding is permanent -- it stays bound until the enzyme is destroyed!
 It's pretty old -- it was developed in the late 1890s!
 It's more dangerous than ibuprofen, though, with more risk of side effects on the digestive system, which I imagine is why ibuprofen is the more common over-the-counter medication these days.
 
