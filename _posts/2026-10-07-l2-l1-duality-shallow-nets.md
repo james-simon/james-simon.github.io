@@ -3,7 +3,7 @@ layout: post
 title: "A note on $L^2 \\leftrightarrow L^1$ duality in shallow homogeneous nets"
 date: 2026-10-07 09:00:00
 category: dl-science
-emoji: 🪆
+emoji: 👬
 ---
 
 If you've been around the deep learning theory block long enough to get to know the locals, you've probably heard something like this at some point:
