@@ -59,13 +59,13 @@ $$
 \mathbf{F} = \sum_{i=1}^h \mathbf{a}_i \mathbf{b}_i^\top,
 $$
 
-where $\mathbf{a}_i, \mathbf{b}_i$ are the $i$-th rows of $\mathbf{A}, \mathbf{B}$. First key observation: if $\|\mathbf{a}_i\| \neq \|\mathbf{b}_i \|$, then we can get free points by rescaling like
+where $\mathbf{a}_i, \mathbf{b}_i$ are the $i$-th rows of $\mathbf{A}, \mathbf{B}$. First key observation: if $\\|\mathbf{a}_i\\| \neq \\|\mathbf{b}_i \\|$, then we can get free points by rescaling like
 
 $$
 \mathbf{a}_i \rightarrow \mathbf{a}_i \ \cdot \ \sqrt{\frac{\| \mathbf{b}_i \|}{\| \mathbf{a}_i \|}}, \qquad \mathbf{b}_i \rightarrow \mathbf{b}_i \ \cdot \ \sqrt{\frac{\| \mathbf{a}_i \|}{\| \mathbf{b}_i \|}}.
 $$
 
-We can thus be assured that, at optimum, $\|\mathbf{a}_i\| =\|\mathbf{b}_i \|$. Let's reparameterize to separate the norm and unit-vector degrees of freedom:
+We can thus be assured that, at optimum, $\\|\mathbf{a}_i\\| =\\|\mathbf{b}_i \\|$. Let's reparameterize to separate the norm and unit-vector degrees of freedom:
 
 $$
 s_i := \| \mathbf{a}_i \|^2, \quad 

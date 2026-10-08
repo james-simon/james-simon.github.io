@@ -35,6 +35,14 @@
     a:hover {
       text-decoration: underline;
     }
+
+    /* Bootstrap's reboot strips blockquote styling; restore it. */
+    blockquote {
+      color: #555;
+      border-left: 4px solid #e0e0e0;
+      padding-left: 1em;
+      margin-left: 0;
+    }
   </style>
 
   {% unless page.skip_mathjax %}
