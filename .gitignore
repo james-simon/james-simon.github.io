@@ -2,3 +2,6 @@
 _site/
 .jekyll-cache/
 .sass-cache/
+
+# Log from the monthly embeddings refresh
+blogpost_embs/refresh.log
