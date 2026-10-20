@@ -296,15 +296,27 @@ function choiceSection(key) {
 function statementsSection() {
   body.append(el('h2', { id: 'statements' }, 'Agree or disagree?'));
   tocItems.push(['statements', 'Agree or disagree?', 'h2']);
-  D.likertQs.forEach((q, j) => {
+  const stmts = D.likertQs.map((q, j) => ({ q, short: QSHORT[j], groups: [1, 2, 3, 4, 5].map(v => P.filter(p => p.likert[j] === v).sort(byName)) }));
+  stmts.push(lasagna());
+  stmts.forEach(({ q, short, groups }, j) => {
     const id = 'statement-' + (j + 1);
     const sec = el('section', { class: 'statement', id });
-    const fig = columns([1, 2, 3, 4, 5].map(v => P.filter(p => p.likert[j] === v).sort(byName)), LIKERT);
+    const fig = columns(groups, LIKERT);
     sec.append(el('div', { class: 'num' }, `Statement ${j + 1}`), eyeHeading(el('h3', {}, esc(q)), fig), fig);
     body.append(sec);
     body.append(document.createComment(` discussion + quotes: ${id} `));
-    tocItems.push([id, `${j + 1}. ${QSHORT[j]}`, 'h3']);
+    tocItems.push([id, `${j + 1}. ${short}`, 'h3']);
   });
+}
+// the lasagna statement: made up, not from the survey. Deterministic shuffle so everyone
+// always gets the same answer; split 9 strongly disagree / 2 / 0 neutral / 2 / 9 strongly agree.
+function lasagna() {
+  const rng = (seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(20261022);
+  const order = P.map(p => [rng(), p]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const groups = []; let k = 0;
+  [9, 2, 0, 2, 9].forEach(m => { groups.push(order.slice(k, k + m).sort(byName)); k += m; });
+  groups[4].push(...order.slice(k));   // anyone beyond 22 lands in strongly agree
+  return { q: 'Two lasagnas stacked on top of each other are one lasagna.', short: 'Lasagna', groups };
 }
 
 choiceSection('view');
@@ -313,22 +325,6 @@ statementsSection();
 choiceSection('stable');
 choiceSection('needs');
 
-/* ---------- the lasagna question (made up, not from the survey) ---------- */
-(function lasagna() {
-  const id = 'lasagna', q = 'Two lasagnas stacked on top of each other are one lasagna.';
-  const h2 = el('h2', { id }, esc(q));
-  body.append(h2);
-  tocItems.push([id, 'Lasagna', 'h2']);
-  // deterministic shuffle so everyone always gets the same answer; split 9 / 2 / 0 / 2 / 9
-  const rng = (seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(20261022);
-  const order = P.map(p => [rng(), p]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
-  const sizes = [9, 2, 0, 2, 9], groups = [];
-  let k = 0; sizes.forEach(m => { groups.push(order.slice(k, k + m).sort(byName)); k += m; });
-  groups[4].push(...order.slice(k));   // anyone beyond 22 lands in strongly agree
-  const fig = columns(groups, LIKERT);
-  eyeHeading(h2, fig);
-  body.append(fig);
-})();
 
 /* ---------- table ---------- */
 const det = el('details', {}, `<summary>All responses as a table</summary>`);
