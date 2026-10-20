@@ -10,7 +10,7 @@ robots: noindex
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Features Workshop Pre-survey</title>
+<title>What is a feature? Perspectives, cruxes, and paths forwards</title>
 <style>
 /* distill-style tokens, after learningmechanics.pub */
 :root {
@@ -23,7 +23,6 @@ robots: noindex
   --meta: rgba(0,0,0,.5);
   --border: rgba(0,0,0,.1);
   --border-med: rgba(0,0,0,.2);
-  --wash: rgba(0,0,0,.035);
   --link: rgb(55,174,151);
   --ring: rgba(0,0,0,.28);
   --anon-bg: #ecebe7;
@@ -35,7 +34,7 @@ robots: noindex
     color-scheme: dark;
     --bg: #151514; --text: rgba(255,255,255,.82); --heading: #fff; --meta: rgba(255,255,255,.52);
     --border: rgba(255,255,255,.1); --border-med: rgba(255,255,255,.2);
-    --wash: rgba(255,255,255,.05); --ring: rgba(255,255,255,.32); --anon-bg: #2c2c2a; --card: #1f1f1e;
+    --ring: rgba(255,255,255,.32); --anon-bg: #2c2c2a; --card: #1f1f1e;
     --shadow: 0 8px 28px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4);
   }
 }
@@ -43,43 +42,27 @@ robots: noindex
   color-scheme: dark;
   --bg: #151514; --text: rgba(255,255,255,.82); --heading: #fff; --meta: rgba(255,255,255,.52);
   --border: rgba(255,255,255,.1); --border-med: rgba(255,255,255,.2);
-  --wash: rgba(255,255,255,.05); --ring: rgba(255,255,255,.32); --anon-bg: #2c2c2a; --card: #1f1f1e;
+  --ring: rgba(255,255,255,.32); --anon-bg: #2c2c2a; --card: #1f1f1e;
   --shadow: 0 8px 28px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4);
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 var(--font); }
 h1, h2, h3 { color: var(--heading); line-height: 1.25; }
-h1 { font-size: 2.5rem; font-weight: 700; margin: 0 0 .5em; letter-spacing: -.01em; line-height: 1.1; }
-h2 { font-size: 1.5rem; font-weight: 600; margin: 2.4em 0 .6em; padding-bottom: .3em; border-bottom: 1px solid var(--border); scroll-margin-top: 1.5em; }
+h1 { font-size: 2.5rem; font-weight: 700; margin: 0; letter-spacing: -.01em; line-height: 1.15; }
+h2 { font-size: 1.5rem; font-weight: 600; margin: 2.6em 0 .7em; padding-bottom: .3em; border-bottom: 1px solid var(--border); scroll-margin-top: 1.5em; }
 h3 { font-size: 1.2rem; font-weight: 500; line-height: 1.4; margin: 0; }
 p { margin: 1em 0; }
 a { color: var(--link); text-decoration: none; font-weight: 500; }
 .instr { color: var(--meta); font-weight: 400; }
 
-/* ---- grid: TOC | text | gutter ---- */
-.post-grid {
-  display: grid;
-  grid-template-columns: [screen-start] minmax(16px, 1fr) [kicker-start] 200px [kicker-end text-start] minmax(0, var(--text-width)) [text-end gutter-start] 168px [gutter-end] minmax(16px, 1fr) [screen-end];
-  column-gap: 32px;
-  overflow-x: clip;
-}
-.post-grid > * { grid-column: text; }
-header.post-header { padding-top: 3.5em; }
-article { grid-column: text-start / gutter-end; }
-article > * { max-width: var(--text-width); }
-article > .l-outset { max-width: none; }
-.kicker { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--meta); margin-bottom: .6em; }
-.byline { display: flex; flex-wrap: wrap; gap: .5em 3em; font-size: .8rem; line-height: 1.8; color: var(--meta);
-  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .75em 0; margin-bottom: 2em; }
-.byline-section { display: flex; flex-direction: column; }
-.byline-label { font-size: .625rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1.4; }
-.byline-value { color: var(--text); line-height: 1.4; }
-select { font: inherit; font-size: .8rem; color: var(--text); background: var(--bg); border: 1px solid var(--border-med); border-radius: 4px; padding: 1px 4px; }
+/* ---- page: a centered text column; the TOC is fixed in the left margin ---- */
+main { max-width: calc(var(--text-width) + 32px); margin: 0 auto; padding: 3.5em 16px 0; }
 
-/* ---- floating TOC ---- */
-nav.post-toc { grid-column: kicker; grid-row: 1 / span 100; align-self: start; position: sticky; top: 3.5em;
-  max-height: calc(100vh - 5em); overflow-y: auto; font-size: .82rem; line-height: 1.5; color: var(--meta); margin-top: 3.5em; }
+/* fixed, not sticky: it never moves and has no scroll of its own.
+   Its left edge sits 32px + 200px left of the 704px text column. */
+nav.post-toc { position: fixed; top: 3.5rem; left: calc(50% - var(--text-width) / 2 - 232px); width: 200px;
+  font-size: .82rem; line-height: 1.5; color: var(--meta); }
 nav.post-toc h4 { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 .6em; }
 nav.post-toc a { display: block; color: var(--meta); opacity: .75; font-weight: 400; padding: .2em 0; transition: color .15s, opacity .15s; }
 nav.post-toc a:hover { color: var(--link); opacity: 1; }
@@ -89,47 +72,43 @@ nav.post-toc .toc-h3 { padding-left: .85em; font-size: .78rem; }
 /* ---- faces ---- */
 .face { --s: 32px; position: relative; width: var(--s); height: var(--s); border-radius: 50%; flex: none; padding: 0; border: 0;
   background: var(--anon-bg) center/cover no-repeat; box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 2.5px var(--ring);
-  cursor: pointer; display: grid; place-items: center; font: 600 calc(var(--s) * .36) var(--font); color: var(--meta);
+  cursor: default; display: grid; place-items: center; font: 600 calc(var(--s) * .36) var(--font); color: var(--meta);
   transition: opacity .2s, filter .2s, transform .15s; }
 .face:hover, .face:focus-visible { transform: scale(1.12); z-index: 5; outline: none; }
 .face:focus-visible { box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 3.5px var(--link); }
 .dimmed .face:not(.lit) { opacity: .15; filter: grayscale(1); }
 .dimmed .face.lit { box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 3.5px var(--link); z-index: 6; }
 
-/* ---- multiple-choice: one line per option ---- */
-.q-figure { margin: 1.4em 0 .6em; }
-.opt { padding: .9em 0; border-top: 1px solid var(--border); }
-.opt:last-child { border-bottom: 1px solid var(--border); }
-.opt .txt { font-size: .92rem; line-height: 1.45; max-width: var(--text-width); }
-.opt .txt b { color: var(--heading); font-weight: 600; }
-.opt .faces { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; margin-top: .65em; padding-left: 2px; }
-.opt .n { font-size: .85rem; font-weight: 700; color: var(--heading); margin-left: 6px; font-variant-numeric: tabular-nums; }
-.opt .n small { font-weight: 400; color: var(--meta); }
-.figcap { font-size: .8rem; color: var(--meta); margin-top: .6em; }
+/* ---- option list, then one column of faces per option ---- */
+ul.opts { list-style: none; padding: 0; margin: 1em 0 0; }
+ul.opts li { margin: 0 0 .55em; font-size: .95rem; line-height: 1.5; }
+ul.opts b { color: var(--heading); font-weight: 600; }
+.cols { display: grid; grid-template-columns: repeat(var(--k), minmax(0, 1fr)); margin-top: 1.4em; border-bottom: 1px solid var(--border-med); }
+.cols .col { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: center; gap: 8px; padding: 10px 4px 12px; min-height: 56px; }
+.cols .col + .col { border-left: 1px solid var(--border); }
+.labels { display: grid; grid-template-columns: repeat(var(--k), minmax(0, 1fr)); text-align: center; font-size: .78rem; line-height: 1.3; color: var(--meta); padding-top: .5em; }
+.labels div { padding: 0 4px; }
+.scroller { overflow-x: auto; }
+/* many-option charts: smaller faces, and on wide screens borrow the empty right margin (distill's body-outset) */
+.scroller .cols .face { --s: 26px; }
+.scroller .cols .col { gap: 6px; padding: 10px 2px 12px; }
+.scroller .labels { font-size: .74rem; }
+@media (min-width: 1240px) { .scroller { margin-right: -200px; } }
 
 /* ---- agree/disagree statements ---- */
 .statement { margin-top: 3em; scroll-margin-top: 1.5em; }
 .statement .num { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--meta); margin-bottom: .35em; }
-.lk { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 1.2em; border-bottom: 1px solid var(--border-med); }
-.lk .col { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: center; gap: 8px; padding: 10px 6px 12px; min-height: 56px; }
-.lk .col + .col { border-left: 1px solid var(--border); }
-.lk-axis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); text-align: center; font-size: .75rem; color: var(--meta); padding-top: .4em; }
-.lk-axis b { display: block; color: var(--heading); font-size: .95rem; font-variant-numeric: tabular-nums; }
-.lk-sum { display: flex; flex-wrap: wrap; gap: .3em 1.6em; font-size: .85rem; color: var(--meta); margin-top: .9em; }
-.lk-sum b { color: var(--heading); font-variant-numeric: tabular-nums; }
 
-/* ---- hover card ---- */
+/* ---- hover card: photo, name, bio ---- */
 #tip { position: fixed; z-index: 50; width: 280px; pointer-events: none; opacity: 0; transform: translateY(4px);
   transition: opacity .12s, transform .12s; background: var(--card); color: var(--text); border: 1px solid var(--border);
-  border-radius: 8px; box-shadow: var(--shadow); padding: 14px; font-size: 13px; line-height: 1.4; }
+  border-radius: 8px; box-shadow: var(--shadow); padding: 14px; line-height: 1.4; }
 #tip.on { opacity: 1; transform: none; }
-#tip.pinned { pointer-events: auto; }
 #tip .hd { display: flex; gap: 14px; align-items: center; }
-#tip .hd .face { --s: 56px; cursor: default; }
+#tip .hd .face { --s: 56px; }
 #tip .hd .face:hover { transform: none; }
 #tip .nm { font-weight: 700; font-size: 15px; color: var(--heading); }
 #tip .bio { font-size: 13px; color: var(--meta); margin-top: 2px; }
-#tip .x { margin-left: auto; align-self: flex-start; font: inherit; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--meta); cursor: pointer; padding: 0 6px; }
 
 /* ---- table ---- */
 details { margin-top: 3em; }
@@ -141,59 +120,81 @@ th { color: var(--meta); font-weight: 600; }
 td.num { text-align: center; font-variant-numeric: tabular-nums; }
 footer { margin: 4em 0 3em; padding-top: 1em; border-top: 1px solid var(--border); font-size: .8rem; color: var(--meta); }
 
-@media (max-width: 1100px) {
-  .post-grid { grid-template-columns: [screen-start] 16px [kicker-start kicker-end text-start] minmax(0, 1fr) [text-end gutter-start gutter-end] 16px [screen-end]; column-gap: 0; }
-  nav.post-toc { display: none; }
-  article { grid-column: text; }
-  header.post-header { padding-top: 2em; }
-}
+/* hide the TOC once the left margin is too narrow to hold it */
+@media (max-width: 1240px) { nav.post-toc { display: none; } }
 @media (max-width: 600px) {
+  main { padding-top: 2em; }
   h1 { font-size: 2rem; }
-  .lk .col { gap: 5px; padding: 8px 2px; }
-  .lk .face { --s: 22px; }
-  .opt .face { --s: 26px; }
-  .opt .faces { gap: 7px; }
+  .cols .col { gap: 5px; padding: 8px 2px; }
+  .cols .face { --s: 22px; }
+  .labels { font-size: .7rem; }
+  .scroller .cols, .scroller .labels { min-width: 560px; }
   #tip { width: min(280px, calc(100vw - 24px)); }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="post-grid" id="app">
-  <nav class="post-toc" aria-label="Contents" id="toc"><h4>Contents</h4></nav>
-
-  <header class="post-header">
-    <div class="kicker">PIAMI × Learning Mechanics · “Features” Workshop</div>
-    <h1>Where everyone stands on features</h1>
-    <div class="byline">
-      <div class="byline-section"><span class="byline-label">Survey</span><span class="byline-value">Workshop pre-survey</span></div>
-      <div class="byline-section"><span class="byline-label">Respondents</span><span class="byline-value" id="nresp"></span></div>
-      <div class="byline-section"><span class="byline-label">Collected</span><span class="byline-value" id="dates"></span></div>
-      <div class="byline-section"><span class="byline-label">Highlight</span><span class="byline-value"><select id="who" aria-label="Highlight a person"><option value="">Find a person…</option></select></span></div>
-    </div>
-  </header>
-
-  <article id="body">
-    <h2 id="overview">Overview</h2>
-    <p id="intro"></p>
-  </article>
-
+<nav class="post-toc" aria-label="Contents" id="toc"><h4>Contents</h4></nav>
+<main id="app">
+  <h1>What is a feature? Perspectives, cruxes, and paths forwards</h1>
+  <!-- overview: Jamie to write -->
+  <article id="body"></article>
   <footer>Anonymous respondents appear as “?”. Free-text answers are not shown. Photos from public profile pages.</footer>
-</div>
+</main>
 <div id="tip" role="tooltip"></div>
 
 <script src="data.js"></script>
 <script>
 (() => {
-const D = window.SURVEY, P = D.people, n = P.length;
-// short labels: used only in the TOC and the hover card, never in place of the survey wording
+const D = window.SURVEY, P = D.people;
+
+// per option: the phrase to bold in its survey wording, and the short column label (same words where possible)
+const LABELS = {
+  notion: {
+    'Data': ['Data features', 'Data'],
+    'Representational': ['Representational features', 'Representational'],
+    'Computational': ['Computational features', 'Computational'],
+    'Dynamical': ['Dynamical features', 'Dynamical'],
+  },
+  view: {
+    'Natural units': ['Natural-units view', 'Natural units'],
+    'Pluralist': ['Pluralist view', 'Pluralist'],
+    'Pragmatist': ['Pragmatist view', 'Pragmatist'],
+  },
+  stable: {
+    'Feature-list': ['Feature-list stability', 'Feature-list'],
+    'Effective-theory': ['Effective-theory stability', 'Effective-theory'],
+    'Task-relative': ['Task-relative stability', 'Task-relative'],
+  },
+  needs: {
+    'Testable hypotheses': ['Testable theoretical and phenomenological hypotheses', 'Testable hypotheses'],
+    'Tools built on hypotheses': ['Interpretability tools', 'Interpretability tools'],
+    'Solvable models': ['Solvable models', 'Solvable models'],
+    'Comprehensive theories': ['More comprehensive theories', 'Comprehensive theories'],
+    'How decompositions arise': ['model decompositions', 'How decompositions arise'],
+    'Empirical irregularities': ['empirical irregularities', 'Empirical irregularities'],
+    'Validation methods': ['Validation methods', 'Validation methods'],
+    'Synthetic ground-truth data': ['Synthetic datasets', 'Synthetic datasets'],
+    'Measures of progress': ['Measures or theories of progress', 'Measures of progress'],
+  },
+};
+// question headings: survey wording, with Jamie's edits
+const QTEXT = {
+  notion: D.questions.notion,
+  view: D.questions.view,
+  stable: D.questions.stable,
+  needs: 'What does our field need more of? (check all that apply)',
+};
+const SECTIONS = {
+  notion: { id: 'central-notion', toc: 'Which notion is central' },
+  view:   { id: 'what-makes-a-feature', toc: 'What makes a feature' },
+  stable: { id: 'what-should-be-stable', toc: 'What should be stable' },
+  needs:  { id: 'what-the-field-needs', toc: 'What the field needs' },
+};
+const LIKERT = ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'];
+// short labels for the TOC only
 const QSHORT = ['Structure vs. human concepts', 'Ambitious interpretability', 'Toy models & natural data', 'Toy models & NN representations', 'Testable predictions'];
-const SECTIONS = [
-  { key: 'notion', id: 'central-notion', toc: 'Which notion is central' },
-  { key: 'view',   id: 'what-makes-a-feature', toc: 'What makes a feature' },
-  { key: 'stable', id: 'what-should-be-stable', toc: 'What should be stable' },
-  { key: 'needs',  id: 'what-the-field-needs', toc: 'What the field needs' },
-];
 
 let anonN = 0;
 P.forEach(p => {
@@ -213,141 +214,105 @@ function face(p, size) {
   else b.textContent = p.initials;
   return b;
 }
-// set a question's trailing instruction, e.g. "(select up to two):", in a lighter weight; wording unchanged
+// set a trailing instruction like "(select up to two):" in a lighter weight; wording unchanged
 function question(q) {
   const m = q.match(/^(.*?)\s*(\([^()]*\)\s*:?)\s*$/);
   return m ? `${esc(m[1])} <span class="instr">${esc(m[2])}</span>` : esc(q);
 }
+// one column of stacked faces per bucket, labels underneath
+function columns(groups, labels, wide) {
+  const fig = el('div', { class: wide ? 'scroller' : '' });
+  fig.style.setProperty('--k', groups.length);
+  const cols = el('div', { class: 'cols' });
+  groups.forEach(ps => { const c = el('div', { class: 'col' }); ps.forEach(p => c.append(face(p))); cols.append(c); });
+  fig.append(cols, el('div', { class: 'labels' }, labels.map(l => `<div>${esc(l)}</div>`).join('')));
+  return fig;
+}
 
-/* ---------- header ---------- */
-const fmt = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-$('#nresp').textContent = `${n} (${n - anonN} named, ${anonN} anonymous)`;
-$('#dates').textContent = `${fmt(D.dates[0])} – ${fmt(D.dates[1])}, ${D.dates[1].slice(0, 4)}`;
-$('#intro').textContent = `Before the workshop, ${n} participants answered four multiple-choice questions, then rated five statements from 1 (disagree) to 5 (agree). Every circle below is one person. Hover a face to see who it is; click it (or use “Find a person”) to light that person up on every question.`;
-[...P].sort(byName).forEach(p => $('#who').append(el('option', { value: p.id }, p.label)));
+const body = $('#body'), tocItems = [];
 
-/* ---------- multiple-choice questions, one section each ---------- */
-const body = $('#body');
-SECTIONS.forEach(s => {
-  body.append(el('h2', { id: s.id }, question(D.questions[s.key])));
-  // "view" is single-select; the rest are multi-select lists stored per person
-  const has = (p, o) => s.key === 'view' ? p.view === o : p[s.key].includes(o);
-  const opts = Object.keys(D.full[s.key]).map(o => ({ o, ps: P.filter(p => has(p, o)).sort(byName) }))
-    .sort((a, b) => b.ps.length - a.ps.length);
-  const fig = el('div', { class: 'q-figure l-outset' });
-  opts.forEach(({ o, ps }) => {
-    const full = D.full[s.key][o];
-    // bold the option's own label so options scan quickly: "X view:" / "X stability:" up to the colon,
-    // "X features" for the notions; the field-needs options have no label, so they stay plain
-    const cut = s.key === 'notion' ? full.indexOf(' ', full.indexOf(' ') + 1) : s.key === 'needs' ? -1 : full.indexOf(':');
-    const txt = cut > 0 ? `<b>${esc(full.slice(0, cut))}</b>${esc(full.slice(cut))}` : esc(full);
-    const row = el('div', { class: 'opt' }, `<div class="txt">${txt}</div>`);
-    const fw = el('div', { class: 'faces' });
-    ps.forEach(p => fw.append(face(p)));
-    fw.append(el('span', { class: 'n' }, `${ps.length} <small>/ ${n}</small>`));
-    row.append(fw); fig.append(row);
+function choiceSection(key) {
+  const s = SECTIONS[key];
+  body.append(el('h2', { id: s.id }, question(QTEXT[key])));
+  tocItems.push([s.id, s.toc, 'h2']);
+  const opts = D.opts[key];   // form order
+  const ul = el('ul', { class: 'opts' });
+  opts.forEach(o => {
+    const full = D.full[key][o], b = LABELS[key][o][0], i = full.indexOf(b);
+    ul.append(el('li', {}, i < 0 ? esc(full) : esc(full.slice(0, i)) + `<b>${esc(b)}</b>` + esc(full.slice(i + b.length))));
   });
-  body.append(fig);
-  body.append(el('p', { class: 'figcap' }, s.key === 'view' ? 'Sorted by number of respondents.'
-    : `Sorted by number of respondents. People could choose more than one, so counts add up to more than ${n}.`));
+  body.append(ul);
+  const has = (p, o) => key === 'view' ? p.view === o : p[key].includes(o);
+  body.append(columns(opts.map(o => P.filter(p => has(p, o)).sort(byName)), opts.map(o => LABELS[key][o][1]), opts.length > 5));
   body.append(document.createComment(` discussion + quotes: ${s.id} `));
-});
+}
 
-/* ---------- agree / disagree statements, one section each ---------- */
-body.append(el('h2', { id: 'statements' }, 'Agree or disagree? <span class="instr">(1 = disagree, 5 = agree)</span>'));
-D.likertQs.forEach((q, j) => {
-  const sec = el('section', { class: 'statement', id: 'statement-' + (j + 1) });
-  sec.append(el('div', { class: 'num' }, `Statement ${j + 1}`), el('h3', {}, esc(q)));
-  const lk = el('div', { class: 'lk' }), counts = [];
-  for (let v = 1; v <= 5; v++) {
-    const ps = P.filter(p => p.likert[j] === v).sort(byName);
-    counts.push(ps.length);
-    const col = el('div', { class: 'col' });
-    ps.forEach(p => col.append(face(p)));
-    lk.append(col);
-  }
-  const ax = el('div', { class: 'lk-axis' }, counts.map((c, i) => `<div><b>${i + 1}</b>${c} ${c === 1 ? 'person' : 'people'}</div>`).join(''));
-  const dis = counts[0] + counts[1], neu = counts[2], agr = counts[3] + counts[4];
-  const mean = P.reduce((s, p) => s + p.likert[j], 0) / n;
-  const fig = el('div', { class: 'q-figure' }); fig.append(lk, ax);
-  sec.append(fig, el('div', { class: 'lk-sum' }, `<span><b>${agr}</b> agree (4–5)</span><span><b>${neu}</b> neutral (3)</span><span><b>${dis}</b> disagree (1–2)</span><span>mean <b>${mean.toFixed(1)}</b></span>`));
-  body.append(sec);
-  body.append(document.createComment(` discussion + quotes: statement-${j + 1} `));
-});
+function statementsSection() {
+  body.append(el('h2', { id: 'statements' }, 'Agree or disagree?'));
+  tocItems.push(['statements', 'Agree or disagree?', 'h2']);
+  D.likertQs.forEach((q, j) => {
+    const id = 'statement-' + (j + 1);
+    const sec = el('section', { class: 'statement', id });
+    sec.append(el('div', { class: 'num' }, `Statement ${j + 1}`), el('h3', {}, esc(q)));
+    sec.append(columns([1, 2, 3, 4, 5].map(v => P.filter(p => p.likert[j] === v).sort(byName)), LIKERT));
+    body.append(sec);
+    body.append(document.createComment(` discussion + quotes: ${id} `));
+    tocItems.push([id, `${j + 1}. ${QSHORT[j]}`, 'h3']);
+  });
+}
+
+choiceSection('notion');
+choiceSection('view');
+statementsSection();
+choiceSection('stable');
+choiceSection('needs');
 
 /* ---------- table ---------- */
 const det = el('details', {}, `<summary>All responses as a table</summary>`);
 const tw = el('div', { class: 'tblwrap' });
-tw.innerHTML = `<table><thead><tr><th>Name</th>${SECTIONS.map(s => `<th>${s.toc}</th>`).join('')}${D.likertQs.map((q, j) => `<th title="${esc(q)}">S${j + 1}</th>`).join('')}</tr></thead><tbody>` +
-  [...P].sort(byName).map(p => `<tr><td>${p.label}</td><td>${p.notion.join(', ')}</td><td>${p.view}</td><td>${p.stable.join(', ')}</td><td>${p.needs.join(', ')}</td>${p.likert.map(v => `<td class="num">${v}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
+const tcols = ['notion', 'view', 'stable', 'needs'];
+tw.innerHTML = `<table><thead><tr><th>Name</th>${tcols.map(k => `<th>${SECTIONS[k].toc}</th>`).join('')}${D.likertQs.map((q, j) => `<th title="${esc(q)}">Statement ${j + 1}</th>`).join('')}</tr></thead><tbody>` +
+  [...P].sort(byName).map(p => `<tr><td>${p.label}</td>${tcols.map(k => `<td>${k === 'view' ? p.view : p[k].map(o => LABELS[k][o][1]).join(', ')}</td>`).join('')}${p.likert.map(v => `<td class="num">${LIKERT[v - 1]}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
 det.append(tw); body.append(det);
 
 /* ---------- TOC with active-section tracking ---------- */
 const toc = $('#toc');
-const tocItems = [['overview', 'Overview', 'h2'], ...SECTIONS.map(s => [s.id, s.toc, 'h2']), ['statements', 'Agree or disagree?', 'h2'],
-  ...QSHORT.map((t, j) => ['statement-' + (j + 1), `${j + 1}. ${t}`, 'h3'])];
 tocItems.forEach(([id, t, lvl]) => toc.append(el('a', { href: '#' + id, class: 'toc-' + lvl }, t)));
 const links = new Map([...toc.querySelectorAll('a')].map(a => [a.getAttribute('href').slice(1), a]));
 const heads = tocItems.map(([id]) => document.getElementById(id));
 function syncToc() {
-  const y = innerHeight * 0.3; let cur = heads[0].id;
+  const y = innerHeight * 0.3; let cur = null;
   for (const h of heads) { if (h.getBoundingClientRect().top <= y) cur = h.id; else break; }
   links.forEach((a, id) => a.classList.toggle('toc-active', id === cur));
 }
 addEventListener('scroll', syncToc, { passive: true }); syncToc();
 
-/* ---------- linked highlight + hover card ---------- */
+/* ---------- hover: card with photo, name, bio; that person lights up across the page ---------- */
 const app = $('#app'), tip = $('#tip');
-const state = { focus: null, pinned: false };
-function paint() {
-  app.classList.toggle('dimmed', state.focus != null);
-  document.querySelectorAll('#app .face[data-id]').forEach(f => f.classList.toggle('lit', +f.dataset.id === state.focus));
+function highlight(id) {
+  app.classList.toggle('dimmed', id != null);
+  document.querySelectorAll('#app .face[data-id]').forEach(f => f.classList.toggle('lit', +f.dataset.id === id));
 }
-function card(p) {
+function show(p, t) {
   const bio = p.anon ? 'Anonymous respondent' : (p.bio || '[short bio here]');
-  return `<div class="hd">${face(p, 56).outerHTML}<div><div class="nm">${p.label}</div><div class="bio">${esc(bio)}</div></div>
-    ${state.pinned ? '<button class="x" id="tipx" aria-label="Close">✕</button>' : ''}</div>`;
-}
-function placeTip(r) {
-  const tw = tip.offsetWidth, th = tip.offsetHeight, vw = innerWidth, vh = innerHeight;
+  tip.innerHTML = `<div class="hd">${face(p, 56).outerHTML}<div><div class="nm">${p.label}</div><div class="bio">${esc(bio)}</div></div></div>`;
+  tip.classList.add('on');
+  const r = t.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight, vw = innerWidth, vh = innerHeight;
   let x = r.right + 12, y = r.top + r.height / 2 - th / 2;
   if (x + tw > vw - 12) x = r.left - tw - 12;
   if (x < 12) { x = Math.max(12, Math.min(vw - tw - 12, r.left + r.width / 2 - tw / 2)); y = r.bottom + 10; if (y + th > vh - 12) y = r.top - th - 10; }
   tip.style.left = x + 'px'; tip.style.top = Math.max(12, Math.min(vh - th - 12, y)) + 'px';
 }
-function show(p, t) {
-  tip.innerHTML = card(p); tip.classList.add('on'); tip.classList.toggle('pinned', state.pinned);
-  placeTip(t.getBoundingClientRect());
-  const x = $('#tipx'); if (x) x.onclick = () => clearFocus();
-}
-function pin(p, t) {
-  state.focus = p.id; state.pinned = true; $('#who').value = p.id; paint();
-  if (t) return show(p, t);
-  t = document.querySelector(`#body .face[data-id="${p.id}"]`);
-  t.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  setTimeout(() => show(p, t), 450);
-}
-function clearFocus() { state.focus = null; state.pinned = false; $('#who').value = ''; tip.classList.remove('on', 'pinned'); paint(); }
-$('#who').onchange = e => e.target.value === '' ? clearFocus() : pin(P[+e.target.value]);
-
-const faceOf = e => { const f = e.target.closest('.face[data-id]'); return f && !tip.contains(f) ? f : null; };
-const hoverOn = f => { if (state.pinned) return; state.focus = +f.dataset.id; paint(); show(P[state.focus], f); };
-const hoverOff = () => { if (state.pinned) return; state.focus = null; paint(); tip.classList.remove('on'); };
-document.addEventListener('mouseover', e => { const f = faceOf(e); if (f) hoverOn(f); });
-document.addEventListener('mouseout', e => { const f = faceOf(e); if (f && !(e.relatedTarget && f.contains(e.relatedTarget))) hoverOff(); });
-document.addEventListener('focusin', e => { const f = faceOf(e); if (f) hoverOn(f); });
-document.addEventListener('focusout', e => { if (faceOf(e)) hoverOff(); });
-document.addEventListener('click', e => {
-  const f = faceOf(e);
-  if (f) { const p = P[+f.dataset.id]; state.pinned && state.focus === p.id ? clearFocus() : pin(p, f); return; }
-  if (state.pinned && !tip.contains(e.target) && !e.target.closest('.byline')) clearFocus();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') clearFocus(); });
-// transient cards vanish on scroll; a pinned card docks bottom-right
-addEventListener('scroll', () => {
-  if (!state.pinned) return tip.classList.remove('on');
-  tip.style.left = (innerWidth - tip.offsetWidth - 16) + 'px'; tip.style.top = (innerHeight - tip.offsetHeight - 16) + 'px';
-}, { passive: true });
+function hide() { tip.classList.remove('on'); highlight(null); }
+const faceOf = e => e.target.closest('#app .face[data-id]');
+const on = e => { const f = faceOf(e); if (!f) return; highlight(+f.dataset.id); show(P[+f.dataset.id], f); };
+const off = e => { const f = faceOf(e); if (f && !(e.relatedTarget && f.contains(e.relatedTarget))) hide(); };
+document.addEventListener('mouseover', on);
+document.addEventListener('mouseout', off);
+document.addEventListener('focusin', on);
+document.addEventListener('focusout', off);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+addEventListener('scroll', () => { if (tip.classList.contains('on')) hide(); }, { passive: true });
 })();
 </script>
 </body>
