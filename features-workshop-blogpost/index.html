@@ -111,6 +111,32 @@ ul.opts b { color: var(--heading); font-weight: 600; }
 .revealing .cols .face { animation: pop .38s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: calc(var(--i) * 28ms); }
 @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.6); } to { opacity: 1; transform: none; } }
 
+/* ---- the map ---- */
+.mapctl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: .8rem; color: var(--meta); margin-top: 1.2em; }
+.mapctl label { display: inline-flex; gap: 6px; align-items: center; }
+.mapctl select { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--border-med); border-radius: 4px; padding: 2px 4px; max-width: 230px; }
+.mbtn { font: inherit; font-size: .8rem; color: var(--meta); background: none; border: 1px solid var(--border-med); border-radius: 4px; padding: 2px 9px; cursor: pointer; }
+.mbtn:hover { color: var(--link); border-color: var(--link); }
+.mbtn[aria-pressed="true"] { color: var(--link); border-color: var(--link); }
+.mapfig { margin-top: 1em; }
+@media (min-width: 1240px) { .mapfig { margin-right: -200px; } }
+#map { position: relative; width: 100%; user-select: none; }
+#map svg { position: absolute; inset: 0; overflow: visible; }
+#map .node { position: absolute; left: 0; top: 0; width: 80px; display: flex; flex-direction: column; align-items: center;
+  transition: transform .75s cubic-bezier(.2, .8, .2, 1); }
+#map .nm { font-size: 11px; color: var(--meta); margin-top: 5px; white-space: nowrap; line-height: 1; pointer-events: none;
+  text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg); }
+#map.nonames .nm { display: none; }
+.dimmed #map .node:not(:has(.lit)) .nm { opacity: .2; }
+#map .grid { stroke: var(--border); }
+#map .mid { stroke: var(--border-med); }
+#map .tick { font-size: 11px; fill: var(--meta); }
+#map .axis-t { font-size: 12px; fill: var(--text); font-weight: 600; }
+#map .end { font-size: 11px; fill: var(--meta); font-style: italic; }
+.figcap { font-size: .8rem; color: var(--meta); margin-top: .8em; line-height: 1.5; }
+.concealed #map .node { display: none; }
+.revealing .node .face { animation: pop .38s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: calc(var(--i) * 28ms); }
+
 /* ---- agree/disagree statements ---- */
 .statement { margin-top: 3em; scroll-margin-top: 1.5em; }
 .statement .num { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--meta); margin-bottom: .35em; }
@@ -140,6 +166,7 @@ footer { margin: 4em 0 3em; padding-top: 1em; border-top: 1px solid var(--border
 @media (max-width: 1240px) { nav.post-toc { display: none; } }
 @media (max-width: 600px) {
   main { padding-top: 2em; }
+  #map .nm { display: none; }
   h1 { font-size: 2rem; }
   .cols .col { gap: 5px; padding: 8px 2px; }
   .cols .face { --s: 22px; }
@@ -265,6 +292,7 @@ function eyeHeading(h, fig) {
     b.setAttribute('aria-pressed', show);
     b.setAttribute('aria-label', show ? 'Hide answers' : 'Reveal answers'); b.title = b.getAttribute('aria-label');
     fig.querySelectorAll('.col').forEach(c => [...c.children].forEach((f, i) => f.style.setProperty('--i', i)));
+    fig.querySelectorAll('.node .face').forEach((f, i) => f.style.setProperty('--i', i));
     fig.classList.toggle('concealed', !show);
     fig.classList.toggle('revealing', show);
   };
@@ -324,7 +352,121 @@ choiceSection('notion');
 statementsSection();
 choiceSection('stable');
 choiceSection('needs');
+mapSection();
 
+
+/* ---------- the map: every person placed by two axes built from the agree/disagree answers ---------- */
+function mapSection() {
+  const id = 'the-map';
+  const h2 = el('h2', { id }, 'The map');
+  body.append(h2);
+  tocItems.push([id, 'The map', 'h2']);
+  body.append(el('p', {}, 'Each face sits at its owner’s answers to the agree/disagree statements. Pick any two axes: a single statement, the average of two related statements, or a principal component of all five.'));
+
+  const mean = (...js) => p => js.reduce((a, j) => a + p.likert[j], 0) / js.length;
+  const pct = i => Math.round(D.pca.var[i] * 100);
+  const AX = [
+    { id: 'toy', label: 'Toy-model faith', long: 'average of statements 3 and 4 (toy models capture natural-data features; toy models describe NN representations)', f: mean(2, 3), lik: true, lo: 'toy-model skeptic', hi: 'toy-model believer' },
+    { id: 'amb', label: 'Interp ambition', long: 'average of statements 1 and 2 (structure over human concepts; ambitious interpretability is possible)', f: mean(0, 1), lik: true, lo: 'modest', hi: 'ambitious' },
+    ...D.likertQs.map((q, j) => ({ id: 's' + j, label: `${j + 1}. ${QSHORT[j]}`, long: `statement ${j + 1}: “${q}”`, f: p => p.likert[j], lik: true })),
+    { id: 'pc1', label: `PC1 (${pct(0)}% of variance)`, long: `first principal component of the five standardized answers; loadings ${D.pca.load[0].join(', ')} on statements 1–5`, f: p => p.pc[0], lo: 'interp-first', hi: 'toy-model / theory-first' },
+    { id: 'pc2', label: `PC2 (${pct(1)}% of variance)`, long: `second principal component; loadings ${D.pca.load[1].join(', ')} on statements 1–5`, f: p => p.pc[1], lo: 'skeptical across the board', hi: 'agrees across the board' },
+  ];
+  const AXI = Object.fromEntries(AX.map(a => [a.id, a]));
+  const PRESETS = [
+    { l: 'Toy models × ambition', x: 'toy', y: 'amb' },
+    { l: 'Principal components', x: 'pc1', y: 'pc2' },
+  ];
+
+  const ctl = el('div', { class: 'mapctl' });
+  const xs = el('select', { 'aria-label': 'X axis' }), ys = el('select', { 'aria-label': 'Y axis' });
+  AX.forEach(a => { xs.append(el('option', { value: a.id }, a.label)); ys.append(el('option', { value: a.id }, a.label)); });
+  xs.value = 'toy'; ys.value = 'amb';
+  PRESETS.forEach(pr => {
+    pr.btn = el('button', { class: 'mbtn' }, pr.l);
+    pr.btn.onclick = () => { xs.value = pr.x; ys.value = pr.y; layout(); };
+    ctl.append(pr.btn);
+  });
+  const lx = el('label', {}, 'X'), ly = el('label', {}, 'Y'); lx.append(xs); ly.append(ys);
+  const nb = el('button', { class: 'mbtn', 'aria-pressed': 'true' }, 'Names');
+  ctl.append(lx, ly, nb);
+  body.append(ctl);
+
+  const fig = el('div', { class: 'mapfig' + (PRESENTING ? ' concealed' : '') });
+  const map = el('div', { id: 'map' });
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  map.append(svg);
+  const nodes = P.map(p => {
+    const nd = el('div', { class: 'node' });
+    nd.append(face(p, 34), el('span', { class: 'nm' }, p.anon ? '' : p.name.split(' ')[0]));
+    map.append(nd);
+    return nd;
+  });
+  const note = el('p', { class: 'figcap' });
+  fig.append(map, note);
+  eyeHeading(h2, fig);
+  body.append(fig);
+  body.append(document.createComment(` discussion + quotes: ${id} `));
+
+  xs.onchange = ys.onchange = () => layout();
+  nb.onclick = () => { const on = nb.getAttribute('aria-pressed') !== 'true'; nb.setAttribute('aria-pressed', on); map.classList.toggle('nonames', !on); layout(); };
+
+  // Likert axes zoom to the whole-number range actually used; PC axes to the data range in half steps
+  const domain = (a, v) => a.lik
+    ? [Math.max(1, Math.floor(Math.min(...v))), Math.min(5, Math.ceil(Math.max(...v)))]
+    : [Math.floor(Math.min(...v) * 2) / 2, Math.ceil(Math.max(...v) * 2) / 2];
+  const ticks = d => { const t = []; for (let v = Math.ceil(d[0]); v <= d[1]; v++) t.push(v); return t; };
+  const tickLabel = (a, v) => a.lik ? LIKERT[v - 1] : (v > 0 ? '+' : '') + v;
+  const isMid = (a, v) => a.lik ? v === 3 : v === 0;
+
+  function layout() {
+    const xa = AXI[xs.value], ya = AXI[ys.value];
+    PRESETS.forEach(pr => pr.btn.setAttribute('aria-pressed', pr.x === xa.id && pr.y === ya.id));
+    const W = map.clientWidth, small = W < 560;
+    const H = Math.round(Math.min(Math.max(W * 0.66, small ? 440 : 460), 620));
+    map.style.height = H + 'px';
+    const m = { l: small ? 40 : 112, r: 16, t: 28, b: 58 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const xv = P.map(xa.f), yv = P.map(ya.f), xd = domain(xa, xv), yd = domain(ya, yv), pad = 0.42;
+    const sx = v => m.l + (v - xd[0] + pad) / (xd[1] - xd[0] + 2 * pad) * iw;
+    const sy = v => m.t + ih - (v - yd[0] + pad) / (yd[1] - yd[0] + 2 * pad) * ih;
+
+    let g = '';
+    ticks(xd).forEach(v => g += `<line class="${isMid(xa, v) ? 'mid' : 'grid'}" x1="${sx(v)}" x2="${sx(v)}" y1="${m.t}" y2="${m.t + ih}"/>
+      <text class="tick" x="${sx(v)}" y="${m.t + ih + 16}" text-anchor="middle">${small && xa.lik ? '' : tickLabel(xa, v)}</text>`);
+    ticks(yd).forEach(v => g += `<line class="${isMid(ya, v) ? 'mid' : 'grid'}" y1="${sy(v)}" y2="${sy(v)}" x1="${m.l}" x2="${m.l + iw}"/>
+      <text class="tick" x="${m.l - 8}" y="${sy(v) + 4}" text-anchor="end">${small && ya.lik ? '' : tickLabel(ya, v)}</text>`);
+    const end = (a, w) => a[w] || (w === 'lo' ? 'disagree' : 'agree');
+    g += `<text class="axis-t" x="${m.l + iw / 2}" y="${H - 12}" text-anchor="middle">${esc(xa.label)} →</text>
+      <text class="axis-t" transform="translate(14,${m.t + ih / 2}) rotate(-90)" text-anchor="middle">${esc(ya.label)} →</text>`;
+    if (!small) g += `<text class="end" x="${m.l}" y="${H - 12}">← ${end(xa, 'lo')}</text>
+      <text class="end" x="${m.l + iw}" y="${H - 12}" text-anchor="end">${end(xa, 'hi')} →</text>
+      <text class="end" x="${m.l}" y="${m.t - 12}">↑ ${end(ya, 'hi')}</text>`;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
+    svg.innerHTML = g;
+
+    // anchor each face at its exact answer, then push overlapping faces apart (names need extra vertical room)
+    const names = !map.classList.contains('nonames') && !small;
+    const fs = small ? 26 : 34, R = small ? 15 : 21, ry = names ? 1.4 : 1;
+    const pts = P.map((p, i) => { const ax = sx(xa.f(p)), ay = sy(ya.f(p)), t = i * 2.39996; return { ax, ay, x: ax + Math.cos(t) * 3, y: ay + Math.sin(t) * 3 }; });
+    for (let it = 0; it < 400; it++) {
+      for (const q of pts) { q.x += (q.ax - q.x) * 0.03; q.y += (q.ay - q.y) * 0.03; }
+      for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+        const a = pts[i], b = pts[j], dx = b.x - a.x, dy = (b.y - a.y) / ry, d = Math.hypot(dx, dy) || 1e-3, min = 2 * R + 3;
+        if (d < min) { const k = (min - d) / d / 2; a.x -= dx * k; a.y -= dy * ry * k; b.x += dx * k; b.y += dy * ry * k; }
+      }
+      for (const q of pts) { q.x = Math.min(Math.max(q.x, m.l + R), m.l + iw - R); q.y = Math.min(Math.max(q.y, m.t + R), m.t + ih - R * ry); }
+    }
+    nodes.forEach((nd, i) => {
+      nd.firstChild.style.setProperty('--s', fs + 'px');
+      nd.style.transform = `translate(${pts[i].x - 40}px, ${pts[i].y - fs / 2}px)`;
+    });
+    note.innerHTML = xa.id === ya.id ? `<b>Both axes:</b> ${esc(xa.long)}.`
+      : `<b>X:</b> ${esc(xa.long)}. <b>Y:</b> ${esc(ya.long)}. Faces are nudged apart so ties stay visible; each is anchored at its exact position.`;
+  }
+  let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(layout, 60); }).observe(map);
+  layout();
+}
 
 /* ---------- table ---------- */
 const det = el('details', {}, `<summary>All responses as a table</summary>`);
