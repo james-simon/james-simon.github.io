@@ -95,6 +95,22 @@ ul.opts b { color: var(--heading); font-weight: 600; }
 .scroller .labels { font-size: .74rem; }
 @media (min-width: 1240px) { .scroller { margin-right: -200px; } }
 
+/* ---- presentation mode: answers start hidden; an eye button beside each heading reveals them ---- */
+.has-eye { display: flex; align-items: flex-start; gap: 14px; }
+.has-eye > .qt { flex: 1; }
+.eye { flex: none; width: 34px; height: 34px; margin-top: -2px; border-radius: 50%; border: 1px solid var(--border-med);
+  background: var(--bg); color: var(--meta); cursor: pointer; display: grid; place-items: center; padding: 0;
+  transition: color .15s, border-color .15s, background .15s; }
+.eye:hover { color: var(--link); border-color: var(--link); }
+.eye[aria-pressed="true"] { color: var(--link); border-color: var(--link); }
+.eye svg { width: 18px; height: 18px; }
+.eye .shut { display: none; }
+.eye[aria-pressed="false"] .open { display: none; }
+.eye[aria-pressed="false"] .shut { display: block; }
+.concealed .cols .face { display: none; }
+.revealing .cols .face { animation: pop .38s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: calc(var(--i) * 28ms); }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.6); } to { opacity: 1; transform: none; } }
+
 /* ---- agree/disagree statements ---- */
 .statement { margin-top: 3em; scroll-margin-top: 1.5em; }
 .statement .num { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--meta); margin-bottom: .35em; }
@@ -153,6 +169,8 @@ footer { margin: 4em 0 3em; padding-top: 1em; border-top: 1px solid var(--border
 <script>
 (() => {
 const D = window.SURVEY, P = D.people;
+// live-presentation mode: hide every chart's answers behind an eye toggle. Set false for the blog post.
+const PRESENTING = true;
 
 // per option: the phrase to bold in its survey wording, and the short column label (same words where possible)
 const LABELS = {
@@ -231,14 +249,35 @@ function columns(groups, labels, wide) {
   const cols = el('div', { class: 'cols' });
   groups.forEach(ps => { const c = el('div', { class: 'col' }); ps.forEach(p => c.append(face(p))); cols.append(c); });
   fig.append(cols, el('div', { class: 'labels' }, labels.map(l => `<div>${esc(l)}</div>`).join('')));
+  if (PRESENTING) fig.classList.add('concealed');
   return fig;
+}
+const EYE_SVG = `<svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+  <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`;
+// heading with an eye button on its right that shows/hides the given chart's faces
+function eyeHeading(h, fig) {
+  if (!PRESENTING) return h;
+  h.classList.add('has-eye');
+  h.innerHTML = `<span class="qt">${h.innerHTML}</span>`;
+  const b = el('button', { class: 'eye', 'aria-pressed': 'false', 'aria-label': 'Reveal answers', title: 'Reveal answers' }, EYE_SVG);
+  b.onclick = () => {
+    const show = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', show);
+    b.setAttribute('aria-label', show ? 'Hide answers' : 'Reveal answers'); b.title = b.getAttribute('aria-label');
+    fig.querySelectorAll('.col').forEach(c => [...c.children].forEach((f, i) => f.style.setProperty('--i', i)));
+    fig.classList.toggle('concealed', !show);
+    fig.classList.toggle('revealing', show);
+  };
+  h.append(b);
+  return h;
 }
 
 const body = $('#body'), tocItems = [['introduction', 'Introduction', 'h2']];
 
 function choiceSection(key) {
   const s = SECTIONS[key];
-  body.append(el('h2', { id: s.id }, question(QTEXT[key])));
+  const h2 = el('h2', { id: s.id }, question(QTEXT[key]));
+  body.append(h2);
   tocItems.push([s.id, s.toc, 'h2']);
   const opts = D.opts[key];   // form order
   const ul = el('ul', { class: 'opts' });
@@ -248,7 +287,9 @@ function choiceSection(key) {
   });
   body.append(ul);
   const has = (p, o) => key === 'view' ? p.view === o : p[key].includes(o);
-  body.append(columns(opts.map(o => P.filter(p => has(p, o)).sort(byName)), opts.map(o => LABELS[key][o][1]), opts.length > 5));
+  const fig = columns(opts.map(o => P.filter(p => has(p, o)).sort(byName)), opts.map(o => LABELS[key][o][1]), opts.length > 5);
+  eyeHeading(h2, fig);
+  body.append(fig);
   body.append(document.createComment(` discussion + quotes: ${s.id} `));
 }
 
@@ -258,8 +299,8 @@ function statementsSection() {
   D.likertQs.forEach((q, j) => {
     const id = 'statement-' + (j + 1);
     const sec = el('section', { class: 'statement', id });
-    sec.append(el('div', { class: 'num' }, `Statement ${j + 1}`), el('h3', {}, esc(q)));
-    sec.append(columns([1, 2, 3, 4, 5].map(v => P.filter(p => p.likert[j] === v).sort(byName)), LIKERT));
+    const fig = columns([1, 2, 3, 4, 5].map(v => P.filter(p => p.likert[j] === v).sort(byName)), LIKERT);
+    sec.append(el('div', { class: 'num' }, `Statement ${j + 1}`), eyeHeading(el('h3', {}, esc(q)), fig), fig);
     body.append(sec);
     body.append(document.createComment(` discussion + quotes: ${id} `));
     tocItems.push([id, `${j + 1}. ${QSHORT[j]}`, 'h3']);
@@ -275,7 +316,8 @@ choiceSection('needs');
 /* ---------- the lasagna question (made up, not from the survey) ---------- */
 (function lasagna() {
   const id = 'lasagna', q = 'Two lasagnas stacked on top of each other are one lasagna.';
-  body.append(el('h2', { id }, esc(q)));
+  const h2 = el('h2', { id }, esc(q));
+  body.append(h2);
   tocItems.push([id, 'Lasagna', 'h2']);
   // deterministic shuffle so everyone always gets the same answer; split 9 / 2 / 0 / 2 / 9
   const rng = (seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(20261022);
@@ -283,7 +325,9 @@ choiceSection('needs');
   const sizes = [9, 2, 0, 2, 9], groups = [];
   let k = 0; sizes.forEach(m => { groups.push(order.slice(k, k + m).sort(byName)); k += m; });
   groups[4].push(...order.slice(k));   // anyone beyond 22 lands in strongly agree
-  body.append(columns(groups, LIKERT));
+  const fig = columns(groups, LIKERT);
+  eyeHeading(h2, fig);
+  body.append(fig);
 })();
 
 /* ---------- table ---------- */
@@ -292,7 +336,8 @@ const tw = el('div', { class: 'tblwrap' });
 const tcols = ['notion', 'view', 'stable', 'needs'];
 tw.innerHTML = `<table><thead><tr><th>Name</th>${tcols.map(k => `<th>${SECTIONS[k].toc}</th>`).join('')}${D.likertQs.map((q, j) => `<th title="${esc(q)}">Statement ${j + 1}</th>`).join('')}</tr></thead><tbody>` +
   [...P].sort(byName).map(p => `<tr><td>${p.label}</td>${tcols.map(k => `<td>${k === 'view' ? p.view : p[k].map(o => LABELS[k][o][1]).join(', ')}</td>`).join('')}${p.likert.map(v => `<td class="num">${LIKERT[v - 1]}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
-det.append(tw); body.append(det);
+det.append(tw);
+if (!PRESENTING) body.append(det);   // the table would give the answers away mid-talk
 
 /* ---------- TOC with active-section tracking ---------- */
 const toc = $('#toc');
