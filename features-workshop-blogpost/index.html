@@ -138,8 +138,13 @@ footer { margin: 4em 0 3em; padding-top: 1em; border-top: 1px solid var(--border
 <nav class="post-toc" aria-label="Contents" id="toc"><h4>Contents</h4></nav>
 <main id="app">
   <h1>What is a feature? Perspectives, cruxes, and paths forwards</h1>
-  <!-- overview: Jamie to write -->
-  <article id="body"></article>
+  <article id="body">
+    <h2 id="introduction">Introduction</h2>
+    <p>An enormous amount of scientific effort these last years has hinged on the following questions: what are neural network features? How should we operationalize that notion and measure them? To what degree do we need mathematical principle behind such a notion vs. just getting it to work empirically?</p>
+    <p>We held a workshop in Berkeley on October 20-22 of this year to discuss these questions. We brought together experts from different areas of the field, including mechanistic interpretability, singular learning theory, and learning mechanics, to discuss, identify cruxes, and seek a path forwards.</p>
+    <p>What follows are the results of these discussions. These results reveal a diverse and divided field with differing (but often complementary) perspectives on the nature of features and the path forwards.</p>
+    <p>To make these differences in opinion clear, we had every participant answer a series of questions about their views on these questions. Below are their responses and summaries of the surrounding discussion.</p>
+  </article>
   <footer>Anonymous respondents appear as “?”. Free-text answers are not shown. Photos from public profile pages.</footer>
 </main>
 <div id="tip" role="tooltip"></div>
@@ -181,7 +186,7 @@ const LABELS = {
 };
 // question headings: survey wording, with Jamie's edits
 const QTEXT = {
-  notion: D.questions.notion,
+  notion: 'Which notion of ‘features’ is most central to your work? (select up to two)',
   view: D.questions.view,
   stable: D.questions.stable,
   needs: 'What does our field need more of? (check all that apply)',
@@ -229,7 +234,7 @@ function columns(groups, labels, wide) {
   return fig;
 }
 
-const body = $('#body'), tocItems = [];
+const body = $('#body'), tocItems = [['introduction', 'Introduction', 'h2']];
 
 function choiceSection(key) {
   const s = SECTIONS[key];
@@ -261,8 +266,8 @@ function statementsSection() {
   });
 }
 
-choiceSection('notion');
 choiceSection('view');
+choiceSection('notion');
 statementsSection();
 choiceSection('stable');
 choiceSection('needs');
