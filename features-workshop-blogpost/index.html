@@ -1,0 +1,676 @@
+---
+layout: null
+permalink: /features-workshop-blogpost/
+sitemap: false
+robots: noindex
+---
+{% raw %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Features Workshop Pre-survey</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,.10); --wash: rgba(11,11,11,.04);
+  --v1: #2a78d6; --v2: #eb6834; --v3: #1baf7a; --anon: #b9b7ae;
+  --pos: #2a78d6; --neg: #e34948; --mid: #f0efec;
+  --shadow: 0 8px 28px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,.10); --wash: rgba(255,255,255,.05);
+    --v1: #3987e5; --v2: #d95926; --v3: #199e70; --anon: #5a5953;
+    --pos: #3987e5; --neg: #e66767; --mid: #383835;
+    --shadow: 0 8px 28px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,.10); --wash: rgba(255,255,255,.05);
+  --v1: #3987e5; --v2: #d95926; --v3: #199e70; --anon: #5a5953;
+  --pos: #3987e5; --neg: #e66767; --mid: #383835;
+  --shadow: 0 8px 28px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1080px; margin: 0 auto; padding: 40px 16px 80px; }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.02em; margin: 6px 0 10px; font-weight: 700; }
+h2 { font-size: 22px; letter-spacing: -.01em; margin: 0 0 4px; }
+h3 { font-size: 15px; margin: 0 0 2px; }
+p { margin: 0; }
+.kicker { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.lede { color: var(--ink2); font-size: 17px; max-width: 62ch; }
+.sub { color: var(--ink2); max-width: 70ch; }
+.muted { color: var(--muted); }
+section { margin-top: 56px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+
+/* toolbar: legend-as-filter + person finder */
+.toolbar { position: sticky; top: 0; z-index: 20; margin: 24px -16px 0; padding: 10px 16px;
+  background: color-mix(in srgb, var(--page) 88%, transparent); backdrop-filter: blur(8px);
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; border-bottom: 1px solid var(--border); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px 5px 8px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; }
+.chip:hover { background: var(--wash); }
+.chip[aria-pressed="false"] { opacity: .45; }
+.chip .sw { width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--c); }
+.chip .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+.finder { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+select { font: inherit; font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 8px; max-width: 100%; }
+.btn { font: inherit; font-size: 13px; color: var(--ink2); background: none; border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+.btn:hover { background: var(--wash); color: var(--ink); }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* stat tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 28px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+.tile .big { font-size: 34px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+.tile .big small { font-size: 18px; color: var(--muted); font-weight: 600; }
+.tile .what { color: var(--ink2); font-size: 14px; margin-top: 4px; }
+.tile .tag { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+
+/* faces */
+.face { --s: 30px; --ring: var(--anon); position: relative; width: var(--s); height: var(--s); border-radius: 50%; flex: none;
+  background: var(--surface) center/cover no-repeat; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4.5px var(--ring);
+  cursor: pointer; border: 0; padding: 0; display: grid; place-items: center;
+  font: 600 calc(var(--s) * .36) system-ui, sans-serif; color: var(--ink2);
+  transition: opacity .2s, filter .2s, transform .2s, box-shadow .15s; }
+.face.initials { background: color-mix(in srgb, var(--ring) 18%, var(--surface)); }
+.face.anon { background: var(--mid); color: var(--muted); }
+.face:hover, .face:focus-visible { transform: scale(1.12); z-index: 5; outline: none; }
+.face:focus-visible { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4.5px var(--ring), 0 0 0 7px var(--ink); }
+.dimmed .face:not(.lit) { opacity: .16; filter: grayscale(1); }
+.face.lit { z-index: 6; }
+.focusing .face.lit { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4.5px var(--ring), 0 0 0 7.5px var(--ink); }
+
+/* map */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 18px; }
+.mapctl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 13px; color: var(--ink2); }
+.mapctl label { display: inline-flex; gap: 6px; align-items: center; }
+.mapctl select { max-width: 230px; }
+.presets { display: flex; gap: 6px; flex-wrap: wrap; }
+#map { position: relative; width: 100%; user-select: none; }
+#map svg { position: absolute; inset: 0; overflow: visible; }
+#map .node { position: absolute; left: 0; top: 0; display: flex; flex-direction: column; align-items: center;
+  transition: transform .75s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+#map .node .nm { font-size: 11px; color: var(--ink2); margin-top: 6px; white-space: nowrap; line-height: 1;
+  transition: opacity .2s; pointer-events: none; text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface); }
+#map.nonames .nm { display: none; }
+.dimmed #map .node:not(.lit) .nm { opacity: .2; }
+.axis-t { font-size: 12px; fill: var(--ink2); font-weight: 600; }
+.tick { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.quad { font-size: 12px; fill: var(--muted); font-style: italic; }
+.mapnote { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+/* likert strips */
+.lk { display: grid; grid-template-columns: 220px repeat(5, minmax(0, 1fr)) 92px; gap: 0; align-items: stretch; }
+.lk + .lk { border-top: 1px solid var(--grid); }
+.lk .q { padding: 14px 14px 14px 0; }
+.lk .q h3 { font-size: 14px; line-height: 1.3; }
+.lk .q p { font-size: 12px; color: var(--muted); line-height: 1.35; margin-top: 4px; }
+.lk .col { padding: 12px 6px; display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; gap: 9px;
+  border-left: 1px solid var(--grid); position: relative; min-height: 64px; }
+.lk .col .cnt { position: absolute; top: 2px; right: 6px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lk .sum { padding: 14px 0 14px 12px; border-left: 1px solid var(--grid); text-align: right; }
+.lk .sum .pct { font-size: 20px; font-weight: 700; line-height: 1.1; }
+.lk .sum .mu { font-size: 12px; color: var(--muted); }
+.lk.head .col .short { display: none; }
+.lk.head .col, .lk.head .sum { min-height: 0; padding: 0 6px 8px; font-size: 11px; color: var(--muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .04em; text-align: center; border-left-color: transparent; }
+.lk.head .sum { text-align: right; padding-right: 0; }
+.mini-div { display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; margin: 8px 0 0 auto; width: 76px; }
+.mini-div span { display: block; height: 100%; }
+
+/* unit-bar rows */
+.rows { display: grid; gap: 4px; }
+.row { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 14px; align-items: center; padding: 8px 0; }
+.row + .row { border-top: 1px solid var(--grid); }
+.row .lab { font-size: 14px; font-weight: 600; line-height: 1.3; }
+.row .lab small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.row .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 4px; }
+.row .bar .n { font-size: 13px; font-weight: 700; color: var(--ink2); margin-left: 6px; font-variant-numeric: tabular-nums; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* view columns */
+.views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.view { border-top: 4px solid var(--c); padding: 14px 4px 4px; }
+.view .faces { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.view .n { font-size: 28px; font-weight: 700; line-height: 1; }
+
+/* corr heatmap */
+.corrwrap { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 18px; }
+.corr { display: grid; grid-template-columns: 150px repeat(5, minmax(0, 1fr)); gap: 2px; font-size: 12px; }
+.corr .rl { color: var(--ink2); padding-right: 8px; display: flex; align-items: center; justify-content: flex-end; text-align: right; line-height: 1.2; }
+.corr .cl { color: var(--muted); text-align: center; font-weight: 600; padding-bottom: 4px; }
+.corr .cell { aspect-ratio: 1; border-radius: 4px; display: grid; place-items: center; font-variant-numeric: tabular-nums; cursor: default; }
+.corr .cell.diag { background: var(--wash); color: var(--muted); }
+.corr .cell:hover { outline: 2px solid var(--ink); outline-offset: -1px; }
+.scale { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); margin: 10px 0 0 150px; }
+.scale .ramp { flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--neg), var(--mid), var(--pos)); }
+.findings { display: grid; gap: 14px; }
+.finding { border-left: 3px solid var(--grid); padding: 2px 0 2px 12px; }
+.finding b { font-variant-numeric: tabular-nums; }
+
+/* tooltip card */
+#tip { position: fixed; z-index: 50; width: 310px; pointer-events: none; opacity: 0; transform: translateY(4px);
+  transition: opacity .12s, transform .12s; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: var(--shadow); padding: 14px; font-size: 13px; }
+#tip.on { opacity: 1; transform: none; }
+#tip.pinned { pointer-events: auto; }
+#tip .hd { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+#tip .hd .face { --s: 48px; cursor: default; }
+#tip .hd .face:hover { transform: none; }
+#tip .nm { font-weight: 700; font-size: 15px; line-height: 1.2; }
+#tip .vw { font-size: 12px; color: var(--ink2); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+#tip .vw i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); display: inline-block; }
+#tip .x { margin-left: auto; align-self: flex-start; pointer-events: auto; }
+.lrow { display: grid; grid-template-columns: 1fr 76px; gap: 8px; align-items: center; padding: 2px 0; }
+.lrow span { color: var(--ink2); font-size: 12px; line-height: 1.25; }
+.dots { display: flex; gap: 4px; justify-content: flex-end; }
+.dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--grid); }
+.dots i.on { background: var(--ink); }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.tags span { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--wash); border: 1px solid var(--border); color: var(--ink2); }
+.tsec { margin-top: 9px; }
+.tsec .tl { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+
+/* table view */
+details { margin-top: 56px; }
+summary { cursor: pointer; font-weight: 600; color: var(--ink2); }
+.tblwrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; font-size: 12px; min-width: 900px; width: 100%; }
+th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--surface); }
+td.num { text-align: center; font-variant-numeric: tabular-nums; }
+footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+
+@media (max-width: 760px) {
+  .finder { margin-left: 0; }
+  .toolbar { position: static; }
+  #map .node .nm { display: none; }
+  .lk.head .col .long { display: none; }
+  .lk.head .col .short { display: inline; }
+  .lk { grid-template-columns: repeat(5, minmax(0, 1fr)) 64px; }
+  .lk .q { grid-column: 1 / -1; padding-bottom: 4px; }
+  .lk.head .q { display: none; }
+  .lk .col { gap: 6px; padding: 8px 2px; }
+  .lk .face { --s: 20px; font-size: 8px; }
+  .row .face, .view .face { --s: 24px; }
+  #names { display: none; }
+  .row { grid-template-columns: 1fr; gap: 4px; }
+  .grid2, .corrwrap { grid-template-columns: 1fr; }
+  .views { grid-template-columns: 1fr; }
+  .corr { grid-template-columns: 96px repeat(5, minmax(0, 1fr)); font-size: 11px; }
+  .scale { margin-left: 96px; }
+  #tip { width: min(310px, calc(100vw - 24px)); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main id="app">
+  <div class="kicker">PIAMI × Learning Mechanics · “Features” Workshop</div>
+  <h1>Where everyone stands on features</h1>
+  <p class="lede" id="lede"></p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="toolbar" role="toolbar" aria-label="Highlight">
+    <span class="muted" style="font-size:13px">Ring = view on what makes a feature:</span>
+    <div class="legend" id="legend"></div>
+    <div class="finder">
+      <select id="who" aria-label="Find a person"><option value="">Find a person…</option></select>
+      <button class="btn" id="clear" hidden>Clear</button>
+    </div>
+  </div>
+
+  <section id="s-map">
+    <h2>The map</h2>
+    <p class="sub">Each face sits at its owner’s answers. Pick any two axes: a single statement, a two-statement
+      composite, or the principal components of all five Likert answers. Hover a face for the full profile; click to
+      pin and light that person up everywhere on the page.</p>
+    <div class="card mapwrap">
+      <div class="mapctl">
+        <div class="presets" id="presets"></div>
+        <label>X <select id="xsel"></select></label>
+        <label>Y <select id="ysel"></select></label>
+        <button class="btn" id="names" aria-pressed="true">Names</button>
+      </div>
+      <div id="map" aria-label="Scatter map of respondents"></div>
+      <p class="mapnote" id="mapnote"></p>
+    </div>
+  </section>
+
+  <section id="s-likert">
+    <h2>Statement by statement</h2>
+    <p class="sub">1 = strongly disagree … 5 = strongly agree. Columns are stacks of people; the right-hand number is the share who agree (4–5).</p>
+    <div class="card" style="margin-top:18px" id="likert"></div>
+  </section>
+
+  <section id="s-corr">
+    <h2>How the statements hang together</h2>
+    <p class="sub">Pearson correlation between answers across the 22 respondents. With n = 22, |r| below ~0.42 is
+      within noise (p &gt; 0.05), so read these as hints, not laws.</p>
+    <div class="corrwrap">
+      <div class="card">
+        <div class="corr" id="corr"></div>
+        <div class="scale"><span>−1</span><div class="ramp"></div><span>+1</span></div>
+      </div>
+      <div class="findings" id="findings"></div>
+    </div>
+  </section>
+
+  <section id="s-what">
+    <h2>What makes something a feature?</h2>
+    <p class="sub">Pick the view most similar to yours. This is the ring color used throughout.</p>
+    <div class="card views" style="margin-top:18px" id="views"></div>
+  </section>
+
+  <section id="s-notions">
+    <div class="grid2">
+      <div>
+        <h2>Which notion of “feature” is central to your work?</h2>
+        <p class="sub">Select up to two (a few people picked more).</p>
+        <div class="card rows" style="margin-top:18px" id="notion"></div>
+      </div>
+      <div>
+        <h2>What should be stable across models?</h2>
+        <p class="sub">Select all that apply.</p>
+        <div class="card rows" style="margin-top:18px" id="stable"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-needs">
+    <h2>What does the field need more of?</h2>
+    <p class="sub">Check all that apply. Ranked by votes; each face is one vote.</p>
+    <div class="card rows" style="margin-top:18px" id="needs"></div>
+  </section>
+
+  <details>
+    <summary>Table view: every response</summary>
+    <div class="tblwrap"><table id="tbl"></table></div>
+  </details>
+
+  <footer>Pre-survey responses, collected Sept–Oct 2026. Anonymous respondents are shown as grey “?” circles.
+    Photos from public profile pages.</footer>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const D = window.SURVEY, P = D.people;
+const VIEWS = [
+  { key: 'Natural units', c: 'var(--v1)', d: 'There is a broadly canonical notion of “feature” to discover.' },
+  { key: 'Pluralist',     c: 'var(--v2)', d: 'Different notions of “feature” can be legitimate, depending on framing or level of description.' },
+  { key: 'Pragmatist',    c: 'var(--v3)', d: 'Featurehood is whatever supports a specified intervention, prediction, or compression task.' },
+];
+const VC = Object.fromEntries(VIEWS.map(v => [v.key, v.c]));
+const Q = [
+  { s: 'Structure > human concepts', d: 'Interp tools should identify important structure in the data as represented by the model, not merely recover human-identifiable concepts.' },
+  { s: 'Ambitious interp is possible', d: '“Ambitious” interpretability (full mechanistic transparency of features and their role in behavior) is possible.' },
+  { s: 'Toy models capture natural-data features', d: 'Toy or exactly solvable models can capture feature structure in natural data.' },
+  { s: 'Toy models describe NN representations', d: 'Toy or exactly solvable models can sufficiently describe feature structure in NN representations.' },
+  { s: 'Theory should predict feature structure', d: 'A successful theory of learning should make testable predictions about feature structure.' },
+];
+const OPT_DESC = {
+  notion: {
+    'Data': 'Structure in the world / data distribution the network may try to learn.',
+    'Representational': 'Encoded in activations or weights; studied with post hoc tools.',
+    'Computational': 'Variables or intermediate quantities in the model’s computation.',
+    'Dynamical': 'Tied to the learning process; tracked via kernels or training dynamics.',
+  },
+  stable: {
+    'Feature-list': 'The same specific features recur across runs, data, architectures.',
+    'Effective-theory': 'Features vary, but the kinds of objects and governing “physics” recur.',
+    'Task-relative': 'What’s stable depends on the task or intervention.',
+  },
+  needs: {
+    'Testable hypotheses': 'Theoretical & phenomenological hypotheses that can be stress-tested now.',
+    'Tools built on hypotheses': 'Interp tools built on those hypotheses (e.g. LRH + sparsity).',
+    'Comprehensive theories': 'Theories connecting data, learning, and representations.',
+    'How decompositions arise': 'How features/circuits arise from data and training dynamics.',
+    'Measures of progress': 'What counts as success for interp, and how it relates to tractability.',
+    'Validation methods': 'Validation methods for interpretability tools.',
+    'Empirical irregularities': 'Systematic study of irregularities that may have a simple cause.',
+    'Solvable models': 'Not testable in all regimes, but offer a conceptual frame.',
+    'Synthetic ground-truth data': 'Synthetic datasets with tractable ground-truth features.',
+  },
+};
+const LK = ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'];
+const LKs = ['SD', 'D', 'N', 'A', 'SA'];
+
+// stable ids & display names; anonymous respondents get a numbered label only
+let anonN = 0;
+P.forEach(p => {
+  p.label = p.name || `Anonymous ${++anonN}`;
+  p.first = p.name ? p.name.split(' ')[0] : '?';
+  p.initials = p.name ? p.name.split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('') : '?';
+});
+const viewOrder = Object.fromEntries(VIEWS.map((v, i) => [v.key, i]));
+const byView = (a, b) => viewOrder[a.view] - viewOrder[b.view] || (a.anon - b.anon) || a.label.localeCompare(b.label);
+
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, html) => { const e = document.createElement(tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; };
+
+function face(p, size) {
+  const b = el('button', { class: 'face', 'data-id': p.id, 'aria-label': `${p.label} (${p.view})` });
+  b.style.setProperty('--ring', VC[p.view]);
+  if (size) b.style.setProperty('--s', size + 'px');
+  if (p.anon) { b.classList.add('anon'); b.textContent = '?'; }
+  else if (p.face) b.style.backgroundImage = `url("${p.face}")`;
+  else { b.classList.add('initials'); b.textContent = p.initials; }
+  return b;
+}
+
+/* ---------- headline numbers ---------- */
+const n = P.length, cnt = (f) => P.filter(f).length;
+const agree = j => cnt(p => p.likert[j] >= 4), disagree = j => cnt(p => p.likert[j] <= 2);
+$('#lede').innerHTML = `Pre-survey results from <b>${n}</b> participants (${n - anonN} named, ${anonN} anonymous): five agree/disagree statements and four multiple-choice questions.`;
+const tiles = [
+  { tag: 'Near-consensus', big: `${agree(0)}<small>/${n}</small>`, what: 'agree interp tools should find structure in the data, not merely human-identifiable concepts. Nobody disagrees.' },
+  { tag: 'The big split', big: `${disagree(3)} <small>vs</small> ${agree(3)}`, what: 'disagree vs. agree that toy / solvable models can sufficiently describe feature structure in NN representations.' },
+  { tag: 'What should be stable', big: `${cnt(p => p.stable.includes('Effective-theory'))}<small>/${n}</small>`, what: 'want effective-theory stability (the “physics” recurs) over the same feature list recurring.' },
+  { tag: 'Sharpest tension', big: `r = ${D.corr[0][3].toFixed(2).replace('-', '−')}`, what: 'Those most insistent on “structure over concepts” are the least convinced toy models describe real networks.' },
+];
+$('#tiles').innerHTML = tiles.map(t => `<div class="tile"><div class="tag">${t.tag}</div><div class="big">${t.big}</div><div class="what">${t.what}</div></div>`).join('');
+
+/* ---------- legend (also a highlight filter) ---------- */
+const state = { focus: null, pinned: false, views: new Set(VIEWS.map(v => v.key)) };
+VIEWS.forEach(v => {
+  const b = el('button', { class: 'chip', 'aria-pressed': 'true' }, `<span class="sw" style="--c:${v.c}"></span>${v.key} <span class="n">${cnt(p => p.view === v.key)}</span>`);
+  b.onclick = () => {
+    if (state.views.size === VIEWS.length) { state.views = new Set([v.key]); }
+    else if (state.views.has(v.key)) { state.views.delete(v.key); if (!state.views.size) state.views = new Set(VIEWS.map(v => v.key)); }
+    else state.views.add(v.key);
+    syncLegend(); paint();
+  };
+  b.dataset.key = v.key;
+  $('#legend').append(b);
+});
+function syncLegend() { document.querySelectorAll('#legend .chip').forEach(c => c.setAttribute('aria-pressed', state.views.has(c.dataset.key))); }
+const anonSw = el('span', { class: 'chip', style: 'cursor:default' }, `<span class="sw" style="--c:var(--anon);background:var(--mid)"></span><span class="muted">? = anonymous</span>`);
+$('#legend').append(anonSw);
+
+// person finder
+[...P].sort((a, b) => (a.anon - b.anon) || a.label.localeCompare(b.label)).forEach(p => $('#who').append(el('option', { value: p.id }, p.label)));
+$('#who').onchange = e => { const v = e.target.value; if (v === '') clearFocus(); else pin(P[+v]); };
+$('#clear').onclick = () => clearFocus();
+
+/* ---------- the map ---------- */
+const mean = (...js) => p => js.reduce((s, j) => s + p.likert[j], 0) / js.length;
+const AX = [
+  { id: 'comp-toy', label: 'Toy-model faith', long: 'mean of “toy models capture natural-data features” and “toy models describe NN representations”', f: mean(2, 3), dom: [1, 5], lik: true, lo: 'toy-model skeptic', hi: 'toy-model believer' },
+  { id: 'comp-amb', label: 'Interp ambition', long: 'mean of “structure > human concepts” and “ambitious interp is possible”', f: mean(0, 1), dom: [1, 5], lik: true, lo: 'modest', hi: 'ambitious' },
+  ...Q.map((q, j) => ({ id: 'q' + j, label: q.s, long: q.d, f: p => p.likert[j], dom: [1, 5], lik: true })),
+  { id: 'pc1', label: `PC1 (${Math.round(D.pca.var[0] * 100)}% of variance)`, long: 'first principal component of the standardized Likert answers', f: p => p.pc[0], pc: 0, lo: 'interp-first', hi: 'toy-model / theory-first' },
+  { id: 'pc2', label: `PC2 (${Math.round(D.pca.var[1] * 100)}% of variance)`, long: 'second principal component', f: p => p.pc[1], pc: 1, lo: 'skeptical across the board', hi: 'agrees across the board' },
+];
+const AXI = Object.fromEntries(AX.map(a => [a.id, a]));
+AX.forEach(a => { $('#xsel').append(el('option', { value: a.id }, a.label)); $('#ysel').append(el('option', { value: a.id }, a.label)); });
+const PRESETS = [
+  { l: 'Toy models × ambition', x: 'comp-toy', y: 'comp-amb' },
+  { l: 'PCA', x: 'pc1', y: 'pc2' },
+  { l: 'Ambitious × toy→NN', x: 'q3', y: 'q1' },
+];
+PRESETS.forEach(pr => {
+  const b = el('button', { class: 'btn' }, pr.l);
+  b.onclick = () => { $('#xsel').value = pr.x; $('#ysel').value = pr.y; layoutMap(); };
+  pr.btn = b; $('#presets').append(b);
+});
+$('#xsel').value = 'comp-toy'; $('#ysel').value = 'comp-amb';
+$('#xsel').onchange = $('#ysel').onchange = () => layoutMap();
+$('#names').onclick = e => { const on = e.target.getAttribute('aria-pressed') !== 'true'; e.target.setAttribute('aria-pressed', on); $('#map').classList.toggle('nonames', !on); layoutMap(); };
+
+const map = $('#map');
+const svgNS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(svgNS, 'svg'); map.append(svg);
+const nodes = P.map(p => {
+  const nd = el('div', { class: 'node' });
+  nd.dataset.id = p.id;
+  nd.append(face(p, 38), el('span', { class: 'nm' }, p.anon ? '' : p.first));
+  map.append(nd);
+  return { p, nd };
+});
+
+function domainFor(a, vals) {
+  // Likert-scale axes zoom to the integer range people actually used, so faces get room to breathe
+  if (a.dom) return [Math.max(a.dom[0], Math.floor(Math.min(...vals))), Math.min(a.dom[1], Math.ceil(Math.max(...vals)))];
+  return [Math.floor(Math.min(...vals) * 2) / 2, Math.ceil(Math.max(...vals) * 2) / 2];
+}
+function layoutMap() {
+  const xa = AXI[$('#xsel').value], ya = AXI[$('#ysel').value];
+  PRESETS.forEach(pr => pr.btn.setAttribute('aria-pressed', pr.x === xa.id && pr.y === ya.id));
+  const W = map.clientWidth, small = W < 560;
+  const H = Math.round(Math.min(Math.max(W * 0.72, small ? 460 : 420), 640));
+  map.style.height = H + 'px';
+  const m = { l: small ? 34 : 64, r: 16, t: 26, b: small ? 52 : 60 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const xv = P.map(xa.f), yv = P.map(ya.f);
+  const xd = domainFor(xa, xv), yd = domainFor(ya, yv);
+  const pad = 0.42;
+  const sx = v => m.l + (v - xd[0] + pad) / (xd[1] - xd[0] + 2 * pad) * iw;
+  const sy = v => m.t + ih - (v - yd[0] + pad) / (yd[1] - yd[0] + 2 * pad) * ih;
+
+  // axes & grid
+  const ticks = (a, d) => a.lik ? [1, 2, 3, 4, 5].filter(v => v >= d[0] && v <= d[1]) : Array.from({ length: Math.ceil(d[1]) - Math.floor(d[0]) + 1 }, (_, i) => Math.floor(d[0]) + i).filter(v => v >= d[0] && v <= d[1]);
+  const tx = ticks(xa, xd), ty = ticks(ya, yd);
+  const tl = (a, v) => a.lik ? (Number.isInteger(v) ? LKs[v - 1] : '') : (v > 0 ? '+' : '') + v;
+  let g = '';
+  tx.forEach(v => g += `<line x1="${sx(v)}" x2="${sx(v)}" y1="${m.t}" y2="${m.t + ih}" stroke="var(--grid)" stroke-width="${a0(xa, v) ? 1.5 : 1}" ${a0(xa, v) ? 'stroke="var(--axis)"' : ''}/>
+    <text class="tick" x="${sx(v)}" y="${m.t + ih + 16}" text-anchor="middle">${tl(xa, v)}</text>`);
+  ty.forEach(v => g += `<line y1="${sy(v)}" y2="${sy(v)}" x1="${m.l}" x2="${m.l + iw}" stroke="var(--grid)" stroke-width="${a0(ya, v) ? 1.5 : 1}" ${a0(ya, v) ? 'stroke="var(--axis)"' : ''}/>
+    <text class="tick" x="${m.l - 8}" y="${sy(v) + 4}" text-anchor="end">${tl(ya, v)}</text>`);
+  const end = (a, which) => a[which] ? a[which] : (which === 'lo' ? 'disagree' : 'agree');
+  g += `<text class="axis-t" x="${m.l + iw / 2}" y="${H - 14}" text-anchor="middle">${xa.label} →</text>
+    ${small ? '' : `<text class="tick" x="${m.l}" y="${H - 14}" text-anchor="start">← ${end(xa, 'lo')}</text>
+    <text class="tick" x="${m.l + iw}" y="${H - 14}" text-anchor="end">${end(xa, 'hi')} →</text>`}
+    <text class="axis-t" transform="translate(${small ? 12 : 16},${m.t + ih / 2}) rotate(-90)" text-anchor="middle">${ya.label} →</text>
+    <text class="tick" x="${m.l}" y="${m.t - 10}" text-anchor="start">↑ ${end(ya, 'hi')}</text>`;
+  if (xa.lik && ya.lik && !small) {
+    const q = (x, y, t, anc) => `<text class="quad" x="${x}" y="${y}" text-anchor="${anc}">${t}</text>`;
+    g += q(m.l + 8, m.t + 14, `high ${ya.label.toLowerCase()}, low ${xa.label.toLowerCase()}`, 'start')
+       + q(m.l + iw - 8, m.t + ih - 8, `high ${xa.label.toLowerCase()}, low ${ya.label.toLowerCase()}`, 'end');
+  }
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.innerHTML = g;
+
+  // collision-relaxed positions: anchored at true value, pushed apart so faces never overlap
+  const showNames = !map.classList.contains('nonames') && !small;
+  const R = small ? 17 : 23, ry = showNames ? 1.4 : 1;   // ry: vertical stretch of each node's footprint
+  const pts = P.map((p, i) => {
+    const ax = sx(xa.f(p)), ay = sy(ya.f(p)), a = i * 2.39996;
+    return { ax, ay, x: ax + Math.cos(a) * 3, y: ay + Math.sin(a) * 3 };
+  });
+  for (let it = 0; it < 400; it++) {
+    for (const q of pts) { q.x += (q.ax - q.x) * 0.03; q.y += (q.ay - q.y) * 0.03; }
+    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const a = pts[i], b = pts[j]; let dx = b.x - a.x, dy = (b.y - a.y) / ry, d = Math.hypot(dx, dy) || 1e-3;
+      const min = 2 * R + 3;
+      if (d < min) { const k = (min - d) / d / 2; a.x -= dx * k; a.y -= dy * ry * k; b.x += dx * k; b.y += dy * ry * k; }
+    }
+    for (const q of pts) { q.x = Math.min(Math.max(q.x, m.l + R), m.l + iw - R); q.y = Math.min(Math.max(q.y, m.t + R), m.t + ih - R * ry); }
+  }
+  const fs = small ? 28 : 38;
+  nodes.forEach(({ nd }, i) => {
+    nd.querySelector('.face').style.setProperty('--s', fs + 'px');
+    const yoff = showNames ? fs / 2 + 6 : fs / 2;
+    nd.style.transform = `translate(${pts[i].x - 40}px, ${pts[i].y - yoff}px)`;
+    nd.style.width = '80px';
+  });
+  const r = pearson(xv, yv);
+  $('#mapnote').innerHTML = `<b>X:</b> ${xa.long}. <b>Y:</b> ${ya.long}. ` + (xa.id !== ya.id ? `Correlation across respondents r = ${r.toFixed(2).replace('-', '−')}.` : '')
+    + (xa.pc != null || ya.pc != null ? ` PC loadings (structure, ambitious, toy→data, toy→NN, testable): PC1 [${D.pca.load[0].join(', ')}], PC2 [${D.pca.load[1].join(', ')}].` : '')
+    + ` Faces are nudged apart so ties stay visible; each one is anchored at its exact answer.`;
+}
+function a0(a, v) { return !a.lik && v === 0 || a.lik && v === 3; }
+function pearson(x, y) {
+  const mx = x.reduce((a, b) => a + b) / x.length, my = y.reduce((a, b) => a + b) / y.length;
+  let sxy = 0, sxx = 0, syy = 0; x.forEach((_, i) => { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; });
+  return sxy / Math.sqrt(sxx * syy || 1);
+}
+let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(layoutMap, 60); }).observe(map);
+
+/* ---------- likert strips ---------- */
+const lk = $('#likert');
+lk.append(el('div', { class: 'lk head' }, `<div class="q"></div>${LK.map((l, i) => `<div class="col"><span class="long">${l}</span><span class="short">${LKs[i]}</span></div>`).join('')}<div class="sum">Agree</div>`));
+Q.forEach((q, j) => {
+  const row = el('div', { class: 'lk' });
+  row.append(el('div', { class: 'q' }, `<h3>${q.s}</h3><p>${q.d}</p>`));
+  for (let v = 1; v <= 5; v++) {
+    const col = el('div', { class: 'col' });
+    const ps = P.filter(p => p.likert[j] === v).sort(byView);
+    if (ps.length) col.append(el('span', { class: 'cnt' }, ps.length));
+    ps.forEach(p => col.append(face(p)));
+    row.append(col);
+  }
+  const mu = P.reduce((s, p) => s + p.likert[j], 0) / n;
+  const a = agree(j), dsg = disagree(j), neu = n - a - dsg;
+  row.append(el('div', { class: 'sum' }, `<div class="pct">${Math.round(a / n * 100)}%</div><div class="mu">mean ${mu.toFixed(1)}</div>
+    <div class="mini-div" title="${dsg} disagree · ${neu} neutral · ${a} agree">${dsg ? `<span style="flex:${dsg};background:var(--neg)"></span>` : ''}${neu ? `<span style="flex:${neu};background:var(--axis)"></span>` : ''}${a ? `<span style="flex:${a};background:var(--pos)"></span>` : ''}</div>`));
+  lk.append(row);
+});
+
+/* ---------- correlation heatmap ---------- */
+const corr = $('#corr');
+const QS = ['Structure > concepts', 'Ambitious possible', 'Toy → natural data', 'Toy → NN reps', 'Theory testable'];
+corr.append(el('div'));
+QS.forEach((_, j) => corr.append(el('div', { class: 'cl', title: QS[j] }, 'Q' + (j + 1))));
+QS.forEach((s, i) => {
+  corr.append(el('div', { class: 'rl' }, `Q${i + 1} · ${s}`));
+  QS.forEach((_, j) => {
+    const r = D.corr[i][j];
+    const c = el('div', { class: 'cell' + (i === j ? ' diag' : '') }, i === j ? '—' : r.toFixed(2).replace('-', '−').replace(/^0/, '').replace('−0', '−'));
+    if (i !== j) {
+      const k = Math.round(Math.min(Math.abs(r) / 0.7, 1) * 100);
+      c.style.background = `color-mix(in oklab, ${r >= 0 ? 'var(--pos)' : 'var(--neg)'} ${k}%, var(--mid))`;
+      c.style.color = k > 55 ? '#fff' : 'var(--ink)';
+      c.title = `${QS[i]} × ${QS[j]}: r = ${r.toFixed(2)}`;
+    }
+    corr.append(c);
+  });
+});
+const F = [
+  { r: D.corr[2][4], t: `<b>Toy → natural data</b> travels with <b>theory should be testable</b>. People who think solvable models capture real data structure also want theory to make falsifiable predictions about features.` },
+  { r: D.corr[1][0], t: `<b>Ambitious interp</b> goes with <b>structure > human concepts</b>: the ambitious camp also wants tools that find the model’s own ontology.` },
+  { r: D.corr[0][3], t: `…and that same camp is the <b>most skeptical that toy models describe real NN representations</b>. This is the main axis of disagreement in the room (PC1).` },
+  { r: D.corr[1][3], t: `<b>Ambitious interp</b> vs. <b>toy → NN reps</b> leans negative too: belief in full transparency doesn’t come from belief in toy models.` },
+];
+$('#findings').innerHTML = F.map(f => `<div class="finding" style="border-left-color:${f.r >= 0 ? 'var(--pos)' : 'var(--neg)'}"><div class="tag muted" style="font-size:12px;font-weight:600">r = <b>${f.r.toFixed(2).replace('-', '−')}</b></div>${f.t}</div>`).join('');
+
+/* ---------- views ---------- */
+VIEWS.forEach(v => {
+  const ps = P.filter(p => p.view === v.key).sort(byView);
+  const d = el('div', { class: 'view', style: `--c:${v.c}` }, `<div style="display:flex;align-items:baseline;gap:10px"><span class="n">${ps.length}</span><h3>${v.key}</h3></div><p class="muted" style="font-size:13px;margin-top:4px">${v.d}</p>`);
+  const fw = el('div', { class: 'faces' }); ps.forEach(p => fw.append(face(p, 36))); d.append(fw);
+  $('#views').append(d);
+});
+
+/* ---------- unit-bar rows ---------- */
+function unitRows(key, target) {
+  const opts = D.opts[key].map(o => ({ o, ps: P.filter(p => p[key].includes(o)).sort(byView) }));
+  opts.sort((a, b) => b.ps.length - a.ps.length);
+  opts.forEach(({ o, ps }) => {
+    const row = el('div', { class: 'row' }, `<div class="lab">${o}<small>${OPT_DESC[key][o]}</small></div>`);
+    const bar = el('div', { class: 'bar' }); ps.forEach(p => bar.append(face(p, 28)));
+    bar.append(el('span', { class: 'n' }, ps.length)); row.append(bar); target.append(row);
+  });
+}
+unitRows('notion', $('#notion')); unitRows('stable', $('#stable')); unitRows('needs', $('#needs'));
+
+/* ---------- table ---------- */
+const th = ['Name', 'View', ...QS.map((s, j) => `Q${j + 1}`), 'Central notion', 'Stability', 'Field needs'];
+$('#tbl').innerHTML = `<thead><tr>${th.map((h, i) => `<th title="${i >= 2 && i < 7 ? QS[i - 2] : ''}">${h}</th>`).join('')}</tr></thead><tbody>` +
+  [...P].sort(byView).map(p => `<tr><td>${p.label}</td><td>${p.view}</td>${p.likert.map(v => `<td class="num">${v}</td>`).join('')}<td>${p.notion.join(', ')}</td><td>${p.stable.join(', ')}</td><td>${p.needs.join(', ')}</td></tr>`).join('') + '</tbody>';
+
+/* ---------- linked highlight + tooltip ---------- */
+const app = $('#app'), tip = $('#tip');
+function paint() {
+  const filt = state.views.size < VIEWS.length;
+  app.classList.toggle('dimmed', state.focus != null || filt);
+  app.classList.toggle('focusing', state.focus != null);
+  document.querySelectorAll('.face[data-id], #map .node').forEach(f => {
+    const p = P[+f.dataset.id];
+    f.classList.toggle('lit', state.focus != null ? p.id === state.focus : state.views.has(p.view));
+  });
+  $('#clear').hidden = !state.pinned;
+}
+function card(p) {
+  const tags = a => `<div class="tags">${a.map(x => `<span>${x}</span>`).join('')}</div>`;
+  return `<div class="hd">${face(p, 48).outerHTML}<div><div class="nm">${p.label}</div>
+      <div class="vw"><i style="--c:${VC[p.view]}"></i>${p.view} view</div></div>
+      ${state.pinned ? '<button class="btn x" id="tipx" aria-label="Close">✕</button>' : ''}</div>
+    ${Q.map((q, j) => `<div class="lrow"><span>${q.s}</span><div class="dots" title="${LK[p.likert[j] - 1]}">${[1, 2, 3, 4, 5].map(v => `<i class="${v === p.likert[j] ? 'on' : ''}"></i>`).join('')}</div></div>`).join('')}
+    <div class="tsec"><div class="tl">Central notion</div>${tags(p.notion)}</div>
+    <div class="tsec"><div class="tl">Should be stable</div>${tags(p.stable)}</div>
+    <div class="tsec"><div class="tl">Field needs (${p.needs.length})</div>${tags(p.needs)}</div>`;
+}
+function placeTip(rect) {
+  const tw = tip.offsetWidth, thh = tip.offsetHeight, vw = innerWidth, vh = innerHeight;
+  let x = rect.right + 12, y = rect.top + rect.height / 2 - thh / 2;
+  if (x + tw > vw - 12) x = rect.left - tw - 12;
+  if (x < 12) { x = Math.max(12, Math.min(vw - tw - 12, rect.left + rect.width / 2 - tw / 2)); y = rect.bottom + 10; if (y + thh > vh - 12) y = rect.top - thh - 10; }
+  y = Math.max(12, Math.min(vh - thh - 12, y));
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function show(p, target) {
+  tip.innerHTML = card(p); tip.classList.add('on'); tip.classList.toggle('pinned', state.pinned);
+  placeTip(target.getBoundingClientRect());
+  const x = $('#tipx'); if (x) x.onclick = () => clearFocus();
+}
+function hide() { if (!state.pinned) tip.classList.remove('on'); }
+function pin(p, target) {
+  state.focus = p.id; state.pinned = true; $('#who').value = p.id; paint();
+  const t = target || document.querySelector(`#map .node[data-id="${p.id}"] .face`);
+  if (!target) t.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  setTimeout(() => show(p, t), target ? 0 : 350);
+}
+function clearFocus() { state.focus = null; state.pinned = false; $('#who').value = ''; tip.classList.remove('on', 'pinned'); paint(); }
+
+document.addEventListener('mouseover', e => {
+  const f = e.target.closest('.face[data-id]'); if (!f || state.pinned || tip.contains(f)) return;
+  const p = P[+f.dataset.id]; state.focus = p.id; paint(); show(p, f);
+});
+document.addEventListener('mouseout', e => {
+  const f = e.target.closest('.face[data-id]'); if (!f || state.pinned || tip.contains(f)) return;
+  if (e.relatedTarget && f.contains(e.relatedTarget)) return;
+  state.focus = null; paint(); hide();
+});
+document.addEventListener('focusin', e => {
+  const f = e.target.closest('.face[data-id]'); if (!f || state.pinned) return;
+  const p = P[+f.dataset.id]; state.focus = p.id; paint(); show(p, f);
+});
+document.addEventListener('focusout', e => { if (e.target.closest('.face[data-id]') && !state.pinned) { state.focus = null; paint(); hide(); } });
+document.addEventListener('click', e => {
+  const f = e.target.closest('.face[data-id]');
+  if (f && !tip.contains(f)) { const p = P[+f.dataset.id]; if (state.pinned && state.focus === p.id) clearFocus(); else pin(p, f); return; }
+  if (state.pinned && !tip.contains(e.target) && !e.target.closest('.toolbar')) clearFocus();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') clearFocus(); });
+// on scroll: transient tooltips vanish; a pinned card docks to the bottom-right corner
+addEventListener('scroll', () => {
+  if (!state.pinned) return hide();
+  tip.style.left = (innerWidth - tip.offsetWidth - 16) + 'px'; tip.style.top = (innerHeight - tip.offsetHeight - 16) + 'px';
+}, { passive: true });
+
+layoutMap(); paint();
+})();
+</script>
+</body>
+</html>
+{% endraw %}
