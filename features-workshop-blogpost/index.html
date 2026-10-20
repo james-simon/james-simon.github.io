@@ -185,7 +185,7 @@ footer { margin: 4em 0 3em; padding-top: 1em; border-top: 1px solid var(--border
   <article id="body">
     <h2 id="introduction">Introduction</h2>
     <p>An enormous amount of scientific effort these last years has hinged on the following questions: what are neural network features? How should we operationalize that notion and measure them? To what degree do we need mathematical principle behind such a notion vs. just getting it to work empirically?</p>
-    <p>We held a workshop in Berkeley on October 20-22 of this year to discuss these questions. We brought together experts from different areas of the field, including mechanistic interpretability, singular learning theory, and learning mechanics, to discuss, identify cruxes, and seek a path forwards.</p>
+    <p>We held a workshop in Berkeley on October 20–22 of this year to discuss these questions. We brought together experts from different areas of the field, including mechanistic interpretability, singular learning theory, and learning mechanics, to discuss, identify cruxes, and seek a path forwards.</p>
     <p>What follows are the results of these discussions. These results reveal a diverse and divided field with differing (but often complementary) perspectives on the nature of features and the path forwards.</p>
     <p>To make these differences in opinion clear, we had every participant answer a series of questions about their views on these questions. Below are their responses and summaries of the surrounding discussion.</p>
   </article>
@@ -365,7 +365,7 @@ function mapSection() {
   const h2 = el('h2', { id }, 'The map');
   body.append(h2);
   tocItems.push([id, 'The map', 'h2']);
-  body.append(el('p', {}, 'Each face sits at its owner’s answers to the agree/disagree statements. Pick any two axes: a single statement, the average of two related statements, or a principal component of all five.'));
+  body.append(el('p', {}, 'Each face sits at its owner’s answers to the agree/disagree statements. Pick any two axes: a single statement, the average of two related statements, or a principal component of statements 1–5.'));
 
   const mean = (...js) => p => js.reduce((a, j) => a + p.likert[j], 0) / js.length;
   const pct = i => Math.round(D.pca.var[i] * 100);
@@ -465,8 +465,9 @@ function mapSection() {
       nd.firstChild.style.setProperty('--s', fs + 'px');
       nd.style.transform = `translate(${pts[i].x - 40}px, ${pts[i].y - fs / 2}px)`;
     });
-    note.innerHTML = xa.id === ya.id ? `<b>Both axes:</b> ${esc(xa.long)}.`
-      : `<b>X:</b> ${esc(xa.long)}. <b>Y:</b> ${esc(ya.long)}. Faces are nudged apart so ties stay visible; each is anchored at its exact position.`;
+    const stop = t => /[.”]$/.test(t) ? t : t + '.';   // statement axes already end in a quoted sentence
+    note.innerHTML = xa.id === ya.id ? `<b>Both axes:</b> ${esc(stop(xa.long))}`
+      : `<b>X:</b> ${esc(stop(xa.long))} <b>Y:</b> ${esc(stop(ya.long))} Faces are nudged apart so ties stay visible; each is anchored at its exact position.`;
   }
   let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(layout, 60); }).observe(map);
   layout();
