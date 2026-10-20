@@ -272,6 +272,20 @@ statementsSection();
 choiceSection('stable');
 choiceSection('needs');
 
+/* ---------- the lasagna question (made up, not from the survey) ---------- */
+(function lasagna() {
+  const id = 'lasagna', q = 'Two lasagnas stacked on top of each other are one lasagna.';
+  body.append(el('h2', { id }, esc(q)));
+  tocItems.push([id, 'Lasagna', 'h2']);
+  // deterministic shuffle so everyone always gets the same answer; split 9 / 2 / 0 / 2 / 9
+  const rng = (seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647)(20261022);
+  const order = P.map(p => [rng(), p]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const sizes = [9, 2, 0, 2, 9], groups = [];
+  let k = 0; sizes.forEach(m => { groups.push(order.slice(k, k + m).sort(byName)); k += m; });
+  groups[4].push(...order.slice(k));   // anyone beyond 22 lands in strongly agree
+  body.append(columns(groups, LIKERT));
+})();
+
 /* ---------- table ---------- */
 const det = el('details', {}, `<summary>All responses as a table</summary>`);
 const tw = el('div', { class: 'tblwrap' });
