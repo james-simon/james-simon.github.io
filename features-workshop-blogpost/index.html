@@ -344,6 +344,9 @@ function lasagna() {
   const groups = []; let k = 0;
   [9, 2, 0, 2, 9].forEach(m => { groups.push(order.slice(k, k + m).sort(byName)); k += m; });
   groups[4].push(...order.slice(k));   // anyone beyond 22 lands in strongly agree
+  // Florentin is pinned to plain "agree"
+  const fg = groups.flat().find(p => p.name === 'Florentin Guth');
+  if (fg) { groups.forEach(g => { const i = g.indexOf(fg); if (i >= 0) g.splice(i, 1); }); groups[3].push(fg); groups[3].sort(byName); }
   return { q: 'Two lasagnas stacked on top of each other are one lasagna.', short: 'Lasagna', groups };
 }
 
