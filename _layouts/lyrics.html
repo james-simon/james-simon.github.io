@@ -1,0 +1,47 @@
+---
+layout: default
+---
+<style>
+  .lyrics-page { max-width: 40em; margin: 0 auto; padding: 2.5em 16px 3em; }
+  .lyrics-page .back { color: #999; font-size: 0.95em; margin-bottom: 1.5em; }
+  .lyrics-page h1 { font-size: 2.2em; line-height: 1.2; margin-bottom: 0.2em; }
+  .lyrics-page .tune { font-style: italic; color: #777; margin-bottom: 0; }
+  .lyrics-page hr { border: none; border-top: 1px solid #ddd; margin: 1.5em 0 0.5em; }
+  .lyrics-page .section { margin: 2.2em 0 0; font-variant: small-caps; letter-spacing: 0.08em; color: #888; font-weight: bold; line-height: 1.2; }
+  .lyrics-page .section span { display: inline-block; border-bottom: 1px solid #ccc; padding-bottom: 1px; }
+  .lyrics-page .section + .stanza { margin-top: 0.5em; }
+  .lyrics-page .cue { margin: 2em 0; color: #888; font-style: italic; }
+  .lyrics-page .stanza { margin: 1.2em 0; line-height: 1.7; font-size: 1.1em; }
+  .lyrics-page .note { font-style: italic; color: #888; font-size: 0.95em; }
+  .lyrics-page .line { display: block; padding-left: 1.5em; text-indent: -1.5em; }
+</style>
+
+<div class="lyrics-page">
+  <div class="back"><a href="/lyrics/">&larr; Technocapitalist AI-Powered Blues</a> &middot; track {{ page.track }}</div>
+  <h1>{{ page.title }}</h1>
+  {% if page.tune %}<p class="tune">({{ page.tune }})</p>{% endif %}
+  <hr>
+  {% assign lines = content | strip | newline_to_br | split: "<br />" %}
+  {% assign buf = "" %}
+  {% for raw in lines %}{% assign t = raw | strip %}
+    {% if t == "" %}
+      {% if buf != "" %}<p class="stanza">{{ buf }}</p>{% assign buf = "" %}{% endif %}
+    {% else %}
+      {% assign first = t | slice: 0 %}{% assign last = t | slice: -1 %}
+      {% if first == "[" and last == "]" %}
+        {% if buf != "" %}<p class="stanza">{{ buf }}</p>{% assign buf = "" %}{% endif %}
+        {% assign nxt = lines[forloop.index] | strip %}{% assign nfirst = nxt | slice: 0 %}
+        {% if nxt != "" and nfirst != "[" %}
+  <p class="section"><span>{{ t | remove_first: "[" | remove: "]" | downcase | escape }}</span></p>
+        {% else %}
+  <p class="cue">{{ t | escape }}</p>
+        {% endif %}
+      {% else %}
+        {% assign esc = t | escape | prepend: '<span class="line">' | append: "</span>" %}
+        {% if buf == "" %}{% assign buf = esc %}{% else %}{% assign buf = buf | append: esc %}{% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if buf != "" %}<p class="stanza">{{ buf }}</p>{% endif %}
+  {% if page.note %}<hr><p class="note">{{ page.note | escape }}</p>{% endif %}
+</div>
