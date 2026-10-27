@@ -32,3 +32,11 @@ highlighter: rouge
 
 plugins:
   - jekyll-sitemap
+
+# Unlisted draft of the Redwood Center site (a static Astro build, so no front matter of its own):
+# keep its pages out of the sitemap. The pages also carry a noindex meta tag.
+defaults:
+  - scope:
+      path: "draft-redwood-website"
+    values:
+      sitemap: false
