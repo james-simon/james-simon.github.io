@@ -3,7 +3,7 @@
 
   {% include head.html %}
 
-  <body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
+  <body class="layout-{{ page.layout }}{% if page.page_class %} {{ page.page_class }}{% endif %}" style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
 
     {% include navigation.html %}
 

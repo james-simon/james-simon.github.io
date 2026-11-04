@@ -1,10 +1,10 @@
-<div class="text-center p-3" style="background-color: #e8e8e8;">
+<div class="text-center p-3 site-footer">
   <div class="container">
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 4rem;">
 
       <div style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
         <i class="far fa-envelope"></i>
-        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <span class="copy-email"><a id="footer-email" href="mailto:{{ site.email }}" aria-label="Copy email address">{{ site.email }}</a><span id="footer-copied" role="status"></span></span>
       </div>
 
       <div style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;">
@@ -26,3 +26,41 @@
   </div>
 </div>
 </footer>
+
+<!-- Click the email address to copy it -->
+<script>
+  (function () {
+    var ADDRESS = '{{ site.email }}';
+    var link = document.getElementById('footer-email');
+    var popup = document.getElementById('footer-copied');
+
+    function copyWithSelection() {
+      var box = document.createElement('textarea');
+      box.value = ADDRESS;
+      box.style.position = 'fixed';
+      box.style.opacity = '0';
+      document.body.appendChild(box);
+      box.select();
+      var worked = false;
+      try { worked = document.execCommand('copy'); } catch (e) {}
+      box.remove();
+      return worked;
+    }
+
+    function show(worked) {
+      popup.textContent = worked ? 'copied' : "couldn't copy";
+      popup.classList.remove('show');
+      void popup.offsetWidth; // restarts the animation on repeat clicks
+      popup.classList.add('show');
+    }
+
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ADDRESS).then(function () { show(true); }, function () { show(copyWithSelection()); });
+      } else {
+        show(copyWithSelection());
+      }
+    });
+  })();
+</script>

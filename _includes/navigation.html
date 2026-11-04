@@ -10,7 +10,6 @@
       }
 
       .nav-link:hover {
-        background-color: #333 !important;
         color: white !important;
       }
 
@@ -29,15 +28,16 @@
       }
     </style>
 
-    <nav class="navbar navbar-expand navbar-light" style="background-color: #e8e8e8;">
+    <nav class="navbar navbar-expand navbar-dark site-nav">
       <div class = "container">
         <a class="navbar-brand" href="{{site.baseurl}}/">{{site.title}}</a></span> </a>
         <div class="navbar-collapse">
           <ul class="nav navbar-nav ml-auto" style="flex-wrap: nowrap;">
-            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/research/"><i class="fas fa-flask"></i><span class="nav-text"> Research</span></a></li>
-            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/blog/"><i class="fas fa-seedling"></i><span class="nav-text"> Blog</span></a></li>
-            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/puzzles/"><i class="fab fa-laravel"></i><span class="nav-text"> Puzzles</span></a></li>
-            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/widgets/"><i class="fas fa-gears"></i><span class="nav-text"> Widgets</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/research/"{% if page.url contains '/research/' %} aria-current="page"{% endif %}><i class="fas fa-flask"></i><span class="nav-text"> Research</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/blog/"{% if page.url contains '/blog/' %} aria-current="page"{% endif %}><i class="fas fa-seedling"></i><span class="nav-text"> Blog</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/puzzles/"{% if page.url contains '/puzzles/' %} aria-current="page"{% endif %}><i class="fab fa-laravel"></i><span class="nav-text"> Puzzles</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/widgets/"{% if page.url contains '/widgets/' %} aria-current="page"{% endif %}><i class="fas fa-gears"></i><span class="nav-text"> Widgets</span></a></li>
+            <li class = "nav-item active"><a class="nav-link" href="{{site.baseurl}}/about/"{% if page.url contains '/about/' %} aria-current="page"{% endif %}><i class="fas fa-user"></i><span class="nav-text"> About</span></a></li>
           </ul>
         </div>
       </div>

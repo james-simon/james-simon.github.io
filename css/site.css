@@ -1,0 +1,446 @@
+/*
+ * The look of every page except the homepage: the homepage's midnight on the nav and heavy
+ * rules, warm paper everywhere else, IBM Plex Mono for structure and ET Book for reading.
+ * Tool pages use IBM Plex Sans, because ET Book's small letters get hard to read at tiny sizes.
+ */
+@font-face {
+  font-family: "ET Book";
+  src: url("../assets/fonts/et-book/et-book-roman-line-figures.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ET Book";
+  src: url("../assets/fonts/et-book/et-book-display-italic-old-style-figures.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ET Book";
+  src: url("../assets/fonts/et-book/et-book-bold-line-figures.woff") format("woff");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --night: #10122a;
+  --night-ink: #d3d7ee;
+  --night-hover: #272b56;
+  --accent: #22d8e6;
+
+  --paper: #fbf8f1;
+  --ink: #24252f;
+  --heading: #14152a;
+  --muted: #5e6170;
+  --link: #21837e;     /* teal */
+  --visited: #663fa2;  /* violet */
+  --rule: #e4ddcd;
+  --rule-strong: #c9c0ac;
+  --panel: #f3eee2;
+  --panel-hover: #ebe4d4;
+
+  --book: "ET Book", Georgia, "Times New Roman", serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+html, body { background-color: var(--paper); }
+
+body { color: var(--ink); font-family: var(--sans); }
+
+::selection { color: var(--night); background: var(--accent); }
+
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading);
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: -.01em;
+}
+
+a:link { color: var(--link); text-decoration: none; }
+a:visited { color: var(--visited); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+hr { border-top-color: var(--rule); }
+
+blockquote {
+  margin-left: 0;
+  padding-left: 1em;
+  color: var(--muted);
+  background: none !important;
+  border-left: 3px solid var(--rule-strong);
+}
+
+code, kbd, samp { color: inherit; font-family: var(--mono); font-size: .78em; }
+
+code { padding: 1px 4px; background: var(--panel); border-radius: 2px; }
+
+pre {
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.55;
+  background: var(--panel);
+  border-radius: 3px;
+}
+
+pre code { padding: 0; font-size: inherit; background: none; }
+
+th, td { border-color: var(--rule) !important; }
+
+/* Images blend into the paper, so white plot backgrounds don't show as boxes. */
+.page-content img { mix-blend-mode: multiply; }
+
+/* Not on puzzles: a clue might depend on exact colors. */
+.layout-puzzlepage .page-content img,
+.layout-solpage .page-content img,
+.layout-network_puzzle .page-content img { mix-blend-mode: normal; }
+
+.page-content { padding-bottom: 3.5rem; }
+
+
+/* ---- Reading font: everywhere except dense tool pages ------------------- */
+
+.listing, .layout-post, .layout-page, .layout-puzzlepage, .layout-solpage, .layout-lyrics, .layout-gallery { font-family: var(--book); }
+
+.listing .page-content, .layout-puzzlepage .page-content, .layout-solpage .page-content { font-size: 19px; line-height: 1.45; }
+
+
+/* ---- Nav bar ---------------------------------------------------------- */
+
+.site-nav { min-height: 54px; padding-top: 6px; padding-bottom: 6px; line-height: 1.5; background-color: var(--night); }
+
+/* Same width on every page, so the nav doesn't shift when you move around the site. */
+.site-nav .container, .site-footer .container { max-width: 860px !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+
+.site-nav .navbar-brand {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: #fff !important;
+}
+
+.site-nav .nav-link {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--night-ink) !important;
+  background: none;
+  border-radius: 3px;
+}
+
+.site-nav .nav-link:hover { color: #fff !important; background-color: var(--night-hover); }
+
+.site-nav .nav-link[aria-current="page"] {
+  color: #fff !important;
+  box-shadow: inset 0 -2px 0 var(--accent);
+  border-radius: 0;
+}
+
+.site-nav .nav-link:focus-visible,
+.site-nav .navbar-brand:focus-visible { outline-color: var(--accent); }
+
+/* Icons are for phones, where the words don't fit. */
+@media (min-width: 768px) {
+  .site-nav .nav-link i { display: none; }
+}
+
+/* Five icons and the name need a little less padding on the smallest phones. */
+@media (max-width: 400px) {
+  .site-nav .nav-link { padding: 8px 7px !important; }
+  .site-nav .navbar-brand { margin-right: 4px; }
+}
+
+
+/* ---- Footer ----------------------------------------------------------- */
+
+.site-footer {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  background-color: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+
+.site-footer a:link, .site-footer a:visited { color: var(--muted); }
+.site-footer a:hover { color: var(--heading); }
+
+/* Same popup as the homepage's email link. */
+.copy-email { position: relative; }
+
+#footer-copied {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 10;
+  padding: 3px 9px 4px;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--night);
+  border: 2px solid var(--accent);
+  font: 400 14px/18px "Silkscreen", var(--mono);
+  visibility: hidden;
+  transform: translateX(-50%);
+}
+
+#footer-copied.show { animation: copied-pop 1.5s steps(1, end) forwards; }
+
+@keyframes copied-pop {
+  0%   { visibility: visible; transform: translate(-50%, 8px) scale(.7); }
+  6%   { visibility: visible; transform: translate(-50%, -4px) scale(1.15); }
+  12%  { visibility: visible; transform: translate(-50%, 0) scale(1); }
+  90%, 100% { visibility: hidden; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #footer-copied.show { animation: copied-still 1.5s steps(1, end) forwards; }
+  @keyframes copied-still {
+    0%, 90% { visibility: visible; transform: translateX(-50%); }
+    100% { visibility: hidden; transform: translateX(-50%); }
+  }
+}
+
+
+/* ---- Listing pages: research, blog, puzzles, widgets ------------------- */
+
+.listing .page-content .container { max-width: 860px; }
+
+.listing .page-content h1 { margin-top: 2.2rem; margin-bottom: .55rem; padding: 0; font-size: 30px; }
+
+.listing .page-content h1 > i { display: none; }
+
+.page-content .hr-thick {
+  height: 2px;
+  color: var(--night);
+  background-color: var(--night);
+  border: none;
+}
+
+.page-content .hr-thin {
+  height: 1px;
+  color: var(--rule-strong);
+  background-color: var(--rule-strong);
+  border: none;
+}
+
+.page-content .hr-pale {
+  height: 1px;
+  color: var(--rule);
+  background-color: var(--rule);
+  border: none;
+}
+
+/* Research */
+.listing .category-section ~ .hr-thick { height: 1px; color: var(--rule-strong); background-color: var(--rule-strong); }
+
+.listing .category-title { font-size: 19px; line-height: 1.35; }
+
+.listing .paper-item { border-bottom-color: var(--rule); }
+
+.listing .paper-toggle { color: var(--muted); }
+
+.listing .paper-header-links { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+
+.listing .paper-title { font-size: 18.5px; line-height: 1.3; }
+
+.listing .paper-meta { font-size: 16px; color: var(--muted); }
+
+.listing .paper-description { font-size: 17.5px; line-height: 1.4; }
+
+.listing .category-description { font-size: 17.5px; line-height: 1.4; color: var(--muted); }
+
+.listing .paper-item { margin-bottom: .6em; padding-bottom: .6em; }
+
+/* Blog */
+.listing .blog-header { margin-top: 2.2rem; align-items: flex-end; }
+
+.listing .blog-header h1 { margin: 0; }
+
+.listing .sort-controls { margin-top: 0; font-family: var(--mono); font-size: 13px; }
+
+.sort-controls a:link, .sort-controls a:visited { color: var(--muted); background: var(--panel); border-color: var(--rule-strong); }
+.sort-controls a:hover { text-decoration: none; background: var(--panel-hover); }
+.sort-controls a.active:link, .sort-controls a.active:visited { color: #fff; background: var(--night); border-color: var(--night); }
+
+.listing .blog-category h4 { margin: 1.8em 0 .8em; font-size: 16px; }
+
+/* Each post in the category view is an h6, but it should read as a list entry. */
+.listing .blog-category h6 {
+  margin-bottom: .55em;
+  font-family: var(--book);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.listing .blog-category h6 small { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+.listing .recency-list li { margin-bottom: 0; padding: .85em 0; border-bottom-color: var(--rule); }
+
+.listing .recency-list .post-date,
+.listing .recency-list .post-category { font-family: var(--mono); font-size: 12.5px; font-style: normal; color: var(--muted); }
+
+.listing .recency-list .post-date { width: 84px; }
+
+.listing .recency-list .post-category { width: auto; white-space: nowrap; }
+
+.listing .recency-list .post-title { font-size: 18px; line-height: 1.3; }
+
+/* Every post here is a link, so titles stay black until they've been read or hovered. */
+.listing .recency-list .post-title a:link,
+.listing .blog-category .post-link:link { color: var(--ink); }
+
+.listing .recency-list .post-title a:visited,
+.listing .blog-category .post-link:visited,
+.listing .recency-list .post-title a:hover,
+.listing .blog-category .post-link:hover { color: var(--visited); }
+
+@media (max-width: 680px) {
+  .listing .recency-list li { flex-wrap: wrap; }
+  .listing .recency-list .post-title { flex: 1 0 100%; order: -1; margin: 0 0 .15em; }
+  .listing .recency-list .post-date { width: auto; margin-right: 1em; }
+  .listing .recency-list .post-category { flex: 1 1 auto; width: auto; text-align: left; white-space: normal; }
+}
+
+/* Widgets */
+.listing .widget-card { background: none; border-color: var(--rule-strong); border-radius: 3px; }
+.listing .widget-card:link, .listing .widget-card:visited { color: var(--ink); }
+.listing .widget-card:hover { text-decoration: none; background: var(--panel); border-color: var(--muted); }
+.listing .widget-card-title { margin: 0; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--heading); }
+.listing .widget-card-desc { margin-top: .3em; font-size: 16px; color: var(--muted); }
+
+
+/* ---- Widgets and other tools ------------------------------------------ */
+
+/* MathJax sizes equations to match the surrounding font. Plex Sans would make them bigger than
+   the tools' layouts were built for, so this holds them at their original scale. */
+.layout-default mjx-container { font-size: 108.9% !important; }
+
+/* Page titles match across tools, whatever each tool's own styles say. */
+.layout-default .page-content h1 { margin-top: 2.2rem; font-size: 30px; line-height: 1.25; }
+
+
+/* ---- Puzzle gallery --------------------------------------------------- */
+
+.listing .hovereffect:hover .tint { background-color: rgba(16, 18, 42, .78); }
+
+.hovereffect h4 { margin: 0; color: #fff; font-size: 15px; }
+
+
+/* ---- Writing: posts and essay-like pages ------------------------------ */
+
+.layout-post .page-content .container { max-width: 760px; }
+
+.post-header { margin: 1.6rem 0 2rem; }
+
+.post-header .post-title {
+  color: var(--heading);
+  font-family: var(--mono);
+  font-size: clamp(24px, 4vw, 31px);
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+}
+
+.post-meta { margin: .6rem 0 0; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+.post-content { font-size: 20px; line-height: 1.55; }
+
+.post-content p, .post-content ul, .post-content ol { margin-bottom: .95em; }
+
+.post-content li { margin-bottom: .3em; }
+
+.post-content h1, .post-content h2 { margin: 2em 0 .6em; font-size: 21px; line-height: 1.3; }
+.post-content h3 { margin: 1.9em 0 .55em; font-size: 18px; line-height: 1.35; }
+.post-content h4, .post-content h5, .post-content h6 { margin: 1.6em 0 .5em; font-size: 15px; line-height: 1.4; }
+
+.post-content img, .post-content video, .post-content iframe { max-width: 100%; }
+.post-content img { height: auto; }
+
+.post-content p a:link, .post-content li a:link, .post-content p a:visited, .post-content li a:visited {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: .16em;
+}
+
+.post-content p a:hover, .post-content li a:hover { text-decoration-color: currentColor; }
+
+.post-content table { margin-bottom: 1.2em; font-size: .9em; line-height: 1.35; }
+.post-content th { font-family: var(--mono); font-size: .72em; font-weight: 500; }
+.post-content th, .post-content td { padding: 6px 10px; border-bottom: 1px solid var(--rule); }
+
+.footnotes { margin-top: 2em; font-size: 17px; line-height: 1.45; }
+.footnotes a.reversefootnote:link, .footnotes a.reversefootnote:visited { text-decoration: none; }
+.footnotes li { margin-bottom: .5em; }
+.footnotes p { margin-bottom: .3em; }
+
+/* The "click for proof" drawers */
+.toggle-header, .toggle-header2 {
+  font-family: var(--mono) !important;
+  font-size: 14px !important;
+  background-color: var(--panel) !important;
+  border-color: var(--rule) !important;
+  border-radius: 3px !important;
+}
+
+.toggle-content, .toggle-content2 { border-color: var(--rule) !important; border-radius: 3px !important; }
+
+.comments-section { margin-top: 3em; }
+
+.comments-section hr { margin-bottom: 2em; border-top-color: var(--rule-strong); }
+
+.featurette-divider { border-top-color: var(--rule-strong); }
+
+
+/* ---- Lyrics ----------------------------------------------------------- */
+
+.lyrics-page h1 { font-size: 28px !important; letter-spacing: -.02em; }
+.lyrics-page .back { font-family: var(--mono); font-size: 13px !important; }
+.lyrics-page .stanza { font-size: 20px !important; }
+
+
+/* ---- Big monitors ------------------------------------------------------ */
+
+@media (min-width: 1600px) {
+  .listing .page-content .container, .site-nav .container, .site-footer .container { max-width: 960px !important; }
+  .layout-post .page-content .container { max-width: 840px; }
+  .post-content { font-size: 22px; }
+  .listing .page-content { font-size: 20px; }
+  .listing .recency-list .post-title { font-size: 19px; }
+}
+
+
+/* ---- Phones ------------------------------------------------------------ */
+
+/* Wide equations and tables scroll on their own instead of pushing the whole page sideways. */
+.post-content .MJXc-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.post-content table { display: block; max-width: 100%; overflow-x: auto; }
+
+@media (max-width: 600px) {
+  .layout-default .page-content h1 { font-size: 24px; }
+
+  .post-content { font-size: 19px; line-height: 1.5; }
+
+  /* Inline math can't wrap. If it's too long, its paragraph scrolls rather than the page. */
+  .post-content p, .post-content li { overflow-x: auto; overflow-y: hidden; }
+}
+
+
+/* ---- Print ------------------------------------------------------------- */
+
+@media print {
+  .site-nav, .site-footer, .comments-section { display: none; }
+  html, body { background: #fff; }
+  .page-content img { mix-blend-mode: normal; }
+  .post-content { font-size: 12pt; }
+}

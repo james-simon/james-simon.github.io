@@ -37,7 +37,7 @@ layout: default
   <p class="cue">{{ t | escape }}</p>
         {% endif %}
       {% else %}
-        {% assign esc = t | escape | prepend: '<span class="line">' | append: "</span>" %}
+        {% assign esc = t | smartify | prepend: '<span class="line">' | append: "</span>" %}
         {% if buf == "" %}{% assign buf = esc %}{% else %}{% assign buf = buf | append: esc %}{% endif %}
       {% endif %}
     {% endif %}

@@ -1,5 +1,6 @@
 ---
 layout: default
+page_class: listing
 permalink: /research/
 nav_order: 1
 ---
@@ -144,17 +145,17 @@ nav_order: 1
   <hr class="hr-thick">
 
   <p>
-    Understanding deep learning will be one of the grand scientific challenges of the early 21st century. I want to develop fundamental theory to explain how neural networks learn. This is a big project that in total will require at least some theory of the data, a picture of the dynamics of neural net optimization, and a picture of how the model pulls out patterns from the data during this optimization process. We've seen a lot of progress in the past decade, and I'm optimistic.
+    Understanding deep learning will be one of the grand scientific challenges of the early 21st century. I want to develop fundamental theory to explain how neural networks learn. This is a big project that in total will require at least some theory of the data, a picture of the dynamics of neural net optimization, and a picture of how the model pulls out patterns from the data during this optimization process. We’ve seen a lot of progress in the past decade, and I’m optimistic.
   </p>
   <p>
-    This page gives a sketch of my major research threads, with each paper annotated to explain how it fits into its larger line of work and/or how I suggest you read it. The best articulation of my research philosophy's currently <a href="{{site.baseurl}}/blog/on-the-scientific-method/">here</a>. I'm a physicist by training, and I tend to take a first-principles, bottom-up, dynamics-first approach to the task of theorycraft.
+    This page gives a sketch of my major research threads, with each paper annotated to explain how it fits into its larger line of work and/or how I suggest you read it. The best articulation of my research philosophy’s currently <a href="{{site.baseurl}}/blog/on-the-scientific-method/">here</a>. I’m a physicist by training, and I tend to take a first-principles, bottom-up, dynamics-first approach to the task of theorycraft.
   </p>
   <p>
-    A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they're seeing [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>,<a href="https://arxiv.org/abs/2410.04642">5</a>]. Some of these ideas came about from quick initial conversations! If you've got a curious empirical phenomenon you're trying to explain, please reach out.
+    A lot of my papers have come about from helping people doing (mostly) empirical ML research come up with good minimal theoretical toy models that explain effects they’re seeing [<a href="https://arxiv.org/abs/2003.10397">1</a>,<a href="https://arxiv.org/abs/2207.06569">2</a>,<a href="https://arxiv.org/abs/2107.11774">3</a>,<a href="https://arxiv.org/abs/2306.13185">4</a>,<a href="https://arxiv.org/abs/2410.04642">5</a>]. Some of these ideas came about from quick initial conversations! If you’ve got a curious empirical phenomenon you’re trying to explain, please reach out.
   </p>
 
   {% assign sorted_categories = site.data.research_categories | sort: "order" %}
-  {% assign rainbow_colors = "#e88a8a,#f0a868,#f0d868,#88c88a,#68c8d0,#7884c8,#b078c8,#a070c8" | split: "," %}
+  {% assign rainbow_colors = "#ff4d4d,#ff8a1f,#ffba1f,#3fe04f,#22d8e6,#4a86ff,#b77dff,#ff4fa3" | split: "," %}
 
   <hr class="hr-thick">
 

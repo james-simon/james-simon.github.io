@@ -98,11 +98,18 @@ permalink: /
     #odds.show { animation: odds-pop 3.6s steps(1, end) forwards; }
     #content:not(.ready) #odds.show { animation: none; } /* wait to pop up until the page is in place */
 
-    /* The row is 38 characters and the text column is even, so centering keeps it on the grid. */
+    /* The row is 46 characters and the text column is even, so centering keeps it on the grid. */
     .links { text-align: center; }
+    .link-group { white-space: nowrap; }
 
-    /* Both lines have an even character count, so centering keeps them on the grid. */
-    .wall { margin-top: calc(var(--cell-h) * 2); text-align: center; }
+    /* Too wide for one line on phones, so it breaks between the two groups. */
+    @media (max-width: 480px) {
+      .link-group { display: block; }
+      .link-sep { display: none; }
+    }
+
+    /* The message in the grid is drawn on the canvas, so this is its copy for screen readers. */
+    .for-screen-readers { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
     .copy { position: relative; }
     #copied { bottom: calc(100% + 6px); }
@@ -179,14 +186,20 @@ permalink: /
     <h1>Hi! I'm Jamie Simon.</h1>
     <p>I run the <a href="https://flab.world/">Feature Lab</a>, a lab at UC Berkeley dedicated to building fundamental scientific understanding of AI. Come on in.</p>
     <p class="links">
-      <a href="{{ site.baseurl }}/research/">research</a> ·
-      <a href="{{ site.baseurl }}/blog/">blog</a> ·
-      <span class="copy"><a id="email" href="mailto:{{ site.email }}" aria-label="Copy email address">email</a><span id="copied" role="status"></span></span> ·
-      <a href="{{ site.gscholar_url }}">gScholar</a> ·
-      <a href="https://x.com/learning_mech">X</a>
+      <span class="link-group">
+        <a href="{{ site.baseurl }}/research/">research</a> ·
+        <a href="{{ site.baseurl }}/blog/">blog</a> ·
+        <a href="{{ site.baseurl }}/about/">about</a>
+      </span>
+      <span class="link-sep">·</span>
+      <span class="link-group">
+        <span class="copy"><a id="email" href="mailto:{{ site.email }}" aria-label="Copy email address">email</a><span id="copied" role="status"></span></span> ·
+        <a href="{{ site.gscholar_url }}">gScholar</a> ·
+        <a href="https://x.com/learning_mech">X</a>
+      </span>
     </p>
 
-    <p class="wall">~find some blank space and write<br>something on the wall~</p>
+    <p class="for-screen-readers">~find some blank space and write something on the wall~</p>
 
     <p id="hint" role="status"></p>
   </main>
@@ -297,32 +310,32 @@ permalink: /
   <script type="module">
     const CELL_W = 9, CELL_H = 20;
     const CONTENT_COLS = 64;   // width of the uneditable block on a big screen, in cells
+    // Fixed message in the grid below the bio, centered. It looks like typed text, but nobody can
+    // change it. Keep each line an even number of characters, so it centers exactly on the cells.
+    const WALL = ['~find some blank space and write', 'something on the wall~'];
+    const WALL_GAP = 4;        // empty rows of dots between the bio block and the message
     const COORD_LIMIT = 999;   // matches the 9-character cell name limit in the database rules
     const PASTE_LIMIT = 4000;
     const SENTINEL = '​'; // kept in the textarea so phone keyboards have something to backspace
 
     const COLORS = {};
 
-    // The keyboard's top row is stored as typed but drawn as solid blocks, so neighbors join
-    // into pixel art. Each row: key, the same key with Shift, its color, and a paler version.
-    const BLOCK_COLORS = {};
-    for (const [key, shifted, color, pale] of [
-      ["1", "!", '#e5383b', '#f3a5a7'], // red
-      ["2", "@", '#f77f00', '#fbc58c'], // orange
-      ["3", "#", '#ffd60a', '#ffed91'], // yellow
-      ["4", "$", '#2dc653', '#a0e5b2'], // green
-      ["5", "%", '#2f7bff', '#a1c4ff'], // blue
-      ["6", "^", '#8b3fd9', '#cba9ee'], // violet
-      ["7", "&", '#ffffff', '#c9ccd6'], // white
-      ["8", "*", '#d2b48c', '#ebddcb'], // tan
-      ["9", "(", '#000000', '#4d4f59'], // black
-      ["0", ")", '#ff7eb6', '#ffc5de'], // pink
-      ["-", "_", '#12c2d6', '#94e4ed'], // cyan
-      ["=", "+", '#d6249f', '#ed9cd4'], // magenta
-    ]) {
-      BLOCK_COLORS[key] = color;
-      BLOCK_COLORS[shifted] = pale;
-    }
+    // Digits, minus and equals are stored as typed but drawn as solid blocks, so neighbors join
+    // into pixel art. Every other character, including the Shift symbols, is just text.
+    const BLOCK_COLORS = {
+      1: '#e5383b', // red
+      2: '#f77f00', // orange
+      3: '#ffd60a', // yellow
+      4: '#2dc653', // green
+      5: '#2f7bff', // blue
+      6: '#8b3fd9', // violet
+      7: '#ffffff', // white
+      8: '#d2b48c', // tan
+      9: '#000000', // black
+      0: '#ff7eb6', // pink
+      '-': '#12c2d6', // cyan
+      '=': '#d6249f', // magenta
+    };
 
     const canvas = document.getElementById('grid');
     const ctx = canvas.getContext('2d');
@@ -341,7 +354,9 @@ permalink: /
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const keyOf = (c, r) => c + '_' + r;
-    const blocked = (c, r) => c >= -halfCols && c < halfCols && r >= -halfRows && r < halfRows;
+    const wallLineAt = r => WALL[r - halfRows - WALL_GAP];
+    const onWall = (c, r) => { const line = wallLineAt(r); return !!line && c >= -line.length / 2 && c < line.length / 2; };
+    const blocked = (c, r) => (c >= -halfCols && c < halfCols && r >= -halfRows && r < halfRows) || onWall(c, r);
     const inBounds = (c, r) => c >= bounds.minCol && c <= bounds.maxCol && r >= bounds.minRow && r <= bounds.maxRow;
 
     // Dots and grid text are tints of the background. Grid text stays dimmer than the bio.
@@ -355,6 +370,7 @@ permalink: /
       COLORS.bg = bg;
       COLORS.dot = tint(.22);
       COLORS.char = tint(.55);
+      COLORS.wall = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
       invalidate();
     }
 
@@ -377,9 +393,11 @@ permalink: /
       halfRows = rows / 2;
       content.style.height = rows * CELL_H + 'px';
 
-      const minMargin = narrow ? 8 : 3;
-      pageH = Math.max(window.innerHeight, (rows + minMargin * 2) * CELL_H);
-      const top = Math.floor((pageH - rows * CELL_H) / 2 / CELL_H) * CELL_H;
+      // Center the bio and the message together, and keep some grid free above and below.
+      const minMargin = narrow ? 6 : 3;
+      const allRows = rows + WALL_GAP + WALL.length;
+      pageH = Math.max(window.innerHeight, (allRows + minMargin * 2) * CELL_H);
+      const top = Math.floor((pageH - allRows * CELL_H) / 2 / CELL_H) * CELL_H;
       content.style.top = top + 'px';
       originY = top + halfRows * CELL_H;
       document.body.style.height = pageH + 'px';
@@ -451,6 +469,14 @@ permalink: /
           ctx.fillText(ch, x + CELL_W / 2, y + 15);
         }
       }
+
+      ctx.fillStyle = COLORS.wall;
+      WALL.forEach((line, i) => {
+        const y = originY + (halfRows + WALL_GAP + i) * CELL_H + 15;
+        [...line].forEach((ch, j) => {
+          ctx.fillText(ch, originX + (j - line.length / 2) * CELL_W + CELL_W / 2, y);
+        });
+      });
 
       if (hover && !(focused && cursor && hover.c === cursor.c && hover.r === cursor.r)) {
         ctx.strokeStyle = accent;

@@ -18,33 +18,12 @@
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
 
-  <style>
-    body {
-      font-family: "et-book", "ETBookOT", "ET Book", Georgia, "Times New Roman", serif !important;
-    }
-
-    a:link {
-      color: #1a4d8f;
-      text-decoration: none;
-    }
-
-    a:visited {
-      color: #6b2d8f;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Bootstrap's reboot strips blockquote styling; restore it. */
-    blockquote {
-      color: #555;
-      border-left: 4px solid #e0e0e0;
-      padding-left: 1em;
-      margin-left: 0;
-    }
-  </style>
+  <meta name="theme-color" content="#10122a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Silkscreen&display=swap" rel="stylesheet">
+  <link rel="preload" href="{{ site.baseurl }}/assets/fonts/et-book/et-book-roman-line-figures.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="{{ site.baseurl }}/css/site.css">
 
   {% unless page.skip_mathjax %}
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"></script>
