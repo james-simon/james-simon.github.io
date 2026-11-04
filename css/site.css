@@ -37,8 +37,8 @@
   --ink: #24252f;
   --heading: #14152a;
   --muted: #5e6170;
-  --link: #21837e;     /* teal */
-  --visited: #663fa2;  /* violet */
+  --link: #1f7c77;     /* teal */
+  --visited: #18603a;  /* dark green */
   --rule: #e4ddcd;
   --rule-strong: #c9c0ac;
   --panel: #f3eee2;
@@ -123,7 +123,7 @@ th, td { border-color: var(--rule) !important; }
 
 .site-nav .navbar-brand {
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   letter-spacing: -.01em;
   color: #fff !important;
@@ -131,7 +131,7 @@ th, td { border-color: var(--rule) !important; }
 
 .site-nav .nav-link {
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--night-ink) !important;
   background: none;
   border-radius: 3px;

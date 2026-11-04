@@ -162,7 +162,35 @@ permalink: /
       caret-color: transparent;
     }
 
+    /* Shown when someone runs out of characters for the hour. */
+    #slow {
+      width: min(340px, calc(100vw - 32px));
+      margin: auto;
+      padding: 0;
+      text-align: center;
+      color: var(--accent);
+      background: var(--bg);
+      border: 3px solid var(--accent);
+      font: 400 14px/20px "Silkscreen", "IBM Plex Mono", monospace;
+    }
+    #slow::backdrop { background: rgba(0, 0, 0, .6); }
+    #slow[open] { animation: slow-pop .25s steps(3, end); }
+    @keyframes slow-pop { from { transform: scale(.7); } to { transform: scale(1); } }
+    .slow-box { padding: 24px 20px 20px; }
+    #slow h2 { margin: 0 0 10px; font: inherit; font-size: 24px; line-height: 30px; }
+    #slow p { margin: 0 0 18px; }
+    #slow button {
+      padding: 3px 18px 4px;
+      color: var(--bg);
+      background: var(--accent);
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+    #slow button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
     @media (prefers-reduced-motion: reduce) {
+      #slow[open] { animation: none; }
       #odds.show { animation: odds-still 3.6s steps(1, end) forwards; }
       #copied.show { animation: odds-still 1.5s steps(1, end) forwards; }
       @keyframes odds-still {
@@ -205,6 +233,14 @@ permalink: /
   </main>
 
   <textarea id="keys" aria-label="Shared character grid. Type to add characters, arrow keys to move." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
+
+  <dialog id="slow" aria-labelledby="slow-title" aria-describedby="slow-text">
+    <div class="slow-box">
+      <h2 id="slow-title">Slow down, tiger.</h2>
+      <p id="slow-text">You get 100 characters an hour. Try again later.</p>
+      <form method="dialog"><button>OK</button></form>
+    </div>
+  </dialog>
 
   <!-- Photo, rarity and accent color -->
   <script>
@@ -566,6 +602,42 @@ permalink: /
       commit(batch);
     }
 
+    // ---- Rate limit ------------------------------------------------------
+    // 100 changed cells per hour, counted in this browser. A static site can't see IP
+    // addresses, and the database rules can't either, so this stops people typing or pasting
+    // too much but not someone scripting the database directly.
+    const HOURLY_LIMIT = 100;
+    const HOUR_MS = 60 * 60 * 1000;
+    const SPENT_KEY = 'grid-writes';
+    const slowDialog = document.getElementById('slow');
+    let spent = [];
+
+    slowDialog.addEventListener('click', e => { if (e.target === slowDialog) slowDialog.close(); });
+
+    function spendOne() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SPENT_KEY));
+        if (Array.isArray(saved)) spent = saved;
+      } catch {}
+      const cutoff = Date.now() - HOUR_MS;
+      spent = spent.filter(time => time > cutoff);
+      if (spent.length >= HOURLY_LIMIT) {
+        if (!slowDialog.open) slowDialog.showModal();
+        return false;
+      }
+      spent.push(Date.now());
+      try { localStorage.setItem(SPENT_KEY, JSON.stringify(spent)); } catch {}
+      return true;
+    }
+
+    // Changing a cell uses up a character. Spacing over blank cells doesn't.
+    function writeCell(c, r, ch) {
+      if ((cells.get(keyOf(c, r)) || null) === (ch || null)) return true;
+      if (!spendOne()) return false;
+      setCell(c, r, ch);
+      return true;
+    }
+
     function typeText(text) {
       if (!cursor) return;
       let budget = PASTE_LIMIT;
@@ -576,7 +648,7 @@ permalink: /
         if (ch === '\t') { for (let i = 0; i < 2; i++) if (!advance()) return; continue; }
         // The database holds one UTF-16 unit per cell, which leaves out most emoji.
         if (ch.length !== 1 || ch < ' ' || (ch >= '\u007f' && ch <= '\u009f')) continue;
-        setCell(cursor.c, cursor.r, ch === ' ' ? null : ch);
+        if (!writeCell(cursor.c, cursor.r, ch === ' ' ? null : ch)) break;
         if (!advance()) break;
       }
     }
@@ -584,8 +656,9 @@ permalink: /
     function backspace() {
       if (!cursor) return;
       const prev = step(cursor.c, cursor.r, -1, 0);
+      const target = prev || cursor;
+      if (!writeCell(target.c, target.r, null)) return;
       if (prev) setCursor(prev.c, prev.r, true);
-      setCell(cursor.c, cursor.r, null);
     }
 
     // ---- Input -----------------------------------------------------------
@@ -619,7 +692,7 @@ permalink: /
         nextLine();
       } else if (e.key === 'Delete') {
         e.preventDefault();
-        setCell(cursor.c, cursor.r, null);
+        writeCell(cursor.c, cursor.r, null);
       } else if (e.key === 'Escape') {
         keys.blur();
       }

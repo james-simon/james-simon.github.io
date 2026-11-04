@@ -33,6 +33,24 @@ highlighter: rouge
 plugins:
   - jekyll-sitemap
 
+# Notes for Claude stay on disk but off the site. Setting this list replaces Jekyll's default
+# one, so the Gemfile and vendor entries have to be repeated here.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - CLAUDE.md
+  - claude_notes.md
+  - expander-nets/CLAUDE_NOTES.md
+  - expander-nets/REFACTOR_SUMMARY.md
+  - low-dim-flows/REFACTOR_SUMMARY.md
+  - tensorizer/claude_notes.md
+  - tensorizer/_site/claude_notes.md
+
 # Unlisted draft of the Redwood Center site (a static Astro build, so no front matter of its own):
 # keep its pages out of the sitemap. The pages also carry a noindex meta tag.
 defaults:

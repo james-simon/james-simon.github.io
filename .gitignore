@@ -5,3 +5,9 @@ _site/
 
 # Log from the monthly embeddings refresh
 blogpost_embs/refresh.log
+
+# Notes for Claude: kept locally, never committed or published
+CLAUDE.md
+claude_notes.md
+CLAUDE_NOTES.md
+REFACTOR_SUMMARY.md

@@ -1,0 +1,47 @@
+# Saves the homepage's shared grid to the grid-backups branch every hour, as one commit per
+# change, so any past state can be restored with .github/scripts/restore-grid.py.
+name: Back up the shared grid
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Save the grid
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          git init -q backup
+          cd backup
+          git config user.name 'grid-backup'
+          git config user.email 'grid-backup@users.noreply.github.com'
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+
+          if git fetch -q --depth 1 origin grid-backups; then
+            git checkout -q -b grid-backups FETCH_HEAD
+          else
+            git checkout -q --orphan grid-backups
+          fi
+
+          # A failed or malformed download stops here and leaves the last backup alone.
+          curl -fsS --max-time 60 'https://site-backend-28978-default-rtdb.firebaseio.com/grid.json' -o download.json
+          python3 -m json.tool --sort-keys --indent 0 download.json grid.json
+          rm download.json
+
+          git add grid.json
+          if git diff --cached --quiet && git rev-parse -q --verify HEAD >/dev/null; then
+            echo 'No changes since the last backup.'
+          else
+            git commit -q -m "Grid backup $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push -q origin grid-backups
+          fi
