@@ -227,7 +227,7 @@ permalink: /
       </span>
     </p>
 
-    <p class="for-screen-readers">~find some blank space and write something on the wall~</p>
+    <p class="for-screen-readers">~find some blank space and write something on the wall~ (ctrl+digit for color blocks)</p>
 
     <p id="hint" role="status"></p>
   </main>
@@ -348,7 +348,7 @@ permalink: /
     const CONTENT_COLS = 64;   // width of the uneditable block on a big screen, in cells
     // Fixed message in the grid below the bio, centered. It looks like typed text, but nobody can
     // change it. Keep each line an even number of characters, so it centers exactly on the cells.
-    const WALL = ['~find some blank space and write', 'something on the wall~'];
+    const WALL = ['~find some blank space and write', 'something on the wall~', '', '(ctrl+digit for color blocks)'];
     const WALL_GAP = 4;        // empty rows of dots between the bio block and the message
     const COORD_LIMIT = 999;   // matches the 9-character cell name limit in the database rules
     const PASTE_LIMIT = 4000;
@@ -399,7 +399,9 @@ permalink: /
 
     const keyOf = (c, r) => c + '_' + r;
     const wallLineAt = r => WALL[r - halfRows - WALL_GAP];
-    const onWall = (c, r) => { const line = wallLineAt(r); return !!line && c >= -line.length / 2 && c < line.length / 2; };
+    // Rounded so a line with an odd length still sits on the grid's cells.
+    const wallStart = line => -Math.floor(line.length / 2);
+    const onWall = (c, r) => { const line = wallLineAt(r); return !!line && c >= wallStart(line) && c < wallStart(line) + line.length; };
     const blocked = (c, r) => (c >= -halfCols && c < halfCols && r >= -halfRows && r < halfRows) || onWall(c, r);
     const inBounds = (c, r) => c >= bounds.minCol && c <= bounds.maxCol && r >= bounds.minRow && r <= bounds.maxRow;
 
@@ -518,7 +520,7 @@ permalink: /
       WALL.forEach((line, i) => {
         const y = originY + (halfRows + WALL_GAP + i) * CELL_H + 15;
         [...line].forEach((ch, j) => {
-          ctx.fillText(ch, originX + (j - line.length / 2) * CELL_W + CELL_W / 2, y);
+          ctx.fillText(ch, originX + (wallStart(line) + j) * CELL_W + CELL_W / 2, y);
         });
       });
 

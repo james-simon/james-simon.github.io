@@ -1,10 +1,11 @@
-# Saves the homepage's shared grid to the grid-backups branch every hour, as one commit per
-# change, so any past state can be restored with .github/scripts/restore-grid.py.
+# Saves the homepage's shared grid to the grid-backups branch every 15 minutes, as one commit
+# per change. Any past state can be restored with .github/scripts/restore-grid.py, and the
+# commits can be replayed as frames of an animation.
 name: Back up the shared grid
 
 on:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
 permissions:
