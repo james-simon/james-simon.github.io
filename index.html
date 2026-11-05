@@ -267,6 +267,7 @@ permalink: /
 
     // Rarity by odds, rarest first: a photo gets the first row its odds are under.
     const RARITIES = [
+      { under: 1,        name: 'MYTHIC',     glow: '28px' },
       { under: 2,        name: 'LEGENDARY',  glow: '16px' },
       { under: 5,        name: 'SUPER RARE', glow: '8px'  },
       { under: 10,       name: 'RARE',       glow: '0px'  },
@@ -787,7 +788,9 @@ permalink: /
         appId: "1:681435000274:web:edc88b11875db67b686c0b",
       });
       const database = db.getDatabase(app);
+      const rootRef = db.ref(database);
       const gridRef = db.ref(database, 'grid');
+      const logRef = db.ref(database, 'log');
 
       const onRead = () => say('The shared grid didn\'t load. Reload the page to try again.');
       const apply = snap => { cells.set(snap.key, snap.val()); invalidate(); };
@@ -795,8 +798,13 @@ permalink: /
       db.onChildChanged(gridRef, apply);
       db.onChildRemoved(gridRef, snap => { cells.delete(snap.key); invalidate(); });
 
-      // A multi-path update, so a paste lands all at once.
-      commit = batch => db.update(gridRef, batch).catch(() => {
+      // A multi-path update, so a paste lands all at once and each edit is saved along with its
+      // entry in the log. The log is append-only and never read here: it's the wall's full history.
+      commit = batch => db.update(rootRef, Object.entries(batch).reduce((edits, [cell, ch]) => {
+        edits['grid/' + cell] = ch;
+        edits['log/' + db.push(logRef).key] = { c: cell, v: ch || '', t: db.serverTimestamp() };
+        return edits;
+      }, {})).catch(() => {
         say('Your last edit didn\'t save. Reload the page and try again.');
       });
       if (Object.keys(pending).length) flush();
