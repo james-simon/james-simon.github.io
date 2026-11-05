@@ -232,12 +232,12 @@ permalink: /
     <p id="hint" role="status"></p>
   </main>
 
-  <textarea id="keys" aria-label="Shared character grid. Type to add characters, arrow keys to move." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
+  <textarea id="keys" aria-label="Shared character grid. Type to add characters, hold Control and press a number, minus or equals to draw a color block, arrow keys to move." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
 
   <dialog id="slow" aria-labelledby="slow-title" aria-describedby="slow-text">
     <div class="slow-box">
       <h2 id="slow-title">Slow down, tiger.</h2>
-      <p id="slow-text">You get 100 characters an hour. Try again later.</p>
+      <p id="slow-text">You get 500 characters an hour. Try again later.</p>
       <form method="dialog"><button>OK</button></form>
     </div>
   </dialog>
@@ -356,22 +356,30 @@ permalink: /
 
     const COLORS = {};
 
-    // Digits, minus and equals are stored as typed but drawn as solid blocks, so neighbors join
-    // into pixel art. Every other character, including the Shift symbols, is just text.
+    // Ctrl + a number key, minus or equals draws a solid block, so neighbors join into pixel art.
+    // Blocks are stored as private-use characters, which keeps plain digits, - and = as text.
+    // These characters are saved in the database, so changing one orphans blocks already drawn.
     const BLOCK_COLORS = {
-      1: '#e5383b', // red
-      2: '#f77f00', // orange
-      3: '#ffd60a', // yellow
-      4: '#2dc653', // green
-      5: '#2f7bff', // blue
-      6: '#8b3fd9', // violet
-      7: '#ffffff', // white
-      8: '#d2b48c', // tan
-      9: '#000000', // black
-      0: '#ff7eb6', // pink
-      '-': '#12c2d6', // cyan
-      '=': '#d6249f', // magenta
+      '': '#e5383b', // 1, red
+      '': '#f77f00', // 2, orange
+      '': '#ffd60a', // 3, yellow
+      '': '#2dc653', // 4, green
+      '': '#2f7bff', // 5, blue
+      '': '#8b3fd9', // 6, violet
+      '': '#ffffff', // 7, white
+      '': '#d2b48c', // 8, tan
+      '': '#000000', // 9, black
+      '': '#ff7eb6', // 0, pink
+      '': '#12c2d6', // minus, cyan
+      '': '#d6249f', // equals, magenta
     };
+
+    // Goes by the physical key, since Ctrl can change which character a key reports.
+    function blockForKey(code) {
+      const digit = /^(?:Digit|Numpad)(\d)$/.exec(code);
+      if (digit) return String.fromCharCode(0xe000 + Number(digit[1]));
+      return { Minus: '', Equal: '' }[code] || null;
+    }
 
     const canvas = document.getElementById('grid');
     const ctx = canvas.getContext('2d');
@@ -603,10 +611,10 @@ permalink: /
     }
 
     // ---- Rate limit ------------------------------------------------------
-    // 100 changed cells per hour, counted in this browser. A static site can't see IP
+    // 500 changed cells per hour, counted in this browser. A static site can't see IP
     // addresses, and the database rules can't either, so this stops people typing or pasting
     // too much but not someone scripting the database directly.
-    const HOURLY_LIMIT = 100;
+    const HOURLY_LIMIT = 500;
     const HOUR_MS = 60 * 60 * 1000;
     const SPENT_KEY = 'grid-writes';
     const slowDialog = document.getElementById('slow');
@@ -683,7 +691,11 @@ permalink: /
 
     keys.addEventListener('keydown', e => {
       if (!cursor || e.isComposing) return;
-      if (ARROWS[e.key]) {
+      const block = e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey ? blockForKey(e.code) : null;
+      if (block) {
+        e.preventDefault(); // otherwise Ctrl+number switches tabs and Ctrl+minus zooms on some systems
+        if (writeCell(cursor.c, cursor.r, block)) advance();
+      } else if (ARROWS[e.key]) {
         e.preventDefault();
         const next = step(cursor.c, cursor.r, ...ARROWS[e.key]);
         if (next) setCursor(next.c, next.r);
