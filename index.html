@@ -162,6 +162,27 @@ permalink: /
       caret-color: transparent;
     }
 
+    /* Confirms that admin mode changed. */
+    #admin-status {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 3;
+      padding: 3px 9px 4px;
+      white-space: nowrap;
+      color: var(--accent);
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      font: 400 14px/18px "Silkscreen", "IBM Plex Mono", monospace;
+      visibility: hidden;
+      transform: translateX(-50%);
+    }
+    #admin-status.show { animation: admin-show 2s steps(1, end) forwards; }
+    @keyframes admin-show {
+      0%, 90% { visibility: visible; }
+      100% { visibility: hidden; }
+    }
+
     /* Shown when someone runs out of characters for the hour. */
     #slow {
       width: min(340px, calc(100vw - 32px));
@@ -234,10 +255,12 @@ permalink: /
 
   <textarea id="keys" aria-label="Shared character grid. Type to add characters, hold Control and press a number, minus or equals to draw a color block, arrow keys to move." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
 
+  <div id="admin-status" role="status"></div>
+
   <dialog id="slow" aria-labelledby="slow-title" aria-describedby="slow-text">
     <div class="slow-box">
       <h2 id="slow-title">Slow down, tiger.</h2>
-      <p id="slow-text">You get 200 characters an hour. Try again later.</p>
+      <p id="slow-text">You get 200 characters an hour, and erasing someone else's writing costs 5. Try again later.</p>
       <form method="dialog"><button>OK</button></form>
     </div>
   </dialog>
@@ -614,37 +637,86 @@ permalink: /
     }
 
     // ---- Rate limit ------------------------------------------------------
-    // 200 changed cells per hour, counted in this browser. A static site can't see IP
-    // addresses, and the database rules can't either, so this stops people typing or pasting
-    // too much but not someone scripting the database directly.
+    // Each browser gets 200 characters of difference per hour, measured per cell against what
+    // was there before it first touched that cell. Writing costs 1 whether the cell was blank or
+    // not, putting a cell back how it was costs nothing, and erasing someone else's writing costs
+    // more, to keep the wall additive. A static site can't see IP addresses, and the database
+    // rules can't either, so this stops typing and pasting but not someone scripting the database.
     const HOURLY_LIMIT = 200;
+    const ERASE_COST = 5;
     const HOUR_MS = 60 * 60 * 1000;
-    const SPENT_KEY = 'grid-writes';
+    const EDITS_KEY = 'grid-edits';
     const slowDialog = document.getElementById('slow');
-    let spent = [];
+    let edits = []; // { k: cell, o: what was there first, c: what this browser left there, t: time }
 
     slowDialog.addEventListener('click', e => { if (e.target === slowDialog) slowDialog.close(); });
 
-    function spendOne() {
+    // Holding Ctrl and typing "admin" turns the limit off in this browser, and again turns it back
+    // on. It's in the page source, so it's a convenience rather than security, but the limit only
+    // runs in the browser anyway. Admin edits still go in the log.
+    const ADMIN_KEYS = ['KeyA', 'KeyD', 'KeyM', 'KeyI', 'KeyN'];
+    const ADMIN_STORE = 'grid-admin';
+    const adminStatus = document.getElementById('admin-status');
+    let adminMode = false;
+    let adminProgress = 0;
+    try { adminMode = localStorage.getItem(ADMIN_STORE) === '1'; } catch {}
+
+    function toggleAdmin() {
+      adminMode = !adminMode;
+      try { localStorage.setItem(ADMIN_STORE, adminMode ? '1' : '0'); } catch {}
+      if (slowDialog.open) slowDialog.close();
+      adminStatus.textContent = adminMode ? 'Admin mode on' : 'Admin mode off';
+      adminStatus.classList.remove('show');
+      void adminStatus.offsetWidth; // restarts the animation on repeat toggles
+      adminStatus.classList.add('show');
+    }
+
+    // Listens on the window so it also works with the popup open or no cell selected.
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Control' || e.repeat) return;
+      if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) { adminProgress = 0; return; }
+      if (e.code !== ADMIN_KEYS[adminProgress]) adminProgress = 0;
+      if (e.code !== ADMIN_KEYS[adminProgress]) return;
+      e.preventDefault(); // Ctrl+A, Ctrl+D and the rest have browser meanings of their own
+      adminProgress++;
+      if (adminProgress === ADMIN_KEYS.length) { adminProgress = 0; toggleAdmin(); }
+    }, true);
+    window.addEventListener('keyup', e => { if (e.key === 'Control') adminProgress = 0; });
+    window.addEventListener('blur', () => { adminProgress = 0; });
+
+    const editCost = (from, to) => from === to ? 0 : to === '' ? ERASE_COST : 1;
+
+    function loadEdits() {
       try {
-        const saved = JSON.parse(localStorage.getItem(SPENT_KEY));
-        if (Array.isArray(saved)) spent = saved;
+        const saved = JSON.parse(localStorage.getItem(EDITS_KEY));
+        if (Array.isArray(saved)) edits = saved;
       } catch {}
       const cutoff = Date.now() - HOUR_MS;
-      spent = spent.filter(time => time > cutoff);
-      if (spent.length >= HOURLY_LIMIT) {
+      edits = edits.filter(edit => edit.t > cutoff);
+    }
+
+    function writeCell(c, r, ch) {
+      const cell = keyOf(c, r);
+      const current = cells.get(cell) || '';
+      const next = ch || '';
+      if (current === next) return true;
+      if (adminMode) { setCell(c, r, ch); return true; }
+
+      loadEdits();
+      // Continues this browser's earlier edit of the cell, unless someone has changed it since.
+      const earlier = edits.find(edit => edit.k === cell && edit.c === current);
+      const others = edits.filter(edit => edit !== earlier);
+      const original = earlier ? earlier.o : current;
+      const total = others.reduce((sum, edit) => sum + editCost(edit.o, edit.c), editCost(original, next));
+      if (total > HOURLY_LIMIT) {
         if (!slowDialog.open) slowDialog.showModal();
         return false;
       }
-      spent.push(Date.now());
-      try { localStorage.setItem(SPENT_KEY, JSON.stringify(spent)); } catch {}
-      return true;
-    }
 
-    // Changing a cell uses up a character. Spacing over blank cells doesn't.
-    function writeCell(c, r, ch) {
-      if ((cells.get(keyOf(c, r)) || null) === (ch || null)) return true;
-      if (!spendOne()) return false;
+      edits = original === next
+        ? others
+        : [...others, { k: cell, o: original, c: next, t: earlier ? earlier.t : Date.now() }];
+      try { localStorage.setItem(EDITS_KEY, JSON.stringify(edits)); } catch {}
       setCell(c, r, ch);
       return true;
     }
