@@ -237,7 +237,7 @@ permalink: /
   <dialog id="slow" aria-labelledby="slow-title" aria-describedby="slow-text">
     <div class="slow-box">
       <h2 id="slow-title">Slow down, tiger.</h2>
-      <p id="slow-text">You get 500 characters an hour. Try again later.</p>
+      <p id="slow-text">You get 200 characters an hour. Try again later.</p>
       <form method="dialog"><button>OK</button></form>
     </div>
   </dialog>
@@ -614,10 +614,10 @@ permalink: /
     }
 
     // ---- Rate limit ------------------------------------------------------
-    // 500 changed cells per hour, counted in this browser. A static site can't see IP
+    // 200 changed cells per hour, counted in this browser. A static site can't see IP
     // addresses, and the database rules can't either, so this stops people typing or pasting
     // too much but not someone scripting the database directly.
-    const HOURLY_LIMIT = 500;
+    const HOURLY_LIMIT = 200;
     const HOUR_MS = 60 * 60 * 1000;
     const SPENT_KEY = 'grid-writes';
     const slowDialog = document.getElementById('slow');

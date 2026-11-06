@@ -6,23 +6,23 @@
     python3 .github/scripts/restore-grid.py COMMIT    # shows what would change
     python3 .github/scripts/restore-grid.py COMMIT --apply
 
-Cells added since the backup are removed, and the rest are put back as they were.
+Cells added since the backup are removed, and the rest are put back as they were. Each change
+also goes in the edit log, so the log still replays to what's on the wall.
 """
 import argparse
 import json
 import os
 import subprocess
+import time
 import urllib.request
 
-GRID_URL = os.environ.get(
-    "GRID_URL", "https://site-backend-28978-default-rtdb.firebaseio.com/grid.json"
-)
+DB_URL = os.environ.get("DB_URL", "https://site-backend-28978-default-rtdb.firebaseio.com")
 BATCH = 500
 
 
-def request(method, data=None):
+def request(method, path, data=None):
     body = None if data is None else json.dumps(data).encode()
-    with urllib.request.urlopen(urllib.request.Request(GRID_URL, body, method=method), timeout=60) as r:
+    with urllib.request.urlopen(urllib.request.Request(f"{DB_URL}/{path}", body, method=method), timeout=60) as r:
         return json.load(r)
 
 
@@ -36,7 +36,7 @@ def main():
         ["git", "show", f"{args.commit}:grid.json"], check=True, capture_output=True, text=True
     ).stdout
     backup = json.loads(saved) or {}
-    live = request("GET") or {}
+    live = request("GET", "grid.json") or {}
 
     changes = {key: None for key in live if key not in backup}
     changes.update({key: value for key, value in backup.items() if live.get(key) != value})
@@ -48,10 +48,19 @@ def main():
         print("Nothing changed. Add --apply to write this to the live grid.")
         return
 
-    # The rules only allow writing individual cells, which a PATCH does.
+    # The rules only allow writing individual cells and log entries, which a PATCH does.
+    run = int(time.time())
     keys = list(changes)
     for start in range(0, len(keys), BATCH):
-        request("PATCH", {key: changes[key] for key in keys[start : start + BATCH]})
+        edits = {}
+        for key in keys[start : start + BATCH]:
+            edits[f"grid/{key}"] = changes[key]
+            edits[f"log/restore-{run}-{key}"] = {
+                "c": key,
+                "v": changes[key] or "",
+                "t": {".sv": "timestamp"},
+            }
+        request("PATCH", ".json", edits)
     print("Restored.")
 
 
