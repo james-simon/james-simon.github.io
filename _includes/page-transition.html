@@ -1,9 +1,14 @@
 {% comment %}
   Moving between the homepage and any other page animates its dark background into that page's
   nav bar, or the nav bar back into the homepage. Browsers without cross-document view
-  transitions (and anyone who prefers reduced motion) just change pages. Other navigations
-  change pages without animating. The animation for arriving home is in index.html, and the one for
-  arriving anywhere else is below.
+  transitions (and anyone who prefers reduced motion) just change pages.
+
+  A page only ever plays one of the two animations (the homepage plays "arriving home", the
+  rest "arriving from home"), so those styles apply from the first frame, without waiting for a
+  script. Navigations between two pages of the same kind still run a transition, but an instant
+  one: the old page stays on screen until the new one is ready, which avoids a blank flash.
+  The animation for arriving home is in index.html, and the one for arriving anywhere else is
+  below.
 {% endcomment %}
 <style>
   @media (prefers-reduced-motion: no-preference) {
@@ -16,23 +21,29 @@
   /* The homepage's dark background turns into this bar when you leave it. */
   .site-nav { view-transition-name: night; }
 
+  html { background-color: #fbf8f1; } /* same as site.css, but here before it loads */
+
   /* Arriving from the homepage: its words fade, then the dark rolls up like a released blind,
      overshoots a little and settles as the nav bar, uncovering the page. */
-  html[data-transition="from-home"]::view-transition-old(root) { animation: none; opacity: 0; }
-  html[data-transition="from-home"]::view-transition-new(root) { animation: none; }
-  html[data-transition="from-home"]::view-transition-old(home-content) { animation: home-out 150ms ease-in both; }
-  html[data-transition="from-home"]::view-transition-group(night) {
+  ::view-transition-old(root) { animation: none; opacity: 0; }
+  ::view-transition-new(root) { animation: none; }
+  ::view-transition-old(home-content) { animation: home-out 150ms ease-in both; }
+  ::view-transition-group(night) {
     overflow: clip;
     animation-delay: 110ms;
     animation-duration: 460ms;
     animation-timing-function: linear(0, .03 12%, .12 25%, .3 40%, .62 58%, 1 74%, 1.012 82%, 1 91%, 1.003 96%, 1);
     animation-fill-mode: both;
   }
-  html[data-transition="from-home"]::view-transition-old(night) { height: 100%; animation: none; mix-blend-mode: normal; }
-  html[data-transition="from-home"]::view-transition-new(night) { animation: nav-in 150ms 420ms ease-out both; mix-blend-mode: normal; }
-  @keyframes home-out { to { opacity: 0; transform: scale(.98); } }
+  ::view-transition-old(night) { height: 100%; animation: none; mix-blend-mode: normal; }
+  ::view-transition-new(night) { animation: nav-in 150ms 420ms ease-out both; mix-blend-mode: normal; }
+  @keyframes home-out { to { opacity: 0; } }
   @keyframes nav-in { from { opacity: 0; } }
 {% endunless %}
+  html[data-transition="instant"]::view-transition-group(*),
+  html[data-transition="instant"]::view-transition-old(*),
+  html[data-transition="instant"]::view-transition-new(*) { animation: none !important; }
+  html[data-transition="instant"]::view-transition-old(*) { opacity: 0; }
 </style>
 <script>
   (function () {
@@ -48,14 +59,12 @@
         from = sessionStorage.getItem('transition-from');
         sessionStorage.removeItem('transition-from');
       } catch (err) {}
-      if (!from || from === here) {
-        e.viewTransition.ready.catch(function () {}); // skipping rejects this, which would log an error
-        e.viewTransition.skipTransition();
-        return;
-      }
       var root = document.documentElement;
-      root.dataset.transition = here === 'home' ? 'to-home' : 'from-home';
-      window.pageTransition = e.viewTransition.finished;
+      if (!from || from === here) {
+        root.dataset.transition = 'instant';
+      } else {
+        window.pageTransition = e.viewTransition.finished;
+      }
       e.viewTransition.finished.finally(function () { delete root.dataset.transition; });
     });
   })();

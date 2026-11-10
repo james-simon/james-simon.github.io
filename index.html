@@ -136,23 +136,23 @@ permalink: /
     a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     /* Arriving from another page: its nav bar drops down to fill the screen, then the words fade in. */
-    html[data-transition="to-home"]::view-transition-old(root) { animation: none; }
-    html[data-transition="to-home"]::view-transition-new(root) { animation: none; opacity: 0; }
-    html[data-transition="to-home"]::view-transition-group(night) {
+    ::view-transition-old(root) { animation: none; }
+    ::view-transition-new(root) { animation: none; opacity: 0; }
+    ::view-transition-group(night) {
       overflow: clip;
       animation-duration: 380ms;
       animation-timing-function: cubic-bezier(.6, 0, .25, 1);
       animation-fill-mode: both;
     }
-    html[data-transition="to-home"]::view-transition-old(night) { animation: none; mix-blend-mode: normal; }
-    html[data-transition="to-home"]::view-transition-new(night) {
+    ::view-transition-old(night) { animation: none; mix-blend-mode: normal; }
+    ::view-transition-new(night) {
       height: 100%;
       animation: night-in 120ms ease-out both;
       mix-blend-mode: normal;
     }
-    html[data-transition="to-home"]::view-transition-new(home-content) { animation: home-in 240ms 330ms ease-out both; }
+    ::view-transition-new(home-content) { animation: home-in 240ms 330ms ease-out both; }
     @keyframes night-in { from { opacity: 0; } }
-    @keyframes home-in { from { opacity: 0; transform: scale(.98); } }
+    @keyframes home-in { from { opacity: 0; } }
 
     @media (prefers-reduced-motion: reduce) {
       #odds.show { animation: odds-still 3.6s steps(1, end) forwards; }
