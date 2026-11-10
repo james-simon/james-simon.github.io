@@ -96,8 +96,10 @@ pre code { padding: 0; font-size: inherit; background: none; }
 
 th, td { border-color: var(--rule) !important; }
 
-/* Images blend into the paper, so white plot backgrounds don't show as boxes. */
-.page-content img { mix-blend-mode: multiply; }
+/* Images blend into the paper, so white plot backgrounds don't show as boxes. Old GIFs are now
+   looping videos (class "gif"), so they blend the same way. */
+.page-content img, .page-content video.gif { mix-blend-mode: multiply; }
+.page-content video.gif { max-width: 100%; }
 
 /* Not on puzzles: a clue might depend on exact colors. */
 .layout-puzzlepage .page-content img,

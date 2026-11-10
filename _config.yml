@@ -50,6 +50,8 @@ exclude:
   - low-dim-flows/REFACTOR_SUMMARY.md
   - tensorizer/claude_notes.md
   - tensorizer/_site/claude_notes.md
+  # The original of graduation_walk.mp4, kept in the repo but not used on the site.
+  - img/graduation/graduation_walk.MOV
 
 # Unlisted draft of the Redwood Center site (a static Astro build, so no front matter of its own):
 # keep its pages out of the sitemap. The pages also carry a noindex meta tag.

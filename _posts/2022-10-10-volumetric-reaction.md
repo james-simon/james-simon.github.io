@@ -117,8 +117,8 @@ I'll defer further discussion and the equations themselves to the [Appendix](#ap
 Let's just jump to the good part: here are videos of the reaction working.
 
 <p style="text-align:center;">
-<img src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=3.gif" width="30%">
-<img src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=5.gif" width="44%">
+<video class="gif" src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=3.mp4" style="width: 30%" autoplay loop muted playsinline></video>
+<video class="gif" src="{{site.baseurl}}/img/reaction_diffusion/rd_sim_v=5.mp4" style="width: 44%" autoplay loop muted playsinline></video>
 </p>
 <p style="margin-left:18%; margin-right:18%;">
 <small>

@@ -11,3 +11,6 @@ CLAUDE.md
 claude_notes.md
 CLAUDE_NOTES.md
 REFACTOR_SUMMARY.md
+
+# Local Ruby gems (see .bundle/config). Not part of the site.
+vendor/

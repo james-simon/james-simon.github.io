@@ -31,7 +31,7 @@ For fun, you can click on the above image to be taken to the corresponding spot 
 The regions pop out to the eye even more when you're moving! Here's a gif of the view out my window as I drove by the same place.
 
 <p style="text-align:center;">
-	<img src="{{site.baseurl}}/img/croprows/croprow_gif.gif" width="100%">
+	<video class="gif" src="{{site.baseurl}}/img/croprows/croprow_gif.mp4" style="width: 100%" autoplay loop muted playsinline></video>
 </p>
 
 What's going on? In this post, I'll explain why we see these "open" directions and try to explain why the overall visual effect is so fractally.
@@ -147,7 +147,7 @@ Here's a gif of the result.[^b]
 
 
 <p style="text-align:center;">
-	<img src="{{site.baseurl}}/img/croprows/openness_plots.gif" width="60%">
+	<video class="gif" src="{{site.baseurl}}/img/croprows/openness_plots.mp4" style="width: 60%" autoplay loop muted playsinline></video>
 </p>
 
 There's a lot of cool stuff to see in this!

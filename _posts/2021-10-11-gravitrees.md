@@ -15,7 +15,7 @@ I'm writing this to introduce and explain the **gravitree**, a type of balancing
 
 <p align="center">
    <img src="{{site.baseurl}}/img/gravitree/gravitree_main.jpg" width="30%">
-   <img src="{{site.baseurl}}/img/gravitree/gravitree_main.gif" width="22%">
+   <video class="gif" src="{{site.baseurl}}/img/gravitree/gravitree_main.mp4" style="width: 22%" autoplay loop muted playsinline></video>
 </p>
 
 The stack is easy to assemble and absurdly stable; when people first hold it, they're usually surprised by how easily it stays upright and the way it stays balanced [even during drastic motions](https://youtu.be/3jd2jpJoXgA). I currently have several of them up as room decorations and desk ornaments, and I'm pretty sure they'll stand through a sizable earthquake. What's the trick?
@@ -30,14 +30,14 @@ Let's look at the center of mass of the top piece of the gravitree. First, I'll 
 
 <p align="center">
    <img src="{{site.baseurl}}/img/gravitree/superstable.jpg" width="20%">
-   <img src="{{site.baseurl}}/img/gravitree/superstable.gif" width="17%">
+   <video class="gif" src="{{site.baseurl}}/img/gravitree/superstable.mp4" style="width: 17%" autoplay loop muted playsinline></video>
 </p>
 
 By contrast, if I put the weight at the top, the center of mass is now above the balance point, and it's *unstable*: gravity now tends to pull it away from vertical. If the previous weighting's like a pendulum, this one's like a pencil balanced on your finger. It won't stand on its own.
 
 <p align="center">
    <img src="{{site.baseurl}}/img/gravitree/unstable.jpg" width="20%">
-   <img src="{{site.baseurl}}/img/gravitree/unstable.gif" width="16%">
+   <video class="gif" src="{{site.baseurl}}/img/gravitree/unstable.mp4" style="width: 16%" autoplay loop muted playsinline></video>
 </p>
 
 For a balanced object, these are the choices. It can either be stable or unstable, switching from one to the other as the center of mass crosses the pivot point. This raises an natural question, though: what happens if you start with a stable object and push the center of mass closer and closer to the pivot but never crossing it? How would such a barely stable object move?
@@ -46,7 +46,7 @@ That's the secret of the gravitree. This piece is just barely stable, and becaus
 
 <p align="center">
    <img src="{{site.baseurl}}/img/gravitree/stable.jpg" width="20%">
-   <img src="{{site.baseurl}}/img/gravitree/stable.gif" width="16%">
+   <video class="gif" src="{{site.baseurl}}/img/gravitree/stable.mp4" style="width: 16%" autoplay loop muted playsinline></video>
 </p>
 
 This explains both why the top piece is stable and why it moves so eerily, seeming to move through space without swinging around like you'd expect it to. What about all the other pieces, though? It turns out they all use the same trick, but when balancing a lower piece, you have to imagine the weight of all the higher layers acting on its top. To illustrate that point, let's look at the second-highest piece. Without that extra weight, it's very stable, but with that weight, it's barely stable like the topmost piece.
@@ -66,7 +66,7 @@ We can use this trick again and again all the way down. When I designed this scu
 <p align="center">
    <img src="{{site.baseurl}}/img/gravitree/gravitree_centipede.webp" width="12%">
    <img src="{{site.baseurl}}/img/gravitree/gravitree_spider.webp" width="23%">
-   <img src="{{site.baseurl}}/img/gravitree/gravitree_spinner.gif" width="28%">
+   <video class="gif" src="{{site.baseurl}}/img/gravitree/gravitree_spinner.mp4" style="width: 28%" autoplay loop muted playsinline></video>
 </p>
 
 There's a deeper trick we're playing here, one that I see in inventions from [reaction wheels](https://en.wikipedia.org/wiki/Reaction_wheel) to [faster-than-wind sailboats](https://www.youtube.com/watch?v=jyQwgBAaBag): once we know the precise rules of the universe, we can saunter just up to the edge of impossibility and thumb our noses at Nature like a toddler who knows they're not *technically* breaking their mother's rules. For all of science's immense capacity for social good, that sort of thing - the feeling of doing what seemed impossible until you stopped to think about it - is a key part of what compels me to study physics, and I think it's a potent way to inspire the curious to think a little closer about how the universe really works.

@@ -133,7 +133,7 @@ I set out from Nashville on the morning of March 17th. I’ll flash some scenes 
         </div>
         <div class="col-4">
             <div class="hover-container">
-                <img src="{{site.baseurl}}/img/states_roadtrip/nashville.gif" class="image">
+                <video class="gif image" src="{{site.baseurl}}/img/states_roadtrip/nashville.mp4" autoplay loop muted playsinline></video>
                 <div class="overlay">
                     <div class="text">In Nashville, I athletically somersaulted onto a mechanical bull.</div>
                 </div>
