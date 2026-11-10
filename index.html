@@ -17,11 +17,10 @@ permalink: /
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Silkscreen&display=swap" rel="stylesheet">
+  {% include page-transition.html home=true %}
   <style>
     :root {
-      /* One grid cell. IBM Plex Mono is 0.6em wide, so 15px type fills a 9px cell exactly. */
-      --cell-w: 9px;
-      --cell-h: 20px;
+      --line: 20px;
       --bg: #10122a;
       --ink: #d3d7ee;
       --accent: #b9bdd0; /* replaced by the accent of the photo drawn */
@@ -30,44 +29,41 @@ permalink: /
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { background: var(--bg); overflow-x: hidden; }
+    html { background: var(--bg); }
 
     body {
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       min-height: 100vh;
+      min-height: 100dvh;
+      padding: calc(var(--line) * 2) 16px;
       color: var(--ink);
-      background: var(--bg);
-      font: 400 15px/var(--cell-h) "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+      font: 400 15px/var(--line) "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
       -webkit-text-size-adjust: 100%;
     }
 
-    #grid {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: block;
-      cursor: text;
-      touch-action: manipulation;
-    }
-
-    /* The block of the grid nobody can edit. Heights and gaps are whole rows so text lands on cells. */
-    /* Hidden until the grid script positions it, or the photo flashes in the top-left corner on load. */
-    #content {
-      position: absolute;
-      left: max(0px, calc(50% - 288px));
-      width: min(100%, 576px);
-      visibility: hidden;
+    /* The page's dark background, as its own element so it can turn into the nav bar of other
+       pages (see page-transition.html). */
+    .night {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background: var(--bg);
-      padding: var(--cell-h) calc(var(--cell-w) * 2);
+      view-transition-name: night;
     }
 
-    #content.ready { visibility: visible; }
+    #content {
+      width: min(100%, 576px);
+      padding: 0 18px;
+      view-transition-name: home-content;
+    }
 
     .photo {
       position: relative;
       width: 240px;
       height: 240px;
-      margin: var(--cell-h) auto calc(var(--cell-h) * 2);
+      margin: 0 auto calc(var(--line) * 2);
     }
 
     .photo img {
@@ -96,20 +92,16 @@ permalink: /
     }
 
     #odds.show { animation: odds-pop 3.6s steps(1, end) forwards; }
-    #content:not(.ready) #odds.show { animation: none; } /* wait to pop up until the page is in place */
 
-    /* The row is 46 characters and the text column is even, so centering keeps it on the grid. */
     .links { text-align: center; }
     .link-group { white-space: nowrap; }
 
     /* Too wide for one line on phones, so it breaks between the two groups. */
     @media (max-width: 480px) {
+      #content { padding: 0; }
       .link-group { display: block; }
       .link-sep { display: none; }
     }
-
-    /* The message in the grid is drawn on the canvas, so this is its copy for screen readers. */
-    .for-screen-readers { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
     .copy { position: relative; }
     #copied { bottom: calc(100% + 6px); }
@@ -135,83 +127,34 @@ permalink: /
       96%, 100% { visibility: hidden; transform: translate(-50%, 0); }
     }
 
-    h1 { font: 600 15px/var(--cell-h) "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; color: #fff; }
+    h1 { font: 600 15px/var(--line) "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; color: #fff; }
 
-    p { margin-top: var(--cell-h); text-wrap: pretty; }
+    p { margin-top: var(--line); text-wrap: pretty; }
 
     a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
     a:hover { color: #fff; }
     a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    /* Connection and save errors. Takes no space unless there is one. */
-    #hint { margin-top: calc(var(--cell-h) * 2); color: #8f94b8; }
-    #hint:empty { display: none; }
-
-    /* Invisible, but real: it is what receives typing and opens phone keyboards. */
-    #keys {
-      position: absolute;
-      width: 9px;
-      height: 20px;
-      padding: 0;
-      border: 0;
-      outline: 0;
-      resize: none;
-      overflow: hidden;
-      opacity: 0;
-      font-size: 16px; /* below this, iOS zooms the page on focus */
-      caret-color: transparent;
+    /* Arriving from another page: its nav bar drops down to fill the screen, then the words fade in. */
+    html[data-transition="to-home"]::view-transition-old(root) { animation: none; }
+    html[data-transition="to-home"]::view-transition-new(root) { animation: none; opacity: 0; }
+    html[data-transition="to-home"]::view-transition-group(night) {
+      overflow: clip;
+      animation-duration: 380ms;
+      animation-timing-function: cubic-bezier(.6, 0, .25, 1);
+      animation-fill-mode: both;
     }
-
-    /* Confirms that admin mode changed. */
-    #admin-status {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      z-index: 3;
-      padding: 3px 9px 4px;
-      white-space: nowrap;
-      color: var(--accent);
-      background: var(--bg);
-      border: 2px solid var(--accent);
-      font: 400 14px/18px "Silkscreen", "IBM Plex Mono", monospace;
-      visibility: hidden;
-      transform: translateX(-50%);
+    html[data-transition="to-home"]::view-transition-old(night) { animation: none; mix-blend-mode: normal; }
+    html[data-transition="to-home"]::view-transition-new(night) {
+      height: 100%;
+      animation: night-in 120ms ease-out both;
+      mix-blend-mode: normal;
     }
-    #admin-status.show { animation: admin-show 2s steps(1, end) forwards; }
-    @keyframes admin-show {
-      0%, 90% { visibility: visible; }
-      100% { visibility: hidden; }
-    }
-
-    /* Shown when someone runs out of characters for the hour. */
-    #slow {
-      width: min(340px, calc(100vw - 32px));
-      margin: auto;
-      padding: 0;
-      text-align: center;
-      color: var(--accent);
-      background: var(--bg);
-      border: 3px solid var(--accent);
-      font: 400 14px/20px "Silkscreen", "IBM Plex Mono", monospace;
-    }
-    #slow::backdrop { background: rgba(0, 0, 0, .6); }
-    #slow[open] { animation: slow-pop .25s steps(3, end); }
-    @keyframes slow-pop { from { transform: scale(.7); } to { transform: scale(1); } }
-    .slow-box { padding: 24px 20px 20px; }
-    #slow h2 { margin: 0 0 10px; font: inherit; font-size: 24px; line-height: 30px; }
-    #slow p { margin: 0 0 18px; }
-    #slow button {
-      padding: 3px 18px 4px;
-      color: var(--bg);
-      background: var(--accent);
-      border: 0;
-      font: inherit;
-      cursor: pointer;
-    }
-    #slow button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    html[data-transition="to-home"]::view-transition-new(home-content) { animation: home-in 240ms 330ms ease-out both; }
+    @keyframes night-in { from { opacity: 0; } }
+    @keyframes home-in { from { opacity: 0; transform: scale(.98); } }
 
     @media (prefers-reduced-motion: reduce) {
-      #slow[open] { animation: none; }
       #odds.show { animation: odds-still 3.6s steps(1, end) forwards; }
       #copied.show { animation: odds-still 1.5s steps(1, end) forwards; }
       @keyframes odds-still {
@@ -220,20 +163,19 @@ permalink: /
       }
     }
   </style>
-  <noscript><style>#content { visibility: visible; }</style></noscript>
 </head>
 <body>
-  <canvas id="grid" aria-hidden="true"></canvas>
+  <div class="night" aria-hidden="true"></div>
 
   <main id="content">
     <div class="photo">
       <img id="photo" alt="Jamie Simon" width="240" height="240">
       <div id="odds" role="status"></div>
     </div>
-    <noscript><p>Turn on JavaScript to see a photo and edit the shared grid.</p></noscript>
+    <noscript><p>Turn on JavaScript to see a photo.</p></noscript>
 
     <h1>Hi! I'm Jamie Simon.</h1>
-    <p>I run the <a href="https://flab.world/">Feature Lab</a>, a lab at UC Berkeley dedicated to building fundamental scientific understanding of AI. Come on in.</p>
+    <p>I run the <a href="https://flab.world/">Feature Lab</a>, an academic lab at UC Berkeley dedicated to building fundamental scientific understanding of AI.</p>
     <p class="links">
       <span class="link-group">
         <a href="{{ site.baseurl }}/research/">research</a> ·
@@ -247,23 +189,7 @@ permalink: /
         <a href="https://x.com/learning_mech">X</a>
       </span>
     </p>
-
-    <p class="for-screen-readers">~find some blank space and write something on the wall~ (ctrl+digit for color blocks)</p>
-
-    <p id="hint" role="status"></p>
   </main>
-
-  <textarea id="keys" aria-label="Shared character grid. Type to add characters, hold Control and press a number, minus or equals to draw a color block, arrow keys to move." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
-
-  <div id="admin-status" role="status"></div>
-
-  <dialog id="slow" aria-labelledby="slow-title" aria-describedby="slow-text">
-    <div class="slow-box">
-      <h2 id="slow-title">Slow down, tiger.</h2>
-      <p id="slow-text">You get 200 characters an hour, and erasing someone else's writing costs 5. Try again later.</p>
-      <form method="dialog"><button>OK</button></form>
-    </div>
-  </dialog>
 
   <!-- Photo, rarity and accent color -->
   <script>
@@ -315,8 +241,11 @@ permalink: /
       const announce = () => {
         if (shown) return;
         shown = true;
-        badge.textContent = 'PHOTO RARITY: ' + rarity.name + ' (' + Number(odds.toFixed(1)) + '%)';
-        badge.classList.add('show');
+        // Waits for the page transition, if one is playing, so the pop isn't missed.
+        Promise.resolve(window.pageTransition).finally(() => {
+          badge.textContent = 'PHOTO RARITY: ' + rarity.name + ' (' + Number(odds.toFixed(1)) + '%)';
+          badge.classList.add('show');
+        });
       };
       img.addEventListener('load', announce);
       img.addEventListener('error', announce);
@@ -364,534 +293,6 @@ permalink: /
         popup.classList.add('show');
       });
     })();
-  </script>
-
-  <!-- The shared grid -->
-  <script type="module">
-    const CELL_W = 9, CELL_H = 20;
-    const CONTENT_COLS = 64;   // width of the uneditable block on a big screen, in cells
-    // Fixed message in the grid below the bio, centered. It looks like typed text, but nobody can
-    // change it. Keep each line an even number of characters, so it centers exactly on the cells.
-    const WALL = ['~find some blank space and write', 'something on the wall~', '', '(ctrl+digit for color blocks)'];
-    const WALL_GAP = 4;        // empty rows of dots between the bio block and the message
-    const COORD_LIMIT = 999;   // matches the 9-character cell name limit in the database rules
-    const PASTE_LIMIT = 4000;
-    const SENTINEL = '​'; // kept in the textarea so phone keyboards have something to backspace
-
-    const COLORS = {};
-
-    // Ctrl + a number key, minus or equals draws a solid block, so neighbors join into pixel art.
-    // Blocks are stored as private-use characters, which keeps plain digits, - and = as text.
-    // These characters are saved in the database, so changing one orphans blocks already drawn.
-    const BLOCK_COLORS = {
-      '': '#e5383b', // 1, red
-      '': '#f77f00', // 2, orange
-      '': '#ffd60a', // 3, yellow
-      '': '#2dc653', // 4, green
-      '': '#2f7bff', // 5, blue
-      '': '#8b3fd9', // 6, violet
-      '': '#ffffff', // 7, white
-      '': '#d2b48c', // 8, tan
-      '': '#000000', // 9, black
-      '': '#ff7eb6', // 0, pink
-      '': '#12c2d6', // minus, cyan
-      '': '#d6249f', // equals, magenta
-    };
-
-    // Goes by the physical key, since Ctrl can change which character a key reports.
-    function blockForKey(code) {
-      const digit = /^(?:Digit|Numpad)(\d)$/.exec(code);
-      if (digit) return String.fromCharCode(0xe000 + Number(digit[1]));
-      return { Minus: '', Equal: '' }[code] || null;
-    }
-
-    const canvas = document.getElementById('grid');
-    const ctx = canvas.getContext('2d');
-    const content = document.getElementById('content');
-    const keys = document.getElementById('keys');
-    const hint = document.getElementById('hint');
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-
-    const cells = new Map();   // "col_row" -> character
-    let originX = 0, originY = 0;           // pixel position of cell (0, 0)
-    let halfCols = 0, halfRows = 0;         // half-size of the uneditable block, in cells
-    let pageW = 0, pageH = 0;
-    let bounds = { minCol: 0, maxCol: 0, minRow: 0, maxRow: 0 };
-    let cursor = null, lineStart = 0, focused = false, hover = null;
-    let blinkOn = true, blinkTimer = null, dirty = false, dpr = 1;
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const keyOf = (c, r) => c + '_' + r;
-    const wallLineAt = r => WALL[r - halfRows - WALL_GAP];
-    // Rounded so a line with an odd length still sits on the grid's cells.
-    const wallStart = line => -Math.floor(line.length / 2);
-    const onWall = (c, r) => { const line = wallLineAt(r); return !!line && c >= wallStart(line) && c < wallStart(line) + line.length; };
-    const blocked = (c, r) => (c >= -halfCols && c < halfCols && r >= -halfRows && r < halfRows) || onWall(c, r);
-    const inBounds = (c, r) => c >= bounds.minCol && c <= bounds.maxCol && r >= bounds.minRow && r <= bounds.maxRow;
-
-    // Dots and grid text are tints of the background. Grid text stays dimmer than the bio.
-    function readTheme() {
-      const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-      const tint = amount => '#' + [1, 3, 5].map((start, i) => {
-        const from = parseInt(bg.slice(start, start + 2), 16);
-        const to = [0xdf, 0xe3, 0xff][i];
-        return Math.round(from + (to - from) * amount).toString(16).padStart(2, '0');
-      }).join('');
-      COLORS.bg = bg;
-      COLORS.dot = tint(.22);
-      COLORS.char = tint(.55);
-      COLORS.wall = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
-      invalidate();
-    }
-
-    // ---- Layout ----------------------------------------------------------
-    // Cell (0, 0) is always the middle of the bio block, so a character stays in the
-    // same place relative to the bio on every screen. Bigger windows just see more.
-    function layout() {
-      pageW = document.documentElement.clientWidth;
-      const narrow = pageW < 720;
-      const cols = Math.min(CONTENT_COLS, Math.floor((pageW - CELL_W * 2) / CELL_W / 2) * 2);
-      halfCols = cols / 2;
-      originX = Math.floor(pageW / 2);
-
-      content.style.width = cols * CELL_W + 'px';
-      content.style.left = originX - halfCols * CELL_W + 'px';
-      content.style.padding = CELL_H + 'px ' + CELL_W * (narrow ? 1 : 2) + 'px';
-      content.style.height = 'auto';
-
-      const rows = Math.ceil(Math.ceil(content.scrollHeight) / CELL_H / 2) * 2;
-      halfRows = rows / 2;
-      content.style.height = rows * CELL_H + 'px';
-
-      // Center the bio and the message together, and keep some grid free above and below.
-      const minMargin = narrow ? 6 : 3;
-      const allRows = rows + WALL_GAP + WALL.length;
-      pageH = Math.max(window.innerHeight, (allRows + minMargin * 2) * CELL_H);
-      const top = Math.floor((pageH - allRows * CELL_H) / 2 / CELL_H) * CELL_H;
-      content.style.top = top + 'px';
-      originY = top + halfRows * CELL_H;
-      document.body.style.height = pageH + 'px';
-
-      bounds = {
-        minCol: Math.max(-COORD_LIMIT, Math.ceil(-originX / CELL_W)),
-        maxCol: Math.min(COORD_LIMIT, Math.floor((pageW - originX) / CELL_W) - 1),
-        minRow: Math.max(-COORD_LIMIT, Math.ceil(-originY / CELL_H)),
-        maxRow: Math.min(COORD_LIMIT, Math.floor((pageH - originY) / CELL_H) - 1),
-      };
-
-      dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(pageW * dpr);
-      canvas.height = Math.round(pageH * dpr);
-      canvas.style.width = pageW + 'px';
-      canvas.style.height = pageH + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      if (cursor && (!inBounds(cursor.c, cursor.r) || blocked(cursor.c, cursor.r))) {
-        cursor = null;
-        if (focused) keys.blur();
-      }
-      placeKeys();
-      invalidate();
-      content.classList.add('ready');
-    }
-
-    // ---- Drawing ---------------------------------------------------------
-    function invalidate() {
-      if (dirty) return;
-      dirty = true;
-      requestAnimationFrame(draw);
-    }
-
-    // Snaps a rectangle to device pixels, so blocks don't show seams at fractional zoom levels.
-    function fillSnapped(x, y, w, h) {
-      const snap = v => Math.round(v * dpr) / dpr;
-      ctx.fillRect(snap(x), snap(y), snap(x + w) - snap(x), snap(y + h) - snap(y));
-    }
-
-    function draw() {
-      dirty = false;
-      ctx.fillStyle = COLORS.bg;
-      ctx.fillRect(0, 0, pageW, pageH);
-
-      // A faint dot in every empty cell, so the whole page reads as a grid.
-      const firstCol = Math.ceil(-originX / CELL_W) - 1, lastCol = Math.ceil((pageW - originX) / CELL_W);
-      const firstRow = Math.ceil(-originY / CELL_H) - 1, lastRow = Math.ceil((pageH - originY) / CELL_H);
-      ctx.fillStyle = COLORS.dot;
-      for (let r = firstRow; r <= lastRow; r++) {
-        for (let c = firstCol; c <= lastCol; c++) {
-          if (blocked(c, r) || cells.has(keyOf(c, r))) continue;
-          ctx.fillRect(originX + c * CELL_W + 4, originY + r * CELL_H + 10, 1, 1);
-        }
-      }
-
-      ctx.font = '15px "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'alphabetic';
-      for (const [key, ch] of cells) {
-        const [c, r] = key.split('_').map(Number);
-        if (blocked(c, r)) continue;
-        const x = originX + c * CELL_W, y = originY + r * CELL_H;
-        if (BLOCK_COLORS[ch]) {
-          ctx.fillStyle = BLOCK_COLORS[ch];
-          fillSnapped(x, y, CELL_W, CELL_H);
-        } else {
-          ctx.fillStyle = COLORS.char;
-          ctx.fillText(ch, x + CELL_W / 2, y + 15);
-        }
-      }
-
-      ctx.fillStyle = COLORS.wall;
-      WALL.forEach((line, i) => {
-        const y = originY + (halfRows + WALL_GAP + i) * CELL_H + 15;
-        [...line].forEach((ch, j) => {
-          ctx.fillText(ch, originX + (wallStart(line) + j) * CELL_W + CELL_W / 2, y);
-        });
-      });
-
-      if (hover && !(focused && cursor && hover.c === cursor.c && hover.r === cursor.r)) {
-        ctx.strokeStyle = accent;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(originX + hover.c * CELL_W + .5, originY + hover.r * CELL_H + .5, CELL_W - 1, CELL_H - 1);
-      }
-
-      if (focused && cursor && blinkOn) {
-        const x = originX + cursor.c * CELL_W, y = originY + cursor.r * CELL_H;
-        ctx.fillStyle = accent;
-        ctx.fillRect(x, y, CELL_W, CELL_H);
-        const ch = cells.get(keyOf(cursor.c, cursor.r));
-        if (BLOCK_COLORS[ch]) {
-          // Keep the block's color visible inside the cursor.
-          ctx.fillStyle = BLOCK_COLORS[ch];
-          ctx.fillRect(x + 2, y + 2, CELL_W - 4, CELL_H - 4);
-        } else if (ch) {
-          ctx.fillStyle = COLORS.bg;
-          ctx.fillText(ch, x + CELL_W / 2, y + 15);
-        }
-      }
-    }
-
-    function wakeCursor() {
-      blinkOn = true;
-      clearInterval(blinkTimer);
-      if (focused && !reduceMotion) {
-        blinkTimer = setInterval(() => { blinkOn = !blinkOn; invalidate(); }, 530);
-      }
-      invalidate();
-    }
-
-    // ---- Cursor movement -------------------------------------------------
-    function placeKeys() {
-      if (!cursor) return;
-      keys.style.left = originX + cursor.c * CELL_W + 'px';
-      keys.style.top = originY + cursor.r * CELL_H + 'px';
-    }
-
-    function setCursor(c, r, keepLine) {
-      cursor = { c, r };
-      if (!keepLine) lineStart = c;
-      placeKeys();
-      wakeCursor();
-    }
-
-    // One step in a direction, hopping over the bio block. Null if that leaves the page.
-    function step(c, r, dc, dr) {
-      do { c += dc; r += dr; } while (blocked(c, r));
-      return inBounds(c, r) ? { c, r } : null;
-    }
-
-    function nextLine() {
-      const next = step(lineStart, cursor.r, 0, 1);
-      if (!next) return false;
-      setCursor(next.c, next.r, true);
-      return true;
-    }
-
-    function advance() {
-      const next = step(cursor.c, cursor.r, 1, 0);
-      if (next) { setCursor(next.c, next.r, true); return true; }
-      return nextLine();
-    }
-
-    // ---- Writing ---------------------------------------------------------
-    let commit = null; // set once the database is connected
-    let pending = {};
-    let flushQueued = false;
-
-    function setCell(c, r, ch) {
-      const key = keyOf(c, r);
-      if (ch) cells.set(key, ch); else cells.delete(key);
-      pending[key] = ch || null;
-      if (!flushQueued) {
-        flushQueued = true;
-        queueMicrotask(flush);
-      }
-      invalidate();
-    }
-
-    function flush() {
-      flushQueued = false;
-      if (!commit) return; // connect() sends anything typed before the database was ready
-      const batch = pending;
-      pending = {};
-      commit(batch);
-    }
-
-    // ---- Rate limit ------------------------------------------------------
-    // Each browser gets 200 characters of difference per hour, measured per cell against what
-    // was there before it first touched that cell. Writing costs 1 whether the cell was blank or
-    // not, putting a cell back how it was costs nothing, and erasing someone else's writing costs
-    // more, to keep the wall additive. A static site can't see IP addresses, and the database
-    // rules can't either, so this stops typing and pasting but not someone scripting the database.
-    const HOURLY_LIMIT = 200;
-    const ERASE_COST = 5;
-    const HOUR_MS = 60 * 60 * 1000;
-    const EDITS_KEY = 'grid-edits';
-    const slowDialog = document.getElementById('slow');
-    let edits = []; // { k: cell, o: what was there first, c: what this browser left there, t: time }
-
-    slowDialog.addEventListener('click', e => { if (e.target === slowDialog) slowDialog.close(); });
-
-    // Holding Ctrl and typing "admin" turns the limit off in this browser, and again turns it back
-    // on. It's in the page source, so it's a convenience rather than security, but the limit only
-    // runs in the browser anyway. Admin edits still go in the log.
-    const ADMIN_KEYS = ['KeyA', 'KeyD', 'KeyM', 'KeyI', 'KeyN'];
-    const ADMIN_STORE = 'grid-admin';
-    const adminStatus = document.getElementById('admin-status');
-    let adminMode = false;
-    let adminProgress = 0;
-    try { adminMode = localStorage.getItem(ADMIN_STORE) === '1'; } catch {}
-
-    function toggleAdmin() {
-      adminMode = !adminMode;
-      try { localStorage.setItem(ADMIN_STORE, adminMode ? '1' : '0'); } catch {}
-      if (slowDialog.open) slowDialog.close();
-      adminStatus.textContent = adminMode ? 'Admin mode on' : 'Admin mode off';
-      adminStatus.classList.remove('show');
-      void adminStatus.offsetWidth; // restarts the animation on repeat toggles
-      adminStatus.classList.add('show');
-    }
-
-    // Listens on the window so it also works with the popup open or no cell selected.
-    window.addEventListener('keydown', e => {
-      if (e.key === 'Control' || e.repeat) return;
-      if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) { adminProgress = 0; return; }
-      if (e.code !== ADMIN_KEYS[adminProgress]) adminProgress = 0;
-      if (e.code !== ADMIN_KEYS[adminProgress]) return;
-      e.preventDefault(); // Ctrl+A, Ctrl+D and the rest have browser meanings of their own
-      adminProgress++;
-      if (adminProgress === ADMIN_KEYS.length) { adminProgress = 0; toggleAdmin(); }
-    }, true);
-    window.addEventListener('keyup', e => { if (e.key === 'Control') adminProgress = 0; });
-    window.addEventListener('blur', () => { adminProgress = 0; });
-
-    const editCost = (from, to) => from === to ? 0 : to === '' ? ERASE_COST : 1;
-
-    function loadEdits() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(EDITS_KEY));
-        if (Array.isArray(saved)) edits = saved;
-      } catch {}
-      const cutoff = Date.now() - HOUR_MS;
-      edits = edits.filter(edit => edit.t > cutoff);
-    }
-
-    function writeCell(c, r, ch) {
-      const cell = keyOf(c, r);
-      const current = cells.get(cell) || '';
-      const next = ch || '';
-      if (current === next) return true;
-      if (adminMode) { setCell(c, r, ch); return true; }
-
-      loadEdits();
-      // Continues this browser's earlier edit of the cell, unless someone has changed it since.
-      const earlier = edits.find(edit => edit.k === cell && edit.c === current);
-      const others = edits.filter(edit => edit !== earlier);
-      const original = earlier ? earlier.o : current;
-      const total = others.reduce((sum, edit) => sum + editCost(edit.o, edit.c), editCost(original, next));
-      if (total > HOURLY_LIMIT) {
-        if (!slowDialog.open) slowDialog.showModal();
-        return false;
-      }
-
-      edits = original === next
-        ? others
-        : [...others, { k: cell, o: original, c: next, t: earlier ? earlier.t : Date.now() }];
-      try { localStorage.setItem(EDITS_KEY, JSON.stringify(edits)); } catch {}
-      setCell(c, r, ch);
-      return true;
-    }
-
-    function typeText(text) {
-      if (!cursor) return;
-      let budget = PASTE_LIMIT;
-      for (const ch of text.replace(/\r\n?/g, '\n')) {
-        if (budget-- <= 0) break;
-        if (ch === SENTINEL) continue;
-        if (ch === '\n') { if (!nextLine()) break; continue; }
-        if (ch === '\t') { for (let i = 0; i < 2; i++) if (!advance()) return; continue; }
-        // The database holds one UTF-16 unit per cell, which leaves out most emoji.
-        if (ch.length !== 1 || ch < ' ' || (ch >= '\u007f' && ch <= '\u009f')) continue;
-        if (!writeCell(cursor.c, cursor.r, ch === ' ' ? null : ch)) break;
-        if (!advance()) break;
-      }
-    }
-
-    function backspace() {
-      if (!cursor) return;
-      const prev = step(cursor.c, cursor.r, -1, 0);
-      const target = prev || cursor;
-      if (!writeCell(target.c, target.r, null)) return;
-      if (prev) setCursor(prev.c, prev.r, true);
-    }
-
-    // ---- Input -----------------------------------------------------------
-    function resetKeys() {
-      keys.value = SENTINEL;
-      keys.setSelectionRange(1, 1);
-    }
-
-    let composing = false;
-    keys.addEventListener('compositionstart', () => { composing = true; });
-    keys.addEventListener('compositionend', () => { composing = false; readKeys(); });
-    keys.addEventListener('input', () => { if (!composing) readKeys(); });
-
-    function readKeys() {
-      const value = keys.value;
-      if (!value.includes(SENTINEL)) backspace();  // the sentinel was deleted
-      else typeText(value);
-      resetKeys();
-    }
-
-    const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
-
-    keys.addEventListener('keydown', e => {
-      if (!cursor || e.isComposing) return;
-      const block = e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey ? blockForKey(e.code) : null;
-      if (block) {
-        e.preventDefault(); // otherwise Ctrl+number switches tabs and Ctrl+minus zooms on some systems
-        if (writeCell(cursor.c, cursor.r, block)) advance();
-      } else if (ARROWS[e.key]) {
-        e.preventDefault();
-        const next = step(cursor.c, cursor.r, ...ARROWS[e.key]);
-        if (next) setCursor(next.c, next.r);
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        nextLine();
-      } else if (e.key === 'Delete') {
-        e.preventDefault();
-        writeCell(cursor.c, cursor.r, null);
-      } else if (e.key === 'Escape') {
-        keys.blur();
-      }
-    });
-
-    keys.addEventListener('focus', () => {
-      focused = true;
-      // Arrived by Tab rather than a click: start just above the bio.
-      if (!cursor) {
-        const r = Math.max(bounds.minRow, -halfRows - 2);
-        const c = Math.max(bounds.minCol, -halfCols);
-        setCursor(c, r);
-      }
-      resetKeys();
-      wakeCursor();
-    });
-
-    keys.addEventListener('blur', () => {
-      focused = false;
-      clearInterval(blinkTimer);
-      invalidate();
-    });
-
-    function cellAt(e) {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        c: Math.floor((e.clientX - rect.left - originX) / CELL_W),
-        r: Math.floor((e.clientY - rect.top - originY) / CELL_H),
-      };
-    }
-
-    canvas.addEventListener('click', e => {
-      const { c, r } = cellAt(e);
-      if (!inBounds(c, r) || blocked(c, r)) return;
-      setCursor(c, r);
-      keys.focus(); // inside the tap handler, so phones open the keyboard
-    });
-
-    if (matchMedia('(hover: hover)').matches) {
-      canvas.addEventListener('pointermove', e => {
-        const { c, r } = cellAt(e);
-        const next = inBounds(c, r) && !blocked(c, r) ? { c, r } : null;
-        if (next?.c !== hover?.c || next?.r !== hover?.r) { hover = next; invalidate(); }
-      });
-      canvas.addEventListener('pointerleave', () => { hover = null; invalidate(); });
-    }
-
-    readTheme();
-    window.addEventListener('resize', layout);
-    new ResizeObserver(() => {
-      // Only react to the bio reflowing, not to the height this script assigns.
-      const needed = Math.ceil(content.scrollHeight / CELL_H / 2) * 2;
-      if (needed !== halfRows * 2) layout();
-    }).observe(content);
-    document.fonts?.ready.then(layout);
-    layout();
-
-    // ---- Shared state ----------------------------------------------------
-    function say(message) {
-      const text = message || '';
-      if (hint.textContent === text) return;
-      hint.textContent = text;
-      layout(); // the bio block changes height
-    }
-
-    async function connect() {
-      const [{ initializeApp }, db] = await Promise.all([
-        import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'),
-        import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js'),
-      ]);
-      const app = initializeApp({
-        apiKey: "AIzaSyComj64xnJ9TnBJUZBkMwxUIivy5jRP_94",
-        authDomain: "site-backend-28978.firebaseapp.com",
-        databaseURL: "https://site-backend-28978-default-rtdb.firebaseio.com",
-        projectId: "site-backend-28978",
-        storageBucket: "site-backend-28978.firebasestorage.app",
-        messagingSenderId: "681435000274",
-        appId: "1:681435000274:web:edc88b11875db67b686c0b",
-      });
-      const database = db.getDatabase(app);
-      const rootRef = db.ref(database);
-      const gridRef = db.ref(database, 'grid');
-      const logRef = db.ref(database, 'log');
-
-      const onRead = () => say('The shared grid didn\'t load. Reload the page to try again.');
-      const apply = snap => { cells.set(snap.key, snap.val()); invalidate(); };
-      db.onChildAdded(gridRef, apply, onRead);
-      db.onChildChanged(gridRef, apply);
-      db.onChildRemoved(gridRef, snap => { cells.delete(snap.key); invalidate(); });
-
-      // A multi-path update, so a paste lands all at once and each edit is saved along with its
-      // entry in the log. The log is append-only and never read here: it's the wall's full history.
-      commit = batch => db.update(rootRef, Object.entries(batch).reduce((edits, [cell, ch]) => {
-        edits['grid/' + cell] = ch;
-        edits['log/' + db.push(logRef).key] = { c: cell, v: ch || '', t: db.serverTimestamp() };
-        return edits;
-      }, {})).catch(() => {
-        say('Your last edit didn\'t save. Reload the page and try again.');
-      });
-      if (Object.keys(pending).length) flush();
-
-      let offlineTimer = null;
-      db.onValue(db.ref(database, '.info/connected'), snap => {
-        clearTimeout(offlineTimer);
-        if (snap.val()) say();
-        else offlineTimer = setTimeout(() => {
-          say('You\'re offline. Your edits will sync when the connection returns.');
-        }, 5000);
-      });
-    }
-
-    connect().catch(() => say('The shared grid didn\'t load. Reload the page to try again.'));
   </script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+{% comment %}
+  Moving between the homepage and any other page animates its dark background into that page's
+  nav bar, or the nav bar back into the homepage. Browsers without cross-document view
+  transitions (and anyone who prefers reduced motion) just change pages. Other navigations
+  change pages without animating. The animations themselves are in index.html (arriving home)
+  and css/site.css (arriving anywhere else).
+{% endcomment %}
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition { navigation: auto; }
+  }
+</style>
+<script>
+  (function () {
+    var here = '{% if include.home %}home{% else %}page{% endif %}';
+    window.addEventListener('pageswap', function (e) {
+      if (!e.viewTransition) return;
+      try { sessionStorage.setItem('transition-from', here); } catch (err) {}
+    });
+    window.addEventListener('pagereveal', function (e) {
+      if (!e.viewTransition) return;
+      var from = null;
+      try {
+        from = sessionStorage.getItem('transition-from');
+        sessionStorage.removeItem('transition-from');
+      } catch (err) {}
+      if (!from || from === here) {
+        e.viewTransition.ready.catch(function () {}); // skipping rejects this, which would log an error
+        e.viewTransition.skipTransition();
+        return;
+      }
+      var root = document.documentElement;
+      root.dataset.transition = here === 'home' ? 'to-home' : 'from-home';
+      window.pageTransition = e.viewTransition.finished;
+      e.viewTransition.finished.finally(function () { delete root.dataset.transition; });
+    });
+  })();
+</script>
