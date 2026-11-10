@@ -148,26 +148,6 @@ th, td { border-color: var(--rule) !important; }
 .site-nav .nav-link:focus-visible,
 .site-nav .navbar-brand:focus-visible { outline-color: var(--accent); }
 
-/* The homepage's dark background turns into this bar when you leave it (see page-transition.html). */
-.site-nav { view-transition-name: night; }
-
-/* Arriving from the homepage: its words fade, then the dark rolls up like a released blind,
-   overshoots a little and settles as the nav bar, uncovering the page. */
-html[data-transition="from-home"]::view-transition-old(root) { animation: none; opacity: 0; }
-html[data-transition="from-home"]::view-transition-new(root) { animation: none; }
-html[data-transition="from-home"]::view-transition-old(home-content) { animation: home-out 150ms ease-in both; }
-html[data-transition="from-home"]::view-transition-group(night) {
-  overflow: clip;
-  animation-delay: 110ms;
-  animation-duration: 460ms;
-  animation-timing-function: linear(0, .03 12%, .12 25%, .3 40%, .62 58%, 1 74%, 1.012 82%, 1 91%, 1.003 96%, 1);
-  animation-fill-mode: both;
-}
-html[data-transition="from-home"]::view-transition-old(night) { height: 100%; animation: none; mix-blend-mode: normal; }
-html[data-transition="from-home"]::view-transition-new(night) { animation: nav-in 150ms 420ms ease-out both; mix-blend-mode: normal; }
-@keyframes home-out { to { opacity: 0; transform: scale(.98); } }
-@keyframes nav-in { from { opacity: 0; } }
-
 /* Icons are for phones, where the words don't fit. */
 @media (min-width: 768px) {
   .site-nav .nav-link i { display: none; }
