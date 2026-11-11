@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%276%27%20fill%3D%27%23a3412a%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2725%27%20font-family%3D%27Georgia%2C%20Times%20New%20Roman%2C%20serif%27%20font-size%3D%2725%27%20text-anchor%3D%27middle%27%20fill%3D%27%23fff%27%3E%26%23920%3B%3C%2Ftext%3E%3C%2Fsvg%3E">
+<title>NNGP, NTK and KRR (MAISI lecture)</title>
+<style>
+body { font-family: Georgia, serif; max-width: 1200px; margin: 40px auto; padding: 0 24px;
+  background: #f9f9f9; color: #222; }
+h1 { font-size: 2em; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 8px; }
+h2 { font-size: 1.3em; margin-top: 44px; color: #333; }
+h3 { font-size: 1.05em; margin-top: 28px; color: #333; }
+p, li { color: #555; font-size: 0.95em; max-width: 860px; line-height: 1.6; }
+a { color: #2266cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.back { font-size: 0.9em; margin-bottom: 24px; display: inline-block; }
+.meta { font-size: 0.85em; color: #888; margin: 4px 0 20px; }
+.caption { font-size: 0.85em; color: #777; max-width: 860px; margin: 4px 0 30px; line-height: 1.5; }
+.expt-list { list-style: none; padding: 0; margin-top: 20px; }
+.expt-list li { margin: 0; border-bottom: 1px solid #eee; max-width: none; }
+.expt-list li a { display: block; padding: 12px 4px 2px; font-size: 1.05em; }
+.expt-list li .desc { font-size: 0.88em; color: #777; margin: 2px 4px 12px 4px; }
+table { border-collapse: collapse; font-size: 0.88em; margin: 12px 0 8px; }
+th, td { border: 1px solid #ddd; padding: 5px 11px; text-align: left; font-variant-numeric: tabular-nums; }
+th { background: #eee; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { background: #e4e4e4; }
+code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+.callout { background: #fff; border: 1px solid #ddd; border-left: 3px solid #2a78d6; border-radius: 4px;
+  padding: 10px 16px; margin: 16px 0; max-width: 860px; }
+.callout p { margin: 6px 0; }
+.row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+.row > div { flex: 1 1 380px; min-width: 0; }
+.grid { display: grid; gap: 20px; align-items: start; }
+.grid > div { min-width: 0; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr !important; } }
+.ri-fig { margin: 12px 0 4px; }
+.ri-title { font-size: 0.95em; color: #333; margin: 0 0 2px; }
+.ri-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8em; color: #444; margin: 4px 0 2px; }
+.ri-legend button { font: inherit; background: none; border: none; padding: 2px 0; cursor: pointer; color: #444;
+  display: inline-flex; align-items: center; gap: 6px; }
+.ri-legend button[aria-pressed=false] { opacity: 0.35; }
+.ri-guide { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 0.8em; color: #444; margin: 4px 0 2px; }
+.ri-guide label { display: inline-flex; align-items: center; gap: 8px; }
+.ri-guide .ri-group { display: inline-flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; border: 1px solid rgba(11,11,11,0.14); border-radius: 6px; padding: 3px 10px; }
+.ri-guide .ri-group-name { font-variant: small-caps; letter-spacing: 0.04em; color: #777; margin-right: 2px; }
+.ri-guide input[type=range] { width: 180px; }
+.ri-val { display: inline-block; min-width: 4.2em; font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }  /* slider readouts: fixed width so the slider never jumps */
+.ri-guide-eq { color: #898781; }
+.ri-global { position: sticky; top: 8px; z-index: 5; float: right; margin: 0 0 8px 16px; padding: 6px 10px;
+  background: #fff; border: 1px solid rgba(11,11,11,0.18); border-radius: 6px; font-size: 0.85em; color: #444;
+  display: flex; gap: 6px; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.ri-global button { font: inherit; padding: 2px 9px; border: 1px solid rgba(11,11,11,0.18); border-radius: 4px;
+  background: #fff; cursor: pointer; }
+.ri-global button[aria-pressed=true] { background: #2a78d6; color: #fff; border-color: #2a78d6; }
+.ri-legend button.ri-axis { border: 1px solid rgba(11,11,11,0.18); border-radius: 4px; padding: 1px 7px; }
+.ri-legend .ri-axes { display: inline-flex; gap: 6px; white-space: nowrap; margin-left: auto; }  /* the axis / theory buttons stay together on one line, at the end of whichever row they land on */
+.ri-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
+.ri-plot svg { display: block; width: 100%; }
+.ri-xlabel { position: absolute; left: 58px; right: 18px; bottom: 3px; text-align: center; font-size: 0.85em; color: #333;
+  pointer-events: none; line-height: 1.1; }
+.ri-ylabel { position: absolute; left: 11px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap;
+  font-size: 0.85em; color: #333; pointer-events: none; line-height: 1.1; }
+.ri-plot .ri-tip svg { display: inline; width: 18px; flex: none; }  /* series keys inside the tooltip */
+.ri-tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid rgba(11,11,11,0.12);
+  border-radius: 4px; padding: 6px 9px; font-size: 0.78em; color: #52514e; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  white-space: nowrap; width: max-content; display: none; z-index: 2; }
+.ri-tip .hd { color: #898781; margin-bottom: 3px; }
+.ri-tip .r { display: flex; align-items: center; gap: 7px; line-height: 1.55; }
+.ri-tip .r b { color: #0b0b0b; font-weight: 600; min-width: 46px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.ri-data { font-size: 0.8em; color: #777; margin: 4px 0 0; }
+.ri-data summary { cursor: pointer; }
+.ri-data table { font-size: 0.95em; }
+.ri-scroll { overflow-x: auto; max-width: 100%; }
+.tabbar { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid #ccc; margin: 22px 0 6px;
+  position: sticky; top: 0; background: #f9f9f9; z-index: 5; padding-top: 8px; }
+.tabbar a { padding: 7px 13px; border: 1px solid transparent; border-bottom: none; border-radius: 4px 4px 0 0;
+  color: #555; font-size: 0.92em; margin-bottom: -1px; }
+.tabbar a:hover { text-decoration: none; background: #f0f0f0; }
+.tabbar a.on { border-color: #ccc; background: #fff; color: #222; }
+.tab > .meta:first-child { margin-top: 14px; }
+details.summary { margin: 26px 0; max-width: 860px; border: 1px solid #ddd; border-radius: 4px; background: #fff;
+  padding: 10px 16px; }
+details.summary summary { cursor: pointer; color: #333; font-size: 1.02em; }
+/* section disclosures inside a tab (not the per-chart data tables, which sit inside .ri-fig): large, spaced headers */
+section.tab > details > summary { cursor: pointer; font-size: 1.35em; font-weight: 600; color: #222; margin: 1.8em 0 0.4em;
+  padding: 0.35em 0; border-bottom: 1px solid #e3e3e3; list-style-position: outside; }
+section.tab > details[open] > summary { margin-bottom: 0.9em; }
+section.tab > details > summary:hover { color: #000; }
+section.tab > details.summary > summary { font-size: 1.1em; border-bottom: none; margin: 0; padding: 0; }
+details.summary ul { margin: 10px 0 4px; }
+.ri-scroll td:first-child { white-space: nowrap; }
+
+.expt-list li { display: grid; grid-template-columns: 1fr auto; column-gap: 24px; align-items: baseline; }
+.expt-list li > a, .expt-list li > .desc { grid-column: 1; }
+.expt-list li .papers { grid-column: 2; grid-row: 1; display: flex; gap: 18px; font-size: 0.85em; padding: 12px 4px 2px; }
+.expt-list li .papers a { display: inline; padding: 0; font-size: 1em; color: #6b7f99; }
+.expt-list li .papers a:hover { color: #2266cc; }
+@media (max-width: 640px) { .expt-list li { grid-template-columns: 1fr; } .expt-list li .papers { grid-column: 1; grid-row: auto; padding: 0 4px 10px; flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+<h1>NNGP, NTK and KRR (MAISI lecture)</h1>
+<ul class="expt-list">
+<li><a href="expts/01_nngp/index.html">01 - The NNGP</a><div class="desc"></div><div class="papers"><a href="https://arxiv.org/abs/1606.05340" target="_blank" rel="noopener" title="Exponential expressivity in deep neural networks through transient chaos">Poole et al. (2016)</a><a href="https://arxiv.org/abs/1711.00165" target="_blank" rel="noopener" title="Deep Neural Networks as Gaussian Processes">Lee et al. (2018)</a></div></li>
+<li><a href="expts/02_ntk/index.html">02 - The NTK</a><div class="desc"></div><div class="papers"><a href="https://arxiv.org/abs/1806.07572" target="_blank" rel="noopener" title="Neural Tangent Kernel: Convergence and Generalization in Neural Networks">Jacot et al. (2018)</a><a href="https://arxiv.org/abs/1902.06720" target="_blank" rel="noopener" title="Wide Neural Networks of Any Depth Evolve as Linear Models Under Gradient Descent">Lee et al. (2019)</a></div></li>
+<li><a href="expts/03_krr/index.html">03 - Kernel ridge regression</a><div class="desc"></div><div class="papers"><a href="https://arxiv.org/abs/2110.03922" target="_blank" rel="noopener" title="The eigenlearning framework: a conservation law perspective on kernel regression and wide neural networks">Simon et al. (2023)</a><a href="https://arxiv.org/abs/2510.14878" target="_blank" rel="noopener" title="Predicting kernel regression learning curves from only raw data statistics">Karkada et al. (2026)</a></div></li>
+</ul>
+
+</body>
+</html>

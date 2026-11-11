@@ -80,3 +80,8 @@
   title: Fringe Map
   desc: ""
   hidden: true
+
+- slug: maisi-lecture
+  title: MAISI lecture materials
+  desc: ""
+  hidden: false
