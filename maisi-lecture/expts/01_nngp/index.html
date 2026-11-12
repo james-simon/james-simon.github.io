@@ -534,8 +534,8 @@ const RI = (() => {
 #nn-histbox { position: absolute; left: calc(100% + 14px); top: 0; }
 .nn-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
 .nn-plot canvas { display: block; }
-.nn-xlabel { position: absolute; left: 54px; right: 14px; bottom: 2px; text-align: center; font-size: 0.85em; color: #333; pointer-events: none; }
-.nn-ylabel { position: absolute; left: 10px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 0.85em; color: #333; pointer-events: none; }
+.nn-xlabel { position: absolute; left: 70px; right: 22px; bottom: 2px; text-align: center; font-size: 1.15em; color: #333; pointer-events: none; }
+.nn-ylabel { position: absolute; left: 14px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 1.15em; color: #333; pointer-events: none; }
 .nn-status { font-size: 0.82em; color: #888; margin: 6px 0 0; font-variant-numeric: tabular-nums; min-height: 1.3em; }
 .nn-var { font-size: 1.05em; color: #333; margin: 10px 0 0; min-height: 1.6em; }
 .nn-var .ri-val { min-width: 0; }
@@ -556,7 +556,7 @@ const RI = (() => {
 <div class="nn-figs">
   <div class="nn-plot" id="nn-plotbox"><canvas id="nn-plot"></canvas>
     <div class="nn-xlabel">input coordinate</div><div class="nn-ylabel">\(f(\mathbf{x})\)</div></div>
-  <div class="nn-plot" id="nn-histbox" hidden><canvas id="nn-hist"></canvas><div class="nn-xlabel">count of \(f(\mathbf{x}_*)\)</div></div>
+  <div class="nn-plot" id="nn-histbox" hidden><canvas id="nn-hist"></canvas><div class="nn-xlabel" style="left:10px;right:12px">count of \(f(\mathbf{x}_*)\)</div></div>
   <div class="nn-status" id="nn-status"></div>
 </div>
 <div class="nn-var" id="nn-var" hidden></div>
@@ -626,7 +626,7 @@ const RI = (() => {
   }
 
   // ---- plot and histogram ----
-  const PW = 640, PH = 440, HW = 220, M = {l: 52, r: 14, t: 14, b: 40};
+  const PW = 640, PH = 440, HW = 220, M = {l: 70, r: 22, t: 14, b: 60};
   function ctx(cv, w, h) { const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); return g; }
   const gP = ctx($('nn-plot'), PW, PH), gH = ctx($('nn-hist'), HW, PH);
   let samples = [], xstar = null, ylim = 1;
@@ -646,13 +646,13 @@ const RI = (() => {
     ylim = Math.max(1e-3, Math.min(mx, 4 * rms) * 1.08) || 1;
   }
   function fAt(f, t) { const u = (t + 3) / 6 * (P - 1), i = Math.min(P - 2, Math.floor(u)), w = u - i; return f[i] * (1 - w) + f[i + 1] * w; }
-  function xstarLabel(g, x, y) { g.fillStyle = '#444'; g.font = 'italic 15px Georgia, serif'; g.textAlign = 'left'; g.fillText('x', x, y); g.font = '11px Georgia, serif'; g.fillText('∗', x + 8, y + 4); }
+  function xstarLabel(g, x, y) { g.fillStyle = '#444'; g.font = 'italic 19px Georgia, serif'; g.textAlign = 'left'; g.fillText('x', x, y); g.font = '14px Georgia, serif'; g.fillText('∗', x + 10, y + 5); }
   function drawPlot() {
     const S = shown(); setYlim(S);
     const g = gP; g.clearRect(0, 0, PW, PH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
-    for (let t = -3; t <= 3; t++) { const X = px(t); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(t, X, PH - M.b + 15); }
-    for (const v of ticks(-ylim, ylim)) { const Y = py(v); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 4); }
+    g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
+    for (let t = -3; t <= 3; t++) { const X = px(t); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(t, X, PH - M.b + 23); }
+    for (const v of ticks(-ylim, ylim)) { const Y = py(v); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 5); }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(M.l, PH - M.b); g.lineTo(PW - M.r, PH - M.b); g.stroke();
     g.save(); g.beginPath(); g.rect(M.l, M.t - 2, PW - M.l - M.r, PH - M.t - M.b + 4); g.clip();
     const alpha = Math.min(0.9, Math.max(0.08, 4 / Math.sqrt(S.length || 1)));
@@ -682,8 +682,9 @@ const RI = (() => {
     const dens = y => N * bw * Math.exp(-y * y / (2 * K)) / Math.sqrt(2 * Math.PI * K);
     let cmax = Math.max(1, ...counts); if (c.gauss) cmax = Math.max(cmax, dens(0));
     const L = 10, R = 12, cx = v => L + v / cmax * (HW - L - R);
-    g.strokeStyle = '#e1e0d9'; g.lineWidth = 1; g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.textAlign = 'center';
-    for (const v of ticks(0, cmax)) { if (v === 0) continue; const X = cx(v); if (X > HW - R + 1) continue; g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); g.fillText(fmt(v), X, PH - M.b + 15); }
+    g.strokeStyle = '#e1e0d9'; g.lineWidth = 1; g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.textAlign = 'center';
+    const hv = ticks(0, cmax).filter(v => v !== 0 && cx(v) <= HW - R + 1), hstep = hv.length > 1 && cx(hv[1]) - cx(hv[0]) < 34 ? 2 : 1;   // label every other tick when the numbers would touch
+    hv.forEach((v, i) => { const X = cx(v); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); if ((i + 1) % hstep === 0) g.fillText(fmt(v), X, PH - M.b + 23); });
     g.fillStyle = 'rgba(42, 120, 214, 0.55)';
     counts.forEach((n, k) => { if (!n) return; const y1 = py(-ylim + (k + 1) * bw), y0 = py(-ylim + k * bw); g.fillRect(L, y1, cx(n) - L, Math.max(1, y0 - y1 - 0.5)); });
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(L, M.t); g.lineTo(L, PH - M.b); g.stroke();
@@ -849,7 +850,7 @@ const RI = (() => {
 </div>
 <div class="nn2-figs">
   <div class="nn-plot" id="nn2-plotbox"><canvas id="nn2-plot"></canvas>
-    <div class="nn-xlabel" style="left:52px;right:106px">\(f(\mathbf{x}_1)\)</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\)</div></div>
+    <div class="nn-xlabel" style="left:70px;right:110px">\(f(\mathbf{x}_1)\)</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\)</div></div>
   <div class="nn-status" id="nn2-status"></div>
 </div>
 <script>
@@ -879,7 +880,7 @@ const RI = (() => {
   const chol = ([a, b, c]) => { const l11 = Math.sqrt(a), l21 = b / l11; return [l11, l21, Math.sqrt(Math.max(c - l21 * l21, 0))]; };
 
   // ---- the scatter with marginals ----
-  const SQ = 400, MH = 86, GAP = 10, M = {l: 52, b: 40, t: 10, r: 10};
+  const SQ = 400, MH = 86, GAP = 10, M = {l: 70, b: 60, t: 10, r: 14};
   const PW = M.l + SQ + GAP + MH + M.r, PH = M.t + MH + GAP + SQ + M.b;
   function ctx(cv, w, h) { const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); return g; }
   const g = ctx($('nn2-plot'), PW, PH);
@@ -899,11 +900,11 @@ const RI = (() => {
     for (let i = 0; i < 2 * N; i++) { const a = Math.abs(samples[i]); if (a > mx) mx = a; ss += a * a; }
     lim = Math.max(1e-3, Math.min(mx, 4 * Math.sqrt(ss / Math.max(2 * N, 1))) * 1.08) || 1;
     g.clearRect(0, 0, PW, PH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
+    g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
     for (const v of ticks(-lim, lim)) {
       const X = px(v), Y = py(v);
-      g.beginPath(); g.moveTo(X, Y0); g.lineTo(X, Y0 + SQ); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(v), X, Y0 + SQ + 15);
-      g.beginPath(); g.moveTo(X0, Y); g.lineTo(X0 + SQ, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), X0 - 6, Y + 4);
+      g.beginPath(); g.moveTo(X, Y0); g.lineTo(X, Y0 + SQ); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(v), X, Y0 + SQ + 23);
+      g.beginPath(); g.moveTo(X0, Y); g.lineTo(X0 + SQ, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), X0 - 6, Y + 5);
     }
     g.strokeStyle = '#c3c2b7'; g.strokeRect(X0 + 0.5, Y0 + 0.5, SQ - 1, SQ - 1);
     // points

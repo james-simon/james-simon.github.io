@@ -547,8 +547,8 @@ const RI = (() => {
 .nt-figs { display: flex; justify-content: center; gap: 22px; margin: 10px auto 0; flex-wrap: wrap; }
 .nt-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
 .nt-plot canvas { display: block; }
-.nt-xlabel { position: absolute; left: 54px; right: 14px; bottom: 2px; text-align: center; font-size: 0.85em; color: #333; pointer-events: none; }
-.nt-ylabel { position: absolute; left: 10px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 0.85em; color: #333; pointer-events: none; }
+.nt-xlabel { position: absolute; left: 72px; right: 26px; bottom: 2px; text-align: center; font-size: 1.15em; color: #333; pointer-events: none; }
+.nt-ylabel { position: absolute; left: 14px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 1.15em; color: #333; pointer-events: none; }
 .nt-status { font-size: 0.85em; color: #888; font-variant-numeric: tabular-nums; min-width: 7em; }
 </style>
 <div class="nt-top">
@@ -757,7 +757,7 @@ const RI = (() => {
   function pause() { running = false; el.run.textContent = 'start'; if (raf !== null) cancelAnimationFrame(raf); raf = null; }
 
   // ---- plots ----
-  const LW = 520, LH = 400, DW = 400, DH = 400, ML = {l: 56, r: 14, t: 14, b: 40}, MD = {l: 50, r: 12, t: 12, b: 40};
+  const LW = 520, LH = 400, DW = 400, DH = 400, ML = {l: 72, r: 26, t: 14, b: 60}, MD = {l: 68, r: 14, t: 12, b: 60};
   function ctx(cv, w, h) { const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); return g; }
   const gL = ctx($('nt-loss'), LW, LH), gD = ctx($('nt-dots'), DW, DH);
   function ticks(lo, hi) {
@@ -773,9 +773,9 @@ const RI = (() => {
     const ymax = (hi || 1) * 1.05;   // linear axis from 0 (James)
     const px = s => ML.l + s / xmax * (LW - ML.l - ML.r), py = v => ML.t + (LH - ML.t - ML.b) * (1 - v / ymax);
     g.clearRect(0, 0, LW, LH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
-    for (const s of ticks(0, xmax)) { const X = px(s); g.beginPath(); g.moveTo(X, ML.t); g.lineTo(X, LH - ML.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(s), X, LH - ML.b + 15); }
-    for (const v of ticks(0, ymax)) { const Y = py(v); g.beginPath(); g.moveTo(ML.l, Y); g.lineTo(LW - ML.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), ML.l - 6, Y + 4); }
+    g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
+    for (const s of ticks(0, xmax)) { const X = px(s); g.beginPath(); g.moveTo(X, ML.t); g.lineTo(X, LH - ML.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(s), X, LH - ML.b + 23); }
+    for (const v of ticks(0, ymax)) { const Y = py(v); g.beginPath(); g.moveTo(ML.l, Y); g.lineTo(LW - ML.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), ML.l - 6, Y + 5); }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(ML.l, ML.t); g.lineTo(ML.l, LH - ML.b); g.lineTo(LW - ML.r, LH - ML.b); g.stroke();
     if (!N) return;
     g.save(); g.beginPath(); g.rect(ML.l, ML.t - 2, LW - ML.l - ML.r, LH - ML.t - ML.b + 4); g.clip();
@@ -793,12 +793,12 @@ const RI = (() => {
     range = Math.max(range, 1.15 * mx, 0.5);   // never shrinks during a run
     const R = range, px = u => MD.l + (u + R) / (2 * R) * (DW - MD.l - MD.r), py = v => MD.t + (DH - MD.t - MD.b) * (1 - (v + R) / (2 * R));
     g.clearRect(0, 0, DW, DH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.lineWidth = 1;
+    g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.lineWidth = 1;
     for (const v of ticks(-R, R)) {
       g.strokeStyle = v === 0 ? '#c3c2b7' : '#e1e0d9';
       const X = px(v), Y = py(v);
-      g.beginPath(); g.moveTo(X, MD.t); g.lineTo(X, DH - MD.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(v), X, DH - MD.b + 15);
-      g.beginPath(); g.moveTo(MD.l, Y); g.lineTo(DW - MD.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), MD.l - 6, Y + 4);
+      g.beginPath(); g.moveTo(X, MD.t); g.lineTo(X, DH - MD.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(v), X, DH - MD.b + 23);
+      g.beginPath(); g.moveTo(MD.l, Y); g.lineTo(DW - MD.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), MD.l - 6, Y + 5);
     }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(MD.l, MD.t); g.lineTo(MD.l, DH - MD.b); g.lineTo(DW - MD.r, DH - MD.b); g.stroke();
     g.save(); g.beginPath(); g.rect(MD.l, MD.t, DW - MD.l - MD.r, DH - MD.t - MD.b); g.clip();
@@ -862,8 +862,8 @@ const RI = (() => {
 .nb-figs { display: flex; justify-content: center; gap: 22px; margin: 6px auto 0; }
 .nb-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
 .nb-plot canvas { display: block; }
-.nb-xlabel { position: absolute; left: 54px; right: 14px; bottom: 2px; text-align: center; font-size: 0.85em; color: #333; pointer-events: none; }
-.nb-ylabel { position: absolute; left: 10px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 0.85em; color: #333; pointer-events: none; }
+.nb-xlabel { position: absolute; left: 72px; right: 26px; bottom: 2px; text-align: center; font-size: 1.15em; color: #333; pointer-events: none; }
+.nb-ylabel { position: absolute; left: 14px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 1.15em; color: #333; pointer-events: none; }
 .nb-pair { position: absolute; left: calc(100% + 14px); top: 0; display: flex; align-items: stretch; gap: 6px; }   /* the pair's images hang off the plot's right, the next-pair button beside them */
 .nb-pair .nb-imgs { display: flex; flex-direction: column; gap: 8px; }
 .nb-pair img { width: 84px; height: 84px; image-rendering: pixelated; border: 1px solid #ddd; border-radius: 3px; background: #000; display: block; }
@@ -966,7 +966,7 @@ const RI = (() => {
   }
 
   // ---- plots, drawn up to the replay's step t ----
-  const PW = 480, PH = 400, M = {l: 56, r: 14, t: 14, b: 40};
+  const PW = 490, PH = 400, M = {l: 72, r: 26, t: 14, b: 60};
   function ctx(cv, w, h) { const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); return g; }
   const gL = ctx($('nb-loss'), PW, PH), gK = ctx($('nb-ntk'), PW, PH);
   function ticks(lo, hi) {
@@ -978,9 +978,9 @@ const RI = (() => {
   function axes(g, xmax, ylo, yhi) {
     const px = s => M.l + s / xmax * (PW - M.l - M.r), py = v => M.t + (PH - M.t - M.b) * (1 - (v - ylo) / (yhi - ylo));
     g.clearRect(0, 0, PW, PH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
-    for (const s of ticks(0, xmax)) { const X = px(s); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(s), X, PH - M.b + 15); }
-    for (const v of ticks(ylo, yhi)) { const Y = py(v); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 4); }
+    g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
+    for (const s of ticks(0, xmax)) { const X = px(s); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(fmt(s), X, PH - M.b + 23); }
+    for (const v of ticks(ylo, yhi)) { const Y = py(v); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 5); }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(M.l, M.t); g.lineTo(M.l, PH - M.b); g.lineTo(PW - M.r, PH - M.b); g.stroke();
     g.save(); g.beginPath(); g.rect(M.l, M.t - 2, PW - M.l - M.r, PH - M.t - M.b + 4); g.clip();
     return {px, py};

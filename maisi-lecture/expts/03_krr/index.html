@@ -531,8 +531,8 @@ const RI = (() => {
 .kr-figs { display: flex; justify-content: center; align-items: flex-start; gap: 22px; margin: 8px auto 0; }
 .kr-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
 .kr-plot canvas { display: block; }
-.kr-xlabel { position: absolute; left: 54px; right: 14px; bottom: 2px; text-align: center; font-size: 0.85em; color: #333; pointer-events: none; }
-.kr-ylabel { position: absolute; left: 10px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 0.85em; color: #333; pointer-events: none; }
+.kr-xlabel { position: absolute; left: 72px; right: 22px; bottom: 2px; text-align: center; font-size: 1.15em; color: #333; pointer-events: none; }
+.kr-ylabel { position: absolute; left: 14px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 1.15em; color: #333; pointer-events: none; }
 /* the bottom row: plain axes in the style of James's eigenfunction figure (no box, no grid, left and bottom spines, large labels) */
 .kr-bare { position: relative; }
 .kr-bare canvas { display: block; }
@@ -645,7 +645,7 @@ const RI = (() => {
   const LW = [8, 5.5, 4.5, 3.6, 2.8];
 
   function ctx(cv, w, h) { const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(d, 0, 0, d, 0, 0); return g; }
-  const KW = 600, KH = 300, M = {l: 56, r: 14, t: 14, b: 40};
+  const KW = 600, KH = 300, M = {l: 72, r: 22, t: 14, b: 60};
   const DW = 300, DH = 380, FW = 380, FH = 380, SW = 400, SH = 380;
   const gK = ctx($('kr-k'), KW, KH), gD = ctx($('kr-dom'), DW, DH), gF = ctx($('kr-fn'), FW, FH), gS = ctx($('kr-spec'), SW, SH);
   function ticks(lo, hi) {
@@ -654,7 +654,7 @@ const RI = (() => {
     return out;
   }
   const fmt = v => Number.isInteger(v) ? String(v) : Math.abs(v) >= 10 ? v.toFixed(1) : String(+v.toPrecision(2));
-  const grid = (g, w, h) => { g.clearRect(0, 0, w, h); g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1; };
+  const grid = (g, w, h) => { g.clearRect(0, 0, w, h); g.font = '17px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1; };
 
   // ---- K(1, 1, cos theta) over theta in [-pi, pi] ----
   function drawK(kfn) {
@@ -663,9 +663,9 @@ const RI = (() => {
     const px = th => M.l + (th + Math.PI) / (2 * Math.PI) * (KW - M.l - M.r), py = v => M.t + (KH - M.t - M.b) * (1 - (v - lo) / (hi - lo));
     grid(g, KW, KH);
     [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']].forEach(([th, lab]) => {
-      const X = px(th); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, KH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(lab, X, KH - M.b + 15);
+      const X = px(th); g.beginPath(); g.moveTo(X, M.t); g.lineTo(X, KH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(lab, X, KH - M.b + 23);
     });
-    for (const v of ticks(lo, hi)) { const Y = py(v); g.strokeStyle = v === 0 ? '#c3c2b7' : '#e1e0d9'; g.beginPath(); g.moveTo(M.l, Y); g.lineTo(KW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 4); }
+    for (const v of ticks(lo, hi)) { const Y = py(v); g.strokeStyle = v === 0 ? '#c3c2b7' : '#e1e0d9'; g.beginPath(); g.moveTo(M.l, Y); g.lineTo(KW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(fmt(v), M.l - 6, Y + 5); }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(M.l, M.t); g.lineTo(M.l, KH - M.b); g.lineTo(KW - M.r, KH - M.b); g.stroke();
     g.strokeStyle = '#2a78d6'; g.lineWidth = 2.2; g.lineJoin = 'round'; g.beginPath();
     ys.forEach((v, i) => { const X = px(-Math.PI + 2 * Math.PI * i / NP), Y = py(v); if (i) g.lineTo(X, Y); else g.moveTo(X, Y); });
@@ -742,8 +742,8 @@ const RI = (() => {
 .kb-figs { display: flex; justify-content: center; margin: 8px auto 0; }
 .kb-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
 .kb-plot canvas { display: block; }
-.kb-xlabel { position: absolute; left: 54px; right: 150px; bottom: 2px; text-align: center; font-size: 0.85em; color: #333; pointer-events: none; }
-.kb-ylabel { position: absolute; left: 10px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 0.85em; color: #333; pointer-events: none; }
+.kb-xlabel { position: absolute; left: 84px; right: 176px; bottom: 2px; text-align: center; font-size: 1.45em; color: #333; pointer-events: none; }
+.kb-ylabel { position: absolute; left: 18px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 1.45em; color: #333; pointer-events: none; }
 </style>
 <div class="kb-figs"><div class="kb-plot" id="kb-box"><canvas id="kb-plot"></canvas><div class="kb-xlabel">training set size \(n\)</div><div class="kb-ylabel">test MSE</div></div></div>
 <div class="kb-controls">
@@ -888,7 +888,7 @@ const RI = (() => {
   }
 
   // ---- the plot: test error against n, one curve per split, drawn as the points come ----
-  const PW = 760, PH = 440, M = {l: 56, r: 150, t: 14, b: 40};   // room on the right for the curve labels
+  const PW = 780, PH = 460, M = {l: 84, r: 176, t: 14, b: 72};   // room on the right for the curve labels
   function ctx(cv, w, h) { const dp = devicePixelRatio || 1; cv.width = w * dp; cv.height = h * dp; cv.style.width = w + 'px'; cv.style.height = h + 'px'; const g = cv.getContext('2d'); g.setTransform(dp, 0, 0, dp, 0, 0); return g; }
   const g = ctx($('kb-plot'), PW, PH);
   const YMAX = 1.5, px = n => M.l + (Math.log2(n) + 0.5) / (Math.log2(NS[NS.length - 1]) + 1) * (PW - M.l - M.r), py = e => M.t + (PH - M.t - M.b) * (1 - Math.min(e, YMAX) / YMAX);
@@ -896,9 +896,9 @@ const RI = (() => {
   let results = SPLITS.map(() => []);   // [{n, mse: [TRIALS], err: [TRIALS]}] per split
   function draw() {
     g.clearRect(0, 0, PW, PH);
-    g.font = '11px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
-    for (const n of NS) { const Xp = px(n); g.beginPath(); g.moveTo(Xp, M.t); g.lineTo(Xp, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(n, Xp, PH - M.b + 15); }
-    for (let e = 0; e <= YMAX + 1e-9; e += 0.25) { const Y = py(e); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(e.toFixed(2), M.l - 6, Y + 4); }
+    g.font = '20px Georgia, serif'; g.fillStyle = '#898781'; g.strokeStyle = '#e1e0d9'; g.lineWidth = 1;
+    for (const n of NS) { const Xp = px(n); g.beginPath(); g.moveTo(Xp, M.t); g.lineTo(Xp, PH - M.b); g.stroke(); g.textAlign = 'center'; g.fillText(n, Xp, PH - M.b + 26); }
+    for (let e = 0; e <= YMAX + 1e-9; e += 0.25) { const Y = py(e); g.beginPath(); g.moveTo(M.l, Y); g.lineTo(PW - M.r, Y); g.stroke(); g.textAlign = 'right'; g.fillText(e.toFixed(2), M.l - 8, Y + 6); }
     g.strokeStyle = '#c3c2b7'; g.beginPath(); g.moveTo(M.l, M.t); g.lineTo(M.l, PH - M.b); g.lineTo(PW - M.r, PH - M.b); g.stroke();
     g.save(); g.beginPath(); g.rect(M.l, M.t - 2, PW - M.l - M.r, PH - M.t - M.b + 4); g.clip();
     if (TH && el.theory.checked) {   // the eigenlearning prediction, dashed, for the selected kernel
@@ -929,7 +929,7 @@ const RI = (() => {
     SPLITS.forEach((sp, s) => {   // labels outside the clip, to the right of each curve's last point
       const R = results[s]; if (!R.length) return;
       const last = R[R.length - 1], m = last.mse.reduce((a, b) => a + b, 0) / last.mse.length;
-      g.fillStyle = sp.col; g.font = '12px Georgia, serif'; g.textAlign = 'left'; g.fillText(`${D.names[sp.a]} v ${D.names[sp.b]}`, px(last.n) + 8, py(m) + 4);
+      g.fillStyle = sp.col; g.font = '21px Georgia, serif'; g.textAlign = 'left'; g.fillText(`${D.names[sp.a]} v ${D.names[sp.b]}`, px(last.n) + 10, py(m) + 6);
     });
   }
 
