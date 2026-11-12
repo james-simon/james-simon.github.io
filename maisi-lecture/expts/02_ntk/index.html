@@ -536,12 +536,12 @@ const RI = (() => {
 .nt-f mjx-container[display="true"] { margin: 0.2em 0 !important; }
 .nt-netwrap { position: relative; display: inline-block; }   /* padding leaves room for the layer labels; set per net by drawNet */
 .nt-netwrap svg { display: block; }
-.nt-lab { position: absolute; color: #555; white-space: nowrap; }
+.nt-lab { position: absolute; color: #333; white-space: nowrap; font-size: 1.45em; }
 .nt-rules { display: flex; font-size: 1.15em; line-height: 1.5; margin-top: 2px; }   /* the W_1 rules under the first layer, the W_2 rules under the second */
 .nt-rules div { flex: 1; text-align: center; }
 .nt-vr { align-self: stretch; border-left: 1px solid #ccc; }
 .nt-teacher { text-align: center; }
-.nt-teacher .nt-lab { font-size: 0.9em; }
+.nt-teacher .nt-lab { font-size: 1.1em; }
 .nt-cap { font-size: 0.82em; color: #777; margin-top: 2px; }
 .nt-hr { border: none; border-top: 1px solid #ccc; margin: 16px 0 12px; }
 .nt-figs { display: flex; justify-content: center; gap: 22px; margin: 10px auto 0; flex-wrap: wrap; }
@@ -733,8 +733,8 @@ const RI = (() => {
     const c = cfg();
     S = Sim02.make({n: c.n, param: c.param, seed, eta: ETA, batch: BATCH});
     lossHist = []; hist = []; lastSnap = null; range = 0; budget = 0;
-    paintS = drawNet($('nt-netwrap'), {SP: 130, H: 240, sw: 1, pad: [34, 30, 58]}, c.n, S.W1, S.W2, 1.5 * rms(S.W1_0), 1.5 * rms(S.W2_0));
-    paintT = drawNet($('nt-tnetwrap'), {SP: 70, H: 120, sw: 2, pad: [28, 26, 46]}, S.T.k, S.T.W, S.T.a, 1.5 * rms(S.T.W), 1);
+    paintS = drawNet($('nt-netwrap'), {SP: 130, H: 240, sw: 1, pad: [44, 40, 76]}, c.n, S.W1, S.W2, 1.5 * rms(S.W1_0), 1.5 * rms(S.W2_0));
+    paintT = drawNet($('nt-tnetwrap'), {SP: 70, H: 120, sw: 2, pad: [34, 32, 60]}, S.T.k, S.T.W, S.T.a, 1.5 * rms(S.T.W), 1);
     snapshot(true); drawAll();
   }
   function snapshot(force) {
