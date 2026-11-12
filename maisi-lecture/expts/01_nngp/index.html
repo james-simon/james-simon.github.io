@@ -518,7 +518,7 @@ const RI = (() => {
 </script>
 </head>
 <body>
-<a class="back" href="../../index.html">&larr; all results</a>
+<a class="back" href="../../index.html">&larr; main page</a>
 <h1>01 - The NNGP</h1>
 <div class="meta"></div>
 <div class="tabmark"></div><nav class="tabbar"><a href="#01a">01a &middot; Random networks</a><a href="#01b">01b &middot; Two images</a></nav><section class="tab" id="tab-01a" data-tab="01a">
@@ -528,7 +528,12 @@ const RI = (() => {
 .nn-controls label { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .nn-controls input[type=range] { width: 160px; }
 .nn-controls select { font: inherit; }
-.nn-net { display: block; height: 240px; margin: 6px auto 10px; }   /* width set per depth: a fixed spacing per layer */
+.nn-top { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 6px 0 10px; }
+.nn-lead { font-size: 1.7em; color: #222; white-space: nowrap; line-height: 1.25; }
+.nn-netwrap { position: relative; display: inline-block; }   /* padding leaves room for the layer labels and init rules; set per net by drawNet */
+.nn-netwrap svg { display: block; }
+.nn-lab { position: absolute; color: #555; white-space: nowrap; }
+.nn-rule { position: absolute; transform: translateX(-50%); text-align: center; white-space: nowrap; line-height: 1.5; color: #222; }   /* each matrix's init rule, under it */
 .nn-hr { border: none; border-top: 1px solid #ccc; margin: 18px 0 14px; }
 .nn-figs { position: relative; width: 640px; margin: 8px auto 0; }   /* the main plot centred; the histogram hangs off its right */
 #nn-histbox { position: absolute; left: calc(100% + 14px); top: 0; }
@@ -547,7 +552,7 @@ const RI = (() => {
   <label><input type="checkbox" id="nn-bias"> biases</label>
 </div>
 <div class="nn-formula" id="nn-formula"></div>
-<svg class="nn-net" id="nn-net"></svg>
+<div class="nn-top"><div class="nn-lead" id="nn-lead">randomly initialized:</div><div class="nn-netwrap" id="nn-netwrap"><svg id="nn-net"></svg></div></div>
 <hr class="nn-hr">
 <div class="nn-controls" style="justify-content:center">
   <label>trials <span class="ri-val" id="nn-ns-v"></span><input type="range" id="nn-ns" min="0" max="1000" step="1"></label>
@@ -555,7 +560,7 @@ const RI = (() => {
 </div>
 <div class="nn-figs">
   <div class="nn-plot" id="nn-plotbox"><canvas id="nn-plot"></canvas>
-    <div class="nn-xlabel">input coordinate</div><div class="nn-ylabel">\(f(\mathbf{x})\)</div></div>
+    <div class="nn-xlabel">input coordinate</div><div class="nn-ylabel">\(f(\mathbf{x})\) at init</div></div>
   <div class="nn-plot" id="nn-histbox" hidden><canvas id="nn-hist"></canvas><div class="nn-xlabel" style="left:10px;right:12px">count of \(f(\mathbf{x}_*)\)</div></div>
   <div class="nn-status" id="nn-status"></div>
 </div>
@@ -599,8 +604,9 @@ const RI = (() => {
   const NS = 'http://www.w3.org/2000/svg';
   function svgEl(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
   function drawNet(c) {
-    const svg = $('nn-net'); svg.innerHTML = '';
-    const SP = 130, H = 240, W = 40 + c.depth * SP;   // a fixed spacing per layer, so the picture widens with depth
+    const wrap = $('nn-netwrap'), svg = $('nn-net'); svg.innerHTML = '';
+    wrap.querySelectorAll('.nn-lab, .nn-rule').forEach(e => e.remove());
+    const SP = [0, 0, 200, 190, 165, 148, 145][c.depth], H = 240, W = 40 + c.depth * SP;   // a fixed spacing per layer (room for the init rules), so the picture widens with depth
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
     const m = c.width <= 30 ? c.width : Math.round(30 * Math.sqrt(c.width / 30));   // nodes drawn per hidden layer
     const cols = [2].concat(Array(c.depth - 1).fill(m), [1]);
@@ -619,10 +625,25 @@ const RI = (() => {
       else for (let k = 0; k < MAX; k++) seg(Math.floor(rnd() * a.length), Math.floor(rnd() * b.length));
     }
     cols.forEach((n, i) => {
-      const fill = i === 0 || i === cols.length - 1 ? '#333' : '#a3412a';
-      ys(n).forEach(y => svgEl('circle', {cx: xs[i], cy: y, r, fill, stroke: '#fcfcfb', 'stroke-width': r > 4 ? 1.2 : 0.4}, svg));
+      ys(n).forEach(y => svgEl('circle', {cx: xs[i], cy: y, r, fill: '#333', stroke: '#fcfcfb', 'stroke-width': r > 4 ? 1.2 : 0.4}, svg));   // black nodes, as in 02a (James)
       if (i > 0 && i < cols.length - 1) svgEl('text', {x: xs[i], y: H - 3, 'text-anchor': 'middle', 'font-family': 'Georgia, serif', 'font-size': 12, fill: '#777'}, svg).textContent = c.width;
     });
+    // layer labels as in 02a (x left of the inputs, sigma over each hidden layer, f(x) right of the output) and each matrix's
+    // init rule under it: weights N(0, 1/fan-in) (fan-in 2 for W_1), biases N(0, 1) on hidden layers only
+    const PL = 34, PT = 30, PR = 58, PB = c.bias ? 70 : 44, mid = top + span / 2, L = cols.length - 1;
+    wrap.style.padding = `${PT}px ${PR}px ${PB}px ${PL}px`;
+    const put = (cls, html, css) => { const e = document.createElement('span'); e.className = cls; e.innerHTML = html; e.style.cssText = css; wrap.appendChild(e); };
+    put('nn-lab', '\\(\\mathbf{x}\\)', `right: calc(100% - ${PL + xs[0] - 10}px); top: ${PT + mid}px; transform: translateY(-50%)`);
+    for (let i = 1; i < L; i++) put('nn-lab', '\\(\\sigma\\)', `left: ${PL + xs[i]}px; top: ${PT + top - 10}px; transform: translate(-50%, -100%)`);
+    put('nn-lab', '\\(f(\\mathbf{x})\\)', `left: ${PL + xs[L] + 11}px; top: ${PT + mid}px; transform: translateY(-50%)`);
+    const fs = c.depth <= 3 ? 1.15 : c.depth === 4 ? 1 : 0.86;
+    $('nn-lead').innerHTML = c.depth >= 5 ? 'randomly<br>initialized:' : 'randomly initialized:';   // two lines when the net is wide
+    for (let l = 1; l <= c.depth; l++) {
+      let h = `\\((W_{${l}})_{${l === c.depth ? 'i' : 'ij'}} \\sim \\mathcal{N}\\big(0, ${l === 1 ? '\\tfrac{1}{2}' : '\\tfrac{1}{n}'}\\big)\\)`;
+      if (c.bias && l < c.depth) h += `<br>\\((\\mathbf{b}_{${l}})_{i} \\sim \\mathcal{N}(0, 1)\\)`;
+      put('nn-rule', h, `left: ${PL + (xs[l - 1] + xs[l]) / 2}px; top: ${PT + H + 6}px; font-size: ${fs}em`);
+    }
+    typeset(wrap);
   }
 
   // ---- plot and histogram ----
@@ -850,7 +871,7 @@ const RI = (() => {
 </div>
 <div class="nn2-figs">
   <div class="nn-plot" id="nn2-plotbox"><canvas id="nn2-plot"></canvas>
-    <div class="nn-xlabel" style="left:70px;right:110px">\(f(\mathbf{x}_1)\)</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\)</div></div>
+    <div class="nn-xlabel" style="left:70px;right:110px">\(f(\mathbf{x}_1)\)</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\) at init</div></div>
   <div class="nn-status" id="nn2-status"></div>
 </div>
 <script>
