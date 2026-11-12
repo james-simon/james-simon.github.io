@@ -606,7 +606,7 @@ const RI = (() => {
   function drawNet(c) {
     const wrap = $('nn-netwrap'), svg = $('nn-net'); svg.innerHTML = '';
     wrap.querySelectorAll('.nn-lab, .nn-rule').forEach(e => e.remove());
-    const SP = c.depth === 2 ? 175 : 130, H = 240, W = 40 + c.depth * SP;   // a fixed spacing per layer (room for the init rules), so the picture widens with depth
+    const SP = 90, H = 240, W = 40 + c.depth * SP;   // a fixed spacing per layer (room for the init rules), so the picture widens with depth
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('width', W); svg.setAttribute('height', H);
     const m = c.width <= 30 ? c.width : Math.round(30 * Math.sqrt(c.width / 30));   // nodes drawn per hidden layer
     const cols = [2].concat(Array(c.depth - 1).fill(m), [1]);
@@ -631,7 +631,7 @@ const RI = (() => {
     // layer labels as in 02a (x left of the inputs, sigma over each hidden layer, f(x) right of the output) and each matrix's
     // init rule under it: weights N(0, 1/fan-in) (fan-in 2 for W_1), biases N(0, 1) on hidden layers only
     // rules wider than a layer gap alternate between two rows (nets of depth >= 3), so the layers can sit close together
-    const fs = 1.1, stagger = c.depth >= 3, rowH = Math.round((c.bias ? 2 : 1) * 1.5 * 16 * fs) + 4;
+    const fs = 1.05, stagger = true, rowH = Math.round((c.bias ? 2 : 1) * 1.5 * 16 * fs) + 4;
     const PL = 44, PT = 40, PR = 76, PB = 12 + rowH * (stagger ? 2 : 1), mid = top + span / 2, L = cols.length - 1;
     wrap.style.padding = `${PT}px ${PR}px ${PB}px ${PL}px`;
     $('nn-lead').style.marginTop = `${PT + mid}px`;   // centred on the nodes, not on the box (which includes the rules)
@@ -639,7 +639,6 @@ const RI = (() => {
     put('nn-lab', '\\(\\mathbf{x}\\)', `right: calc(100% - ${PL + xs[0] - 10}px); top: ${PT + mid}px; transform: translateY(-50%)`);
     for (let i = 1; i < L; i++) put('nn-lab', '\\(\\sigma\\)', `left: ${PL + xs[i]}px; top: ${PT + top - 10}px; transform: translate(-50%, -100%)`);
     put('nn-lab', '\\(f(\\mathbf{x})\\)', `left: ${PL + xs[L] + 12}px; top: ${PT + mid}px; transform: translateY(-50%)`);
-    $('nn-lead').innerHTML = c.depth >= 5 ? 'randomly<br>initialized:' : 'randomly initialized:';   // two lines when the net is wide
     for (let l = 1; l <= c.depth; l++) {
       let h = `\\((W_{${l}})_{${l === c.depth ? 'i' : 'ij'}} \\sim \\mathcal{N}\\big(0, ${l === 1 ? '\\tfrac{1}{2}' : '\\tfrac{1}{n}'}\\big)\\)`;
       if (c.bias && l < c.depth) h += `<br>\\((\\mathbf{b}_{${l}})_{i} \\sim \\mathcal{N}(0, 1)\\)`;
