@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%276%27%20fill%3D%27%232b2440%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2725%27%20font-size%3D%2724%27%20text-anchor%3D%27middle%27%3E%F0%9F%96%BC%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E">
+<title>01&#x27;&#x27;&#x27; - Interactive sparse coding</title>
+<style>
+body { font-family: Georgia, serif; max-width: 1200px; margin: 40px auto; padding: 0 24px;
+  background: #f9f9f9; color: #222; }
+h1 { font-size: 2em; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 8px; }
+h2 { font-size: 1.3em; margin-top: 44px; color: #333; }
+h3 { font-size: 1.05em; margin-top: 28px; color: #333; }
+p, li { color: #555; font-size: 0.95em; max-width: 860px; line-height: 1.6; }
+a { color: #2266cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.back { font-size: 0.9em; margin-bottom: 24px; display: inline-block; }
+.meta { font-size: 0.85em; color: #888; margin: 4px 0 20px; }
+.caption { font-size: 0.85em; color: #777; max-width: 860px; margin: 4px 0 30px; line-height: 1.5; }
+.expt-list { list-style: none; padding: 0; margin-top: 20px; }
+.expt-list li { margin: 0; border-bottom: 1px solid #eee; max-width: none; }
+.expt-list li a { display: block; padding: 12px 4px 2px; font-size: 1.05em; }
+.expt-list li .desc { font-size: 0.88em; color: #777; margin: 2px 4px 12px 4px; }
+table { border-collapse: collapse; font-size: 0.88em; margin: 12px 0 8px; }
+th, td { border: 1px solid #ddd; padding: 5px 11px; text-align: left; font-variant-numeric: tabular-nums; }
+th { background: #eee; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { background: #e4e4e4; }
+code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+.callout { background: #fff; border: 1px solid #ddd; border-left: 3px solid #2a78d6; border-radius: 4px;
+  padding: 10px 16px; margin: 16px 0; max-width: 860px; }
+.callout p { margin: 6px 0; }
+.row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+.row > div { flex: 1 1 380px; min-width: 0; }
+.grid { display: grid; gap: 20px; align-items: start; }
+.grid > div { min-width: 0; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr !important; } }
+.ri-fig { margin: 12px 0 4px; }
+.ri-title { font-size: 0.95em; color: #333; margin: 0 0 2px; }
+.ri-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8em; color: #444; margin: 4px 0 2px; }
+.ri-legend button { font: inherit; background: none; border: none; padding: 2px 0; cursor: pointer; color: #444;
+  display: inline-flex; align-items: center; gap: 6px; }
+.ri-legend button[aria-pressed=false] { opacity: 0.35; }
+.ri-guide { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 0.8em; color: #444; margin: 4px 0 2px; }
+.ri-guide label { display: inline-flex; align-items: center; gap: 8px; }
+.ri-guide input[type=range] { width: 180px; }
+.ri-val { display: inline-block; min-width: 4.2em; font-family: ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }  /* slider readouts: fixed width so the slider never jumps */
+.ri-guide-eq { color: #898781; }
+.ri-global { position: sticky; top: 8px; z-index: 5; float: right; margin: 0 0 8px 16px; padding: 6px 10px;
+  background: #fff; border: 1px solid rgba(11,11,11,0.18); border-radius: 6px; font-size: 0.85em; color: #444;
+  display: flex; gap: 6px; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.ri-global button { font: inherit; padding: 2px 9px; border: 1px solid rgba(11,11,11,0.18); border-radius: 4px;
+  background: #fff; cursor: pointer; }
+.ri-global button[aria-pressed=true] { background: #2a78d6; color: #fff; border-color: #2a78d6; }
+.ri-legend button.ri-axis { border: 1px solid rgba(11,11,11,0.18); border-radius: 4px; padding: 1px 7px; }
+.ri-legend button.ri-axis:first-of-type, .ri-legend button:not(.ri-axis) + button.ri-axis { margin-left: auto; }  /* the first of the right-hand buttons sits at the end of the row, the rest follow it */
+.ri-legend button.ri-axis + button.ri-axis { margin-left: 6px; }
+.ri-plot { position: relative; background: #fcfcfb; border: 1px solid #ddd; border-radius: 4px; }
+.ri-plot svg { display: block; width: 100%; }
+.ri-xlabel { position: absolute; left: 58px; right: 18px; bottom: 3px; text-align: center; font-size: 0.85em; color: #333;
+  pointer-events: none; line-height: 1.1; }
+.ri-ylabel { position: absolute; left: 11px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap;
+  font-size: 0.85em; color: #333; pointer-events: none; line-height: 1.1; }
+.ri-plot .ri-tip svg { display: inline; width: 18px; flex: none; }  /* series keys inside the tooltip */
+.ri-tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid rgba(11,11,11,0.12);
+  border-radius: 4px; padding: 6px 9px; font-size: 0.78em; color: #52514e; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  white-space: nowrap; width: max-content; display: none; z-index: 2; }
+.ri-tip .hd { color: #898781; margin-bottom: 3px; }
+.ri-tip .r { display: flex; align-items: center; gap: 7px; line-height: 1.55; }
+.ri-tip .r b { color: #0b0b0b; font-weight: 600; min-width: 46px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.ri-data { font-size: 0.8em; color: #777; margin: 4px 0 0; }
+.ri-data summary { cursor: pointer; }
+.ri-data table { font-size: 0.95em; }
+.ri-scroll { overflow-x: auto; max-width: 100%; }
+.tabbar { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid #ccc; margin: 22px 0 6px;
+  position: sticky; top: 0; background: #f9f9f9; z-index: 5; padding-top: 8px; }
+.tabbar a { padding: 7px 13px; border: 1px solid transparent; border-bottom: none; border-radius: 4px 4px 0 0;
+  color: #555; font-size: 0.92em; margin-bottom: -1px; }
+.tabbar a:hover { text-decoration: none; background: #f0f0f0; }
+.tabbar a.on { border-color: #ccc; background: #fff; color: #222; }
+.tab > .meta:first-child { margin-top: 14px; }
+details.summary { margin: 26px 0; max-width: 860px; border: 1px solid #ddd; border-radius: 4px; background: #fff;
+  padding: 10px 16px; }
+details.summary summary { cursor: pointer; color: #333; font-size: 1.02em; }
+/* section disclosures inside a tab (not the per-chart data tables, which sit inside .ri-fig): large, spaced headers */
+section.tab > details > summary { cursor: pointer; font-size: 1.35em; font-weight: 600; color: #222; margin: 1.8em 0 0.4em;
+  padding: 0.35em 0; border-bottom: 1px solid #e3e3e3; list-style-position: outside; }
+section.tab > details[open] > summary { margin-bottom: 0.9em; }
+section.tab > details > summary:hover { color: #000; }
+section.tab > details.summary > summary { font-size: 1.1em; border-bottom: none; margin: 0; padding: 0; }
+details.summary ul { margin: 10px 0 4px; }
+.ri-scroll td:first-child { white-space: nowrap; }
+</style>
+<script>window.MathJax = {startup: {typeset: false, pageReady: () => MathJax.startup.defaultPageReady().then(() => {return MathJax.typesetPromise([document.body]);})}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+const RI = (() => {
+  const charts = [];  // every chart drawn on the page, for page-wide axis switches
+  const C = {grid: '#e1e0d9', axis: '#c3c2b7', muted: '#898781', ink2: '#52514e', surface: '#fcfcfb'};
+  const NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function h(tag, cls, parent, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function key(color, dash, parent) {  // short line key: legends and tooltips identify series with a stroke
+    const s = svgEl('svg', {width: 18, height: 8}, parent);
+    svgEl('line', {x1: 1, y1: 4, x2: 17, y2: 4, stroke: color, 'stroke-width': 2, 'stroke-linecap': 'round',
+                   'stroke-dasharray': dash ? '4 3' : ''}, s);
+    return s;
+  }
+  function fmt(v, d) {
+    if (v == null || !isFinite(v)) return '–';
+    const a = Math.abs(v);
+    if (d != null) return v.toFixed(d);
+    if (a === 0) return '0';
+    if (a >= 1e6) {  // scientific: 2.1e8, 1e12 (not 100000000M)
+      const e = Math.floor(Math.log10(a)), m = +(v / Math.pow(10, e)).toPrecision(2);
+      return (Math.abs(m) === 1 ? (m < 0 ? '-' : '') + '1' : String(m)) + 'e' + e;
+    }
+    if (a >= 1e4) return +(v / 1e3).toPrecision(3) + 'k';
+    if (a >= 1) return String(+v.toPrecision(4));
+    if (a >= 1e-3) return String(+v.toPrecision(3));
+    return v.toExponential(1);
+  }
+  function tfmt(v) {  // table cells: integers with separators, other numbers to 4 significant digits
+    if (Number.isInteger(v)) return v.toLocaleString('en-US');
+    return isFinite(v) ? String(+v.toPrecision(4)) : '–';
+  }
+  function ticks(lo, hi, log) {
+    const out = [];
+    if (log) {
+      const e0 = Math.floor(Math.log10(lo)), e1 = Math.ceil(Math.log10(hi));
+      const mant = e1 - e0 > 4 ? [1] : e1 - e0 > 2 ? [1, 3] : [1, 2, 5];
+      for (let e = e0; e <= e1; e++) for (const m of mant) {
+        const v = m * Math.pow(10, e);
+        if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) out.push(v);
+      }
+      return out;
+    }
+    const raw = (hi - lo) / 5 || 1, p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p;
+    const step = (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * p;
+    for (let v = Math.ceil(lo / step - 1e-9) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(12));
+    return out;
+  }
+
+  // spec: {title, xlabel, ylabel, xlog, ylog, xmin, xmax, ymin, ymax, height, xfmt, yfmt (decimals), ypct,
+  //        xreverse: true draws the x axis right-to-left (e.g. a loss clock, so that development runs left to right),
+  //        markers ('auto'|true|false), hlines: [{y, label}], vlines: [{x, label}], xtoggle / ytoggle (buttons switching an axis
+  //        between log and linear; xmin/xmax and ymin/ymax apply to the linear view),
+  //        powerlaw: {slope, logA, slopeRange?, logARange?} adds sliders that draw y = A x^slope as a dashed guide
+  //        alpha: marker fill opacity for scatter plots (default 0.6); alphaSlider: true adds a log-spaced slider for it
+  //        series flagged theory: true get a 'theory: shown/hidden' button next to the axis buttons (hidden by default)
+  //        returns {draw, spec, fig}: a page script may edit spec (points, limits, title) in place and call draw()
+  //        (for comparing by eye on log-log axes), legend (default: shown for up to 12 series), hover ('x': every series at the nearest x; 'nearest': only the point nearest the pointer in both x and
+  //        y, within 30 px, its series highlighted; default 'nearest' for scatter plots and more than 4 series),
+  //        series: [{name, color, dash, line?, symbol? ('circle'|'square'|'triangle'|'diamond'), legend? (false hides it from the legend),
+  //                  points: [[x, y, lo?, hi?, label?], ...]}]}  (label: shown on hover;
+  //        line: true draws that series as a plain line even when spec.lines is false, e.g. a reference line)
+  function line(root, spec) {
+    const fig = h('div', 'ri-fig', root);
+    if (spec.title) h('div', 'ri-title', fig, spec.title);
+    const legend = h('div', 'ri-legend', fig);
+    const plot = h('div', 'ri-plot', fig);
+    const tip = h('div', 'ri-tip', plot);
+    // axis labels are HTML (not SVG text) so that MathJax can typeset \( ... \) in them; the tooltip and the data
+    // table fall back to plain words when a label contains TeX
+    if (spec.xlabel) h('div', 'ri-xlabel', plot, spec.xlabel);
+    if (spec.ylabel) h('div', 'ri-ylabel', plot, spec.ylabel);
+    const plain = (t, d) => (t && !t.includes('\\(')) ? t : d;
+    const xname = spec.xtip || plain(spec.xlabel, 'x'), yname = spec.ytip || plain(spec.ylabel, 'y');
+    const on = spec.series.map(() => true);
+    // legend buttons (click to hide a series) only for a few series; with many, hover identifies them instead
+    const showLegend = spec.legend ?? spec.series.length <= 12;
+    if (showLegend && (spec.series.length > 1 || spec.legend === true)) spec.series.forEach((s, i) => {
+      if (s.legend === false) return;  // series.legend: false keeps a series out of the legend (it still draws and answers hover)
+      const b = h('button', null, legend);
+      b.setAttribute('aria-pressed', 'true');
+      key(s.color, s.dash, b);
+      b.appendChild(document.createTextNode(s.name));
+      b.onclick = () => {  // a series kept out of the legend (legend: false) with the same name follows its legend entry (a through-line under markers)
+        on[i] = !on[i]; spec.series.forEach((t, j) => { if (t.legend === false && t.name === s.name) on[j] = on[i]; });
+        b.setAttribute('aria-pressed', String(on[i])); draw(); };
+      b.onmouseenter = () => highlight(s);
+      b.onmouseleave = () => highlight(null);
+    });
+    const nearest = spec.hover ? spec.hover === 'nearest' : spec.lines === false || spec.series.length > 4;
+    const SNAP = 30;  // px: farther from every point than this, nearest-point hover shows nothing
+    const setScale = {};  // per axis: set log (true) or linear (false); used by the buttons and the page-wide switch
+    for (const ax of ['x', 'y']) {
+      const lg = ax + 'log', lo = ax + 'min', hi = ax + 'max';
+      const lin = {[lo]: spec[lo], [hi]: spec[hi]};
+      if (spec[lg]) { delete spec[lo]; delete spec[hi]; }  // the limits apply to the linear axis
+      let label = () => {};
+      setScale[ax] = v => {
+        spec[lg] = v;
+        if (v) { delete spec[lo]; delete spec[hi]; } else Object.assign(spec, lin);
+        label(); draw();
+      };
+      if (!spec[ax + 'toggle']) continue;
+      const b = h('button', 'ri-axis', legend);
+      label = () => { b.textContent = ax + ' axis: ' + (spec[lg] ? 'log' : 'linear'); };
+      label();
+      b.onclick = () => setScale[ax](!spec[lg]);
+    }
+    // a 'theory' toggle for series flagged theory: true (hidden by default), next to the axis buttons
+    const theoryIdx = spec.series.map((s, i) => s.theory ? i : -1).filter(i => i >= 0);
+    if (theoryIdx.length) {
+      const b = h('button', 'ri-axis', legend);
+      let shown = false;  // hidden by default
+      const lab = () => { b.textContent = 'theory: ' + (shown ? 'shown' : 'hidden'); };
+      const apply = () => { theoryIdx.forEach(i => { on[i] = shown; }); lab();
+                            legend.querySelectorAll('button[aria-pressed]').forEach((bb, k) => { if (theoryIdx.includes(k)) bb.setAttribute('aria-pressed', String(shown)); }); };
+      apply();
+      b.onclick = () => { shown = !shown; apply(); draw(); };
+    }
+    charts.push({setScale, spec});
+    let guide = null;
+    if (spec.powerlaw) {  // sliders for a power-law guide y = A x^slope
+      const pl = spec.powerlaw, box = h('div', 'ri-guide', fig);
+      const mk = (label, key, range, step) => {
+        const lab = h('label', null, box);
+        h('span', null, lab, label + ' =');
+        const txt = h('span', 'ri-val', lab, pl[key].toFixed(2));
+        const inp = h('input', null, lab);
+        inp.type = 'range'; inp.min = range[0]; inp.max = range[1]; inp.step = step; inp.value = pl[key];
+        inp.oninput = () => { pl[key] = +inp.value; txt.textContent = pl[key].toFixed(2); draw(); };
+      };
+      mk('slope k', 'slope', pl.slopeRange || [-3, 3], 0.01);
+      mk('log10 A (y at x = 1)', 'logA', pl.logARange || [-3, 3], 0.01);
+      h('span', 'ri-guide-eq', box, 'dashed: \\(y = A\\,x^{k}\\)');
+    }
+    if (spec.alphaSlider) {  // log-spaced slider for the marker opacity
+      const box = h('div', 'ri-guide', fig), lab = h('label', null, box);
+      const a0 = spec.alpha ?? 0.6; h('span', null, lab, 'dot opacity =');
+      const txt = h('span', 'ri-val', lab, a0.toPrecision(2));
+      const inp = h('input', null, lab);
+      inp.type = 'range'; inp.min = -3; inp.max = 0; inp.step = 0.01; inp.value = Math.log10(a0);
+      inp.oninput = () => { spec.alpha = Math.pow(10, +inp.value); txt.textContent = spec.alpha.toPrecision(2);
+                            plot.querySelectorAll('circle.ri-dot').forEach(c => c.setAttribute('fill-opacity', spec.alpha)); };
+    }
+    const H = spec.height || 300, M = {l: 58, r: 18, t: 14, b: 42};
+    const yv = (v, dec) => spec.ypct ? (v == null || !isFinite(v) ? '–' : (100 * v).toFixed(dec ?? 2) + '%') : fmt(v, spec.yfmt);
+    const svg = svgEl('svg', {height: H, role: 'img', 'aria-label': spec.title || spec.ylabel || 'chart'}, plot);
+    let state = null;
+
+    function draw() {
+      svg.innerHTML = '';
+      const W = plot.clientWidth || 600, w = W - M.l - M.r, hh = H - M.t - M.b;
+      if (w < 40) { state = null; return; }  // not laid out yet; the ResizeObserver redraws
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      const vis = spec.series.filter((s, i) => on[i]);
+      const xs = [], ys = [];
+      vis.forEach(s => s.points.forEach(p => {
+        if (p[1] == null || !isFinite(p[1])) return;
+        xs.push(p[0]); ys.push(p[1]);
+        if (p.length > 3 && p[2] != null) { ys.push(p[2]); ys.push(p[3]); }
+      }));
+      if (!xs.length) { state = null; return; }
+      let x0 = spec.xmin ?? Math.min(...xs), x1 = spec.xmax ?? Math.max(...xs);
+      let y0 = spec.ymin ?? Math.min(...ys), y1 = spec.ymax ?? Math.max(...ys);
+      (spec.hlines || []).forEach(l => { if (spec.ymin == null) y0 = Math.min(y0, l.y); if (spec.ymax == null) y1 = Math.max(y1, l.y); });
+      (spec.vlines || []).forEach(l => { if (spec.xmin == null) x0 = Math.min(x0, l.x); if (spec.xmax == null) x1 = Math.max(x1, l.x); });
+      if (spec.xlog) { if (spec.xmin == null) x0 /= 1.25; if (spec.xmax == null) x1 *= 1.25; }
+      else if (x1 === x0) { x0 -= 1; x1 += 1; }
+      else { const pad = (x1 - x0) * 0.03; if (spec.xmin == null) x0 -= pad; if (spec.xmax == null) x1 += pad; }
+      if (spec.ylog) { if (spec.ymin == null) y0 /= 1.3; if (spec.ymax == null) y1 *= 1.3; }
+      else { const pad = (y1 - y0) * 0.08 || 0.05; if (spec.ymin == null) y0 -= pad; if (spec.ymax == null) y1 += pad; }
+      const tx = v => spec.xlog ? Math.log10(v) : v, ty = v => spec.ylog ? Math.log10(v) : v;
+      const px = v => M.l + (spec.xreverse ? (tx(x1) - tx(v)) : (tx(v) - tx(x0))) / (tx(x1) - tx(x0)) * w;  // xreverse: x grows to the left
+      const py = v => M.t + hh - (ty(Math.max(v, spec.ylog ? 1e-300 : -Infinity)) - ty(y0)) / (ty(y1) - ty(y0)) * hh;
+      const g = svgEl('g', {'font-family': 'Georgia, serif', 'font-size': 11}, svg);
+      const yt = ticks(y0, y1, spec.ylog), ydec = yt.length > 1 && (yt[1] - yt[0]) * 100 < 0.999 ? 1 : 0;
+      for (const v of yt) {
+        const Y = py(v);
+        svgEl('line', {x1: M.l, x2: M.l + w, y1: Y, y2: Y, stroke: C.grid, 'stroke-width': 1}, g);
+        svgEl('text', {x: M.l - 6, y: Y + 4, 'text-anchor': 'end', fill: C.muted}, g).textContent = yv(v, ydec);
+      }
+      for (const v of spec.xticks || ticks(x0, x1, spec.xlog)) {
+        const X = px(v);
+        if (X < M.l - 1 || X > M.l + w + 1) continue;
+        svgEl('line', {x1: X, x2: X, y1: M.t, y2: M.t + hh, stroke: C.grid, 'stroke-width': 1}, g);
+        svgEl('text', {x: X, y: M.t + hh + 15, 'text-anchor': 'middle', fill: C.muted}, g).textContent = fmt(v, spec.xfmt);
+      }
+      svgEl('line', {x1: M.l, x2: M.l + w, y1: M.t + hh, y2: M.t + hh, stroke: C.axis, 'stroke-width': 1}, g);
+      (spec.hlines || []).forEach(l => {
+        const Y = py(l.y);
+        svgEl('line', {x1: M.l, x2: M.l + w, y1: Y, y2: Y, stroke: C.muted, 'stroke-width': 1, 'stroke-dasharray': '5 4'}, g);
+        if (l.label) svgEl('text', {x: M.l + w - 4, y: Y - 4, 'text-anchor': 'end', fill: C.muted, 'font-size': 10}, g).textContent = l.label;
+      });
+      (spec.vlines || []).forEach(l => {
+        const X = px(l.x);
+        svgEl('line', {x1: X, x2: X, y1: M.t, y2: M.t + hh, stroke: C.muted, 'stroke-width': 1, 'stroke-dasharray': '5 4'}, g);
+        if (l.label) svgEl('text', {x: X + 4, y: M.t + 10, 'text-anchor': 'start', fill: C.muted, 'font-size': 10}, g).textContent = l.label;
+      });
+      const clip = 'clip' + Math.random().toString(36).slice(2);
+      svgEl('rect', {x: M.l, y: M.t - 4, width: w, height: hh + 8}, svgEl('clipPath', {id: clip}, svg));
+      const body = svgEl('g', {'clip-path': `url(#${clip})`}, svg);
+      const groups = [];
+      vis.forEach(s => {
+        const sg = svgEl('g', {}, body);
+        groups.push({s, g: sg});
+        const pts = s.points.filter(p => p[1] != null && isFinite(p[1]));
+        const band = pts.filter(p => p.length > 3 && p[2] != null);
+        if (band.length > 1 && spec.lines !== false) {
+          const d = band.map((p, i) => (i ? 'L' : 'M') + px(p[0]) + ',' + py(p[3])).join('') +
+                    band.slice().reverse().map(p => 'L' + px(p[0]) + ',' + py(p[2])).join('') + 'Z';
+          svgEl('path', {d, fill: s.color, 'fill-opacity': 0.12, stroke: 'none'}, sg);
+        } else band.forEach(p => svgEl('line', {x1: px(p[0]), x2: px(p[0]), y1: py(p[2]), y2: py(p[3]),
+                                                stroke: s.color, 'stroke-width': 1.5}, sg));
+        if ((s.line ?? spec.lines !== false) && pts.length > 1)
+          svgEl('path', {d: pts.map((p, i) => (i ? 'L' : 'M') + px(p[0]) + ',' + py(p[1])).join(''), fill: 'none',
+                         stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+                         'stroke-dasharray': s.dash ? '6 4' : ''}, sg);
+        const mk = !s.line && (spec.markers === true || (spec.markers !== false && (pts.length <= 12 || spec.lines === false)));
+        const dot = spec.lines === false ? {'fill-opacity': spec.alpha ?? 0.6, 'class': 'ri-dot'}  // scatter: translucent, no outline, so overlaps show
+                                         : {stroke: C.surface, 'stroke-width': 2};
+        const R = spec.r || 4, sym = s.symbol || 'circle';
+        const mark = (x, y) => {  // series.symbol: circle (default), square, triangle, diamond
+          if (sym === 'square') return svgEl('rect', {x: x - R, y: y - R, width: 2 * R, height: 2 * R, fill: s.color, ...dot}, sg);
+          if (sym === 'triangle') return svgEl('path', {d: `M${x},${y - 1.25 * R} L${x + 1.15 * R},${y + 0.75 * R} L${x - 1.15 * R},${y + 0.75 * R} Z`, fill: s.color, ...dot}, sg);
+          if (sym === 'diamond') return svgEl('path', {d: `M${x},${y - 1.3 * R} L${x + 1.3 * R},${y} L${x},${y + 1.3 * R} L${x - 1.3 * R},${y} Z`, fill: s.color, ...dot}, sg);
+          return svgEl('circle', {cx: x, cy: y, r: R, fill: s.color, ...dot}, sg);
+        };
+        (mk ? pts : (s.line ? [] : pts.slice(-1))).forEach(p => mark(px(p[0]), py(p[1])));
+      });
+      if (spec.powerlaw) {
+        const pl = spec.powerlaw, n = 80, pts = [];
+        for (let i = 0; i <= n; i++) {
+          const x = Math.exp(Math.log(x0) + (Math.log(x1) - Math.log(x0)) * i / n);
+          const y = Math.pow(10, pl.logA) * Math.pow(x, pl.slope);
+          if (y > 0) pts.push((pts.length ? 'L' : 'M') + px(x) + ',' + py(y));
+        }
+        svgEl('path', {d: pts.join(''), fill: 'none', stroke: '#444', 'stroke-width': 1.5, 'stroke-dasharray': '6 4'}, body);
+      }
+      const cross = svgEl('line', {y1: M.t, y2: M.t + hh, stroke: C.muted, 'stroke-width': 1, visibility: 'hidden'}, svg);
+      const mark = svgEl('circle', {r: 5, visibility: 'hidden'}, svg);
+      state = {px, py, vis, cross, W, M, w, groups, mark};
+    }
+
+    function highlight(s) {  // fade every series but s (none: restore all)
+      if (state) state.groups.forEach(o => o.g.setAttribute('opacity', !s || o.s === s ? 1 : 0.12));
+    }
+    function place(X, Y, ev, r) {  // tooltip beside the point, kept inside the plot
+      const tw = tip.offsetWidth, left = X / state.W * r.width;
+      tip.style.left = (left + 14 + tw > r.width ? left - tw - 14 : left + 14) + 'px';
+      const my = Y == null ? ev.clientY - r.top : Y / state.W * r.width;
+      tip.style.top = Math.max(4, Math.min(my + 14, r.height - tip.offsetHeight - 4)) + 'px';
+    }
+
+    plot.addEventListener('pointermove', ev => {
+      if (!state) return;
+      const r = plot.getBoundingClientRect(), mx = (ev.clientX - r.left) * state.W / r.width;
+      if (mx < state.M.l - 8 || mx > state.M.l + state.w + 8) { hide(); return; }
+      if (nearest) {  // the single point nearest the pointer, its series highlighted
+        const sr = svg.getBoundingClientRect(), k = state.W / sr.width;
+        const sx = (ev.clientX - sr.left) * k, sy = (ev.clientY - sr.top) * k;
+        let b = null;
+        state.vis.forEach(s => s.points.forEach(p => {
+          if (p[1] == null || !isFinite(p[1])) return;
+          const d = (state.px(p[0]) - sx) ** 2 + (state.py(p[1]) - sy) ** 2;
+          if (!b || d < b.d) b = {d, s, p};
+        }));
+        if (!b || b.d > SNAP * SNAP) { hide(); return; }
+        highlight(b.s);
+        const X = state.px(b.p[0]), Y = state.py(b.p[1]);
+        state.mark.setAttribute('cx', X); state.mark.setAttribute('cy', Y);
+        state.mark.setAttribute('fill', b.s.color); state.mark.setAttribute('visibility', 'visible');
+        tip.innerHTML = '';
+        const row = h('div', 'r', tip);
+        key(b.s.color, b.s.dash, row);
+        h('span', null, row, b.s.name + (b.p[4] != null ? ': ' + b.p[4] : ''));
+        let v = yv(b.p[1]);
+        if (b.p.length > 3 && b.p[2] != null) v += ' [' + yv(b.p[2]) + ', ' + yv(b.p[3]) + ']';
+        h('div', null, tip, yname + ' = ').appendChild(document.createElement('b')).textContent = v;
+        h('div', 'hd', tip, xname + ' = ' + fmt(b.p[0], spec.xfmt));
+        tip.style.display = 'block';
+        place(X, Y, ev, r);
+        return;
+      }
+      let best = null;
+      state.vis.forEach(s => s.points.forEach(p => {
+        if (p[1] == null || !isFinite(p[1])) return;
+        const d = Math.abs(state.px(p[0]) - mx);
+        if (!best || d < best.d) best = {d, x: p[0]};
+      }));
+      if (!best) { hide(); return; }
+      const X = state.px(best.x);
+      state.cross.setAttribute('x1', X); state.cross.setAttribute('x2', X); state.cross.setAttribute('visibility', 'visible');
+      tip.innerHTML = '';
+      h('div', 'hd', tip, xname + ' = ' + fmt(best.x, spec.xfmt));
+      state.vis.forEach(s => {
+        const p = s.points.find(q => q[0] === best.x && q[1] != null && isFinite(q[1]));
+        if (!p) return;
+        const row = h('div', 'r', tip);
+        key(s.color, s.dash, row);
+        let v = yv(p[1]);
+        if (p.length > 3 && p[2] != null) v += ' [' + yv(p[2]) + ', ' + yv(p[3]) + ']';
+        h('b', null, row, v);
+        h('span', null, row, s.name + (p[4] != null ? ': ' + p[4] : ''));
+      });
+      tip.style.display = 'block';
+      place(X, null, ev, r);  // follows the pointer vertically
+    });
+    function hide() {
+      tip.style.display = 'none';
+      if (!state) return;
+      state.cross.setAttribute('visibility', 'hidden');
+      state.mark.setAttribute('visibility', 'hidden');
+      highlight(null);
+    }
+    plot.addEventListener('pointerleave', hide);
+
+    const det = h('details', 'ri-data', fig);
+    h('summary', null, det, 'Data table');
+    const xsAll = [...new Set(spec.series.flatMap(s => s.points.map(p => p[0])))].sort((a, b) => a - b);
+    const tbl = h('table', null, h('div', 'ri-scroll', det)), hr = h('tr', null, tbl);
+    h('th', null, hr, xname);
+    spec.series.forEach(s => h('th', null, hr, s.name));
+    xsAll.forEach(x => {
+      const tr = h('tr', null, tbl);
+      h('td', null, tr, fmt(x, spec.xfmt));
+      spec.series.forEach(s => {
+        const p = s.points.find(q => q[0] === x);
+        let v = p ? yv(p[1]) : '';
+        if (p && p.length > 3 && p[2] != null) v += ' [' + yv(p[2]) + ', ' + yv(p[3]) + ']';
+        h('td', null, tr, v);
+      });
+    });
+    draw();
+    new ResizeObserver(draw).observe(plot);
+    return {draw, spec, fig};  // page scripts may edit spec.series[i].points in place and call draw()
+  }
+
+  // Sortable table: click a header to sort by that column.
+  function table(root, columns, rows) {
+    const t = h('table', null, h('div', 'ri-scroll', root)), hr = h('tr', null, t);
+    let dir = {};
+    columns.forEach((c, j) => {
+      const th = h('th', 'sortable', hr, c);
+      th.onclick = () => {
+        dir[j] = -(dir[j] || -1);
+        rows.sort((a, b) => {
+          const x = a[j], y = b[j];
+          if (typeof x === 'number' && typeof y === 'number') return dir[j] * (x - y);
+          return dir[j] * String(x).localeCompare(String(y));
+        });
+        body();
+      };
+    });
+    function body() {
+      [...t.querySelectorAll('tr.b')].forEach(r => r.remove());
+      rows.forEach(r => {
+        const tr = h('tr', 'b', t);
+        r.forEach(v => h('td', null, tr, typeof v === 'number' ? tfmt(v) : v));
+      });
+    }
+    body();
+  }
+  // page-wide: every chart's x (or y) axis to log or linear
+  function setAll(ax, log) { charts.forEach(c => c.setScale[ax] && c.setScale[ax](log)); }
+  return {line, table, setAll};
+})();
+</script>
+</head>
+<body>
+<a class="back" href="../../index.html">&larr; all results</a>
+<h1>01&#x27;&#x27;&#x27; - Interactive sparse coding</h1>
+<div class="meta">projection pursuit by gradient ascent on CIFAR-10 patches, live in the browser (WebGPU): type the objective G, watch the units appear, click one for its projection histogram, G and the integrand</div>
+<div class="tabmark"></div><nav class="tabbar"><a href="#a">a &middot; Interactive projection pursuit</a></nav><section class="tab" id="tab-a" data-tab="a"><div class="meta">runs on your GPU; type the objective; click a finished unit for its plots</div><p>Projection pursuit by gradient ascent (tab 01j of page 01) on 16 &times; 16 CIFAR-10 patches, live on your GPU. Each unit climbs
+\(\mathbb E[G(w\cdot z)]\) on the unit sphere, orthogonal to the units already found, by plain gradient steps; type any \(G\) you like.
+Click a finished unit to see where its objective comes from. Advanced settings has a <b>raw</b> switch (no whitening, variances kept).</p>
+<details><summary>how it works, in one paragraph</summary>
+<p>Patches are centred, projected onto their top \(M\) principal components and whitened there, so \(z\) has identity covariance and every
+projection \(u = w\cdot z\) with \(|w| = 1\) has unit variance: a unit Gaussian is the null. Unit \(k\) starts from a random direction
+orthogonal to the \(k-1\) found; each step takes the gradient of \(J(w) = \mathbb E[G(w\cdot z)]\) over all \(N\) patches, removes its components
+along \(w\) and along the found units, moves by the learning rate times what is left, Gram-Schmidts against the found units and
+renormalises. It stops when the remaining gradient is below the tolerance times the whole gradient, or at the step budget, and is
+then frozen. On the GPU a step is three small kernels over the \(M \times N\) whitened data; nothing is read back except a convergence
+number every ten steps, so a 64-unit run at \(N\) = 50,000 takes seconds. The pictures are the units mapped back to pixels.</p>
+</details>
+<div id="isc" class="ri-fig">
+  <style>
+    #isc .isc-main { display: grid; grid-template-columns: max-content 1fr; gap: 8px 12px; align-items: center; max-width: 1070px; margin-bottom: 10px; }
+    #isc .isc-main input[type=text] { width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 1em; padding: 4px 6px; }
+    #isc .isc-adv { display: grid; grid-template-columns: max-content 110px 1fr; gap: 6px 12px; align-items: center; margin: 8px 0 4px; max-width: 1070px; }
+    #isc .isc-adv input[type=number] { width: 100%; box-sizing: border-box; }
+    #isc .isc-adv .isc-help { font-size: 0.85em; color: #666; }
+    #isc details { margin: 4px 0 10px; } #isc summary { cursor: pointer; color: #444; font-size: 0.92em; }
+    #isc textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 0.95em; min-height: 7em; }
+    #isc .isc-side { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+    #isc .isc-plots canvas { display: block; width: 520px; border: 1px solid #ddd; border-top: none; } #isc .isc-plots canvas:first-child { border-top: 1px solid #ddd; } #isc .isc-plots canvas[hidden] { display: none; }
+    #isc .isc-small { font-size: 0.85em; color: #666; }
+  </style>
+  <div class="isc-main">
+    <label for="isc-gsel"><b>objective</b> G(u), maximised</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="isc-gsel" style="font-family:ui-monospace,Menlo,monospace;max-width:260px"></select>
+      <input id="isc-gexpr" type="text" value="-log(cosh(u))" spellcheck="false" aria-label="objective expression">
+    </div>
+    <span></span>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="ri-axis" id="isc-start" style="font-weight:bold;padding:4px 14px">start</button>
+      <button class="ri-axis" id="isc-stop">stop</button>
+      <button class="ri-axis" id="isc-reset">clear</button>
+      <span id="isc-gcheck" class="isc-small" style="color:#c33"></span>
+    </div>
+  </div>
+  <details id="isc-advdet"><summary>advanced settings</summary>
+    <div class="isc-adv">
+      <label for="isc-N">patches N</label><input id="isc-N" type="number" min="1000" max="100000" step="1000" value="50000"><span class="isc-help">16 &times; 16 patches sampled from 10,000 CIFAR-10 images; the whole set is used for every gradient</span>
+      <label for="isc-M">PCA dims M</label><input id="isc-M" type="number" min="4" max="256" step="1" value="64"><span class="isc-help">the 256 pixels are projected onto their top M principal components and whitened there; M is the most units there can be</span>
+      <label for="isc-units">units</label><input id="isc-units" type="number" min="1" max="256" step="1" value="64"><span class="isc-help">how many directions to find, one after another, each orthogonal to the ones before</span>
+      <label for="isc-lr">learning rate</label><input id="isc-lr" type="number" min="0.001" max="10" step="0.01" value="0.3"><span class="isc-help">step along the gradient on the sphere; 0.3-1 converges in a few hundred steps for log cosh</span>
+      <label for="isc-steps">max steps / unit</label><input id="isc-steps" type="number" min="10" max="100000" step="100" value="3000"><span class="isc-help">a unit that has not converged by then is frozen as it is</span>
+      <label for="isc-tol">tolerance</label><input id="isc-tol" type="number" min="1e-6" max="1" step="0.0001" value="0.001"><span class="isc-help">a unit has converged when the part of the gradient that can still move it (along the sphere, orthogonal to the found units) is below this fraction of the whole gradient</span>
+      <label for="isc-eps">whitening floor &epsilon;</label><input id="isc-eps" type="number" min="0" max="1" step="0.0001" value="0.0001"><span class="isc-help">whitening divides each principal component by its standard deviation; eigenvalues below &epsilon; &times; the largest are raised to that floor so near-empty directions are not blown up. At 10<sup>-4</sup> it never binds on CIFAR patches at M &le; 192; 10<sup>-2</sup> acts as a low-pass filter</span>
+      <label for="isc-raw">data</label><span><label class="isc-help"><input type="checkbox" id="isc-raw"> raw</label></span><span class="isc-help">unchecked: whitened, every principal component scaled to unit variance, so a unit Gaussian is the null for every direction. Checked: the variances are kept (one common scale, so a random direction has unit variance on average); the plots then use u/&sigma; so the Gaussian comparison is variance-matched, and &sigma; is reported</span>
+      <label for="isc-seed">seed</label><input id="isc-seed" type="number" min="0" max="99999" step="1" value="0"><span><label class="isc-help"><input type="checkbox" id="isc-randseed" checked> new random seed every run</label></span>
+      <span></span><span></span><span><button class="ri-axis" id="isc-defaults">restore defaults</button> <span id="isc-backend" class="isc-small"></span></span>
+    </div>
+  </details>
+  <details id="isc-listdet"><summary>edit the list of objectives</summary>
+    <div class="isc-small" style="margin:4px 0">One expression per line, in u; every one is maximised, so write <code>-log(cosh(u))</code> for the log cosh contrast. Functions: sin cos tan exp log cosh sinh tanh abs sqrt sign relu softplus max min; <code>**</code> or <code>^</code>; <code>pi</code>, <code>e</code>. Square brackets are indicators: <code>[abs(u) &gt; 3]</code> is 1 where true, 0 elsewhere (its derivative is a Gaussian bump of width 0.1 at the edge, so it still pushes). The list is kept in this browser.</div>
+    <textarea id="isc-glist" spellcheck="false"></textarea>
+    <div style="margin-top:4px;display:flex;gap:8px;align-items:center"><button class="ri-axis" id="isc-gsave">save list</button><button class="ri-axis" id="isc-gdefaults">restore default list</button><span id="isc-gliststat" class="isc-small"></span></div>
+  </details>
+  <div id="isc-status" style="font-size:0.9em;color:#444;min-height:1.3em;margin:2px 0 6px"></div>
+  <div class="isc-side">
+    <div>
+      <canvas id="isc-grid" width="520" height="520" style="border:1px solid #ddd;background:#fafafa;display:block;cursor:crosshair;image-rendering:pixelated"></canvas>
+      <div class="caption" style="max-width:520px">Units in the order found. Red frame: still climbing. Blue frame: shown on the right. Click a finished unit, even while the rest are running.</div>
+    </div>
+    <div style="width:520px">
+      <div class="isc-plots">
+        <canvas id="isc-p1" width="520" height="190"></canvas>
+        <canvas id="isc-p2" width="520" height="150"></canvas>
+        <canvas id="isc-p3" width="520" height="180"></canvas>
+        <canvas id="isc-p4" width="520" height="150" hidden></canvas>
+      </div>
+      <div class="ri-guide" style="gap:8px 16px;margin-top:6px;align-items:center;font-size:0.9em">
+        <label>x max <input id="isc-xmax" type="range" min="2" max="10" step="0.5" value="6" style="width:120px;vertical-align:middle"> <span id="isc-xmaxv">6</span></label>
+        <label><input type="checkbox" id="isc-logy"> log y</label>
+        <label><input type="checkbox" id="isc-gauss" checked> Gaussian</label>
+        <label><input type="checkbox" id="isc-show4"> gradient pressure p(u)&thinsp;g(u)</label>
+      </div>
+      <div id="isc-phead" class="isc-small" style="min-height:1.2em;margin-top:4px"></div>
+      <div id="isc-pstat" style="font-size:0.9em;color:#444"></div>
+      <div id="isc-hover" class="isc-small" style="min-height:1.2em">&nbsp;</div>
+      <div class="caption">u = w &middot; z, the projection of the patches on the unit (whitened: unit variance by construction; raw: the axis is u/&sigma;); the dashed curve is the Gaussian of the same variance. Top: its density. Middle: G(u). Bottom: p(u)&thinsp;G(u), whose area is the objective E[G]: where it sits is where the cost lands.</div>
+    </div>
+  </div>
+</div>
+
+<script src="gparse.js"></script><script src="data.js"></script><script src="app.js"></script></section><script>(function(){const tabs=[...document.querySelectorAll('section.tab')],
+links=[...document.querySelectorAll('.tabbar a')],mark=document.querySelector('.tabmark');
+function show(){const id=location.hash.slice(1),t=tabs.find(x=>x.dataset.tab===id)||tabs[0];
+tabs.forEach(x=>x.hidden=x!==t);links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+t.dataset.tab));
+if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise([t]);}
+window.addEventListener('hashchange',()=>{show();if(scrollY>mark.offsetTop)scrollTo(0,mark.offsetTop);});show();})();</script>
+</body>
+</html>

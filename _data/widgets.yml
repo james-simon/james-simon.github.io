@@ -85,3 +85,8 @@
   title: "MAISI lecture materials: DL at infinite width"
   desc: ""
   hidden: false
+
+- slug: gabors
+  title: vibecoded Gabor-finding widgets
+  desc: ""
+  hidden: false
