@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%276%27%20fill%3D%27%23a3412a%27%2F%3E%3Ctext%20x%3D%2716%27%20y%3D%2725%27%20font-family%3D%27Georgia%2C%20Times%20New%20Roman%2C%20serif%27%20font-size%3D%2725%27%20text-anchor%3D%27middle%27%20fill%3D%27%23fff%27%3E%26%23920%3B%3C%2Ftext%3E%3C%2Fsvg%3E">
-<title>01 - The NNGP</title>
+<title>1. Random Initialization</title>
 <style>
 body { font-family: Georgia, serif; max-width: 1200px; margin: 40px auto; padding: 0 24px;
   background: #f9f9f9; color: #222; }
@@ -519,7 +519,7 @@ const RI = (() => {
 </head>
 <body>
 <a class="back" href="../../index.html">&larr; main page</a>
-<h1>01 - The NNGP</h1>
+<h1>1. Random Initialization</h1>
 <div class="meta"></div>
 <div class="tabmark"></div><nav class="tabbar"><a href="#01a">01a &middot; Random networks</a><a href="#01b">01b &middot; Two images</a></nav><section class="tab" id="tab-01a" data-tab="01a">
 <style>
@@ -631,7 +631,7 @@ const RI = (() => {
     // layer labels as in 02a (x left of the inputs, sigma over each hidden layer, f(x) right of the output) and each matrix's
     // init rule under it: weights N(0, 1/fan-in) (fan-in 2 for W_1), biases N(0, 1) on hidden layers only
     // rules wider than a layer gap alternate between two rows (nets of depth >= 3), so the layers can sit close together
-    const fs = 1.05, stagger = true, rowH = Math.round((c.bias ? 2 : 1) * 1.5 * 16 * fs) + 4;
+    const fs = 1.05, stagger = c.depth >= 3, rowH = Math.round((c.bias ? 2 : 1) * 1.5 * 16 * fs) + 4;
     const PL = 44, PT = 40, PR = 76, PB = 12 + rowH * (stagger ? 2 : 1), mid = top + span / 2, L = cols.length - 1;
     wrap.style.padding = `${PT}px ${PR}px ${PB}px ${PL}px`;
     $('nn-lead').style.marginTop = `${PT + mid}px`;   // centred on the nodes, not on the box (which includes the rules)
@@ -642,7 +642,10 @@ const RI = (() => {
     for (let l = 1; l <= c.depth; l++) {
       let h = `\\((W_{${l}})_{${l === c.depth ? 'i' : 'ij'}} \\sim \\mathcal{N}\\big(0, ${l === 1 ? '\\tfrac{1}{2}' : '\\tfrac{1}{n}'}\\big)\\)`;
       if (c.bias && l < c.depth) h += `<br>\\((\\mathbf{b}_{${l}})_{i} \\sim \\mathcal{N}(0, 1)\\)`;
-      put('nn-rule', h, `left: ${PL + (xs[l - 1] + xs[l]) / 2}px; top: ${PT + H + 6 + (stagger ? ((l - 1) % 2) * rowH : 0)}px; font-size: ${fs}em`);
+      const at = c.depth === 2   // depth 2: both rules on one row, W_1's ending left of the hidden layer and W_2's starting right of it (James)
+        ? (l === 1 ? `right: calc(100% - ${PL + xs[1] - 10}px); transform: none; text-align: right;` : `left: ${PL + xs[1] + 10}px; transform: none; text-align: left;`)
+        : `left: ${PL + (xs[l - 1] + xs[l]) / 2}px;`;
+      put('nn-rule', h, `${at} top: ${PT + H + 6 + (stagger ? ((l - 1) % 2) * rowH : 0)}px; font-size: ${fs}em`);
     }
     typeset(wrap);
   }
@@ -872,7 +875,7 @@ const RI = (() => {
 </div>
 <div class="nn2-figs">
   <div class="nn-plot" id="nn2-plotbox"><canvas id="nn2-plot"></canvas>
-    <div class="nn-xlabel" style="left:70px;right:110px">\(f(\mathbf{x}_1)\)</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\) at init</div></div>
+    <div class="nn-xlabel" style="left:70px;right:110px">\(f(\mathbf{x}_1)\) at init</div><div class="nn-ylabel" style="top:calc(50% + 28px)">\(f(\mathbf{x}_2)\) at init</div></div>
   <div class="nn-status" id="nn2-status"></div>
 </div>
 <script>
