@@ -91,16 +91,17 @@ section.tab > details.summary > summary { font-size: 1.1em; border-bottom: none;
 details.summary ul { margin: 10px 0 4px; }
 .ri-scroll td:first-child { white-space: nowrap; }
 
-.refs { margin-top: 40px; }
-.refs h2 { font-size: 1.05em; margin: 0 0 6px; padding: 0 4px; color: #333; }
+.refs { margin-top: 48px; }
+.refs h2 { font-size: 1.45em; margin: 0 0 8px; padding: 0 4px; color: #333; }
 .refs ul { list-style: none; padding: 0; margin: 0; }
-.refs li { padding: 6px 4px; font-size: 0.95em; }
+.refs li { padding: 8px 4px; font-size: 1.3em; max-width: none; }
 .expt-list li { display: grid; grid-template-columns: 1fr auto; column-gap: 24px; align-items: baseline; }
 .expt-list li > a, .expt-list li > .desc { grid-column: 1; }
-.expt-list li .papers { grid-column: 2; grid-row: 1; display: flex; gap: 18px; font-size: 0.85em; padding: 12px 4px 2px; }
+.expt-list li > a { font-size: 1.6em; padding: 20px 4px 6px; }   /* bigger than infra.web's default (James, 2026-11-13); the h1 keeps its size */
+.expt-list li .papers { grid-column: 2; grid-row: 1; display: flex; gap: 24px; font-size: 1.2em; padding: 20px 4px 6px; }
 .expt-list li .papers a { display: inline; padding: 0; font-size: 1em; color: #6b7f99; }
 .expt-list li .papers a:hover { color: #2266cc; }
-@media (max-width: 640px) { .expt-list li { grid-template-columns: 1fr; } .expt-list li .papers { grid-column: 1; grid-row: auto; padding: 0 4px 10px; flex-wrap: wrap; } }
+@media (max-width: 640px) { .expt-list li { grid-template-columns: 1fr; } .expt-list li .papers { grid-column: 1; grid-row: auto; padding: 0 4px 10px; flex-wrap: wrap; row-gap: 6px; } }
 </style>
 </head>
 <body>
