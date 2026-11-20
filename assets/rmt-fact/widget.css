@@ -1,0 +1,178 @@
+/* The widget in "The most useful random matrix theory fact I know". */
+.rmt {
+  --rmt-exp: #1f7c77;   /* the site's teal */
+  --rmt-theory: #10122a; /* the nav's midnight */
+  margin: 1.8em 0 2em;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.rmt-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.rmt-kinds {
+  display: flex;
+  align-self: flex-start;
+  max-width: 100%;
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rmt-kinds button {
+  padding: 4px 12px 5px;
+  font: inherit;
+  color: var(--muted);
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.rmt-kinds button + button { border-left: 1px solid var(--rule-strong); }
+.rmt-kinds button:hover { color: var(--ink); background: var(--panel); }
+.rmt-kinds button[aria-checked="true"] { color: var(--paper); background: var(--night); }
+.rmt-kinds button:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
+
+.rmt-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 32px;
+}
+
+.rmt-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.rmt-val { flex: none; width: 4.6em; white-space: nowrap; }
+.rmt-val i { font-family: var(--book); font-size: 18px; }
+.rmt-val output { font-variant-numeric: tabular-nums; }
+
+/* Sliders: a hairline track, darker up to the thumb's limit (for n, the part past d is pale). */
+.rmt-slider input[type="range"] {
+  --limit: 100%;
+  flex: 1;
+  min-width: 0;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.rmt-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--rule-strong) var(--limit), var(--rule) var(--limit));
+  border-radius: 1px;
+}
+
+.rmt-slider input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--rule-strong) var(--limit), var(--rule) var(--limit));
+  border-radius: 1px;
+}
+
+.rmt-slider input[type="range"]::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -6px;
+  background: var(--night);
+  border: 0;
+  border-radius: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.rmt-slider input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--night);
+  border: 0;
+  border-radius: 50%;
+}
+
+.rmt-slider input[type="range"]:focus-visible { outline: none; }
+.rmt-slider input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--link); }
+.rmt-slider input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--link); }
+
+.rmt-plots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px;
+}
+
+.rmt-panel { min-width: 0; }
+
+.rmt-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  min-height: 26px;
+  padding-left: 46px; /* line up with the plot's left axis */
+  font-size: 12px;
+}
+
+.rmt-title { font-size: 16px; }
+
+.rmt-legend { color: var(--muted); white-space: nowrap; }
+
+.rmt-key-dot, .rmt-key-line { display: inline-block; vertical-align: middle; margin-right: 5px; }
+.rmt-key-dot { width: 6px; height: 6px; background: var(--rmt-exp); border-radius: 50%; }
+.rmt-key-line { width: 16px; height: 2px; margin-left: 12px; background: var(--rmt-theory); }
+
+.rmt svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.rmt-axes text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+.rmt-axes .rmt-xlabel { font-family: var(--book); font-size: 16px; font-style: italic; fill: var(--ink); }
+.rmt-axis { stroke: var(--rule-strong); stroke-width: 1; }
+.rmt-tick { stroke: var(--rule-strong); stroke-width: 1; }
+.rmt-grid { stroke: var(--rule); stroke-width: 1; }
+
+.rmt-spec-dots circle { fill: var(--ink); }
+.rmt-exp-dots circle { fill: var(--rmt-exp); fill-opacity: .85; }
+.rmt-theory { fill: none; stroke: var(--rmt-theory); stroke-width: 1.6; stroke-linejoin: round; }
+.rmt-theory-pt { fill: var(--rmt-theory); }
+
+.rmt-plot { position: relative; }
+.rmt-plot svg { transition: opacity .2s, filter .2s; }
+
+.rmt-running {
+  position: absolute;
+  inset: 0 0 34px 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: .04em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.running .rmt-plot svg { opacity: .3; filter: grayscale(1); }
+.running .rmt-running { opacity: 1; }
+
+@media (max-width: 600px) {
+  .rmt-sliders, .rmt-plots { grid-template-columns: 1fr; }
+  .rmt-kinds button { padding: 4px 9px 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rmt-plot svg, .rmt-running { transition: none; }
+}
+
+.rmt-kinds button:focus:not(:focus-visible) { outline: none; }

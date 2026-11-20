@@ -1,0 +1,31 @@
+<figure class="rmt" id="rmt" data-worker="{{ site.baseurl }}/assets/rmt-fact/worker.js">
+  <link rel="stylesheet" href="{{ site.baseurl }}/assets/rmt-fact/widget.css">
+  <div class="rmt-controls">
+    <div class="rmt-kinds" role="radiogroup" aria-label="Spectrum">
+      <button type="button" role="radio" data-kind="power" aria-checked="true">power law</button>
+      <button type="button" role="radio" data-kind="exp" aria-checked="false">exponential</button>
+      <button type="button" role="radio" data-kind="step" aria-checked="false">step</button>
+    </div>
+    <div class="rmt-sliders">
+      <label class="rmt-slider"><span class="rmt-val"><i>d</i> = <output id="rmt-d-out"></output></span><input id="rmt-d" type="range" aria-label="d"></label>
+      <label class="rmt-slider"><span class="rmt-val"><i>n</i> = <output id="rmt-n-out"></output></span><input id="rmt-n" type="range" aria-label="n"></label>
+    </div>
+  </div>
+  <div class="rmt-plots">
+    <div class="rmt-panel">
+      <div class="rmt-head"><span class="rmt-title">$\lambda_i$</span></div>
+      <svg id="rmt-spec" viewBox="0 0 360 250" role="img" aria-label="The spectrum, on log-log axes"></svg>
+    </div>
+    <div class="rmt-panel" id="rmt-proj-panel">
+      <div class="rmt-head">
+        <span class="rmt-title">$\E{\mX}{\mPi_{ii}}$</span>
+        <span class="rmt-legend"><span class="rmt-key-dot"></span>experiment <span class="rmt-key-line"></span>theory</span>
+      </div>
+      <div class="rmt-plot">
+        <svg id="rmt-proj" viewBox="0 0 360 250" role="img" aria-label="Diagonal of the expected projector: experiment and theory"></svg>
+        <div class="rmt-running" aria-live="polite">running</div>
+      </div>
+    </div>
+  </div>
+</figure>
+<script src="{{ site.baseurl }}/assets/rmt-fact/widget.js" defer></script>
