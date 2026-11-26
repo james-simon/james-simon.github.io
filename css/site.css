@@ -161,6 +161,89 @@ th, td { border-color: var(--rule) !important; }
   .site-nav .navbar-brand { margin-right: 4px; }
 }
 
+/* The mystery button (modes/nav.html) sits in the top right corner of the page, outside the
+   centered column. Its position is set only while it's in the nav, because shatter mode clones
+   it and drops the clone down the page. */
+.mode-button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font: 400 16px/1 "Silkscreen", var(--mono); /* 16px puts this font's pixels on whole pixels */
+  color: var(--night-ink);
+  background: none; /* so the clone that shatter mode drops is an outline, not a dark block */
+  border: 2px solid #4a4f80;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.site-nav > .mode-button { position: absolute; top: 50%; right: 14px; margin-top: -13px; }
+
+/* A bigger target for thumbs. */
+.site-nav > .mode-button::after { content: ""; position: absolute; inset: -9px; }
+
+/* Not on touch screens, where "hover" would stick after a tap. */
+@media (hover: hover) {
+  .site-nav > .mode-button:hover { color: var(--accent); border-color: var(--accent); }
+}
+
+.site-nav > .mode-button:active { color: var(--accent); border-color: var(--accent); }
+.site-nav > .mode-button:focus { outline: none; }
+.site-nav > .mode-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Its complaints, in the same style as the "copied" popup. */
+.site-nav > .mode-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 14px;
+  z-index: 10;
+  margin: 0;
+  padding: 3px 9px 4px;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--night);
+  border: 2px solid var(--accent);
+  font: 400 14px/18px "Silkscreen", var(--mono);
+  visibility: hidden;
+  transform-origin: top right;
+}
+
+.mode-popup.show { animation: mode-popup 2s steps(1, end) forwards; }
+
+@keyframes mode-popup {
+  0%   { visibility: visible; transform: translateY(-8px) scale(.7); }
+  5%   { visibility: visible; transform: translateY(4px) scale(1.15); }
+  10%  { visibility: visible; transform: none; }
+  92%, 100% { visibility: hidden; transform: none; }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .site-nav > .mode-button:hover { animation: mode-button-pop .24s steps(1, end); }
+  @keyframes mode-button-pop {
+    0%   { transform: scale(.85); }
+    34%  { transform: scale(1.15); }
+    67%, 100% { transform: none; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-popup.show { animation: mode-popup-still 2s steps(1, end) forwards; }
+  @keyframes mode-popup-still {
+    0%, 92% { visibility: visible; }
+    100% { visibility: hidden; }
+  }
+}
+
+/* Where the centered column would reach the button, the nav makes room for it. */
+@media (max-width: 979px) {
+  .site-nav { padding-right: 50px; }
+}
+
+@media (max-width: 340px) {
+  .site-nav .nav-link { padding: 8px 5px !important; }
+}
+
 
 /* ---- Footer ----------------------------------------------------------- */
 

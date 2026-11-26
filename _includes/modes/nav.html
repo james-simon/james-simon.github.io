@@ -1,255 +1,151 @@
 <script>
   // ============================================================================
-  // NAVIGATION AND MYSTERY BUTTON LOGIC
+  // MYSTERY BUTTON LOGIC
   // ============================================================================
 
-  // Initialize on page load
+  // The button itself is in navigation.html; it sits in the top right corner of the nav bar.
   document.addEventListener('DOMContentLoaded', () => {
-    // Add mysterious glyphs to navbar
-    const navList = document.querySelector('nav ul.navbar-nav');
-    if (navList) {
-      // Single question mark icon that randomly picks a mode
-      const mysteryLi = document.createElement('li');
-      mysteryLi.className = 'nav-item active';
+    const mysteryButton = document.getElementById('mode-button');
+    const mysteryPopup = document.getElementById('mode-popup');
+    if (!mysteryButton) return;
 
-      const mysteryLink = document.createElement('a');
-      mysteryLink.className = 'nav-link';
-      mysteryLink.style.cursor = 'pointer';
-      mysteryLink.href = '#';
-
-      const mysteryIcon = document.createElement('i');
-      mysteryIcon.className = 'fas fa-question-circle';
-
-      mysteryLink.appendChild(mysteryIcon);
-      mysteryLi.appendChild(mysteryLink);
-
-      mysteryLink.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        // Check if on mobile device
-        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        const isSmallScreen = window.innerWidth < 1024;
-        const isMobile = isTouchDevice && isSmallScreen;
-
-        // Check localStorage for click count
-        let clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0');
-
-        // If user hasn't clicked 3 times yet, show warning and increment
-        if (clickCount < 3) {
-          const messages = ["Hey, stop that!", "Can't you read?", "I'm serious!"];
-          alert(messages[clickCount]);
-          clickCount++;
-          localStorage.setItem('mysteryButtonClicks', clickCount.toString());
-          return; // Don't activate mode
-        }
-
-        // After 3 clicks, cycle through modes sequentially
-        // Define the rotation order (skip gravity, vacuum, pong on mobile)
-        const modeSequence = isMobile
-          ? ['shatter', 'bird', 'splash', 'panic']
-          : ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
-
-        // Get current mode index with error handling
-        let modeIndex = 0;
-        try {
-          const storedIndex = localStorage.getItem('mysteryModeIndex');
-          if (storedIndex !== null) {
-            const parsed = parseInt(storedIndex);
-            // Validate the index is within bounds
-            if (!isNaN(parsed) && parsed >= 0 && parsed < modeSequence.length) {
-              modeIndex = parsed;
-            } else {
-              // Invalid index, reset to 0
-              console.warn('Invalid mysteryModeIndex, resetting to 0');
-              modeIndex = 0;
-            }
-          }
-        } catch (e) {
-          console.error('Error reading mysteryModeIndex:', e);
-          modeIndex = 0;
-        }
-
-        // Get the current mode
-        const currentMode = modeSequence[modeIndex];
-
-        // Increment and save the next index (with wraparound)
-        const nextIndex = (modeIndex + 1) % modeSequence.length;
-        try {
-          localStorage.setItem('mysteryModeIndex', nextIndex.toString());
-        } catch (e) {
-          console.error('Error saving mysteryModeIndex:', e);
-        }
-
-        // Reset button appearance (remove hover state)
-        mysteryLink.blur();
-        mysteryLink.style.setProperty('background-color', '', 'important');
-        mysteryLink.style.setProperty('color', '', 'important');
-        mysteryIcon.style.setProperty('color', 'black', 'important');
-
-        // Activate the selected mode with error handling
-        try {
-          switch(currentMode) {
-            case 'shatter':
-              if (typeof enterShatterMode === 'function') {
-                enterShatterMode();
-              } else {
-                console.error('enterShatterMode is not defined');
-              }
-              break;
-            case 'gravity':
-              if (typeof enterGravityMode === 'function') {
-                enterGravityMode();
-              } else {
-                console.error('enterGravityMode is not defined');
-              }
-              break;
-            case 'bird':
-              if (typeof enterBirdMode === 'function') {
-                enterBirdMode();
-              } else {
-                console.error('enterBirdMode is not defined');
-              }
-              break;
-            case 'splash':
-              window.location.href = '{{site.baseurl}}/splash/';
-              break;
-            case 'vacuum':
-              if (typeof enterVacuumMode === 'function') {
-                enterVacuumMode();
-              } else {
-                console.error('enterVacuumMode is not defined');
-              }
-              break;
-            case 'panic':
-              if (typeof enterPanicMode === 'function') {
-                enterPanicMode();
-              } else {
-                console.error('enterPanicMode is not defined');
-              }
-              break;
-            case 'pong':
-              if (typeof enterPongMode === 'function') {
-                enterPongMode();
-              } else {
-                console.error('enterPongMode is not defined');
-              }
-              break;
-            default:
-              console.error('Unknown mode:', currentMode);
-          }
-        } catch (e) {
-          console.error('Error activating mode:', currentMode, e);
-        }
-      });
-
-      navList.appendChild(mysteryLi);
-
-      /* DEBUG VERSION: Uncomment to show all five icons for debugging
-      // Shatter mode icon (question mark)
-      const shatterLi = document.createElement('li');
-      shatterLi.className = 'nav-item active';
-
-      const shatterLink = document.createElement('a');
-      shatterLink.className = 'nav-link';
-      shatterLink.style.cursor = 'pointer';
-      shatterLink.href = '#';
-
-      const shatterIcon = document.createElement('i');
-      shatterIcon.className = 'fas fa-question-circle';
-
-      shatterLink.appendChild(shatterIcon);
-      shatterLi.appendChild(shatterLink);
-
-      shatterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        enterShatterMode();
-      });
-
-      navList.appendChild(shatterLi);
-
-      // Gravity mode icon (magnet)
-      const gravityLi = document.createElement('li');
-      gravityLi.className = 'nav-item active';
-
-      const gravityLink = document.createElement('a');
-      gravityLink.className = 'nav-link';
-      gravityLink.style.cursor = 'pointer';
-      gravityLink.href = '#';
-
-      const gravityIcon = document.createElement('i');
-      gravityIcon.className = 'fas fa-magnet';
-
-      gravityLink.appendChild(gravityIcon);
-      gravityLi.appendChild(gravityLink);
-
-      gravityLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        enterGravityMode();
-      });
-
-      navList.appendChild(gravityLi);
-
-      // Vacuum mode icon (meteor)
-      const vacuumLi = document.createElement('li');
-      vacuumLi.className = 'nav-item active';
-
-      const vacuumLink = document.createElement('a');
-      vacuumLink.className = 'nav-link';
-      vacuumLink.style.cursor = 'pointer';
-      vacuumLink.href = '#';
-
-      const vacuumIcon = document.createElement('i');
-      vacuumIcon.className = 'fas fa-meteor';
-
-      vacuumLink.appendChild(vacuumIcon);
-      vacuumLi.appendChild(vacuumLink);
-
-      vacuumLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        enterVacuumMode();
-      });
-
-      navList.appendChild(vacuumLi);
-
-      // Splash page link icon (home)
-      const splashLi = document.createElement('li');
-      splashLi.className = 'nav-item active';
-
-      const splashLink = document.createElement('a');
-      splashLink.className = 'nav-link';
-      splashLink.style.cursor = 'pointer';
-      splashLink.href = '{{site.baseurl}}/splash/';
-
-      const splashIcon = document.createElement('i');
-      splashIcon.className = 'fas fa-home';
-
-      splashLink.appendChild(splashIcon);
-      splashLi.appendChild(splashLink);
-
-      navList.appendChild(splashLi);
-
-      // Pong mode icon (gamepad)
-      const pongLi = document.createElement('li');
-      pongLi.className = 'nav-item active';
-
-      const pongLink = document.createElement('a');
-      pongLink.className = 'nav-link';
-      pongLink.style.cursor = 'pointer';
-      pongLink.href = '#';
-
-      const pongIcon = document.createElement('i');
-      pongIcon.className = 'fas fa-gamepad';
-
-      pongLink.appendChild(pongIcon);
-      pongLi.appendChild(pongLink);
-
-      pongLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        enterPongMode();
-      });
-
-      navList.appendChild(pongLi);
-      */
+    // Shows a complaint under the button
+    function complain(message) {
+      if (!mysteryPopup) return;
+      mysteryPopup.textContent = message;
+      mysteryPopup.classList.remove('show');
+      void mysteryPopup.offsetWidth; // restarts the animation on repeat clicks
+      mysteryPopup.classList.add('show');
     }
+
+    mysteryButton.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // One mode at a time
+      if (shatterActive || gravityActive || vacuumActive || pongActive || birdModeActive || panicActive) return;
+
+      // Check if on mobile device
+      const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      const isSmallScreen = window.innerWidth < 1024;
+      const isMobile = isTouchDevice && isSmallScreen;
+
+      // Check localStorage for click count
+      let clickCount = 0;
+      try {
+        clickCount = parseInt(localStorage.getItem('mysteryButtonClicks') || '0') || 0;
+      } catch (e) {
+        console.error('Error reading mysteryButtonClicks:', e);
+        clickCount = 3; // can't keep count, so skip the warnings
+      }
+
+      // If user hasn't clicked 3 times yet, show warning and increment
+      if (clickCount < 3) {
+        const messages = ["Hey, stop that!", "Can't you read?", "I'm serious!"];
+        complain(messages[clickCount]);
+        clickCount++;
+        try {
+          localStorage.setItem('mysteryButtonClicks', clickCount.toString());
+        } catch (e) {
+          console.error('Error saving mysteryButtonClicks:', e);
+        }
+        return; // Don't activate mode
+      }
+
+      // After 3 clicks, cycle through modes sequentially
+      // Define the rotation order (skip gravity, vacuum, pong on mobile)
+      const modeSequence = isMobile
+        ? ['shatter', 'bird', 'splash', 'panic']
+        : ['shatter', 'gravity', 'bird', 'splash', 'vacuum', 'panic', 'pong'];
+
+      // Get current mode index with error handling
+      let modeIndex = 0;
+      try {
+        const storedIndex = localStorage.getItem('mysteryModeIndex');
+        if (storedIndex !== null) {
+          const parsed = parseInt(storedIndex);
+          // Validate the index is within bounds
+          if (!isNaN(parsed) && parsed >= 0 && parsed < modeSequence.length) {
+            modeIndex = parsed;
+          } else {
+            // Invalid index, reset to 0
+            console.warn('Invalid mysteryModeIndex, resetting to 0');
+            modeIndex = 0;
+          }
+        }
+      } catch (e) {
+        console.error('Error reading mysteryModeIndex:', e);
+        modeIndex = 0;
+      }
+
+      // Get the current mode
+      const currentMode = modeSequence[modeIndex];
+
+      // Increment and save the next index (with wraparound)
+      const nextIndex = (modeIndex + 1) % modeSequence.length;
+      try {
+        localStorage.setItem('mysteryModeIndex', nextIndex.toString());
+      } catch (e) {
+        console.error('Error saving mysteryModeIndex:', e);
+      }
+
+      // Reset button appearance (remove focus state, and any complaint still showing)
+      mysteryButton.blur();
+      if (mysteryPopup) mysteryPopup.classList.remove('show');
+
+      // Activate the selected mode with error handling
+      try {
+        switch(currentMode) {
+          case 'shatter':
+            if (typeof enterShatterMode === 'function') {
+              enterShatterMode();
+            } else {
+              console.error('enterShatterMode is not defined');
+            }
+            break;
+          case 'gravity':
+            if (typeof enterGravityMode === 'function') {
+              enterGravityMode();
+            } else {
+              console.error('enterGravityMode is not defined');
+            }
+            break;
+          case 'bird':
+            if (typeof enterBirdMode === 'function') {
+              enterBirdMode();
+            } else {
+              console.error('enterBirdMode is not defined');
+            }
+            break;
+          case 'splash':
+            window.location.href = '{{site.baseurl}}/splash/';
+            break;
+          case 'vacuum':
+            if (typeof enterVacuumMode === 'function') {
+              enterVacuumMode();
+            } else {
+              console.error('enterVacuumMode is not defined');
+            }
+            break;
+          case 'panic':
+            if (typeof enterPanicMode === 'function') {
+              enterPanicMode();
+            } else {
+              console.error('enterPanicMode is not defined');
+            }
+            break;
+          case 'pong':
+            if (typeof enterPongMode === 'function') {
+              enterPongMode();
+            } else {
+              console.error('enterPongMode is not defined');
+            }
+            break;
+          default:
+            console.error('Unknown mode:', currentMode);
+        }
+      } catch (e) {
+        console.error('Error activating mode:', currentMode, e);
+      }
+    });
   });
 </script>

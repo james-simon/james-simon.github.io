@@ -27,6 +27,37 @@
     pointer-events: none;
   }
 
+  /* A letter's clone starts exactly on top of the letter, not pushed down by the page's
+     line spacing. */
+  span.char-particle {
+    line-height: normal;
+  }
+
+  /* Some letters and icons are pale, because they sit on something dark (the nav bar, mostly).
+     Once they leave it they'd be invisible against the page, so they take the opposite of
+     whatever is behind them: still pale over the bar, dark over the paper. */
+  .char-particle.pale-ink {
+    mix-blend-mode: difference;
+  }
+
+  /* Shatter mode clones whole elements, and every icon also gets a clone of its own. Without
+     this, an icon inside a cloned element would show up twice. */
+  .char-particle i,
+  .char-particle svg {
+    visibility: hidden;
+  }
+
+  /* While a mode is running, the mystery button goes back to its resting look, even with the
+     mouse still over it, so its "?" flies off in the same color as the other nav letters. */
+  body.shatter-locked .site-nav > .mode-button,
+  body.bird-locked .site-nav > .mode-button,
+  body.panic-locked .site-nav > .mode-button {
+    color: var(--night-ink);
+    border-color: #4a4f80;
+    animation: none;
+    cursor: default;
+  }
+
   body.shatter-locked {
     position: fixed;
     top: 0;
@@ -213,5 +244,23 @@
     if (textWrapped) return;
     textWrapped = true;
     wrapTextNodes(document.body);
+
+    // Mark the pale letters and icons. The particles are clones, so they keep the class.
+    // A letter has the color of its parent, so each parent only needs checking once.
+    const paleParents = new Map();
+    document.querySelectorAll('.char, i, svg').forEach(el => {
+      const colored = el.classList.contains('char') ? el.parentElement : el;
+      if (!paleParents.has(colored)) {
+        paleParents.set(colored, isPale(window.getComputedStyle(colored).color));
+      }
+      if (paleParents.get(colored)) el.classList.add('pale-ink');
+    });
+  }
+
+  // Whether a computed color like "rgb(211, 215, 238)" is light enough to vanish on the page
+  function isPale(color) {
+    if (!color.startsWith('rgb')) return false;
+    const [r, g, b] = color.match(/[\d.]+/g).map(Number);
+    return 0.299 * r + 0.587 * g + 0.114 * b > 150;
   }
 </script>

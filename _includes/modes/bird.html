@@ -12,12 +12,9 @@
       console.log('Starting bird mode...');
 
       // Disable clicks on mystery button (but keep it visible so it can become a bird)
-      const mysteryIcon = document.querySelector('.fa-question-circle');
-      if (mysteryIcon) {
-        const mysteryLink = mysteryIcon.closest('a.nav-link');
-        if (mysteryLink) {
-          mysteryLink.style.pointerEvents = 'none';
-        }
+      const mysteryButton = document.getElementById('mode-button');
+      if (mysteryButton) {
+        mysteryButton.style.pointerEvents = 'none';
       }
 
       // Create flashy "BIRD MODE ACTIVATED" message FIRST (before laggy operations)

@@ -41,6 +41,13 @@
           </ul>
         </div>
       </div>
+      {% comment %}
+        The mystery button (see modes/nav.html). Its "?" is already wrapped as a .char, so the
+        modes can carry it off with the rest of the page's letters. The popup is a <p> so shatter
+        mode, which breaks off every div and span in the nav, leaves it alone.
+      {% endcomment %}
+      <button type="button" class="mode-button" id="mode-button" aria-label="Mystery button"><span class="char">?</span></button>
+      <p class="mode-popup" id="mode-popup" role="status"></p>
     </nav>
 
-    {% comment %}{% include interactive-modes.html %}{% endcomment %}
+    {% include interactive-modes.html %}

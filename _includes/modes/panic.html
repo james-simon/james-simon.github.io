@@ -3,7 +3,6 @@
   // PANIC MODE
   // ============================================================================
 
-  let panicTextWrapped = false;
   let alarmAudio = null;
   let screamAudio = null;
 
@@ -11,11 +10,9 @@
     if (panicActive) return;
     panicActive = true;
 
-    // Wrap text if not already wrapped by other modes
-    if (!textWrapped && !panicTextWrapped) {
-      panicTextWrapped = true;
-      wrapTextNodes(document.body);
-    }
+    // Wrap text on first activation. (This is the one mode that ends, so the next mode has to
+    // know the text is already wrapped, or it would wrap every letter a second time.)
+    ensureTextWrapped();
 
     // Record scroll position
     const scrollY = window.scrollY;
