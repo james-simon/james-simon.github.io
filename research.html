@@ -234,9 +234,10 @@ function processAuthors() {
   authorDivs.forEach(div => {
     let text = div.textContent;
 
-    // Replace "James B. Simon" or "James Simon" with bold "JS"
+    // Replace "James B. Simon", "James Simon" or "Jamie Simon" with bold "JS"
     text = text.replace(/James B\. Simon/g, '<b>JS</b>');
     text = text.replace(/James Simon/g, '<b>JS</b>');
+    text = text.replace(/Jamie Simon/g, '<b>JS</b>');
 
     // Remove middle initials from all names (e.g., "John A. Doe" -> "John Doe")
     // Match pattern: space + single capital letter + period + space
