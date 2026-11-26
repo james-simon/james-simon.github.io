@@ -143,6 +143,30 @@
     }
   }
 
+  // Mobile browsers (iOS Safari above all) only let an <audio> element play from a script
+  // if that same element was first started during a tap. Call this from the tap that starts
+  // a mode, for every sound the mode will play later from a timer or an animation frame.
+  // It starts each one silently and stops it again, which is enough to unlock it.
+  function primeAudio(...ids) {
+    ids.forEach(id => {
+      const audio = document.getElementById(id);
+      if (!audio || audio.dataset.primed) return;
+      audio.dataset.primed = 'true';
+      audio.muted = true;
+      const rewind = () => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.muted = false;
+      };
+      const started = audio.play();
+      if (started && started.then) {
+        started.then(rewind).catch(() => { audio.muted = false; });
+      } else {
+        rewind();
+      }
+    });
+  }
+
   // Check if a point is close to a line segment
   function distanceToLineSegment(px, py, x1, y1, x2, y2) {
     const dx = x2 - x1;

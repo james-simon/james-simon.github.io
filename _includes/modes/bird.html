@@ -8,6 +8,10 @@
     if (birdModeActive) return;
     birdModeActive = true;
 
+    // Unlock the bird sounds while we are still inside the tap that started the mode.
+    // They play much later, from the animation loop, and mobile browsers block that otherwise.
+    primeAudio('goose-honk', 'goose-yell', 'hawk-call');
+
     try {
       console.log('Starting bird mode...');
 
